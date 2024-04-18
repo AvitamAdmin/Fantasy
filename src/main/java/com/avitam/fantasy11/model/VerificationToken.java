@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.model;
+package model;
 
 
 import lombok.Getter;
