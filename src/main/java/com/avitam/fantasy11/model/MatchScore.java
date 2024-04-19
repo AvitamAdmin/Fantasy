@@ -8,9 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("BaseEntity")
-public class BaseEntity {
+@Document("MatchScore")
+public class MatchScore extends BaseEntity{
 
-    private int id;
-    private String name;
+    private  int matchId;
+
+    private int team1Score;
+
+    private int team2Score;
+
+    private float overs;
 }
