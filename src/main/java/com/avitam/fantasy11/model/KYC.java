@@ -10,9 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @Document("KYC")
-public class KYC {
-
-    private int id;
+public class KYC extends BaseEntity {
 
     private String panNumber;
 
