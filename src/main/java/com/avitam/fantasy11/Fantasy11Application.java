@@ -5,7 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("com.avitam.fantasy11")
+@ComponentScan(
+		{
+				"com.avitam.fantasy11"
+		})
 public class Fantasy11Application {
 
 	public static void main(String[] args) {

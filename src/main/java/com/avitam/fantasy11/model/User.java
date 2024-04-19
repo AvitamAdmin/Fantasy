@@ -12,9 +12,8 @@ import javax.mail.Multipart;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity{
 
-    private String name;
     private String emailId;
     private String password;
     private String referredBy;

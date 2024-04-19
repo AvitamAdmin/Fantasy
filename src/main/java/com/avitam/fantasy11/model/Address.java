@@ -11,9 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("Address")
 
-public class Address {
+public class Address extends BaseEntity {
 
-    private int id;
 
     private int userId;
 
