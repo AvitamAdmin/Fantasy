@@ -1,4 +1,4 @@
-package model;
+package com.avitam.fantasy11.model;
 
 
 import com.avitam.fantasy11.model.BaseEntity;
