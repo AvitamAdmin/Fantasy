@@ -3,8 +3,8 @@ package com.avitam.fantasy11.qa.framework;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
-import avitam.fantasy11.qa.utils.TestDataUtils;
-import avitam.fantasy11.qa.utils.TestDataUtils.Field;
+import com.avitam.fantasy11.qa.utils.TestDataUtils;
+import com.avitam.fantasy11.qa.utils.TestDataUtils.Field;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static avitam.fantasy11.qa.utils.CheilStringUtils.*;
+import static com.avitam.fantasy11.qa.utils.CheilStringUtils.*;
 
 @Configuration
 public class QaConfig {

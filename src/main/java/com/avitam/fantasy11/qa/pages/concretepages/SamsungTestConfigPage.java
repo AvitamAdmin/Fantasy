@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static avitam.fantasy11.qa.utils.CheilStringUtils.*;
-import static avitam.fantasy11.qa.utils.OpenPageUtils.constructUrl;
-import static avitam.fantasy11.qa.utils.TestDataUtils.Field;
+import static com.avitam.fantasy11.qa.utils.CheilStringUtils.*;
+import static com.avitam.fantasy11.qa.utils.OpenPageUtils.constructUrl;
+import static com.avitam.fantasy11.qa.utils.TestDataUtils.Field;
 
 @Component
 public class SamsungTestConfigPage extends SamsungTestConfigAbstractPage {

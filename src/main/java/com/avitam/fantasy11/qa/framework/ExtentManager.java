@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 
-import static avitam.fantasy11.qa.utils.CheilStringUtils.STARTING_NEW_REPORT;
+import static com.avitam.fantasy11.qa.utils.CheilStringUtils.STARTING_NEW_REPORT;
+import static com.avitam.fantasy11.qa.utils.CheilStringUtils.STARTING_NEW_REPORT;
 
 @Component
 public class ExtentManager {

@@ -2,17 +2,17 @@ package com.avitam.fantasy11.qa.pages.concretepages;
 
 import com.avitam.fantasy11.qa.framework.TestContext;
 import com.avitam.fantasy11.qa.pages.abstractpages.CheckoutAbstractPage;
-import avitam.fantasy11.qa.utils.ClickUtils;
-import avitam.fantasy11.qa.utils.FillUtils;
-import avitam.fantasy11.qa.utils.ReportUtils;
-import avitam.fantasy11.qa.utils.TestDataUtils;
+import com.avitam.fantasy11.qa.utils.ClickUtils;
+import com.avitam.fantasy11.qa.utils.FillUtils;
+import com.avitam.fantasy11.qa.utils.ReportUtils;
+import com.avitam.fantasy11.qa.utils.TestDataUtils;
 import org.openqa.selenium.By;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static avitam.fantasy11.qa.utils.CheilStringUtils.*;
-import static avitam.fantasy11.qa.utils.TestDataUtils.*;
+import static com.avitam.fantasy11.qa.utils.CheilStringUtils.*;
+import static com.avitam.fantasy11.qa.utils.TestDataUtils.*;
 
 @Component
 public class CheckoutPage extends CheckoutAbstractPage {
