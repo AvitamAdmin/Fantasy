@@ -30,7 +30,7 @@ import java.util.Locale;
 public class Fantasy11Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Fantasy11Application.class, args);
+		SpringApplication.run(Fantasy11Application.class,args);
 	}
 
 	@Bean
