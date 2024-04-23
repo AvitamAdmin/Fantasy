@@ -27,10 +27,10 @@ import java.util.Locale;
 )
 @EnableJpaRepositories("com.avitam.fantasy11.core.model")
 @EntityScan({"com.avitam.fantasy11.core.model"})
-public class TouchmindApplication {
+public class Fantasy11Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TouchmindApplication.class, args);
+		SpringApplication.run(Fantasy11Application.class, args);
 	}
 
 	@Bean
