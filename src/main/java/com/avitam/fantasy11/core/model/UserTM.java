@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "user")
 @Getter
 @Setter
-public class User extends CommonFields {
+public class UserTM extends CommonFields {
 
 	private String email;
 	private String referredBy;

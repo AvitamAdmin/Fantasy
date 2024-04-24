@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Locale;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+public interface UserTMRepository extends JpaRepository<UserTM, Long> {
+    UserTM findByUsername(String username);
 
-    List<User> findByLocale(Locale locale);
+    List<UserTM> findByLocale(Locale locale);
 
-    User findByResetPasswordToken(String token);
+    UserTM findByResetPasswordToken(String token);
 }

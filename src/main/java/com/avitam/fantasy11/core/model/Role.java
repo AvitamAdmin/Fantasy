@@ -18,7 +18,7 @@ public class Role extends CommonFields {
     private String name;
     private String roleId;
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private Set<UserTM> users;
     @ManyToMany
     private Set<Node> permissions;
 }

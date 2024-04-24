@@ -2,7 +2,7 @@ package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.core.model.Node;
 import com.avitam.fantasy11.core.model.Role;
-import com.avitam.fantasy11.core.model.UserRepository;
+import com.avitam.fantasy11.core.model.UserTMRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -16,7 +16,7 @@ import java.util.Set;
 public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvocation> {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserTMRepository userRepository;
 
     @Override
     public int vote(Authentication authentication, FilterInvocation object, Collection<ConfigAttribute> attributes) {

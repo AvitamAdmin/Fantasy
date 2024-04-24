@@ -1,8 +1,8 @@
 package com.avitam.fantasy11.listener;
 
 import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
-import com.avitam.fantasy11.core.model.User;
-import com.avitam.fantasy11.core.service.UserService;
+import com.avitam.fantasy11.core.model.UserTM;
+import com.avitam.fantasy11.core.service.UserTMService;
 import com.avitam.fantasy11.mail.service.EMail;
 import com.avitam.fantasy11.mail.service.MailService;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
     Logger LOG = LoggerFactory.getLogger(RegistrationListener.class);
     @Autowired
-    private UserService service;
+    private UserTMService service;
 
     @Autowired
     private MessageSource messages;
@@ -33,7 +33,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         System.out.println(" confirmRegistration ");
-        User user = event.getUser();
+        UserTM user = event.getUser();
         String token = UUID.randomUUID().toString();
         service.createVerificationToken(user, token);
 

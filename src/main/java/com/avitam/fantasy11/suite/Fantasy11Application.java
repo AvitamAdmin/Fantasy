@@ -4,29 +4,32 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 @ComponentScan(
 		{
-				"com.avitam.fantasy11.web.controllers",
-				"com.avitam.fantasy11.core",
+				/*"com.avitam.fantasy11.web.controllers",
 				"com.avitam.fantasy11.qa",
 				"com.avitam.fantasy11.validation",
 				"com.avitam.fantasy11.mail",
-				"com.avitam.fantasy11.listener",
+				"com.avitam.fantasy11.listener",*/
+				"com.avitam.fantasy11.model",
 		}
 )
-@EnableJpaRepositories("com.avitam.fantasy11.core.model")
-@EntityScan({"com.avitam.fantasy11.core.model"})
+//@EnableJpaRepositories("com.avitam.fantasy11.core.model")
+@EnableMongoRepositories("com.avitam.fantasy11.model")
+//@EntityScan({"com.avitam.fantasy11.core.model"})
 public class Fantasy11Application {
 
 	public static void main(String[] args) {
