@@ -3,9 +3,10 @@ package com.avitam.fantasy11.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.mail.Multipart;
 
 @Document("User")
 @Getter
@@ -22,7 +23,7 @@ public class User extends BaseEntity{
     private String dateOfBirth;
     private int status;
     private int role;
-    private Binary profileImage;
+    private MultipartFile profileImage;
     private String gender;
     private String language;
 
