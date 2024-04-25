@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.form;
 
 import com.avitam.fantasy11.core.model.Node;
-import com.avitam.fantasy11.core.model.User;
+import com.avitam.fantasy11.core.model.UserTM;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +26,6 @@ public class RoleForm implements Serializable {
     private Date lastModified;
     private String name;
     private Boolean status;
-    private Set<User> users;
+    private Set<UserTM> users;
     private Set<Node> permissions;
 }

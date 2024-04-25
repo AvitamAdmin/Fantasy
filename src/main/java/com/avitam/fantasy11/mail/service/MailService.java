@@ -39,7 +39,12 @@ public class MailService {
 
     public void sendCheilEmail(EMail mail) {
         MimeMessage mimeMessage = new MimeMessage(getSession());
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        MimeMessageHelper mimeMessageHelper = null;
+        try {
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         try {
             mimeMessageHelper.setSubject(mail.getSubject());
             mimeMessageHelper.setFrom(mail.getFrom());

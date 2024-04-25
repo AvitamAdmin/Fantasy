@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Entity
-public class VerificationToken {
+public class VerificationTokenTM {
 
     private static final int EXPIRATION = 60 * 24;
 
@@ -16,24 +16,24 @@ public class VerificationToken {
 
     private String token;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = UserTM.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "username", foreignKey = @ForeignKey(name = "FK_VERIFY_USER"))
-    private User user;
+    private UserTM user;
 
     private Date expiryDate;
 
-    public VerificationToken() {
+    public VerificationTokenTM() {
         super();
     }
 
-    public VerificationToken(final String token) {
+    public VerificationTokenTM(final String token) {
         super();
 
         this.token = token;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
-    public VerificationToken(final String token, final User user) {
+    public VerificationTokenTM(final String token, final UserTM user) {
         super();
 
         this.token = token;
@@ -53,11 +53,11 @@ public class VerificationToken {
         this.token = token;
     }
 
-    public User getUser() {
+    public UserTM getUser() {
         return user;
     }
 
-    public void setUser(final User user) {
+    public void setUser(final UserTM user) {
         this.user = user;
     }
 
@@ -104,7 +104,7 @@ public class VerificationToken {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VerificationToken other = (VerificationToken) obj;
+        final VerificationTokenTM other = (VerificationTokenTM) obj;
         if (getExpiryDate() == null) {
             if (other.getExpiryDate() != null) {
                 return false;

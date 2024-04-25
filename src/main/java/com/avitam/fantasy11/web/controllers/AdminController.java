@@ -1,8 +1,8 @@
 package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.core.model.RoleRepository;
-import com.avitam.fantasy11.core.model.User;
-import com.avitam.fantasy11.core.model.UserRepository;
+import com.avitam.fantasy11.core.model.UserTM;
+import com.avitam.fantasy11.core.model.UserTMRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.UserForm;
 import com.avitam.fantasy11.validation.UserFormValidator;
@@ -34,7 +34,7 @@ public class AdminController {
     @Autowired
     private CoreService coreService;
     @Autowired
-    private UserRepository userRepository;
+    private UserTMRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
 
@@ -55,15 +55,15 @@ public class AdminController {
     @GetMapping("/user/edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         UserForm userForm = new UserForm();
-        Optional<User> userOptional = userRepository.findById(id);
+        Optional<UserTM> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
+            UserTM user = userOptional.get();
             userForm = modelMapper.map(user, UserForm.class);
             userForm.setPasswordConfirm(null);
             userForm.setPassword(null);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User currentUser = userRepository.findByUsername(principalObject.getUsername());
+            UserTM currentUser = userRepository.findByUsername(principalObject.getUsername());
             model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("editForm", userForm);
@@ -75,13 +75,13 @@ public class AdminController {
     @PostMapping("/user/edit")
     public String handleEdit(@ModelAttribute("editForm") UserForm userForm, Model model, BindingResult result, RedirectAttributes redirectAttributes) {
 
-        User user = null;
+        UserTM user = null;
         model.addAttribute("roles", roleRepository.findAll());
 
 
         if (userForm.getId() == null) {
-            user = new User();
-            user = modelMapper.map(userForm, User.class);
+            user = new UserTM();
+            user = modelMapper.map(userForm, UserTM.class);
             userValidator.validate(user, result);
             if (result.hasErrors()) {
                 model.addAttribute("editForm", userForm);
@@ -115,7 +115,7 @@ public class AdminController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByUsername(principalObject.getUsername());
+        UserTM currentUser = userRepository.findByUsername(principalObject.getUsername());
         model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
 
         userForm.setCreationTime(new Date());
@@ -135,7 +135,7 @@ public class AdminController {
         return "redirect:/admin/user";
     }
 
-    public String updateUsers(@ModelAttribute("usersForm") List<User> users, BindingResult bindingResultUser) {
+    public String updateUsers(@ModelAttribute("usersForm") List<UserTM> users, BindingResult bindingResultUser) {
         userRepository.saveAll(users);
         return "redirect:/admin/user";
     }

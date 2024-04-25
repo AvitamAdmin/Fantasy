@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.web.filter;
 
-import com.avitam.fantasy11.core.model.UserRepository;
+import com.avitam.fantasy11.core.model.UserTMRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -17,7 +17,7 @@ import java.io.IOException;
 public class CustomLocaleFilter extends GenericFilterBean {
 
     @Autowired
-    UserRepository userRepository;
+    UserTMRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, jakarta.servlet.ServletException {

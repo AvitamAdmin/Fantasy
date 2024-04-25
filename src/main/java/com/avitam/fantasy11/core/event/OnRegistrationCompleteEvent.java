@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.core.event;
 
-import com.avitam.fantasy11.core.model.User;
+import com.avitam.fantasy11.core.model.UserTM;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
@@ -12,7 +12,7 @@ import java.util.Locale;
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
     private String appUrl;
     private Locale locale;
-    private User user;
+    private UserTM user;
 
     private String subject;
 
@@ -23,7 +23,7 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
     private String level;
 
     public OnRegistrationCompleteEvent(
-            User user, Locale locale, String appUrl, String subject, String content, String toAddress, String level) {
+            UserTM user, Locale locale, String appUrl, String subject, String content, String toAddress, String level) {
         super(user);
 
         this.user = user;
