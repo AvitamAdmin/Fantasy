@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.core.event;
 
-import com.avitam.fantasy11.core.model.UserTM;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

@@ -1,8 +1,11 @@
-package com.avitam.fantasy11.form;
+package com.avitam.fantasy11.model;
 
-import com.avitam.fantasy11.model.Node;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import javax.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,8 +14,10 @@ import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class InterfaceForm implements Serializable {
+@MappedSuperclass
+public class CommonFields implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String creator;
     private Boolean status;
@@ -20,9 +25,5 @@ public class InterfaceForm implements Serializable {
     private Date creationTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date lastModified;
-    private String name;
-    private String path;
-    private Node parentNode;
-    private String parentNodeId;
-    private Integer displayPriority;
+    private String modifier;
 }

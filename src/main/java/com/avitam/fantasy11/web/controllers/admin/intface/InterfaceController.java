@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.intface;
 
-import com.avitam.fantasy11.core.model.Node;
-import com.avitam.fantasy11.core.model.NodeRepository;
+import com.avitam.fantasy11.model.Node;
+import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;

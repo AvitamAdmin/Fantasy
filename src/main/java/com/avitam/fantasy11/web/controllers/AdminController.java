@@ -1,10 +1,7 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.core.model.RoleRepository;
-import com.avitam.fantasy11.core.model.UserTM;
-import com.avitam.fantasy11.core.model.UserTMRepository;
+import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.UserForm;
 import com.avitam.fantasy11.validation.UserFormValidator;
 import com.avitam.fantasy11.validation.UserValidator;
 import org.apache.commons.lang3.StringUtils;

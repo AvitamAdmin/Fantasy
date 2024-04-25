@@ -1,7 +1,5 @@
 package com.avitam.fantasy11.core.service.impl;
 
-import com.avitam.fantasy11.core.model.UserTM;
-import com.avitam.fantasy11.core.model.UserTMRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

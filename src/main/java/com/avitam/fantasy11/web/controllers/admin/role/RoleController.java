@@ -1,10 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.role;
 
-import com.avitam.fantasy11.core.model.NodeRepository;
-import com.avitam.fantasy11.core.model.Role;
-import com.avitam.fantasy11.core.model.RoleRepository;
+import com.avitam.fantasy11.model.NodeRepository;
+import com.avitam.fantasy11.model.Role;
+import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.RoleForm;
 import com.avitam.fantasy11.validation.RoleFormValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

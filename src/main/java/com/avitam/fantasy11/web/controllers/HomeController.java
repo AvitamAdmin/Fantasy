@@ -1,11 +1,10 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.core.model.NodeRepository;
-import com.avitam.fantasy11.core.model.UserTMRepository;
-import com.avitam.fantasy11.core.model.WebsiteSetting;
-import com.avitam.fantasy11.core.model.WebsiteSettingRepository;
+import com.avitam.fantasy11.model.NodeRepository;
+import com.avitam.fantasy11.model.WebsiteSetting;
+import com.avitam.fantasy11.model.WebsiteSettingRepository;
 import com.avitam.fantasy11.core.service.NodeService;
-import com.avitam.fantasy11.core.service.UserTMService;
+import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.mail.service.MailService;
 import jakarta.servlet.http.HttpSession;
 import org.apache.commons.collections4.CollectionUtils;
@@ -37,7 +36,7 @@ public class HomeController {
     @Autowired
     private NodeService nodeService;
     @Autowired
-    private UserTMService userService;
+    private UserService userService;
     @Autowired
     private MailService mailService;
     @Autowired

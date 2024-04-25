@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.core.dto;
 
-import com.avitam.fantasy11.core.model.Role;
+import com.avitam.fantasy11.model.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

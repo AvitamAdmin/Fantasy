@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.Multipart;
 
 @Document("User")
 @Getter

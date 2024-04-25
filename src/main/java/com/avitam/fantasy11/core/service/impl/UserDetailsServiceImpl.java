@@ -1,8 +1,6 @@
 package com.avitam.fantasy11.core.service.impl;
 
-import com.avitam.fantasy11.core.model.Role;
-import com.avitam.fantasy11.core.model.UserTM;
-import com.avitam.fantasy11.core.model.UserTMRepository;
+import com.avitam.fantasy11.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

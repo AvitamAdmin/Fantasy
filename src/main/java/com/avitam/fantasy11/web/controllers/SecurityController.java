@@ -2,14 +2,13 @@ package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.core.Utility;
 import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
-import com.avitam.fantasy11.core.model.RoleRepository;
-import com.avitam.fantasy11.core.model.UserTM;
-import com.avitam.fantasy11.core.model.UserTMRepository;
+import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.SecurityService;
-import com.avitam.fantasy11.core.service.UserTMService;
-import com.avitam.fantasy11.form.UserForm;
+import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.mail.service.EMail;
 import com.avitam.fantasy11.mail.service.MailService;
+import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.model.UserRepository;
 import com.avitam.fantasy11.validation.UserValidator;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +35,7 @@ public class SecurityController {
     @Autowired
     ApplicationEventPublisher eventPublisher;
     @Autowired
-    private UserTMService userService;
+    private UserService userService;
     @Autowired
     private UserValidator userValidator;
     @Autowired
@@ -46,7 +45,7 @@ public class SecurityController {
     @Autowired
     private MessageSource messages;
     @Autowired
-    private UserTMRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
 
@@ -103,7 +102,7 @@ public class SecurityController {
 
     @GetMapping("/resetpassword")
     public String showResetPasswordForm(@RequestParam(value = "token") String token, Model model) {
-        UserTM user = userService.getByResetPasswordToken(token);
+        User user = userService.getByResetPasswordToken(token);
         model.addAttribute("token", token);
 
         if (user == null) {
@@ -118,7 +117,7 @@ public class SecurityController {
         String token = request.getParameter("token");
         String password = request.getParameter("password");
 
-        UserTM user = userService.getByResetPasswordToken(token);
+        User user = userService.getByResetPasswordToken(token);
         model.addAttribute("title", "Reset your password");
 
         if (user == null) {
@@ -139,7 +138,7 @@ public class SecurityController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
 
-        model.addAttribute("userForm", new UserTM());
+        model.addAttribute("userForm", new User());
 
         model.addAttribute("roles", roleRepository.findAll());
         return "security/signupForm";
@@ -149,7 +148,7 @@ public class SecurityController {
     public String processRegister(HttpServletRequest request, @ModelAttribute("userForm") UserTM user, BindingResult bindingResultUser, Model model) {
         userValidator.validate(user, bindingResultUser);
         if (bindingResultUser.hasErrors()) {
-            model.addAttribute("userForm", new UserTM());
+            model.addAttribute("userForm", new User());
 
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("message", bindingResultUser);
@@ -179,7 +178,7 @@ public class SecurityController {
         model.addAttribute("lang", locale.getLanguage());
         final String result = userService.validateVerificationToken(token);
         if (result.equals("valid")) {
-            final UserTM user = userService.getUser(token);
+            final User user = userService.getUser(token);
             if (level.equals("1")) {
                 model.addAttribute("message", "User Approved");
                 String appUrl = Utility.getSiteURL(request);
@@ -211,7 +210,7 @@ public class SecurityController {
         UserForm userForm = new UserForm();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        UserTM user = userRepository.findByUsername(principalObject.getUsername());
+        User user = userRepository.findByUsername(principalObject.getUsername());
 
         userForm.setStatus(user.getStatus());
         userForm.setUsername(user.getUsername());
