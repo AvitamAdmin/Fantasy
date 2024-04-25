@@ -1,26 +1,33 @@
-package com.avitam.fantasy11.model;
+package com.avitam.fantasy11.form;
 
+import com.avitam.fantasy11.model.Role;
 import jakarta.persistence.ManyToMany;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.Binary;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
 
-@Document("User")
 @Getter
 @Setter
-@NoArgsConstructor
-public class User extends BaseEntity{
+public class UserForm {
 
+    private Long id;
+    private String name;
+    private String creator;
+    //private Boolean status;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    private Date creationTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    private Date lastModified;
+    private String modifier;
     private String email;
     private String username;
     private String password;
     private String passwordConfirm;
-    private String resetPasswordToken;
     private String referredBy;
     private double balance;
     private double bonus;
@@ -31,9 +38,8 @@ public class User extends BaseEntity{
     private Binary profileImage;
     private String gender;
     private String language;
-    private Locale locale;
-
     @ManyToMany
     private Set<Role> roles;
+    private Locale locale;
 
 }

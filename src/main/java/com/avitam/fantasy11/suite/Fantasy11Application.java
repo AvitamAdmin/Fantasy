@@ -22,7 +22,6 @@ import java.util.Locale;
 @ComponentScan(
 		{
 				"com.avitam.fantasy11.web.controllers",
-				"com.avitam.fantasy.core.model",
 				"com.avitam.fantasy11.qa",
 				"com.avitam.fantasy11.validation",
 				"com.avitam.fantasy11.mail",
@@ -30,9 +29,7 @@ import java.util.Locale;
 				"com.avitam.fantasy11.model",
 		}
 )
-@EnableJpaRepositories("com.avitam.fantasy11.core.model")
 @EnableMongoRepositories("com.avitam.fantasy11.model")
-@EntityScan({"com.avitam.fantasy11.core.model"})
 public class Fantasy11Application {
 
 	public static void main(String[] args) {

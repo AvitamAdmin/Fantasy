@@ -1,7 +1,10 @@
 package com.avitam.fantasy11.web.controllers;
 
+import com.avitam.fantasy11.form.UserForm;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.model.UserRepository;
 import com.avitam.fantasy11.validation.UserFormValidator;
 import com.avitam.fantasy11.validation.UserValidator;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +34,7 @@ public class AdminController {
     @Autowired
     private CoreService coreService;
     @Autowired
-    private UserTMRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
 
@@ -52,15 +55,15 @@ public class AdminController {
     @GetMapping("/user/edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         UserForm userForm = new UserForm();
-        Optional<UserTM> userOptional = userRepository.findById(id);
+        Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
-            UserTM user = userOptional.get();
+            User user = userOptional.get();
             userForm = modelMapper.map(user, UserForm.class);
             userForm.setPasswordConfirm(null);
             userForm.setPassword(null);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            UserTM currentUser = userRepository.findByUsername(principalObject.getUsername());
+            User currentUser = userRepository.findByUsername(principalObject.getUsername());
             model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("editForm", userForm);
@@ -72,13 +75,13 @@ public class AdminController {
     @PostMapping("/user/edit")
     public String handleEdit(@ModelAttribute("editForm") UserForm userForm, Model model, BindingResult result, RedirectAttributes redirectAttributes) {
 
-        UserTM user = null;
+        User user = null;
         model.addAttribute("roles", roleRepository.findAll());
 
 
         if (userForm.getId() == null) {
-            user = new UserTM();
-            user = modelMapper.map(userForm, UserTM.class);
+            user = new User();
+            user = modelMapper.map(userForm, User.class);
             userValidator.validate(user, result);
             if (result.hasErrors()) {
                 model.addAttribute("editForm", userForm);
@@ -99,7 +102,7 @@ public class AdminController {
             user.setPassword(bCryptPasswordEncoder.encode(userForm.getPassword()));
             user.setPasswordConfirm(bCryptPasswordEncoder.encode(userForm.getPasswordConfirm()));
         }
-        user.setStatus(true);
+        user.setStatus(1);
         userRepository.save(user);
         redirectAttributes.addAttribute("id", user.getId());
         return "redirect:/admin/user";
@@ -112,12 +115,12 @@ public class AdminController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        UserTM currentUser = userRepository.findByUsername(principalObject.getUsername());
+        User currentUser = userRepository.findByUsername(principalObject.getUsername());
         model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
 
         userForm.setCreationTime(new Date());
         userForm.setLastModified(new Date());
-        userForm.setStatus(true);
+        userForm.setStatus(1);
         userForm.setCreator(coreService.getCurrentUser().getUsername());
         model.addAttribute("editForm", userForm);
         return "admin/usersEditContent";
@@ -132,7 +135,7 @@ public class AdminController {
         return "redirect:/admin/user";
     }
 
-    public String updateUsers(@ModelAttribute("usersForm") List<UserTM> users, BindingResult bindingResultUser) {
+    public String updateUsers(@ModelAttribute("usersForm") List<User> users, BindingResult bindingResultUser) {
         userRepository.saveAll(users);
         return "redirect:/admin/user";
     }

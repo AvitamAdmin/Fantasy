@@ -2,17 +2,20 @@ package com.avitam.fantasy11.core.service;
 
 
 import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.model.VerificationToken;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface UserService {
-    void save(UserTM user);
+    void save(User user);
 
-    UserTM findByUsername(String username);
+    User findByUsername(String username);
 
-    void createVerificationToken(UserTM user, String token);
+    void createVerificationToken(User user, String token);
 
-    VerificationTokenTM getVerificationToken(String VerificationToken);
+    VerificationToken getVerificationToken(String VerificationToken);
 
-    void saveRegisteredUser(UserTM user);
+    void saveRegisteredUser(User user);
 
     String validateVerificationToken(String token);
 
@@ -24,5 +27,5 @@ public interface UserService {
 
     User getByResetPasswordToken(String token);
 
-    void updatePassword(UserTM user, String newPassword);
+    void updatePassword(User user, String newPassword);
 }

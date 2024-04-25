@@ -11,7 +11,7 @@ import java.util.*;
 @RequestMapping("/chart")
 public class ChartReportController {
 
-    @Autowired
+   /* @Autowired
     private TestResultRepository testResultRepository;
 
     @GetMapping
@@ -44,5 +44,5 @@ public class ChartReportController {
             }
         }
         return chart.get(key);
-    }
+    }*/
 }

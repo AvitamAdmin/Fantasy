@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService {
-    @Autowired
+   /* @Autowired
     private TestResultRepository testResultRepository;
 
     @Override
@@ -20,5 +20,5 @@ public class CheckoutServiceImpl implements CheckoutService {
     @Override
     public List<TestResult> findAllBySessionIdAndTestName(String sessionId, String testName) {
         return testResultRepository.findAllBySessionIdAndTestName(sessionId, testName);
-    }
+    }*/
 }

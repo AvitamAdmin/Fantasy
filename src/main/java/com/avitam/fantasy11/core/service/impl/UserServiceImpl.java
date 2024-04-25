@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class UserTMServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
     public static final String TOKEN_INVALID = "invalidToken";
     public static final String TOKEN_EXPIRED = "expired";
@@ -44,7 +44,9 @@ public class UserTMServiceImpl implements UserService {
 
     @Override
     public void createVerificationToken(User user, String token) {
-        VerificationToken myToken = new VerificationToken(token, user);
+        VerificationToken myToken = new VerificationToken();
+        myToken.setUser(user);
+        myToken.setToken(token);
         tokenRepository.save(myToken);
     }
 

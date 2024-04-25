@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.core.Utility;
 import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
+import com.avitam.fantasy11.form.UserForm;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.SecurityService;
 import com.avitam.fantasy11.core.service.UserService;
@@ -145,7 +146,7 @@ public class SecurityController {
     }
 
     @PostMapping("/register")
-    public String processRegister(HttpServletRequest request, @ModelAttribute("userForm") UserTM user, BindingResult bindingResultUser, Model model) {
+    public String processRegister(HttpServletRequest request, @ModelAttribute("userForm") User user, BindingResult bindingResultUser, Model model) {
         userValidator.validate(user, bindingResultUser);
         if (bindingResultUser.hasErrors()) {
             model.addAttribute("userForm", new User());
@@ -191,7 +192,7 @@ public class SecurityController {
                 return new ModelAndView("security/signupSuccessForm");
             } else if (level.equals("3")) {
                 model.addAttribute("message", "You have signed up successfully!");
-                user.setStatus(true);
+                user.setStatus(1);
                 userRepository.save(user);
                 return new ModelAndView("security/signupSuccessForm");
             }
