@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.UnanimousBased;
@@ -41,8 +42,8 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/login").permitAll()
-                        .loginProcessingUrl("/login")
+                        .loginPage("/home").permitAll()
+                        .loginProcessingUrl("/home")
                 )
                 .logout((logout) -> logout.permitAll());
         return http.build();
@@ -63,17 +64,16 @@ public class WebSecurityConfig {
         List<AccessDecisionVoter<?>> decisionVoters = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor());
         return new UnanimousBased(decisionVoters);
     }
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+   /*
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
-
+    }*/
     @Bean
     public AuthenticationProvider userDetailsAuthProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

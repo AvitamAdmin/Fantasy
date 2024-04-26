@@ -1,7 +1,5 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.core.model.TestResult;
-import com.avitam.fantasy11.core.model.TestResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +11,7 @@ import java.util.*;
 @RequestMapping("/chart")
 public class ChartReportController {
 
-    @Autowired
-    private TestResultRepository testResultRepository;
-
+   /*
     @GetMapping
     public String getCharts(Model model) {
         return "chart";
@@ -47,4 +43,5 @@ public class ChartReportController {
         }
         return chart.get(key);
     }
+*/
 }

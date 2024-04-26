@@ -1,8 +1,8 @@
 package com.avitam.fantasy11.validation;
 
-import com.avitam.fantasy11.core.model.UserTM;
-import com.avitam.fantasy11.core.service.UserTMService;
+import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.form.UserForm;
+import com.avitam.fantasy11.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -12,11 +12,12 @@ import org.springframework.validation.Validator;
 @Component
 public class UserFormValidator implements Validator {
     @Autowired
-    private UserTMService userService;
+    private UserService userService;
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return UserTM.class.equals(aClass);
+
+        return User.class.equals(aClass);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.core.service;
 
 import com.avitam.fantasy11.core.dto.NodeDto;
-import com.avitam.fantasy11.core.model.*;
+import com.avitam.fantasy11.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.modelmapper.ModelMapper;
@@ -20,7 +20,7 @@ public class NodeServiceImpl implements NodeService {
     private NodeRepository nodeRepository;
 
     @Autowired
-    private UserTMRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -29,7 +29,7 @@ public class NodeServiceImpl implements NodeService {
     //@Cacheable(cacheNames = "allNodes")
     public List<NodeDto> getAllNodes() {
         List<NodeDto> allNodes = new ArrayList<>();
-        List<Node> nodeList = nodeRepository.findAll().stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
+       List<Node> nodeList = nodeRepository.findAll().stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(nodeList)) {
             nodeList.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
                     Comparator.nullsLast(Comparator.naturalOrder())));
@@ -49,7 +49,7 @@ public class NodeServiceImpl implements NodeService {
     public List<NodeDto> getNodesForRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        UserTM currentUser = userRepository.findByUsername(principalObject.getUsername());
+        User currentUser = userRepository.findByName(principalObject.getUsername());
         Set<Role> roles = currentUser.getRoles();
         Set<Node> nodes = new HashSet<>();
         for (Role role : roles) {

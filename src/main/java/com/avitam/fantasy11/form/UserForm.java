@@ -1,34 +1,40 @@
 package com.avitam.fantasy11.form;
 
-import com.avitam.fantasy11.core.model.Role;
+import com.avitam.fantasy11.model.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import org.bson.types.Binary;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
-public class UserForm implements Serializable {
+public class UserForm {
     private Long id;
-    private String username;
-    private String email;
+    private String userName;
+    private String emailId;
     private String password;
     private String passwordConfirm;
-    ;
-    private Set<Role> roles;
+    private String referredBy;
+    private double balance;
+    private double bonus;
+    private String mobileNumber;
+    private String dateOfBirth;
+    private int status;
+    private int role;
+    private Binary profileImage;
+    private String gender;
+    private String language;
     private String creator;
-    private Boolean status;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date creationTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date lastModified;
-    private Locale locale;
+    private String modifier;
+    private Set<Role> roles;
 }

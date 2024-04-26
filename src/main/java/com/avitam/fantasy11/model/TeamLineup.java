@@ -17,5 +17,4 @@ public class TeamLineup extends  BaseEntity{
 
     private int lineupStatus;
 
-
 }

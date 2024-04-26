@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.core.service;
 
-import com.avitam.fantasy11.core.model.UserTM;
+import com.avitam.fantasy11.model.User;
 
 public interface CoreService {
-    UserTM getCurrentUser();
+    User getCurrentUser();
 }

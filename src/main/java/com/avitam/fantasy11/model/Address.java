@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class Address extends BaseEntity {
 
-
     private int userId;
 
     private String line_1;

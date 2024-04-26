@@ -1,8 +1,8 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.core.model.Node;
-import com.avitam.fantasy11.core.model.Role;
-import com.avitam.fantasy11.core.model.UserTMRepository;
+import com.avitam.fantasy11.model.Node;
+import com.avitam.fantasy11.model.Role;
+import com.avitam.fantasy11.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -16,7 +16,7 @@ import java.util.Set;
 public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvocation> {
 
     @Autowired
-    private UserTMRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public int vote(Authentication authentication, FilterInvocation object, Collection<ConfigAttribute> attributes) {
@@ -28,7 +28,7 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
 /*
         if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
             org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User currentUser = userRepository.findByUsername(principalObject.getUsername());
+            User currentUser = userRepository.findByName(principalObject.getUsername());
             Set<Role> roles = currentUser.getRoles();
             Set<Node> nodes = getNodesForRoles(roles);
             if (!nodes.isEmpty()) {

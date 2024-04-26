@@ -4,5 +4,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PointsUpdateRepository extends MongoRepository<PointsUpdate,Integer> {
+public interface PointsUpdateRepository extends MongoRepository<PointsUpdate, Long> {
 }

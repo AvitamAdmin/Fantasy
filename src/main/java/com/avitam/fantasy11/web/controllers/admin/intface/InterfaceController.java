@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.intface;
 
-import com.avitam.fantasy11.core.model.Node;
-import com.avitam.fantasy11.core.model.NodeRepository;
+import com.avitam.fantasy11.model.Node;
+import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
@@ -61,7 +61,7 @@ public class InterfaceController {
         interfaceForm.setLastModified(new Date());
         if (interfaceForm.getId() == null) {
             interfaceForm.setCreationTime(new Date());
-            interfaceForm.setCreator(coreService.getCurrentUser().getUsername());
+            interfaceForm.setCreator(coreService.getCurrentUser().getName());
         }
         Node node = modelMapper.map(interfaceForm, Node.class);
         if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
@@ -81,7 +81,7 @@ public class InterfaceController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getUsername());
+        form.setCreator(coreService.getCurrentUser().getName());
         model.addAttribute("editForm", form);
         model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "interface/edit";

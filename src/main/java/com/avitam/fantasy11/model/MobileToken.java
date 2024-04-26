@@ -15,5 +15,4 @@ public class MobileToken extends BaseEntity{
 
     private String otp;
 
-    private int status;
 }

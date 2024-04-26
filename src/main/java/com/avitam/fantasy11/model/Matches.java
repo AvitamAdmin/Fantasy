@@ -26,7 +26,7 @@ public class Matches extends BaseEntity{
 
     private int contestId;
 
-    private int status;
+    //private int status;
 
     private int matchTypeId;
 }

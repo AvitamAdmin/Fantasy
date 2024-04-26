@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.form;
 
-import com.avitam.fantasy11.core.model.Node;
+import com.avitam.fantasy11.model.Node;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

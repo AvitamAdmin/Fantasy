@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("Team")
 public class Team extends BaseEntity {
 
-    private String teamName;
 
     private Binary logo;
 }
