@@ -4,5 +4,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MatchesRepository extends MongoRepository<Matches,Integer> {
+public interface MatchesRepository extends MongoRepository<Matches, Long> {
 }

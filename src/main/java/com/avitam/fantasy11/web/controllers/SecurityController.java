@@ -192,7 +192,7 @@ public class SecurityController {
                 return new ModelAndView("security/signupSuccessForm");
             } else if (level.equals("3")) {
                 model.addAttribute("message", "You have signed up successfully!");
-                user.setStatus(true);
+                user.setStatus(1);
                 userRepository.save(user);
                 return new ModelAndView("security/signupSuccessForm");
             }
