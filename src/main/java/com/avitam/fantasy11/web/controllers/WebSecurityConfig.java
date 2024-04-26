@@ -59,6 +59,7 @@ public class WebSecurityConfig {
         return new AccessDecisionProcessor();
     }
 
+
     @Bean
     public AccessDecisionManager accessDecisionManager() {
         List<AccessDecisionVoter<?>> decisionVoters = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor());
@@ -70,7 +71,7 @@ public class WebSecurityConfig {
     }
 
    /*
-    @Autowired
+    /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }*/
