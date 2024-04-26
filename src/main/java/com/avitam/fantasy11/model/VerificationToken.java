@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Calendar;
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,8 +16,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class VerificationToken {
 
     private int id;
-    private int userid;
+    private int userId;
     private int token;
     private int status;
-
+    public User user;
+    private Date ExpiryDate;
 }

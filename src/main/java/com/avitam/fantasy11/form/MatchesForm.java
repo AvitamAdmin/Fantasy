@@ -1,18 +1,13 @@
-package com.avitam.fantasy11.model;
+package com.avitam.fantasy11.form;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@Document("Matches")
-
-public class Matches extends BaseEntity{
+public class MatchesForm {
 
     private String team1;
 
@@ -26,7 +21,7 @@ public class Matches extends BaseEntity{
 
     private int contestId;
 
-    //private int status;
+    private int status;
 
     private int matchTypeId;
 }

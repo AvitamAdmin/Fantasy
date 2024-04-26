@@ -4,6 +4,7 @@ import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.mail.service.EMail;
 import com.avitam.fantasy11.mail.service.MailService;
+import com.avitam.fantasy11.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         System.out.println(" confirmRegistration ");
-        UserTM user = event.getUser();
+        User user = event.getUser();
         String token = UUID.randomUUID().toString();
         service.createVerificationToken(user, token);
 

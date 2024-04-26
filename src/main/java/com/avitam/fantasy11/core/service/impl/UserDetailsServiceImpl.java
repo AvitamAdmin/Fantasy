@@ -1,6 +1,8 @@
 package com.avitam.fantasy11.core.service.impl;
 
 import com.avitam.fantasy11.model.Role;
+import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,17 +18,17 @@ import java.util.Set;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    private UserTMRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
-        UserTM user = userRepository.findByUsername(username);
+        User user = userRepository.findByName(username);
         if (user == null || user.getStatus() == false) throw new UsernameNotFoundException(username);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         for (Role role : user.getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), grantedAuthorities);
     }
 }

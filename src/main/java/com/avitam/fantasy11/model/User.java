@@ -1,10 +1,15 @@
 package com.avitam.fantasy11.model;
 
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
+import java.util.Set;
 
 
 @Document("User")
@@ -20,10 +25,15 @@ public class User extends BaseEntity{
     private double bonus;
     private String mobileNumber;
     private String dateOfBirth;
-    private int status;
+    //private int status;
     private int role;
-    private MultipartFile profileImage;
+    private Binary profileImage;
     private String gender;
     private String language;
+    private Set<Role>roles;
+    @Transient
+    private String passwordConfirm;
 
+    public void setResetPasswordToken(String token) {
+    }
 }

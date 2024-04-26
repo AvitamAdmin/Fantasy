@@ -61,7 +61,7 @@ public class InterfaceController {
         interfaceForm.setLastModified(new Date());
         if (interfaceForm.getId() == null) {
             interfaceForm.setCreationTime(new Date());
-            interfaceForm.setCreator(coreService.getCurrentUser().getUsername());
+            interfaceForm.setCreator(coreService.getCurrentUser().getName());
         }
         Node node = modelMapper.map(interfaceForm, Node.class);
         if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
@@ -81,7 +81,7 @@ public class InterfaceController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getUsername());
+        form.setCreator(coreService.getCurrentUser().getName());
         model.addAttribute("editForm", form);
         model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "interface/edit";

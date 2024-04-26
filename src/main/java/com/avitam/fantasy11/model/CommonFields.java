@@ -16,14 +16,5 @@ import java.util.Date;
 @Setter
 @MappedSuperclass
 public class CommonFields implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String creator;
-    private Boolean status;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date creationTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date lastModified;
-    private String modifier;
+
 }

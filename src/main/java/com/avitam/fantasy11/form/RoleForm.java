@@ -1,31 +1,32 @@
-package com.avitam.fantasy11.model;
+package com.avitam.fantasy11.form;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import com.avitam.fantasy11.model.Node;
+import com.avitam.fantasy11.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("BaseEntity")
-public class BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@ToString
+public class RoleForm implements Serializable {
     private Long id;
-    private String name;
     private String creator;
-    private Boolean status;
+    private String type;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date creationTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date lastModified;
-    private String modifier;
+    private String name;
+    private Boolean status;
+    private Set<User> users;
+    private Set<Node> permissions;
 }

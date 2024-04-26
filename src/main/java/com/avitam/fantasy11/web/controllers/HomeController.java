@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.model.NodeRepository;
+import com.avitam.fantasy11.model.UserRepository;
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.model.WebsiteSettingRepository;
 import com.avitam.fantasy11.core.service.NodeService;
@@ -32,7 +33,7 @@ public class HomeController {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private UserTMRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private NodeService nodeService;
     @Autowired

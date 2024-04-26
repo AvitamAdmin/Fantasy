@@ -14,11 +14,10 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Role extends CommonFields {
-    private String name;
+public class Role extends BaseEntity {
     private String roleId;
     @ManyToMany(mappedBy = "roles")
-    private Set<UserTM> users;
+    private Set<User> users;
     @ManyToMany
     private Set<Node> permissions;
 }

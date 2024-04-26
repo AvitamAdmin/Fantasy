@@ -11,7 +11,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class MatchType extends BaseEntity{
 
-    //private String name;
-
 
 }

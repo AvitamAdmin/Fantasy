@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class UserTMServiceImpl implements UserService {
+public class UseServiceImpl implements UserService {
 
     public static final String TOKEN_INVALID = "invalidToken";
     public static final String TOKEN_EXPIRED = "expired";
@@ -38,13 +38,14 @@ public class UserTMServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByName(String username) {
+
+        return userRepository.findByName(username);
     }
 
     @Override
     public void createVerificationToken(User user, String token) {
-        VerificationToken myToken = new VerificationToken(token, user);
+        VerificationToken myToken = new VerificationToken();
         tokenRepository.save(myToken);
     }
 
@@ -93,7 +94,7 @@ public class UserTMServiceImpl implements UserService {
     public boolean isAdminRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByUsername(principalObject.getUsername());
+        User currentUser = userRepository.findByName(principalObject.getUsername());
         Set<Role> roles = currentUser.getRoles();
         for (Role role : roles) {
             if ("ROLE_ADMIN".equals(role.getName())) {
@@ -104,7 +105,7 @@ public class UserTMServiceImpl implements UserService {
     }
 
     public boolean updateResetPasswordToken(String token, String email) {
-        User user = userRepository.findByUsername(email);
+        User user = userRepository.findByName(email);
         if (user != null) {
             user.setResetPasswordToken(token);
             userRepository.save(user);
@@ -116,6 +117,7 @@ public class UserTMServiceImpl implements UserService {
     public User getByResetPasswordToken(String token) {
         return userRepository.findByResetPasswordToken(token);
     }
+
 
     public void updatePassword(User user, String newPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

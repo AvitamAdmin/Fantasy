@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VerificationTokenRepository extends MongoRepository<VerificationToken,Integer> {
+    VerificationToken findByToken(String verificationToken);
 }

@@ -66,7 +66,7 @@ public class WebsiteSettingController {
         websiteSettingForm.setLastModified(new Date());
         if (websiteSettingForm.getId() == null) {
             websiteSettingForm.setCreationTime(new Date());
-            websiteSettingForm.setCreator(coreService.getCurrentUser().getUsername());
+            websiteSettingForm.setCreator(coreService.getCurrentUser().getName());
         }
         WebsiteSetting websitesetting = modelMapper.map(websiteSettingForm, WebsiteSetting.class);
         MultipartFile logo = websiteSettingForm.getLogo();
@@ -97,7 +97,7 @@ public class WebsiteSettingController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getUsername());
+        form.setCreator(coreService.getCurrentUser().getName());
 
         model.addAttribute("editForm", form);
         return "websitesetting/edit";

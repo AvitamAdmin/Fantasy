@@ -13,6 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WebsiteSetting extends CommonFields {
     private String logoUrl;
-    private String name = "Touchmind Suite";
+    private String name = "Fantasy11";
     private String faviconUrl;
 }

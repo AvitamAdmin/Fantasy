@@ -11,13 +11,13 @@ import java.util.Set;
 @Table(name = "node")
 @Getter
 @Setter
-public class Node extends CommonFields {
+public class Node extends BaseEntity {
 
     @Column(name = "path")
     private String path;
 
-    @Column(name = "name")
-    private String name;
+   //@Column(name = "name")
+   // private String name;
 
     @ManyToMany(mappedBy = "permissions")
     private Set<Role> roles;
@@ -30,4 +30,5 @@ public class Node extends CommonFields {
 
     @Column(name = "displayPriority", columnDefinition = "Integer(10) default '1000'")
     private Integer displayPriority = 1000;
+
 }
