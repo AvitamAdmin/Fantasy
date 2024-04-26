@@ -29,7 +29,7 @@ public class NodeServiceImpl implements NodeService {
     //@Cacheable(cacheNames = "allNodes")
     public List<NodeDto> getAllNodes() {
         List<NodeDto> allNodes = new ArrayList<>();
-        List<Node> nodeList = nodeRepository.findAll().stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
+       List<Node> nodeList = nodeRepository.findAll().stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(nodeList)) {
             nodeList.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
                     Comparator.nullsLast(Comparator.naturalOrder())));
