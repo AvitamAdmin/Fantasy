@@ -42,8 +42,8 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/home").permitAll()
-                        .loginProcessingUrl("/home")
+                        .loginPage("/login").permitAll()
+                        .loginProcessingUrl("/login")
                 )
                 .logout((logout) -> logout.permitAll());
         return http.build();

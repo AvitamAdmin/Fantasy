@@ -32,7 +32,6 @@ public class User extends BaseEntity{
     private Set<Role>roles;
     @Transient
     private String passwordConfirm;
+    private String ResetPasswordToken;
 
-    public void setResetPasswordToken(String token) {
-    }
 }

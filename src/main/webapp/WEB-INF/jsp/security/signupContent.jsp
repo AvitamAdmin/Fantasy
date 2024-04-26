@@ -14,10 +14,10 @@
         <div class="row form-group ${status.error ? 'has-error' : ''}">
             <div class="col-sm-3"></div>
             <div class="col-sm-6">
-                <form:input type="email" path="username" class="inputbox-cheil" placeholder="Corporate email"
+                <form:input type="email" path="name" class="inputbox-cheil" placeholder="Corporate email"
                             autofocus="true" required="required"></form:input>
                             <span>Corporate email</span>
-                <form:errors path="username" class="text-danger"></form:errors>
+                <form:errors path="name" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3"></div>
         </div>
