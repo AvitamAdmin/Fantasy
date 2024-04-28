@@ -140,8 +140,6 @@ public class SecurityController {
     public String showRegistrationForm(Model model) {
 
         model.addAttribute("userForm", new User());
-
-        model.addAttribute("roles", roleRepository.findAll());
         return "security/signupForm";
     }
 
@@ -150,8 +148,6 @@ public class SecurityController {
         userValidator.validate(user, bindingResultUser);
         if (bindingResultUser.hasErrors()) {
             model.addAttribute("userForm", new User());
-
-            model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("message", bindingResultUser);
             return "security/signupForm";
         }
@@ -213,17 +209,18 @@ public class SecurityController {
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User user = userRepository.findByName(principalObject.getUsername());
 
-       // userForm.setStatus();
-        userForm.setUserName(user.getName());
+        userForm.setStatus(user.getStatus());
+        userForm.setName(user.getName());
         userForm.setRoles(user.getRoles());
         userForm.setPassword(user.getPassword());
         userForm.setPasswordConfirm(user.getPassword());
+        userForm.setEmail(user.getEmail());
+        userForm.setMobileNumber(user.getMobileNumber());
         userForm.setId(user.getId());
-        model.addAttribute("roles", roleRepository.findAll());
+       // model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("editForm", userForm);
 
-        model.addAttribute("isAdmin", user.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
-
+        model.addAttribute("isAdmin", user.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")));
 
         return "admin/usersEditContent";
     }

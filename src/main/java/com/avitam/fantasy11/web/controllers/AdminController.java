@@ -79,7 +79,7 @@ public class AdminController {
         model.addAttribute("roles", roleRepository.findAll());
 
 
-        if (userForm.getId() == null) {
+        if (userForm.getId()== 0) {
             user = new User();
             user = modelMapper.map(userForm, User.class);
             userValidator.validate(user, result);
@@ -90,7 +90,7 @@ public class AdminController {
         } else {
             //userFormValidator.validate(userForm, result);
           //  user = userRepository.findById(userForm.getId());
-            user.setEmailId(userForm.getEmailId());
+            user.setEmail(userForm.getEmail());
         }
         if (result.hasErrors()) {
             model.addAttribute("editForm", userForm);
@@ -118,7 +118,7 @@ public class AdminController {
 
         userForm.setCreationTime(new Date());
         userForm.setLastModified(new Date());
-        userForm.setStatus(1);
+        userForm.setStatus(true);
         userForm.setCreator(coreService.getCurrentUser().getName());
         model.addAttribute("editForm", userForm);
         return "admin/usersEditContent";

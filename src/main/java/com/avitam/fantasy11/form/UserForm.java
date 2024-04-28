@@ -15,9 +15,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class UserForm {
-    private Long id;
-    private String userName;
-    private String emailId;
+    private int id;
+    private String name;
+    private String email;
     private String password;
     private String passwordConfirm;
     private String referredBy;
@@ -25,7 +25,7 @@ public class UserForm {
     private double bonus;
     private String mobileNumber;
     private String dateOfBirth;
-    private int status;
+    private boolean status;
     private int role;
     private Binary profileImage;
     private String gender;

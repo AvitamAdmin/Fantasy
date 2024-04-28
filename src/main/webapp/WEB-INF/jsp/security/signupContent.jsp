@@ -14,10 +14,23 @@
         <div class="row form-group ${status.error ? 'has-error' : ''}">
             <div class="col-sm-3"></div>
             <div class="col-sm-6">
-                <form:input type="email" path="name" class="inputbox-cheil" placeholder="Username"
+                <form:input path="name" class="inputbox-cheil"
                             autofocus="true" required="required"></form:input>
                             <span>Username</span>
                 <form:errors path="name" class="text-danger"></form:errors>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        </spring:bind>
+
+ <spring:bind path="email">
+        <div class="row form-group ${status.error ? 'has-error' : ''}">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <form:input type="email" path="email" class="inputbox-cheil" placeholder="Email Id"
+                            autofocus="true" required="required"></form:input>
+                            <span>EmailId</span>
+                <form:errors path="email" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3"></div>
         </div>
@@ -60,10 +73,6 @@
                 </div>
                 </spring:bind>
                 <br/>
-        <div class="row">
-        <div class="col-sm-3"></div>
-            <div class="col-sm-6" style="font-size:12px;">Select the role you would like to enroll</div>
-        </div>
 
         <spring:bind path="role">
                 <div class="row form-group ${status.error ? 'has-error' : ''}">

@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class User extends BaseEntity{
 
-    private String emailId;
+    private String email;
     private String password;
     private String referredBy;
     private double balance;

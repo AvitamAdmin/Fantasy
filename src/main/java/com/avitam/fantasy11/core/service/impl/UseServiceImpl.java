@@ -32,15 +32,15 @@ public class UseServiceImpl implements UserService {
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Role role = roleRepository.findByName("ROLE_USER");
-        user.setRoles(new HashSet<>(Set.of(role)));
+       // Role role = roleRepository.findByName("ROLE_USER");
+       // user.setRoles(new HashSet<>(Set.of(role)));
         userRepository.save(user);
     }
 
     @Override
-    public User findByName(String username) {
+    public User findByName(String name) {
 
-        return userRepository.findByName(username);
+        return userRepository.findByName(name);
     }
 
     @Override
@@ -56,6 +56,7 @@ public class UseServiceImpl implements UserService {
 
     @Override
     public void saveRegisteredUser(User user) {
+
         userRepository.save(user);
     }
 
@@ -75,8 +76,8 @@ public class UseServiceImpl implements UserService {
             return TOKEN_EXPIRED;
         }
 
-        //user.setStatus(true);
-        // tokenRepository.delete(verificationToken);
+        user.setStatus(true);
+        tokenRepository.delete(verificationToken);
         userRepository.save(user);
         return TOKEN_VALID;
     }
@@ -115,6 +116,7 @@ public class UseServiceImpl implements UserService {
     }
 
     public User getByResetPasswordToken(String token) {
+
         return userRepository.findByResetPasswordToken(token);
     }
 
