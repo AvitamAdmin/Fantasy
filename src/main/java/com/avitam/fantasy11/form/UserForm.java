@@ -16,8 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserForm {
     private int id;
-    private String name;
-    private String email;
+    private String userName;
     private String password;
     private String passwordConfirm;
     private String referredBy;

@@ -49,7 +49,7 @@ public class NodeServiceImpl implements NodeService {
     public List<NodeDto> getNodesForRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByName(principalObject.getUsername());
+        User currentUser = userRepository.findByUsername(principalObject.getUsername());
         Set<Role> roles = currentUser.getRoles();
         Set<Node> nodes = new HashSet<>();
         for (Role role : roles) {

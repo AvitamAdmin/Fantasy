@@ -15,6 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class Role extends BaseEntity {
+    private String name;
     private String roleId;
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;

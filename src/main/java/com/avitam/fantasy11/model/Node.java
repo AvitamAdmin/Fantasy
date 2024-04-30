@@ -16,8 +16,8 @@ public class Node extends BaseEntity {
     @Column(name = "path")
     private String path;
 
-   //@Column(name = "name")
-   // private String name;
+   @Column(name = "name")
+   private String name;
 
     @ManyToMany(mappedBy = "permissions")
     private Set<Role> roles;

@@ -32,15 +32,16 @@ public class UseServiceImpl implements UserService {
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-       // Role role = roleRepository.findByName("ROLE_USER");
-       // user.setRoles(new HashSet<>(Set.of(role)));
+        Role role = roleRepository.findByName("ROLE_USER");
+        user.setRoles(new HashSet<>(Set.of(role)));
+
         userRepository.save(user);
     }
 
     @Override
-    public User findByName(String name) {
+    public User findByName(String username) {
 
-        return userRepository.findByName(name);
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -95,7 +96,7 @@ public class UseServiceImpl implements UserService {
     public boolean isAdminRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByName(principalObject.getUsername());
+        User currentUser = userRepository.findByUsername(principalObject.getUsername());
         Set<Role> roles = currentUser.getRoles();
         for (Role role : roles) {
             if ("ROLE_ADMIN".equals(role.getName())) {
@@ -105,8 +106,8 @@ public class UseServiceImpl implements UserService {
         return false;
     }
 
-    public boolean updateResetPasswordToken(String token, String email) {
-        User user = userRepository.findByName(email);
+    public boolean updateResetPasswordToken(String token, String username) {
+        User user = userRepository.findByUsername(username);
         if (user != null) {
             user.setResetPasswordToken(token);
             userRepository.save(user);

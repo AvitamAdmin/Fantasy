@@ -37,10 +37,8 @@ public class AdminController {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -63,7 +61,7 @@ public class AdminController {
             userForm.setPassword(null);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User currentUser = userRepository.findByName(principalObject.getUsername());
+            User currentUser = userRepository.findByUsername(principalObject.getUsername());
             model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("editForm", userForm);
@@ -88,9 +86,9 @@ public class AdminController {
                 return "admin/usersEditContent";
             }
         } else {
-            //userFormValidator.validate(userForm, result);
-          //  user = userRepository.findById(userForm.getId());
-            user.setEmail(userForm.getEmail());
+            userFormValidator.validate(userForm, result);
+            //user = userRepository.findById(userForm.getId());
+            user.setUsername(userForm.getUserName());
         }
         if (result.hasErrors()) {
             model.addAttribute("editForm", userForm);
@@ -113,13 +111,13 @@ public class AdminController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByName(principalObject.getUsername());
+        User currentUser = userRepository.findByUsername(principalObject.getUsername());
         model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
 
         userForm.setCreationTime(new Date());
         userForm.setLastModified(new Date());
         userForm.setStatus(true);
-        userForm.setCreator(coreService.getCurrentUser().getName());
+        userForm.setCreator(coreService.getCurrentUser().getUsername());
         model.addAttribute("editForm", userForm);
         return "admin/usersEditContent";
     }

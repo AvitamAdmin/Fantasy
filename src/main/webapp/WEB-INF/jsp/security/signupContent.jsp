@@ -1,6 +1,6 @@
 <div class="main-content">
   <div class="row">
-    <form:form method="POST" modelAttribute="userForm" class="handle-uploadn">
+    <form:form method="POST" modelAttribute="userForm" class="handle-upload">
       <br/>
       <div class="row">
               <div class="col-sm-3"></div>
@@ -10,31 +10,19 @@
               <div  class="col-sm-3"></div>
       </div>
       <br/><br/>
-        <spring:bind path="name">
-        <div class="row form-group ${status.error ? 'has-error' : ''}">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-6">
-                <form:input path="name" class="inputbox-cheil"
-                            autofocus="true" required="required"></form:input>
-                            <span>Username</span>
-                <form:errors path="name" class="text-danger"></form:errors>
-            </div>
-            <div class="col-sm-3"></div>
-        </div>
-        </spring:bind>
-
- <spring:bind path="email">
-        <div class="row form-group ${status.error ? 'has-error' : ''}">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-6">
-                <form:input type="email" path="email" class="inputbox-cheil" placeholder="Email Id"
-                            autofocus="true" required="required"></form:input>
-                            <span>EmailId</span>
-                <form:errors path="email" class="text-danger"></form:errors>
-            </div>
-            <div class="col-sm-3"></div>
-        </div>
-        </spring:bind>
+          <spring:bind path="username">
+                 <div class="row form-group ${status.error ? 'has-error' : ''}">
+                     <div class="col-sm-3"></div>
+                     <div class="col-sm-6">
+                         <form:input type="email" path="username" class="inputbox-cheil" placeholder="Corporate email"
+                                     autofocus="true" required="required"></form:input>
+                                     <span>Corporate email</span>
+                         <form:errors path="username" class="text-danger"></form:errors>
+                     </div>
+                     <div class="col-sm-3"></div>
+                 </div>
+          </spring:bind>
+                    <br>
 
         <spring:bind path="password">
             <div class="row form-group ${status.error ? 'has-error' : ''}">
@@ -61,6 +49,7 @@
             </div>
         </spring:bind>
          <br/>
+
         <spring:bind path="referredBy">
                 <div class="row form-group ${status.error ? 'has-error' : ''}">
                     <div class="col-sm-3"></div>
@@ -74,18 +63,25 @@
                 </spring:bind>
                 <br/>
 
-        <spring:bind path="role">
-                <div class="row form-group ${status.error ? 'has-error' : ''}">
+         <div class="row">
+                <div class="col-sm-3"></div>
+                    <div class="col-sm-6" style="font-size:12px;">Select the role you would like to enroll</div>
+                </div>
+                <spring:bind path="roles">
+                <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
-                        <form:input type="text" path="role" class="inputbox-cheil" placeholder="Role" required="required"></form:input>
-                                    <span>Role</span>
-                        <form:errors path="role" class="text-danger"></form:errors>
+                        <select name="roles[]" id="roles" class="lg-btn 3col active cheil-select" required="required">
+                            <c:forEach items="${roles}" var="role">
+                                <option value="${role.id}">${role.name}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
                 </spring:bind>
-        <br/>
+                <br/>
+
         <spring:bind path="mobileNumber">
         <div class="row form-group ${status.error ? 'has-error' : ''}">
             <div class="col-sm-3"></div>

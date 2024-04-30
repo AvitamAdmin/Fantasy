@@ -26,10 +26,8 @@ public class RoleController {
     private RoleRepository roleRepository;
     @Autowired
     private NodeRepository nodeRepository;
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private CoreService coreService;
 
@@ -41,7 +39,7 @@ public class RoleController {
     }
 
     @GetMapping("/edit")
-    public String editUser(@RequestParam("id") Long id, Model model) {
+    public String editUser(@RequestParam("id") Integer id, Model model) {
         if (id == null) {
             model.addAttribute("message", "Please select a row for edit operation!");
             return "role/edit";
@@ -66,7 +64,7 @@ public class RoleController {
         Role role = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        if (roleForm.getId() != null) {
+        if (roleForm.getId() != 0) {
             Optional<Role> optionalRole = roleRepository.findById(roleForm.getId());
             if (optionalRole.isPresent()) {
                 role = optionalRole.get();
@@ -90,7 +88,7 @@ public class RoleController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getName());
+        form.setCreator(coreService.getCurrentUser().getUsername());
         model.addAttribute("nodes", nodeRepository.findAll());
         model.addAttribute("roleForm", form);
         return "role/edit";
@@ -99,7 +97,7 @@ public class RoleController {
     @GetMapping("/delete")
     public String deleteRole(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            roleRepository.deleteById(Long.valueOf(id));
+            roleRepository.deleteById(Integer.valueOf(id));
         }
         return "redirect:/admin/role";
     }
