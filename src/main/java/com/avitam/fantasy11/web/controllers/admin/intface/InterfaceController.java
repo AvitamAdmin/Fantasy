@@ -65,7 +65,7 @@ public class InterfaceController {
         }
         Node node = modelMapper.map(interfaceForm, Node.class);
         if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
-            node.setParentNode(nodeRepository.getById(Long.valueOf(interfaceForm.getParentNodeId())));
+            node.setParentNode(nodeRepository.getByIds(Long.valueOf(interfaceForm.getParentNodeId())));
         }
         if (node.getDisplayPriority() == null) {
             node.setDisplayPriority(1000);

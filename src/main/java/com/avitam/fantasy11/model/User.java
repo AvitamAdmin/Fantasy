@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.model;
 
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,11 +13,14 @@ import java.util.Arrays;
 import java.util.Set;
 
 
-@Document("User")
+@Document(collection = "User")
 @Getter
 @Setter
 @NoArgsConstructor
 public class User extends BaseEntity{
+
+    @Transient
+    public static final String SEQUENCE_NAME = "users_sequence";
 
     private String emailId;
     private String password;
@@ -29,6 +33,7 @@ public class User extends BaseEntity{
     private Binary profileImage;
     private String gender;
     private String language;
+    @ManyToMany
     private Set<Role>roles;
     @Transient
     private String passwordConfirm;

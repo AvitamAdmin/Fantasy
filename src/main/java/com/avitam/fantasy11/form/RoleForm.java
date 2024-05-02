@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 public class RoleForm implements Serializable {
-    private Long id;
+    private Integer id;
     private String creator;
     private String type;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
@@ -26,6 +26,7 @@ public class RoleForm implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date lastModified;
     private String name;
+    private String roleId;
     private Boolean status;
     private Set<User> users;
     private Set<Node> permissions;

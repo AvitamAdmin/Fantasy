@@ -1,7 +1,10 @@
 package com.avitam.fantasy11.core.service.impl;
 
+import com.avitam.fantasy11.core.service.SequenceGeneratorService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.*;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -29,11 +33,14 @@ public class UseServiceImpl implements UserService {
     @Autowired
     private VerificationTokenRepository tokenRepository;
 
+    @Autowired
+    SequenceGeneratorService sequenceGeneratorService;
+
     @Override
-    public void save(User user) {
+    public void save(@Valid @RequestBody User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Role role = roleRepository.findByName("ROLE_USER");
-        user.setRoles(new HashSet<>(Set.of(role)));
+       // Role role = roleRepository.findByName("Role_User")
+        //user.setRoles(new HashSet<>(Set.of(role)));
         userRepository.save(user);
     }
 

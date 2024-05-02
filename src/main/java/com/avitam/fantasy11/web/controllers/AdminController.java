@@ -102,7 +102,7 @@ public class AdminController {
         }
         user.setStatus(true);
         userRepository.save(user);
-        redirectAttributes.addAttribute("id", user.getId());
+        redirectAttributes.addAttribute("id", user.getIds());
         return "redirect:/admin/user";
     }
 

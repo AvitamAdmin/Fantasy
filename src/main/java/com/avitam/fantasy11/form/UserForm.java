@@ -15,8 +15,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class UserForm {
-    private Long id;
-    private String userName;
+    private int ids;
+    private Integer id;
+    private String name;
     private String emailId;
     private String password;
     private String passwordConfirm;

@@ -14,5 +14,5 @@ public interface NodeRepository extends MongoRepository<Node, Long> {
 
     Node findByName(String path);
 
-    Node getById(Long aLong);
+    Node getByIds(Long aLong);
 }

@@ -41,7 +41,7 @@ public class RoleController {
     }
 
     @GetMapping("/edit")
-    public String editUser(@RequestParam("id") Long id, Model model) {
+    public String editUser(@RequestParam("id") Integer id, Model model) {
         if (id == null) {
             model.addAttribute("message", "Please select a row for edit operation!");
             return "role/edit";
@@ -99,7 +99,7 @@ public class RoleController {
     @GetMapping("/delete")
     public String deleteRole(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            roleRepository.deleteById(Long.valueOf(id));
+            roleRepository.deleteById(Integer.valueOf(id));
         }
         return "redirect:/admin/role";
     }
