@@ -13,12 +13,13 @@ import java.util.Date;
 
 @Getter
 @Setter
-@Document(collection = "BaseEntity")
+@NoArgsConstructor
+@Document("BaseEntity")
 public class BaseEntity {
 
     @Id
-    private int ids;
-    private int seq;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String creator;
     private Boolean status;

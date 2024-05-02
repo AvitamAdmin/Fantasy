@@ -214,11 +214,11 @@ public class SecurityController {
         User user = userRepository.findByName(principalObject.getUsername());
 
        // userForm.setStatus();
-        userForm.setName(user.getName());
+        userForm.setUserName(user.getName());
         userForm.setRoles(user.getRoles());
         userForm.setPassword(user.getPassword());
         userForm.setPasswordConfirm(user.getPassword());
-        userForm.setId(user.getIds());
+        userForm.setId(user.getId());
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("editForm", userForm);
 
