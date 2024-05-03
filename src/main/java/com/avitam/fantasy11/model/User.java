@@ -22,6 +22,7 @@ public class User extends BaseEntity{
     @Transient
     public static final String SEQUENCE_NAME = "users_sequence";
 
+    private int ids;
     private String emailId;
     private String password;
     private String referredBy;
