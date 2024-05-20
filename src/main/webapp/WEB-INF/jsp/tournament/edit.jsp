@@ -33,7 +33,7 @@
                                     <option value="${child.id}" >${child.name}</option>
                                 </c:otherwise>
                             </c:choose>
-                        </c:forEach>
+                        </c:forEach>-
                </select>
             </div>
        </form:form>
