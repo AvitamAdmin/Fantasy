@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LineUpStatusForm extends BaseForm {
+public class LineUpStatusForm {
 
-
+    private int status;
 
 }

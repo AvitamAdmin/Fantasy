@@ -10,10 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("sportType")
+@Document("SportType")
 public class SportType extends BaseEntity {
 
-       private String name;
        private Binary logo;
-
 }

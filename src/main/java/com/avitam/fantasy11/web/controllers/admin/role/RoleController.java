@@ -64,8 +64,8 @@ public class RoleController {
         Role role = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        if (roleForm.getId() != null) {
-            Optional<Role> optionalRole = roleRepository.findById(Integer.valueOf(roleForm.getId()));
+        if (roleForm.getId() != 0) {
+            Optional<Role> optionalRole = roleRepository.findById(roleForm.getId());
             if (optionalRole.isPresent()) {
                 role = optionalRole.get();
                 role.setName(roleForm.getName());
@@ -88,7 +88,7 @@ public class RoleController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getUsername());
         model.addAttribute("nodes", nodeRepository.findAll());
         model.addAttribute("roleForm", form);
         return "role/edit";

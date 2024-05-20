@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("contestJoined")
+@Document("ContestJoined")
 
 public class ContestJoined extends BaseEntity{
 

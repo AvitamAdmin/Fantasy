@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TeamLineUpForm extends BaseForm{
+public class TeamLineUpForm {
 
     private int teamId;
 

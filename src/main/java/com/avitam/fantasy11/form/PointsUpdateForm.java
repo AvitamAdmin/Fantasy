@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PointsUpdateForm extends BaseForm {
+public class PointsUpdateForm {
 
 
     private int matchId;

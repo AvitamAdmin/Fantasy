@@ -12,8 +12,15 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WebsiteSettingForm extends BaseForm implements Serializable {
-
+public class WebsiteSettingForm implements Serializable {
+    private Long id;
+    private String creator;
+    private Boolean status;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    private Date creationTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    private Date lastModified;
+    private String modifier;
     private MultipartFile logo;
     private String name;
     private MultipartFile favicon;

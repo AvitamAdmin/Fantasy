@@ -65,6 +65,7 @@
 				<div class="content-wrapper">
 				        <p id="actionMessage" style="text-align:center;color:green;font-weight:800;"></p>
 						<div class="col-xs-12 col-md-12 col-sm-12" id="appContent">
+							<%@ include file="qa/qachart.jsp" %>
                         </div>
 				</div>
 					<!-- footer -->

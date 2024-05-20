@@ -1,23 +1,34 @@
 package com.avitam.fantasy11.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Set;
 
-
-@Document("node")
+@Entity
+@Table(name = "node")
 @Getter
 @Setter
 public class Node extends BaseEntity {
 
+    @Column(name = "path")
     private String path;
-    private String name;
+
+   @Column(name = "name")
+   private String name;
+
+    @ManyToMany(mappedBy = "permissions")
+    private Set<Role> roles;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Node parentNode;
-    private ObjectId parentNodeId;
-    private List<Node>childNodes;
-    private Integer displayPriority;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentNode")
+    private List<Node> childNodes;
+
+    @Column(name = "displayPriority", columnDefinition = "Integer(10) default '1000'")
+    private Integer displayPriority = 1000;
 
 }

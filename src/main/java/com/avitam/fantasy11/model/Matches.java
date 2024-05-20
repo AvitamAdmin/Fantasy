@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("matches")
+@Document("Matches")
 
 public class Matches extends BaseEntity{
 

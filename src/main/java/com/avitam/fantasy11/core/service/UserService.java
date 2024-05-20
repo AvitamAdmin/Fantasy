@@ -7,7 +7,7 @@ import com.avitam.fantasy11.model.VerificationToken;
 public interface UserService {
     void save(User user);
 
-    User findByEmail(String email);
+    User findByName(String name);
 
     void createVerificationToken(User user, String token);
 

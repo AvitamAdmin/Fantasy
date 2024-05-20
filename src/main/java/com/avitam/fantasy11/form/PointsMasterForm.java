@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PointsMasterForm extends BaseForm{
+public class PointsMasterForm {
 
     private int MatchTypeId;
 

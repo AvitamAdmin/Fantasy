@@ -1,11 +1,11 @@
 package com.avitam.fantasy11.core.service;
 
-import com.avitam.fantasy11.model.Node;
+import com.avitam.fantasy11.core.dto.NodeDto;
 
 import java.util.List;
 
 public interface NodeService {
-    List<Node> getAllNodes();
+    List<NodeDto> getAllNodes();
 
-    List<Node> getNodesForRoles();
+    List<NodeDto> getNodesForRoles();
 }

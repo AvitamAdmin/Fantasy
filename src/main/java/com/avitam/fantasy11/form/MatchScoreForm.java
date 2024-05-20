@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MatchScoreForm extends BaseForm{
+public class MatchScoreForm {
 
     private  int matchId;
 
