@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UserTeamsForm {
+public class UserTeamsForm extends BaseForm{
 
     private int userId;
 

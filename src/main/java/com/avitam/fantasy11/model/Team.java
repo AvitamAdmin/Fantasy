@@ -9,9 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("Team")
+@Document("team")
 public class Team extends BaseEntity {
 
-
+    private String name;
+    private String shortName;
     private Binary logo;
 }

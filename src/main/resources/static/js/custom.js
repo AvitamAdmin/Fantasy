@@ -55,6 +55,7 @@ function ajaxformSubmit(id) {
         e.stopImmediatePropagation();
         var formData = new FormData(this);
         $.ajax({
+
             type: frm.attr('method'),
             url: frm.attr('action'),
             data: formData,
@@ -88,6 +89,7 @@ function ajaxformSubmit(id) {
             error: function(data) {
                 $("body").removeClass("loading");
                 console.log(JSON.stringify(data));
+                console.log(data.status);
             },
         });
     });

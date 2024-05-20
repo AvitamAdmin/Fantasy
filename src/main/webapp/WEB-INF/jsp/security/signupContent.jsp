@@ -10,14 +10,14 @@
               <div  class="col-sm-3"></div>
       </div>
       <br/><br/>
-          <spring:bind path="username">
+          <spring:bind path="email">
                  <div class="row form-group ${status.error ? 'has-error' : ''}">
                      <div class="col-sm-3"></div>
                      <div class="col-sm-6">
-                         <form:input type="email" path="username" class="inputbox-cheil" placeholder="Corporate email"
+                         <form:input type="email" path="email" class="inputbox-cheil" placeholder="Email"
                                      autofocus="true" required="required"></form:input>
                                      <span>Corporate email</span>
-                         <form:errors path="username" class="text-danger"></form:errors>
+                         <form:errors path="email" class="text-danger"></form:errors>
                      </div>
                      <div class="col-sm-3"></div>
                  </div>
@@ -65,15 +65,15 @@
 
          <div class="row">
                 <div class="col-sm-3"></div>
-                    <div class="col-sm-6" style="font-size:12px;">Select the role you would like to enroll</div>
+                    <div class="col-sm-6" style="font-size:12px;">Select the role </div>
                 </div>
                 <spring:bind path="roles">
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
-                        <select name="roles[]" id="roles" class="lg-btn 3col active cheil-select" required="required">
+                        <select name="role" id="roles" class="lg-btn 3col active cheil-select" required="required">
                             <c:forEach items="${roles}" var="role">
-                                <option value="${role.id}">${role.name}</option>
+                                <option value="${role.uid}">${role.name}</option>
                             </c:forEach>
                         </select>
                     </div>

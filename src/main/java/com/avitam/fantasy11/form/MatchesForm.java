@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class MatchesForm {
+public class MatchesForm extends BaseForm {
 
     private String team1;
 
@@ -20,8 +20,6 @@ public class MatchesForm {
     private int sportId;
 
     private int contestId;
-
-    private int status;
 
     private int matchTypeId;
 }

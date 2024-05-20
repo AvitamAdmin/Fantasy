@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NotificationForm {
+public class NotificationForm extends BaseForm{
 
     private String message;
 

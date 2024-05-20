@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class AddressForm {
 
 @Getter
 @Setter
+public class AddressForm extends BaseForm {
+
     private int userId;
     private String line_1;
     private String line_2;
