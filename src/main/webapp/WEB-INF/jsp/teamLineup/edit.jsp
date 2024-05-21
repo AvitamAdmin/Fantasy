@@ -22,9 +22,9 @@
                 <form:errors path="teamId" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                 <form:input path="playerId" class="inputbox-cheil-small" placeholder="Player Id" />
-                 <span>Player Id</span>
-                 <form:errors path="playerId" class="text-danger"></form:errors>
+                 <form:input path="matchId" class="inputbox-cheil-small" placeholder="Match Id" />
+                 <span>Match Id</span>
+                 <form:errors path="matchId" class="text-danger"></form:errors>
             </div>
 
             <div class="col-sm-3">

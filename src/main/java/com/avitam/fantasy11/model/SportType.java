@@ -14,4 +14,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class SportType extends BaseEntity {
 
        private Binary logo;
+
 }

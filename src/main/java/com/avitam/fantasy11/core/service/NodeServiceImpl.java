@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.core.service;
 
-import com.avitam.fantasy11.core.dto.NodeDto;
 import com.avitam.fantasy11.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -18,77 +17,70 @@ public class NodeServiceImpl implements NodeService {
 
     @Autowired
     private NodeRepository nodeRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ModelMapper modelMapper;
 
     @Override
-    //@Cacheable(cacheNames = "allNodes")
-    public List<NodeDto> getAllNodes() {
-        List<NodeDto> allNodes = new ArrayList<>();
-       List<Node> nodeList = nodeRepository.findAll().stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(nodeList)) {
-            nodeList.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
-                    Comparator.nullsLast(Comparator.naturalOrder())));
-            for (Node node : nodeList) {
-                if (CollectionUtils.isNotEmpty(node.getChildNodes())) {
-                    List<Node> childNodes = node.getChildNodes().stream().sorted(Comparator.comparing(nodes -> nodes.getDisplayPriority())).collect(Collectors.toList());
-                    node.setChildNodes(childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.getStatus())).collect(Collectors.toList()));
-                }
-                allNodes.add(modelMapper.map(node, NodeDto.class));
-            }
-        }
-        return allNodes;
+    public List<Node>getAllNodes(){
+        List<Node> nodesList=  nodeRepository.findByParentNodeId(null);
+          if(CollectionUtils.isNotEmpty(nodesList)) {
+              nodesList.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
+                      Comparator.nullsFirst(Comparator.naturalOrder())));
+
+              for (Node node : nodesList) {
+                  List<Node> nodes1 = nodeRepository.findByParentNodeId(node.getId());
+                  node.setChildNodes(nodes1);
+              }
+          }
+     return nodesList;
     }
 
     @Override
-    //@Cacheable(cacheNames = "roleBasedNodes")
-    public List<NodeDto> getNodesForRoles() {
+    public List<Node> getNodesForRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByUsername(principalObject.getUsername());
-        Set<Role> roles = currentUser.getRoles();
+        User currentUser = userRepository.findByEmail(principalObject.getUsername());
+        int roles = currentUser.getRole();
         Set<Node> nodes = new HashSet<>();
-        for (Role role : roles) {
-            nodes.addAll(role.getPermissions());
-        }
+
         List<Node> allNodes = new ArrayList<>();
         List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
         nodeList.sort(Comparator.comparing(node -> node.getDisplayPriority()));
         for (Node node : nodeList) {
             if (CollectionUtils.isNotEmpty(node.getChildNodes())) {
-                List<Node> childNodes = node.getChildNodes().stream().sorted(Comparator.comparing(node1 -> node1.getDisplayPriority())).collect(Collectors.toList());
-                node.setChildNodes(childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.getStatus())).collect(Collectors.toList()));
+               List<Node> childNodes = node.getChildNodes().stream().sorted(Comparator.comparing(nod -> nod.getDisplayPriority())).collect(Collectors.toList());
+               node.setChildNodes(childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.equals(true))).collect(Collectors.toList()));
             }
             allNodes.add(node);
         }
-        List<NodeDto> treeNode = new ArrayList<>();
+        List<Node> treeNode = new ArrayList<>();
         for (Node node : allNodes) {
-            if (node.getParentNode() == null) {
-                if (!treeNode.stream().filter(e -> e.getName().equals(node.getName())).findFirst().isPresent()) {
-                    NodeDto nodeDto = modelMapper.map(node, NodeDto.class);
-                    nodeDto.setChildNodes(new ArrayList<>());
-                    treeNode.add(nodeDto);
+            if (node.getParentNodeId() == null) {
+                if (!treeNode.stream().anyMatch(e -> e.getName().equals(node.getName()))) {
+                    Node nod = modelMapper.map(node, Node.class);
+                    nod.setChildNodes(new ArrayList<>());
+                    treeNode.add(node);
                 }
             } else {
-                NodeDto currentChildDto = modelMapper.map(node, NodeDto.class);
-                NodeDto parentNodeDto = currentChildDto.getParentNode();
-                List<NodeDto> children = new ArrayList<>();
-                Optional<NodeDto> parentNode = treeNode.stream().filter(e -> e.getName().equals(parentNodeDto.getName())).findFirst();
+                Node nodeDto=null;
+                Node currentChild = modelMapper.map(node, Node.class);
+                Node parentNodes = currentChild;
+                List<Node> children = new ArrayList<>();
+                Optional<Node> parentNode = treeNode.stream().filter(e -> e.getName().equals(parentNodes.getName())).findFirst();
                 if (parentNode.isPresent()) {
                     children = parentNode.get().getChildNodes();
-                    children.add(currentChildDto);
+                    children.add (currentChild);
                     parentNode.get().setChildNodes(children);
                 } else {
-                    children.add(currentChildDto);
-                    parentNodeDto.setChildNodes(children);
-                    treeNode.add(parentNodeDto);
+                    children.add(currentChild);
+                    parentNodes.setChildNodes(children);
+                    treeNode.add(parentNodes);
                 }
             }
         }
         return treeNode;
     }
 }
+

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,12 +15,9 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("BaseEntity")
 public class BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private ObjectId id;
     private String creator;
     private Boolean status;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
@@ -27,4 +25,5 @@ public class BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date lastModified;
     private String modifier;
+    private String pic;
 }

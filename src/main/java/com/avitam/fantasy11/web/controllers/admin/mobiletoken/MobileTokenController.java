@@ -63,7 +63,7 @@ public class MobileTokenController {
             mobileTokenForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         MobileToken mobileToken=modelMapper.map(mobileTokenForm,MobileToken.class);
-        Optional<MobileToken> teamOptional=mobileTokenRepository.findById(new ObjectId(mobileTokenForm.getId()));
+        Optional<MobileToken> teamOptional=mobileTokenRepository.findById(mobileTokenForm.getId());
         if(teamOptional.isPresent()){
             mobileToken.setId(teamOptional.get().getId());
         }

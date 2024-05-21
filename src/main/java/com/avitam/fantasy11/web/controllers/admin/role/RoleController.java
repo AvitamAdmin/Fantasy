@@ -6,6 +6,7 @@ import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.validation.RoleFormValidator;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -39,7 +40,7 @@ public class RoleController {
     }
 
     @GetMapping("/edit")
-    public String editUser(@RequestParam("id") Integer id, Model model) {
+    public String editUser(@RequestParam("id") ObjectId id, Model model) {
         if (id == null) {
             model.addAttribute("message", "Please select a row for edit operation!");
             return "role/edit";
@@ -64,8 +65,8 @@ public class RoleController {
         Role role = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        if (roleForm.getId() != 0) {
-            Optional<Role> optionalRole = roleRepository.findById(roleForm.getId());
+        if (roleForm.getId() != null) {
+            Optional<Role> optionalRole = roleRepository.findById(new ObjectId(roleForm.getId()));
             if (optionalRole.isPresent()) {
                 role = optionalRole.get();
                 role.setName(roleForm.getName());
@@ -97,7 +98,7 @@ public class RoleController {
     @GetMapping("/delete")
     public String deleteRole(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            roleRepository.deleteById(Integer.valueOf(id));
+            roleRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/role";
     }

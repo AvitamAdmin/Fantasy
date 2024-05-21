@@ -131,6 +131,7 @@ public class SecurityController {
 
     @GetMapping("")
     public String viewHomePage() {
+
         return "index";
     }
 

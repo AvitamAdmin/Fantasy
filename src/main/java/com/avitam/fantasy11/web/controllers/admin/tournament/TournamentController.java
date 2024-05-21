@@ -69,7 +69,7 @@ public class TournamentController {
 
         Tournament tournament = modelMapper.map(tournamentForm, Tournament.class);
 
-        Optional<Tournament> tournamentOptional=tournamentRepository.findById(new ObjectId(tournamentForm.getId()));
+        Optional<Tournament> tournamentOptional=tournamentRepository.findById(tournamentForm.getId());
         if(tournamentOptional.isPresent()){
             tournament.setId(tournamentOptional.get().getId());
         }

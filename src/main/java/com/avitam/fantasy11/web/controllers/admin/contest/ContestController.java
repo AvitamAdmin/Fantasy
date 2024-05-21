@@ -85,7 +85,7 @@ public class ContestController {
        // for (String id : ids.split(",")) {
       //      contestRepository.deleteById(id);
         //}
-        contestRepository.deleteById(id);
+        contestRepository.deleteById(new ObjectId(id));
         return "redirect:/admin/contest";
     }
 }

@@ -77,7 +77,7 @@ public class AdminController {
         model.addAttribute("roles", roleRepository.findAll());
 
 
-        if (userForm.getId()== 0) {
+        if (userForm.getId()== null) {
             user = new User();
             user = modelMapper.map(userForm, User.class);
             userValidator.validate(user, result);
