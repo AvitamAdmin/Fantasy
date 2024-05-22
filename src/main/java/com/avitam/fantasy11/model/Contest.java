@@ -11,10 +11,12 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("Contest")
+@Document("contest")
 public class Contest extends BaseEntity{
 
-   private Double totalPrice;
+    private String name;
+
+    private Double totalPrice;
 
     private Double entryFee;
 

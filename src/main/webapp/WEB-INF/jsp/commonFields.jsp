@@ -1,6 +1,6 @@
 <hr/>
         <div class="row">
-            <form:input path="id" class="inputbox-cheil-small" placeholder="PK" readonly="true" type="hidden"/>
+        <form:input path="id" class="inputbox-cheil-small" placeholder="PK" readonly="true" type="hidden"/>
             <div class="col-sm-3">
                 <form:input path="creator" class="inputbox-cheil-small" placeholder="Creator" readonly="true"/>
                 <span>Creator</span>

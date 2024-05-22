@@ -15,7 +15,7 @@
         </span>
     </a>
     <c:forEach var="node" items="${nodes}" varStatus="loop">
-        <c:if test="${empty node.parentNode}">
+        <c:if test="${empty node.parentNodeId}">
             <li class="nav-item">
                 <a class="nav-link collapsed text-truncate" id="firstmenu${loop.index}" href="#" data-toggle="collapse" data-target="#submenu1${loop.index}"> <i class="ti-menu menu-icon"></i> <span class="d-sm-inline">${node.name}</span></a>
 
