@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class InterfaceController {
 
     @GetMapping
     public String getAllModels(org.springframework.ui.Model model) {
-        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getParentNode() != null).collect(Collectors.toList()));
+        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "interface/interfaces";
     }
 
@@ -64,8 +65,11 @@ public class InterfaceController {
             interfaceForm.setCreator(coreService.getCurrentUser().getUsername());
         }
         Node node = modelMapper.map(interfaceForm, Node.class);
-        if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
-            node.setParentNode(nodeRepository.getById(Long.valueOf(interfaceForm.getParentNodeId())));
+
+        List<Node> nodeList=nodeRepository.findByParentNodeId(null);
+        for(Node node1: nodeList){
+            node1.getName().equals("Admin");
+            node.setParentNodeId(String.valueOf(node1.getId()));
         }
         if (node.getDisplayPriority() == null) {
             node.setDisplayPriority(1000);
