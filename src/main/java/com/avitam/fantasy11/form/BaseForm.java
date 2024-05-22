@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 public class BaseForm {
 
-    private ObjectId id;
+    private String id;
     private String creator;
     private Boolean status;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")

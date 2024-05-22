@@ -32,7 +32,7 @@ public class MobileTokenController {
 
     @GetMapping
     public String getAll(Model model) {
-        List<MobileToken> mobileTokens= mobileTokenRepository.findAll();
+        List<MobileToken> mobileTokens= mobileTokenRepository.findAll().stream().filter(mobile-> mobile.getId()!=null).collect(Collectors.toList());
         model.addAttribute("tokens", mobileTokens);
         return "mobileToken/mobileTokens";
     }
@@ -63,7 +63,7 @@ public class MobileTokenController {
             mobileTokenForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         MobileToken mobileToken=modelMapper.map(mobileTokenForm,MobileToken.class);
-        Optional<MobileToken> teamOptional=mobileTokenRepository.findById(mobileTokenForm.getId());
+        Optional<MobileToken> teamOptional=mobileTokenRepository.findById(new ObjectId(mobileTokenForm.getId()));
         if(teamOptional.isPresent()){
             mobileToken.setId(teamOptional.get().getId());
         }

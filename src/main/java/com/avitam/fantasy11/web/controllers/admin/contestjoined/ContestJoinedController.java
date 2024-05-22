@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,8 @@ public class ContestJoinedController {
 
     @GetMapping
     public String getAll(Model model) {
-        model.addAttribute("models", contestJoinedRepository.findAll().stream().filter(contest -> contest.getId() != null).collect(Collectors.toList()));
+        List<ContestJoined> contestJoineds=contestJoinedRepository.findAll();
+        model.addAttribute("models", contestJoineds);
         return "contestjoined/contestjoin";
     }
 

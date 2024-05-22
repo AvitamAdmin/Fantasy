@@ -58,7 +58,7 @@ public class TeamLineupController {
             return "teamLineup/edit";
         }
 
-        teamLineUpForm.setLastModified(new Date());
+            teamLineUpForm.setLastModified(new Date());
         if (teamLineUpForm.getId() == null) {
             teamLineUpForm.setCreationTime(new Date());
             teamLineUpForm.setCreator(coreService.getCurrentUser().getEmail());

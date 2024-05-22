@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("Tournament")
+@Document("tournament")
 
 public class Tournament extends BaseEntity{
 
