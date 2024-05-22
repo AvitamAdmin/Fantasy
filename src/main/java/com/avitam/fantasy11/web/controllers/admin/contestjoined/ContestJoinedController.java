@@ -70,6 +70,12 @@ public class ContestJoinedController {
 
         ContestJoined contestJoined = modelMapper.map(contestJoinedForm, ContestJoined.class);
 
+        Optional<ContestJoined> contestJoinedOptional=contestJoinedRepository.findById(contestJoinedForm.getId());
+        if(contestJoinedOptional.isPresent()) {
+            contestJoined.setId(contestJoinedOptional.get().getId());
+        }
+
+
         contestJoinedRepository.save(contestJoined);
         model.addAttribute("editForm", contestJoinedForm);
         return "redirect:/admin/contestjoin";

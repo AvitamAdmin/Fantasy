@@ -76,7 +76,7 @@ public class TeamController {
         }
 
         Team team = modelMapper.map(teamForm, Team.class);
-        Optional<Team> teamOptional=teamRepository.findById(new ObjectId(id));
+        Optional<Team> teamOptional=teamRepository.findById(teamForm.getId());
         if(teamOptional.isPresent()){
             team.setId(teamOptional.get().getId());
         }

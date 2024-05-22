@@ -4,6 +4,9 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserTeamsRepository extends MongoRepository <UserTeams, ObjectId>{
+    Optional<UserTeams> findById(String id);
 }

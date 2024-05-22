@@ -65,7 +65,7 @@ public class TeamLineupController {
         }
 
         TeamLineup teamLineup = modelMapper.map(teamLineUpForm, TeamLineup.class);
-        Optional<TeamLineup> teamLineupOptional=teamLineupRepository.findById(new ObjectId());
+        Optional<TeamLineup> teamLineupOptional=teamLineupRepository.findById(teamLineUpForm.getId());
         if(teamLineupOptional.isPresent()){
             teamLineup.setId(teamLineupOptional.get().getId());
         }

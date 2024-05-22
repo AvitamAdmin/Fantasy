@@ -6,6 +6,7 @@ import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestRepository;
 import com.avitam.fantasy11.model.Node;
+import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -63,6 +64,11 @@ public class ContestController {
         }
 
         Contest contest = modelMapper.map(contestForm, Contest.class);
+        Optional<Contest> contestOptional=contestRepository.findById(contestForm.getId());
+        if(contestOptional.isPresent()) {
+            contest.setId(contestOptional.get().getId());
+        }
+
 
         contestRepository.save(contest);
         model.addAttribute("editForm", contestForm);

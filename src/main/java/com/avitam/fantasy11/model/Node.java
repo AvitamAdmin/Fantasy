@@ -3,6 +3,7 @@ package com.avitam.fantasy11.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class Node extends BaseEntity {
 
     private Node parentNode;
 
-    private String parentNodeId;
+    private ObjectId parentNodeId;
 
     private List<Node> childNodes;
 

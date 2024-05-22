@@ -4,6 +4,7 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ContestForm;
 import com.avitam.fantasy11.form.UserTeamsForm;
 import com.avitam.fantasy11.model.Contest;
+import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.model.UserTeamsRepository;
 import org.bson.types.ObjectId;
@@ -61,6 +62,12 @@ public class UserTeamsController {
 
         UserTeams userTeams = modelMapper.map(userTeamsForm, UserTeams.class);
 
+        Optional<UserTeams> userTeamsOptional=userTeamsRepository.findById(userTeamsForm.getId());
+        if(userTeamsOptional.isPresent()) {
+            userTeams.setId(userTeamsOptional.get().getId());
+        }
+
+
         userTeamsRepository.save(userTeams);
         model.addAttribute("editForm", userTeamsForm);
         return "redirect:/admin/userTeams";
@@ -78,11 +85,10 @@ public class UserTeamsController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String id, Model model) {
-        // for (String id : ids.split(",")) {
-        //      contestRepository.deleteById(id);
-        //}
-        userTeamsRepository.deleteById(new ObjectId(id));
+    public String delete(@RequestParam("id") String ids, Model model) {
+        for (String id : ids.split(",")) {
+             userTeamsRepository.deleteById(new ObjectId(id));
+        }
         return "redirect:/admin/userTeams";
     }
 }
