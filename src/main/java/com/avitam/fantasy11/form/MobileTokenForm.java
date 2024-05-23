@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class MobileTokenForm extends BaseForm{
 
-    private int userId;
+    private String userId;
 
     private String otp;
 }

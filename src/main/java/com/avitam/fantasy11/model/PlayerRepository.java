@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface MatchesRepository extends MongoRepository<Matches, ObjectId> {
-    Optional<Matches> findById(String matchId);
+public interface PlayerRepository extends MongoRepository<Player, ObjectId> {
+
+    Optional<Player> findById(String playerId);
 }

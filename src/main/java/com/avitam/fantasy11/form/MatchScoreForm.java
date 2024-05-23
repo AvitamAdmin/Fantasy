@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class MatchScoreForm {
 
-    private  int matchId;
+    private  String matchId;
 
     private int team1Score;
 

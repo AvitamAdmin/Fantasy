@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.mobiletoken;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.form.MobileTokenForm;
+import com.avitam.fantasy11.form.TeamForm;
 import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
@@ -38,16 +39,15 @@ public class MobileTokenController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,ObjectId id, User user, Model model) {
+    public String edit(@RequestParam("id") ObjectId id, Model model) {
 
-      Optional<MobileToken> mobileOptional = mobileTokenRepository.findById(id);
-        if (mobileOptional.isPresent()) {
-        MobileToken mobileToken = mobileOptional.get();
-        mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
-        model.addAttribute("editForm", mobileTokenForm);
+        Optional<MobileToken> mobileTokenOptional = mobileTokenRepository.findById(id);
+        if (mobileTokenOptional.isPresent()) {
+            MobileToken mobileToken = mobileTokenOptional.get();
+            MobileTokenForm mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
+            model.addAttribute("editForm", mobileTokenForm);
         }
-        model.addAttribute("user", userRepository.findByEmail(coreService.getCurrentUser().getEmail()));
-          return "mobileToken/edit";
+        return "mobileToken/edit";
     }
 
     @PostMapping("/edit")

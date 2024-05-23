@@ -13,21 +13,23 @@
                     <tr>
                       <th class="th-sm">PK</th>
                       <th class="th-sm">UserId</th>
-                      <th class="th-sm">MatchId</th>
-                      <th class="th-sm">Team Name</th>
-                      <th class="th-sm">Players</th>
+                      <th class="th-sm">TournamentId</th>
+                      <th class="th-sm">MatchPlayed</th>
+                      <th class="th-sm">Rank</th>
+                      <th class="th-sm">BonusAmount</th>
+                      <th class="th-sm">Last Modified</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.userId}</td>
-                        <td class="td-sm">${model.matchId}</td>
-                        <td class="ts-sm">${model.teamName}</td>
-                        <td class="td-sm">${model.players}</td>
-
-
+                        <td class="th-sm">${model.userId}</td>
+                        <td class="th-sm">${model.tournamentId}</td>
+                        <td class="th-sm">${model.matchesPlayed}</td>
+                        <td class="th-sm">${model.rank}</td>
+                        <td class="th-sm">${model.bonusAmount}</td>
+                        <td class="td-sm">${model.lastModified}</td>
                      </tr>
                  </c:forEach>
              </tbody>

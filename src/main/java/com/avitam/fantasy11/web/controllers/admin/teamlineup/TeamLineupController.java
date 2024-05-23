@@ -1,13 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.teamlineup;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.TeamForm;
 import com.avitam.fantasy11.form.TeamLineUpForm;
-import com.avitam.fantasy11.model.Team;
-import com.avitam.fantasy11.model.TeamLineup;
-import com.avitam.fantasy11.model.TeamLineupRepository;
-import com.avitam.fantasy11.model.TeamRepository;
-import org.bson.types.Binary;
+import com.avitam.fantasy11.model.*;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/teamLineup")
@@ -27,6 +23,8 @@ public class TeamLineupController {
     private TeamRepository teamRepository;
     @Autowired
     private TeamLineupRepository teamLineupRepository;
+    @Autowired
+    private PlayerRepository playerRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -45,6 +43,8 @@ public class TeamLineupController {
             TeamLineup teamLineUp = teamlineupOptional.get();
             TeamLineUpForm teamLineUpForm = modelMapper.map(teamLineUp, TeamLineUpForm.class);
             model.addAttribute("editForm", teamLineUpForm);
+            model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("players",playerRepository.findAll().stream().filter(player ->player.getId()!=null).collect(Collectors.toList()));
         }
         return "teamLineup/edit";
     }
@@ -69,6 +69,14 @@ public class TeamLineupController {
         if(teamLineupOptional.isPresent()){
             teamLineup.setId(teamLineupOptional.get().getId());
         }
+        Optional<Team> teamOptional=teamRepository.findById(teamLineUpForm.getTeamId());
+        if(teamOptional.isPresent()){
+            teamLineup.setTeamId(teamOptional.get().getId());
+        }
+        Optional<Player> playerOptional=playerRepository.findById(teamLineUpForm.getPlayerId());
+        if(playerOptional.isPresent()){
+            teamLineup.setPlayerId(playerOptional.get().getId());
+        }
         teamLineupRepository.save(teamLineup);
         model.addAttribute("editForm", teamLineUpForm);
 
@@ -83,6 +91,9 @@ public class TeamLineupController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
+        model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("players",playerRepository.findAll().stream().filter(player ->player.getId()!=null).collect(Collectors.toList()));
+
         return "teamLineup/edit";
     }
     @GetMapping("/delete")

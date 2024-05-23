@@ -17,6 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class BaseEntity {
 
+    @Id
     private ObjectId id;
     private String creator;
     private Boolean status;

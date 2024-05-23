@@ -30,7 +30,7 @@ public class SportsTypeController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public String getAll(Model model){
+    public String getAllSportType(Model model){
         List<SportType> sportTypes = sportTypeRepository.findAll();
         List<SportType> datas=new ArrayList<>();
         for(SportType data:sportTypes){

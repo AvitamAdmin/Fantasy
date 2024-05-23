@@ -13,7 +13,8 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class InterfaceForm implements Serializable {
-    private Long id;
+
+    private String id;
     private String creator;
     private Boolean status;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
@@ -23,6 +24,6 @@ public class InterfaceForm implements Serializable {
     private String name;
     private String path;
     private Node parentNode;
-    private String parentNodeId;
+    //private String parentNodeId;
     private Integer displayPriority;
 }

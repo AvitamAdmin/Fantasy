@@ -3,10 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.userteams;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ContestForm;
 import com.avitam.fantasy11.form.UserTeamsForm;
-import com.avitam.fantasy11.model.Contest;
-import com.avitam.fantasy11.model.SportType;
-import com.avitam.fantasy11.model.UserTeams;
-import com.avitam.fantasy11.model.UserTeamsRepository;
+import com.avitam.fantasy11.model.*;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +19,13 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin/userTeams")
 public class UserTeamsController {
+
+    @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
+    private MatchesRepository matchesRepository;
+    @Autowired
+    private PlayerRepository playerRepository;
     @Autowired
     private UserTeamsRepository userTeamsRepository;
     @Autowired
@@ -43,6 +47,9 @@ public class UserTeamsController {
             UserTeams userTeams = userTeamsOptional.get();
             UserTeamsForm userTeamsForm = modelMapper.map(userTeams, UserTeamsForm.class);
             model.addAttribute("editForm", userTeamsForm);
+            model.addAttribute("teams", teamRepository.findAll().stream().filter(team -> team.getId() != null).collect(Collectors.toList()));
+            model.addAttribute("match",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
         }
         return "userTeams/edit";
     }
@@ -66,7 +73,14 @@ public class UserTeamsController {
         if(userTeamsOptional.isPresent()) {
             userTeams.setId(userTeamsOptional.get().getId());
         }
-
+        Optional<Team> teamOptional=teamRepository.findById(userTeamsForm.getTeamName());
+        if(teamOptional.isPresent()){
+            userTeams.setTeamName(String.valueOf(teamOptional.get().getId()));
+        }
+        Optional<Matches> matchesOptional=matchesRepository.findById(String.valueOf(userTeamsForm.getMatchId()));
+        if(matchesOptional.isPresent()){
+            userTeams.setMatchId(matchesOptional.get().getId());
+        }
 
         userTeamsRepository.save(userTeams);
         model.addAttribute("editForm", userTeamsForm);
@@ -81,6 +95,10 @@ public class UserTeamsController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
+        model.addAttribute("teams", teamRepository.findAll().stream().filter(team -> team.getId() != null).collect(Collectors.toList()));
+        model.addAttribute("match",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
+
         return "userTeams/edit";
     }
 

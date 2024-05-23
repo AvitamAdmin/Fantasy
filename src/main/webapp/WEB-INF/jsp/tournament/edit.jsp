@@ -22,12 +22,17 @@
                 <form:errors path="name" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-               <select class="cheil-select" name="sportTypes">
+                <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" />
+                <span>Date</span>``
+                <form:errors path="dateAndTime" class="text-danger"></form:errors>
+            </div>
+            <div class="col-sm-3">
+               <select class="cheil-select" name="sportId">
                     <option value="">Select SportType</option>
                         <c:forEach items="${sportTypes}" var="child">
                             <c:choose>
-                                <c:when test="${fn:contains( editForm.sportId, child ) }">
-                                      <option value="${child.sportId}" selected>${child.name}</option>
+                                <c:when test="${fn:contains( editForm.sportId, child.id ) }">
+                                      <option value="${child.id}" selected>${child.name}</option>
                                 </c:when>
                                 <c:otherwise>
                                     <option value="${child.id}" >${child.name}</option>

@@ -36,10 +36,10 @@ public class ContestJoinedController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public String getAll(Model model) {
+    public String getAllContestJoined(Model model) {
         List<ContestJoined> contestJoineds=contestJoinedRepository.findAll();
         model.addAttribute("models", contestJoineds);
-        return "contestjoined/contestjoin";
+        return "contestJoined/contestjoin";
     }
 
     @GetMapping("/edit")
@@ -51,15 +51,18 @@ public class ContestJoinedController {
             ContestJoinedForm contestJoinedForm = modelMapper.map(contestJoined, ContestJoinedForm.class);
             model.addAttribute("editForm", contestJoinedForm);
             model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("user",userRepository.findAll().stream().filter(user -> user.getId()!=null).collect(Collectors.toList()));
+
         }
-        return "contestjoined/edit";
+        return "contestJoined/edit";
     }
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") ContestJoinedForm contestJoinedForm, Model model, BindingResult result) {
         if (result.hasErrors()) {
             model.addAttribute("message", result);
-            return "contestjoined/edit";
+            return "contestJoined/edit";
         }
         contestJoinedForm.setLastModified(new Date());
 
@@ -75,28 +78,42 @@ public class ContestJoinedController {
             contestJoined.setId(contestJoinedOptional.get().getId());
         }
 
+        Optional<Matches> matchesOptional=matchesRepository.findById(contestJoinedForm.getMatchId());
+        if(matchesOptional.isPresent()) {
+            contestJoined.setMatchId(matchesOptional.get().getId());
+        }
+
+        Optional<Team> teamOptional=teamRepository.findById(contestJoinedForm.getTeamId());
+        if(teamOptional.isPresent()) {
+            contestJoined.setTeamId(teamOptional.get().getId());
+        }
 
         contestJoinedRepository.save(contestJoined);
         model.addAttribute("editForm", contestJoinedForm);
-        return "redirect:/admin/contestjoin";
+        return "redirect:/admin/contestJoined";
     }
 
     @GetMapping("/add")
-    public String addInterface(Model model) {
+    public String addContestJoined(Model model) {
         ContestJoinedForm form = new ContestJoinedForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        return "contestjoined/edit";
+        model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("user",userRepository.findAll().stream().filter(user -> user.getId()!=null).collect(Collectors.toList()));
+
+        return "contestJoined/edit";
     }
 
     @GetMapping("/delete")
     public String deleteContestJoined(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
+
             contestJoinedRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/contestjoin";
+        return "redirect:/admin/contestJoined";
     }
 }

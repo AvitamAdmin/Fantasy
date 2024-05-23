@@ -3,6 +3,7 @@ package com.avitam.fantasy11.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -12,10 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class ContestJoined extends BaseEntity{
 
-    private int userid;
+    private String userId;
 
-    private int matchId;
+    private ObjectId matchId;
 
-    private int teamId;
+    private ObjectId teamId;
 
 }

@@ -20,7 +20,7 @@ public class Contest extends BaseEntity{
 
     private Double entryFee;
 
-    private long numberOfMembers;
+    private long noOfMembers;
 
     private Map<String,Double> rankPrice;
 

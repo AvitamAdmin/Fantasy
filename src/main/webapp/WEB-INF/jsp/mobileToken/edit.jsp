@@ -23,7 +23,7 @@
             </div>
             <div class="col-sm-3">
                 <form:input path="otp" class="inputbox-cheil-small" placeholder="Enter OTP" />
-                <span>Path</span>
+                <span>OTP</span>
                 <form:errors path="otp" class="text-danger"></form:errors>
             </div>
                 </div>

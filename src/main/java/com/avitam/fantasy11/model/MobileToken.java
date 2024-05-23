@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("mobileToken")
 public class MobileToken extends BaseEntity{
 
-    private int userId;
+    private long userId;
 
     private String otp;
 

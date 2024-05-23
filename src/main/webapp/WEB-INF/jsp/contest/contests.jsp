@@ -29,7 +29,7 @@
                         <td class="td-sm">Rs.${contest.entryFee}</td>
                         <td class="td-sm">${contest.noOfMembers}</td>
                         <td class="td-sm">${contest.rankPrice}</td>
-                        <td class="td-sm">${contest.winPercent}%</td>
+                        <td class="td-sm">${contest.winPercentage}%</td>
                         <td class="td-sm">${contest.maxTeams}</td>
                         <td class="td-sm">${contest.lastModified}</td>
                      </tr>

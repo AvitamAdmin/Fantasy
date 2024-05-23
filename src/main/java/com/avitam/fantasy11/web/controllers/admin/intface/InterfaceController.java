@@ -4,8 +4,10 @@ import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.InterfaceForm;
+import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +42,7 @@ public class InterfaceController {
     }
 
     @GetMapping("/edit")
-    public String editInterface(@RequestParam("id") Long id, Model model) {
+    public String editInterface(@RequestParam("id") ObjectId id, Model model) {
         InterfaceForm interfaceForm = null;
         Optional<Node> interfaceOptional = nodeRepository.findById(id);
         if (interfaceOptional.isPresent()) {
@@ -65,6 +67,10 @@ public class InterfaceController {
             interfaceForm.setCreator(coreService.getCurrentUser().getUsername());
         }
         Node node = modelMapper.map(interfaceForm, Node.class);
+        Optional<Node> nodeOptional=nodeRepository.findById(interfaceForm.getId());
+        if(nodeOptional.isPresent()) {
+            node.setId(nodeOptional.get().getId());
+        }
 
         List<Node> nodeList=nodeRepository.findByParentNodeId(null);
         for(Node node1: nodeList){
@@ -94,7 +100,7 @@ public class InterfaceController {
     @GetMapping("/delete")
     public String deleteInterface(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            nodeRepository.deleteById(Long.valueOf(id));
+            nodeRepository.deleteById(new ObjectId (id));
         }
         return "redirect:/admin/interface";
     }
