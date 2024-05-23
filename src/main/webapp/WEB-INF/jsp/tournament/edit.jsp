@@ -18,12 +18,12 @@
         <div class="row">
             <div class="col-sm-3">
                 <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
-                <span>Name</span>``
+                <span>Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" />
-                <span>Date</span>``
+                <span>Date</span>
                 <form:errors path="dateAndTime" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">

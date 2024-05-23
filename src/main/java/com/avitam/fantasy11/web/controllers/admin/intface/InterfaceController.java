@@ -93,7 +93,7 @@ public class InterfaceController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getUsername());
         model.addAttribute("editForm", form);
-        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
+        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));
         return "interface/edit";
     }
 

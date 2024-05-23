@@ -4,13 +4,14 @@ package com.avitam.fantasy11.form;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class PointsMasterForm {
+public class PointsMasterForm extends BaseForm{
 
-    private int MatchTypeId;
+    private String matchTypeId;
 
     private float runs;
 

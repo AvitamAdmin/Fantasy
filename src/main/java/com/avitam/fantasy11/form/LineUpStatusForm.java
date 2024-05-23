@@ -7,5 +7,7 @@ import lombok.Setter;
 @Setter
 public class LineUpStatusForm extends BaseForm{
 
+    private Boolean lineupStatus;
+
 
 }
