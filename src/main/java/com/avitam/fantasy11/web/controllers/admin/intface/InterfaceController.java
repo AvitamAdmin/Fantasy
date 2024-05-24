@@ -23,10 +23,6 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin/interface")
 public class InterfaceController {
-    public static final int TOOL_KIT_NODE = 3;
-    public static final int SCHEDULER_NODE = 2;
-    public static final String TOOLKITS = "Toolkits";
-    public static final String SCHEDULING = "Scheduling";
 
     @Autowired
     private NodeRepository nodeRepository;

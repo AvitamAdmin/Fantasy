@@ -16,7 +16,7 @@
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
-           <div class="col-sm-3">
+           <div class="col-sm-2">
                 <select class="cheil-select" name="matchTypeId">
                    <option value="">Select MatchType</option>
                    <c:forEach items="${matchTypes}" var="child">
@@ -32,52 +32,52 @@
                    </c:forEach>
                </select>
            </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="runs" class="inputbox-cheil-small" placeholder="runs" />
                 <span>Runs</span>
                 <form:errors path="runs" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="wickets" class="inputbox-cheil-small" placeholder="wickets" />
                 <span>Wickets</span>
                 <form:errors path="wickets" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="halfCentury" class="inputbox-cheil-small" placeholder="halfCentury" />
                 <span>Half-Century</span>
                 <form:errors path="halfCentury" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="century" class="inputbox-cheil-small" placeholder="Century" />
                 <span>Century</span>
                 <form:errors path="century" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="thirtyPlus" class="inputbox-cheil-small" placeholder="30 Plus" />
                 <span>30 Plus</span>
                 <form:errors path="thirtyPlus" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="threeWickets" class="inputbox-cheil-small" placeholder="3 Wickets" />
                 <span>3 Wickets</span>
                 <form:errors path="threeWickets" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="fiveWickets" class="inputbox-cheil-small" placeholder="5 Wickets" />
                 <span>5 Wickets</span>
                 <form:errors path="fiveWickets" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                   <form:input path="hatrickWickets" class="inputbox-cheil-small" placeholder="hattrickWickets" />
                   <span>Hattrick Wickets</span>
                   <form:errors path="hatrickWickets" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <form:input path="hatrickSixes" class="inputbox-cheil-small" placeholder="hattrickSixes" />
                 <span>Hattrick-Sixes</span>
                 <form:errors path="hatrickSixes" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                   <form:input path="economy" class="inputbox-cheil-small" placeholder="economy" />
                   <span>Economy</span>
                   <form:errors path="economy" class="text-danger"></form:errors>

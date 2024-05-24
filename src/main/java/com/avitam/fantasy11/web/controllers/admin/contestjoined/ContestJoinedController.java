@@ -70,6 +70,7 @@ public class ContestJoinedController {
             contestJoinedForm.setCreationTime(new Date());
             contestJoinedForm.setCreator(coreService.getCurrentUser().getEmail());
         }
+        contestJoinedForm.setUserId(coreService.getCurrentUser().getMobileNumber());
 
         ContestJoined contestJoined = modelMapper.map(contestJoinedForm, ContestJoined.class);
 
@@ -100,6 +101,7 @@ public class ContestJoinedController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setUserId(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
         model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
         model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));

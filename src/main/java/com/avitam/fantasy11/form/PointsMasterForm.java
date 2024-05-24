@@ -27,9 +27,9 @@ public class PointsMasterForm extends BaseForm{
 
     private float fiveWickets;
 
-    private float hatrickWickets;
+    private float hattrickWickets;
 
-    private float hatrickSixes;
+    private float hattrickSixes;
 
     private float economy;
 

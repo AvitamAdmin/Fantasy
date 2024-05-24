@@ -16,9 +16,8 @@ public class Node extends BaseEntity {
 
     private String path;
 
-   private String name;
+    private String name;
 
-    @ManyToMany(mappedBy = "permissions")
     private Set<Role> roles;
 
     private Node parentNode;
