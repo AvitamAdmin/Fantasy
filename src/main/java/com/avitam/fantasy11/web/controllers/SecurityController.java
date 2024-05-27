@@ -34,25 +34,23 @@ import java.util.UUID;
 public class SecurityController {
 
     @Autowired
-    ApplicationEventPublisher eventPublisher;
-    @Autowired
     private UserService userService;
+
     @Autowired
     private UserValidator userValidator;
+
     @Autowired
     private SecurityService securityService;
+
+
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
+
     @Autowired
     private MailService mailService;
-    @Autowired
-    private MessageSource messages;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
 
     @GetMapping("/forgotpassword")
     public String showForgotPasswordForm(HttpServletRequest request, Model model) {
-
         return "security/forgotpassword";
     }
 
@@ -72,6 +70,7 @@ public class SecurityController {
                 model.addAttribute("message", "User Not Registered. Please enter valid email id");
                 model.addAttribute("color", "red");
             }
+
         } catch (UnsupportedEncodingException | MessagingException e) {
             model.addAttribute("error", "Error while sending email");
             model.addAttribute("color", "red");
@@ -82,7 +81,8 @@ public class SecurityController {
     public void sendEmail(String recipientEmail, String link)
             throws MessagingException, UnsupportedEncodingException {
         EMail eMail = new EMail();
-        eMail.setFrom("healthcheck@cheil.com");
+
+        //eMail.setFrom("healthcheck@cheil.com");
         eMail.setTo(recipientEmail);
 
         String subject = "Here's the link to reset your password";
@@ -100,10 +100,12 @@ public class SecurityController {
         mailService.sendEmail(eMail);
     }
 
+
     @GetMapping("/resetpassword")
     public String showResetPasswordForm(@RequestParam(value = "token") String token, Model model) {
         User user = userService.getByResetPasswordToken(token);
         model.addAttribute("token", token);
+
         if (user == null) {
             model.addAttribute("message", "Invalid Token");
             return "security/forgotpassword";
@@ -135,9 +137,19 @@ public class SecurityController {
         return "index";
     }
 
+    @Autowired
+    private MessageSource messages;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("userForm", new User());
+      //model.addAttribute("countries", countryRepository.findAll());
         model.addAttribute("roles", roleRepository.findAll());
         return "security/signupForm";
     }
@@ -147,24 +159,32 @@ public class SecurityController {
         userValidator.validate(user, bindingResultUser);
         if (bindingResultUser.hasErrors()) {
             model.addAttribute("userForm", new User());
+           // model.addAttribute("countries", countryRepository.findAll());
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("message", bindingResultUser);
             return "security/signupForm";
         }
+        user.setStatus(true);
         userService.save(user);
         String appUrl = Utility.getSiteURL(request);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getUsername() + " as registered, Kindly approve the same by clicking the link below", "hybris.sup@cheil.com", "1"));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getEmail() + " as registered, Kindly approve the same by clicking the link below", "hybris.sup@cheil.com", "1"));
         model.addAttribute("message", "You have signed up successfully! We will notify once account is approved");
         return "security/signupSuccessForm";
     }
 
     @GetMapping("/login")
-    public String login(Model model, String error, String logout) {
-        if (error != null)
-            model.addAttribute("error", "Your username and password is invalid.");
+    public String login(Model model, String error, String logout, String quota) {
+        if (error != null) {
+            model.addAttribute("message", "Your username and password is invalid.");
+        }
 
-        if (logout != null)
-            model.addAttribute(" message", "You have been logged out successfully.");
+        if (quota != null) {
+            model.addAttribute("message", "Allotted Quota Exceeded");
+        }
+
+        if (logout != null) {
+            model.addAttribute("message", "You have been logged out successfully.");
+        }
 
         return "login";
     }
@@ -179,11 +199,11 @@ public class SecurityController {
             if (level.equals("1")) {
                 model.addAttribute("message", "User Approved");
                 String appUrl = Utility.getSiteURL(request);
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getUsername() + " has been approved by admin, Kindly approve by clicking the link below", user.getReferredBy(), "2"));
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getEmail() + " has been approved by admin, Kindly approve by clicking the link below", user.getReferredBy(), "2"));
                 return new ModelAndView("security/signupSuccessForm");
             } else if (level.equals("2")) {
                 String appUrl = Utility.getSiteURL(request);
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "Registration Successful", "Registration successful, Kindly click link below to verify your account", user.getUsername(), "3"));
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "Registration Successful", "Registration successful, Kindly click link below to verify your account", user.getEmail(), "3"));
                 model.addAttribute("message", "User Approved");
                 return new ModelAndView("security/signupSuccessForm");
             } else if (level.equals("3")) {
@@ -195,6 +215,7 @@ public class SecurityController {
             model.addAttribute("messageKey", "message.accountVerified");
             return new ModelAndView("redirect:/login", model);
         }
+
         model.addAttribute("messageKey", "auth.message." + result);
         model.addAttribute("expired", "expired".equals(result));
         model.addAttribute("token", token);
@@ -206,17 +227,20 @@ public class SecurityController {
         UserForm userForm = new UserForm();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User user = userRepository.findByEmail(principalObject.getUsername());
 
-        User user = userRepository.findByUsername(principalObject.getUsername());
-        userForm.setStatus(false);
-        userForm.setUserName(user.getUsername());
-        userForm.setRoles(user.getRoles());
+        userForm.setStatus(user.getStatus());
+        userForm.setEmail(user.getEmail());
+        userForm.setRole(user.getRole());
         userForm.setPassword(user.getPassword());
         userForm.setPasswordConfirm(user.getPassword());
-        userForm.setId(user.getId());
+        userForm.setId(userForm.getId());
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("editForm", userForm);
+      //  model.addAttribute("subsidiaries", subsidiaryRepository.findAll());
+       // model.addAttribute("countries", countryRepository.findAll());
         model.addAttribute("isAdmin", user.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
+
 
         return "admin/usersEditContent";
     }

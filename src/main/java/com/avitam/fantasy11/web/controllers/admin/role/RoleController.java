@@ -27,8 +27,10 @@ public class RoleController {
     private RoleRepository roleRepository;
     @Autowired
     private NodeRepository nodeRepository;
+
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private CoreService coreService;
 
@@ -89,7 +91,7 @@ public class RoleController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getUsername());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("nodes", nodeRepository.findAll());
         model.addAttribute("roleForm", form);
         return "role/edit";

@@ -1,11 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.sportType;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.MobileTokenForm;
 import com.avitam.fantasy11.form.SportTypeForm;
 import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.model.SportTypeRepository;
-import com.avitam.fantasy11.model.Team;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;

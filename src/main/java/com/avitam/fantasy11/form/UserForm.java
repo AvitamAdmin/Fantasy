@@ -37,4 +37,5 @@ public class UserForm {
     private Date lastModified;
     private String modifier;
     private Set<Role> roles;
+    private String email;
 }

@@ -15,4 +15,5 @@ public class Team extends BaseEntity {
     private String name;
     private String shortName;
     private Binary logo;
+
 }

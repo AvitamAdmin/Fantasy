@@ -4,7 +4,6 @@ import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.InterfaceForm;
-import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -23,6 +22,10 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin/interface")
 public class InterfaceController {
+    public static final int TOOL_KIT_NODE = 3;
+    public static final int SCHEDULER_NODE = 2;
+    public static final String TOOLKITS = "Toolkits";
+    public static final String SCHEDULING = "Scheduling";
 
     @Autowired
     private NodeRepository nodeRepository;
@@ -60,13 +63,9 @@ public class InterfaceController {
         interfaceForm.setLastModified(new Date());
         if (interfaceForm.getId() == null) {
             interfaceForm.setCreationTime(new Date());
-            interfaceForm.setCreator(coreService.getCurrentUser().getUsername());
+            interfaceForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         Node node = modelMapper.map(interfaceForm, Node.class);
-        Optional<Node> nodeOptional=nodeRepository.findById(interfaceForm.getId());
-        if(nodeOptional.isPresent()) {
-            node.setId(nodeOptional.get().getId());
-        }
 
         List<Node> nodeList=nodeRepository.findByParentNodeId(null);
         for(Node node1: nodeList){
@@ -87,16 +86,16 @@ public class InterfaceController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getUsername());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));
+        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "interface/edit";
     }
 
     @GetMapping("/delete")
     public String deleteInterface(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            nodeRepository.deleteById(new ObjectId (id));
+            nodeRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/interface";
     }

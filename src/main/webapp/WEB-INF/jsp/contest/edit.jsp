@@ -32,9 +32,9 @@
                 <form:errors path="entryFee" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                <form:input path="noOfMembers" class="inputbox-cheil" placeholder="Members " />
+                <form:input path="numberOfMembers" class="inputbox-cheil" placeholder="Members " />
                 <span>No.Of.Members</span>
-                <form:errors path="noOfMembers" class="text-danger"></form:errors>
+                <form:errors path="numberOfMembers" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
               <form:input path="winPercent" class="inputbox-cheil"  />

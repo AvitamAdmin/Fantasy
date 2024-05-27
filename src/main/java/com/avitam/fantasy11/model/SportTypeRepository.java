@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SportTypeRepository extends MongoRepository<SportType, ObjectId> {
+public interface
+SportTypeRepository extends MongoRepository<SportType, ObjectId> {
 
     Optional<SportType> findById(String id);
 }

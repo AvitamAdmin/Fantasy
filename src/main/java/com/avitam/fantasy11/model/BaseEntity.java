@@ -1,13 +1,10 @@
 package com.avitam.fantasy11.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -17,7 +14,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class BaseEntity {
 
-    @Id
     private ObjectId id;
     private String creator;
     private Boolean status;
