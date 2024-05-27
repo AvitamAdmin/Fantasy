@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.core.service.impl;
 
-import com.avitam.fantasy11.core.service.SequenceGeneratorService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class UseServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
     public static final String TOKEN_INVALID = "invalidToken";
     public static final String TOKEN_EXPIRED = "expired";
@@ -32,9 +31,6 @@ public class UseServiceImpl implements UserService {
 
     @Autowired
     private VerificationTokenRepository tokenRepository;
-
-    @Autowired
-    SequenceGeneratorService sequenceGeneratorService;
 
     @Override
     public void save(@Valid @RequestBody User user) {
@@ -101,18 +97,22 @@ public class UseServiceImpl implements UserService {
     public boolean isAdminRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByName(principalObject.getUsername());
-        Set<Role> roles = currentUser.getRoles();
+        User currentUser = userRepository.findByEmailId(principalObject.getUsername());
+       // Set<Role> roles = currentUser.getRoles();
+        /*List<Role> roles = roleRepository.findAll();
         for (Role role : roles) {
             if ("ROLE_ADMIN".equals(role.getName())) {
                 return true;
             }
+        }*/
+        if(currentUser.getRole() == 1){
+            return true;
         }
         return false;
     }
 
     public boolean updateResetPasswordToken(String token, String email) {
-        User user = userRepository.findByName(email);
+        User user = userRepository.findByEmailId(email);
         if (user != null) {
             user.setResetPasswordToken(token);
             userRepository.save(user);

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LeaderBoard {
+public class LeaderBoardForm extends BaseEntityForm{
     private int userId;
 
     private int tournamentId;

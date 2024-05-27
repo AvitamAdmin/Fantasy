@@ -46,7 +46,7 @@ public class MobileTokenController {
         mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
         model.addAttribute("editForm", mobileTokenForm);
         }
-        model.addAttribute("user", userRepository.findByEmail(coreService.getCurrentUser().getEmail()));
+        model.addAttribute("user", userRepository.findByEmailId(coreService.getCurrentUser().getEmailId()));
           return "mobileToken/edit";
     }
 
@@ -60,7 +60,7 @@ public class MobileTokenController {
         mobileTokenForm.setLastModified(new Date());
         if (mobileTokenForm.getId() == null) {
             mobileTokenForm.setCreationTime(new Date());
-            mobileTokenForm.setCreator(coreService.getCurrentUser().getEmail());
+            mobileTokenForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
         MobileToken mobileToken=modelMapper.map(mobileTokenForm,MobileToken.class);
         Optional<MobileToken> teamOptional=mobileTokenRepository.findById(mobileTokenForm.getId());
@@ -78,7 +78,7 @@ public class MobileTokenController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "mobileToken/edit";
     }

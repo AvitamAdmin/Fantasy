@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.model;
 
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -12,6 +14,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Notification extends BaseEntity{
 
     private String message;
-
-    private int userid;
+    private String mobileNumber;
 }

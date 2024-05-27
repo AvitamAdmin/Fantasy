@@ -62,7 +62,7 @@ public class MatchTypeController {
         matchTypeForm.setLastModified(new Date());
         if (matchTypeForm.getId() == null) {
             matchTypeForm.setCreationTime(new Date());
-            matchTypeForm.setCreator(coreService.getCurrentUser().getEmail());
+            matchTypeForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
 
         MatchType matchType = modelMapper.map(matchTypeForm, MatchType.class);
@@ -84,7 +84,7 @@ public class MatchTypeController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "matchType/edit";
     }

@@ -60,6 +60,7 @@ $("#tableData").on('click','tr',function(e) {
       if($(this).attr("id") != null) {
       $(this).toggleClass('selected');
               var selectedIds = table.rows('.selected').data().pluck(0).toArray().toString();
+
               console.log(selectedIds);
                         $("#rowSelectorId").val(selectedIds);
                         var length=table.rows('.selected').data().length;

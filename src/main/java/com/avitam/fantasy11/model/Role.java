@@ -4,24 +4,30 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.Set;
 
-@Entity
-@Table(name = "role")
+@Document(collection = "role")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Role {
+
+    //private int id;
     private String roleId;
+
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
     @ManyToMany
     private Set<Node> permissions;
-    private int ids;
+
+    private Integer ids;
     private String name;
+
     private String creator;
     private Boolean status;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")

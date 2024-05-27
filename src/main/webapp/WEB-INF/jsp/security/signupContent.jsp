@@ -14,10 +14,23 @@
         <div class="row form-group ${status.error ? 'has-error' : ''}">
             <div class="col-sm-3"></div>
             <div class="col-sm-6">
-                <form:input type="email" path="name" class="inputbox-cheil" placeholder="Username"
+                <form:input type="text" path="name" class="inputbox-cheil" placeholder="Name"
                             autofocus="true" required="required"></form:input>
-                            <span>Username</span>
+                            <span>Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        </spring:bind>
+
+        <spring:bind path="emailId">
+        <div class="row form-group ${status.error ? 'has-error' : ''}">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <form:input type="email" path="emailId" class="inputbox-cheil" placeholder="EmailId"
+                            autofocus="true" required="required"></form:input>
+                            <span>EmailId</span>
+                <form:errors path="emailId" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3"></div>
         </div>
@@ -66,16 +79,19 @@
         </div>
 
         <spring:bind path="role">
-                <div class="row form-group ${status.error ? 'has-error' : ''}">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-6">
-                        <form:input type="text" path="role" class="inputbox-cheil" placeholder="Role" required="required"></form:input>
-                                    <span>Role</span>
-                        <form:errors path="role" class="text-danger"></form:errors>
-                    </div>
-                    <div class="col-sm-3"></div>
-                </div>
-                </spring:bind>
+
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <select name="role" id="roles" class="lg-btn 3col active cheil-select" multiple required="required">
+                    <c:forEach items="${roles}" var="role">
+                        <option value="${role.ids}">${role.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        </spring:bind>
         <br/>
         <spring:bind path="mobileNumber">
         <div class="row form-group ${status.error ? 'has-error' : ''}">

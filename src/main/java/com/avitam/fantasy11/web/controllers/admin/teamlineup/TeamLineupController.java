@@ -61,7 +61,7 @@ public class TeamLineupController {
             teamLineUpForm.setLastModified(new Date());
         if (teamLineUpForm.getId() == null) {
             teamLineUpForm.setCreationTime(new Date());
-            teamLineUpForm.setCreator(coreService.getCurrentUser().getEmail());
+            teamLineUpForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
 
         TeamLineup teamLineup = modelMapper.map(teamLineUpForm, TeamLineup.class);
@@ -81,7 +81,7 @@ public class TeamLineupController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "teamLineup/edit";
     }

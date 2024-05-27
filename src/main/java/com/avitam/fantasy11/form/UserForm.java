@@ -16,7 +16,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserForm {
     private int ids;
-    private Integer id;
     private String name;
     private String emailId;
     private String password;
@@ -26,7 +25,7 @@ public class UserForm {
     private double bonus;
     private String mobileNumber;
     private String dateOfBirth;
-    private int status;
+    private boolean status;
     private int role;
     private Binary profileImage;
     private String gender;

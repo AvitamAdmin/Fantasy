@@ -2,12 +2,16 @@ package com.avitam.fantasy11.form;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @Getter
 @Setter
-public class NotificationForm {
+public class NotificationForm extends BaseEntityForm{
 
     private String message;
+    private String mobileNumber;
 
-    private int userid;
 }

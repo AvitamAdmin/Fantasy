@@ -60,7 +60,7 @@ public class ContestController {
 
         if (contestForm.getId() == null) {
             contestForm.setCreationTime(new Date());
-            contestForm.setCreator(coreService.getCurrentUser().getEmail());
+            contestForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
 
         Contest contest = modelMapper.map(contestForm, Contest.class);
@@ -81,7 +81,7 @@ public class ContestController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "contest/edit";
     }

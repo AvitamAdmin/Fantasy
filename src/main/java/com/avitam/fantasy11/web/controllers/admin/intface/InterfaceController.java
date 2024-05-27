@@ -5,7 +5,9 @@ import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,20 +37,21 @@ public class InterfaceController {
 
     @GetMapping
     public String getAllModels(org.springframework.ui.Model model) {
-        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getParentNode() != null).collect(Collectors.toList()));
+        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() != null).collect(Collectors.toList()));
         return "interface/interfaces";
     }
 
     @GetMapping("/edit")
-    public String editInterface(@RequestParam("id") Long id, Model model) {
+    public String editInterface(@RequestParam("id") ObjectId id, Model model) {
         InterfaceForm interfaceForm = null;
         Optional<Node> interfaceOptional = nodeRepository.findById(id);
         if (interfaceOptional.isPresent()) {
             Node node = interfaceOptional.get();
             interfaceForm = modelMapper.map(node, InterfaceForm.class);
+            interfaceForm.setCreator(coreService.getCurrentUser().getEmailId());
             model.addAttribute("editForm", interfaceForm);
         }
-        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
+        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));
         return "interface/edit";
     }
 
@@ -61,12 +65,27 @@ public class InterfaceController {
         interfaceForm.setLastModified(new Date());
         if (interfaceForm.getId() == null) {
             interfaceForm.setCreationTime(new Date());
-            interfaceForm.setCreator(coreService.getCurrentUser().getName());
+            interfaceForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
+
         Node node = modelMapper.map(interfaceForm, Node.class);
-        if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
-            node.setParentNode(nodeRepository.getByIds(Long.valueOf(interfaceForm.getParentNodeId())));
+
+        Optional<Node> nodeOptional = nodeRepository.findById(interfaceForm.getId());
+        if(nodeOptional.isPresent()){
+           node.setId(nodeOptional.get().getId());
         }
+       // node.setId(interfaceForm.getId());
+       /* if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
+            node.setParentNode(nodeRepository.getByIds(Long.valueOf(interfaceForm.getParentNodeId())));
+        }*/
+
+        List<Node> nodeList = nodeRepository.findByParentNodeId(null);
+        for(Node node1: nodeList) {
+            if(node1.getName().equalsIgnoreCase("Admin")) {
+                node.setParentNodeId(node1.getId());
+            }
+        }
+
         if (node.getDisplayPriority() == null) {
             node.setDisplayPriority(1000);
         }
@@ -81,17 +100,18 @@ public class InterfaceController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getName());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
-        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
+        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));
         return "interface/edit";
     }
 
     @GetMapping("/delete")
-    public String deleteInterface(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-            nodeRepository.deleteById(Long.valueOf(id));
-        }
+    public String deleteInterface(@RequestParam("id") ObjectId ids, Model model) {
+       /* for (String id : ids.split(",")) {
+            nodeRepository.deleteById(Integer.valueOf(id));
+        }*/
+        nodeRepository.deleteById(ids);
         return "redirect:/admin/interface";
     }
 }

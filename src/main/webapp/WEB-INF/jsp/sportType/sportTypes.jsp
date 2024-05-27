@@ -12,7 +12,7 @@
               <thead>
                     <tr>
                       <th class="th-sm">PK</th>
-                      <th class="th-sm">Name</th>
+                      <th class="th-sm">Sport Name</th>
                       <th class="th-sm">Logo</th>
                       <th class="th-sm">Last Modified</th>
                     </tr>
@@ -21,7 +21,7 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.name}</td>
+                        <td class="td-sm">${model.sportName}</td>
                         <td class="td-sm"><img style="width:50px;" src="data:image/jpeg;base64,${model.pic}"</td>
                         <td class="td-sm">${model.lastModified}</td>
                      </tr>

@@ -6,7 +6,9 @@ import lombok.Setter;
 import java.util.Map;
 @Getter
 @Setter
-public class ContestForm extends BaseForm{
+public class ContestForm extends BaseEntityForm{
+
+    private String contestName;
 
     private Double totalPrice;
 

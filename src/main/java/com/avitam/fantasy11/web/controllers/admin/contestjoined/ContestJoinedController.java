@@ -65,7 +65,7 @@ public class ContestJoinedController {
 
         if (contestJoinedForm.getId() == null) {
             contestJoinedForm.setCreationTime(new Date());
-            contestJoinedForm.setCreator(coreService.getCurrentUser().getEmail());
+            contestJoinedForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
 
         ContestJoined contestJoined = modelMapper.map(contestJoinedForm, ContestJoined.class);
@@ -87,7 +87,7 @@ public class ContestJoinedController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "contestjoined/edit";
     }

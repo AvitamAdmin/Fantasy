@@ -72,7 +72,7 @@ public class TeamController {
         teamForm.setLastModified(new Date());
         if (teamForm.getId() == null) {
             teamForm.setCreationTime(new Date());
-            teamForm.setCreator(coreService.getCurrentUser().getEmail());
+            teamForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
 
         Team team = modelMapper.map(teamForm, Team.class);
@@ -93,7 +93,7 @@ public class TeamController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "team/edit";
     }

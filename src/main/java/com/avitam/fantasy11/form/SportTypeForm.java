@@ -6,8 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class SportTypeForm extends BaseForm{
+public class SportTypeForm extends BaseEntityForm{
 
-    private String name;
+    private String sportName;
     private MultipartFile logo;
 }

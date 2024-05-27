@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MobileTokenForm extends BaseForm{
+public class MobileTokenForm extends BaseEntityForm{
 
     private int userId;
 

@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface TeamRepository extends MongoRepository<Team, ObjectId> {
+
     Optional<Team> findById(String id);
 }

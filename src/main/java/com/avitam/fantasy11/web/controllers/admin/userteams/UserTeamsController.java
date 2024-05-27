@@ -57,7 +57,7 @@ public class UserTeamsController {
 
         if (userTeamsForm.getId() == null) {
             userTeamsForm.setCreationTime(new Date());
-            userTeamsForm.setCreator(coreService.getCurrentUser().getEmail());
+            userTeamsForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
 
         UserTeams userTeams = modelMapper.map(userTeamsForm, UserTeams.class);
@@ -79,7 +79,7 @@ public class UserTeamsController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "userTeams/edit";
     }

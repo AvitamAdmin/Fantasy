@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
+                <form:input path="contestName" class="inputbox-cheil-small" placeholder="Enter Name" />
                 <span>Name</span>
-                <form:errors path="name" class="text-danger"></form:errors>
+                <form:errors path="contestName" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input path="totalPrice" class="inputbox-cheil-small" placeholder="Enter Total Price" />
@@ -32,14 +32,14 @@
                 <form:errors path="entryFee" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                <form:input path="noOfMembers" class="inputbox-cheil" placeholder="Members " />
+                <form:input path="numberOfMembers" class="inputbox-cheil" placeholder="Members " />
                 <span>No.Of.Members</span>
-                <form:errors path="noOfMembers" class="text-danger"></form:errors>
+                <form:errors path="numberOfMembers" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-              <form:input path="winPercent" class="inputbox-cheil"  />
+              <form:input path="winPercentage" class="inputbox-cheil"  />
               <span>Win %</span>
-              <form:errors path="winPercent" class="text-danger"></form:errors>
+              <form:errors path="winPercentage" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input path="maxTeams" class="inputbox-cheil" placeholder="Teams " />

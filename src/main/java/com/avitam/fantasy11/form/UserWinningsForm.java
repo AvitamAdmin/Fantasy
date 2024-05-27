@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserWinningsForm {
+public class UserWinningsForm extends BaseEntityForm{
 
     private  int userId;
 

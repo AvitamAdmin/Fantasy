@@ -67,7 +67,7 @@ public class SportsTypeController {
         sportTypeForm.setLastModified(new Date());
         if (sportTypeForm.getId() == null) {
             sportTypeForm.setCreationTime(new Date());
-            sportTypeForm.setCreator(coreService.getCurrentUser().getEmail());
+            sportTypeForm.setCreator(coreService.getCurrentUser().getEmailId());
         }
         byte[] fig= sportTypeForm.getLogo().getBytes();
         Binary binary=new Binary(fig);
@@ -92,7 +92,7 @@ public class SportsTypeController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "sportType/edit";
     }
