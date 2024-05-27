@@ -10,4 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("LineUpStatus")
 
 public class LineUpStatus extends BaseEntity{
+
+    private boolean lineupStatus;
 }

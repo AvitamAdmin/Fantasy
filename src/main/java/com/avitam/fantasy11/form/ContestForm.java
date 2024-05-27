@@ -10,15 +10,17 @@ public class ContestForm extends BaseEntityForm{
 
     private String contestName;
 
+    private String name;
+
     private Double totalPrice;
 
     private Double entryFee;
 
-    private long numberOfMembers;
+    private long noOfMembers;
 
     private Map<String,Double> rankPrice;
 
-    private int winPercentage;
+    private int winPercent;
 
     private int maxTeams;
 

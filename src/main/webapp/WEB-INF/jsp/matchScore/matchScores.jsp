@@ -12,22 +12,22 @@
               <thead>
                     <tr>
                       <th class="th-sm">PK</th>
-                      <th class="th-sm">UserId</th>
-                      <th class="th-sm">MatchId</th>
-                      <th class="th-sm">Team Name</th>
-                      <th class="th-sm">Players</th>
+                      <th class="th-sm">Match Id</th>
+                      <th class="th-sm">Team1 Score</th>
+                      <th class="th-sm">Team2 Score</th>
+                      <th class="th-sm">Overs</th>
+                      <th class="th-sm">Last Modified</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.userId}</td>
                         <td class="td-sm">${model.matchId}</td>
-                        <td class="ts-sm">${model.teamName}</td>
-                        <td class="td-sm">${model.players}</td>
-
-
+                        <td class="td-sm">${model.team1Score}</td>
+                        <td class="td-sm">${model.team2Score}</td>
+                        <td class="td-sm">${model.overs}</td>
+                        <td class="td-sm">${model.lastModified}</td>
                      </tr>
                  </c:forEach>
              </tbody>

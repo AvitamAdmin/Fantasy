@@ -17,15 +17,35 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="teamId" class="inputbox-cheil-small" placeholder="Enter Team Id" />
-                <span>Team Id</span>
-                <form:errors path="teamId" class="text-danger"></form:errors>
+              <select class="cheil-select" name="teamId">
+                <option value="">Select Team</option>
+                    <c:forEach items="${teams}" var="child">
+                      <c:choose>
+                        <c:when test="${fn:contains( editForm.teamId, child ) }">
+                          <option value="${child.id}" selected>${child.name}</option>
+                        </c:when>
+                        <c:otherwise>
+                         <option value="${child.id}" >${child.name}</option>
+                        </c:otherwise>
+                      </c:choose>
+                    </c:forEach>
+              </select>
             </div>
-            <div class="col-sm-3">
-                 <form:input path="matchId" class="inputbox-cheil-small" placeholder="Match Id" />
-                 <span>Match Id</span>
-                 <form:errors path="matchId" class="text-danger"></form:errors>
-            </div>
+           <div class="col-sm-3">
+             <select class="cheil-select" name="playerId">
+               <option value="">Select Players</option>
+                   <c:forEach items="${players}" var="child">
+                     <c:choose>
+                       <c:when test="${fn:contains( editForm.playerId, child ) }">
+                         <option value="${child.id}" selected>${child.name}</option>
+                       </c:when>
+                       <c:otherwise>
+                        <option value="${child.id}" >${child.name}</option>
+                       </c:otherwise>
+                     </c:choose>
+                   </c:forEach>
+             </select>
+           </div>
 
             <div class="col-sm-3">
                 <form:input path="lineupStatus" class="inputbox-cheil-small" placeholder="Lineup Status" />

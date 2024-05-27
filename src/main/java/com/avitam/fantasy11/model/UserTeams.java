@@ -3,6 +3,7 @@ package com.avitam.fantasy11.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
 @Document("UserTeams")
 public class UserTeams extends  BaseEntity {
 
-    private int userId;
+    private String userId;
 
-    private int matchId;
+    private ObjectId matchId;
 
-    private String TeamName;
+    private String teamName;
 
     private List<String>  players;
 

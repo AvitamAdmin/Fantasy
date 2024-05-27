@@ -3,6 +3,7 @@ package com.avitam.fantasy11.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -11,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("PointsMaster")
 public class PointsMaster extends BaseEntity{
 
-    private int MatchTypeId;
+    private ObjectId matchTypeId;
 
     private float runs;
 
@@ -27,9 +28,9 @@ public class PointsMaster extends BaseEntity{
 
     private float fiveWickets;
 
-    private float hattrickWickets;
+    private float hatrickWickets;
 
-    private float hattrickSixes;
+    private float hatrickSixes;
 
     private float economy;
 

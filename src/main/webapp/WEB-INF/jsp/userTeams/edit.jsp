@@ -22,10 +22,21 @@
                 <form:errors path="userId" class="text-danger"></form:errors>
             </div>
              <div class="col-sm-3">
-                <form:input path="matchId" class="inputbox-cheil-small" placeholder="Enter UserId" />
-                <span>Match Id</span>``
-                <form:errors path="matchId" class="text-danger"></form:errors>
+                <select class="cheil-select" name="matchId">
+                     <option value="">Select Match</option>
+                         <c:forEach items="${matches}" var="child">
+                             <c:choose>
+                                 <c:when test="${fn:contains( editForm.matchId, child ) }">
+                                       <option value="${child.id}" selected>${child.name}</option>
+                                 </c:when>
+                                 <c:otherwise>
+                                     <option value="${child.id}" >${child.name}</option>
+                                 </c:otherwise>
+                             </c:choose>
+                         </c:forEach>
+                </select>
              </div>
+
             <div class="col-sm-3">
                <select class="cheil-select" name="teams">
                     <option value="">Select Team</option>
@@ -42,11 +53,11 @@
                </select>
             </div>
              <div class="col-sm-3">
-               <select class="cheil-select" name="teams">
-                 <option value="">Select Team</option>
-                    <c:forEach items="${teams}" var="child">
+               <select class="cheil-select" name="players">
+                 <option value="">Select Players</option>
+                    <c:forEach items="${players}" var="child">
                         <c:choose>
-                           <c:when test="${fn:contains( editForm.teamName, child ) }">
+                           <c:when test="${fn:contains( editForm.players, child ) }">
                               <option value="${child.id}" selected>${child.name}</option>
                            </c:when>
                            <c:otherwise>

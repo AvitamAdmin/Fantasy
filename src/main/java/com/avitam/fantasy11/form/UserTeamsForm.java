@@ -9,11 +9,11 @@ import java.util.List;
 @Setter
 public class UserTeamsForm extends BaseEntityForm {
 
-    private int userId;
+    private String userId;
 
-    private int matchId;
+    private String matchId;
 
-    private String TeamName;
+    private String teamName;
 
     private List<String> players;
 
