@@ -10,7 +10,7 @@ import java.nio.channels.MulticastChannel;
 @Setter
 public class TeamForm extends BaseForm{
 
-    private String name;
-    private String shortName;
+    private String teamName;
+    private String shortname;
     private MultipartFile logo;
 }
