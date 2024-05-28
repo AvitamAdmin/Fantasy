@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.form;
 
 import com.avitam.fantasy11.model.Node;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class InterfaceForm implements Serializable {
-
+    @Id
     private String id;
     private String creator;
     private Boolean status;
@@ -24,6 +25,6 @@ public class InterfaceForm implements Serializable {
     private String name;
     private String path;
     private Node parentNode;
-    //private String parentNodeId;
+   // private String parentNodeId;
     private Integer displayPriority;
 }

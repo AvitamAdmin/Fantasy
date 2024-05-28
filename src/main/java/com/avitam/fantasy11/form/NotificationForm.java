@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class NotificationForm extends BaseEntityForm{
+public class NotificationForm extends BaseForm{
 
     private String message;
     private String mobileNumber;

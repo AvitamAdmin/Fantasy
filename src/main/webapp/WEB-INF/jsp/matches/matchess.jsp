@@ -11,29 +11,29 @@
               <input type="hidden" id="rowSelectorId" name="rowSelectorId" value="">
               <thead>
                     <tr>
-                      <th class="th-sm">PK</th>
-                      <th class="th-sm">Team1</th>
-                      <th class="th-sm">Team2</th>
-                      <th class="th-sm">DateAndTime</th>
-                      <th class="th-sm">TournamentID</th>
-                      <th class="th-sm">SportID</th>
-                      <th class="th-sm">ContestIDs</th>
-                      <th class="th-sm">Status</th>
-                      <th class="th-sm">MatchTypeID</th>
+                      <th class="th-sm">ID</th>
+                      <th class="th-sm">Team1 ID</th>
+                      <th class="th-sm">Team2 ID</th>
+                      <th class="th-sm">Date And Time</th>
+                      <th class="th-sm">Tournament ID</th>
+                      <th class="th-sm">Sport Type ID</th>
+                      <th class="th-sm">Contest ID</th>
+                      <th class="th-sm">Match Type ID</th>
+                      <th class="th-sm">Match Status</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.team1}</td>
-                        <td class="td-sm">${model.team2}</td>
+                        <td class="td-sm">${model.teamId1}</td>
+                        <td class="td-sm">${model.teamId2}</td>
                         <td class="td-sm">${model.dateAndTime}</td>
                         <td class="td-sm">${model.tournamentId}</td>
-                        <td class="td-sm">${model.sportsId}</td>
+                        <td class="td-sm">${model.sportTypeId}</td>
                         <td class="td-sm">${model.contestId}</td>
-                        <td class="td-sm">${model.status}</td>
                         <td class="td-sm">${model.matchTypeId}</td>
+                        <td class="td-sm">${model.matchStatus}</td>
                      </tr>
                  </c:forEach>
              </tbody>

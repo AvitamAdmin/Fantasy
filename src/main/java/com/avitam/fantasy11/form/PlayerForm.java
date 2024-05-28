@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class PlayerForm extends BaseEntityForm{
+public class PlayerForm extends BaseForm{
 
     private String playerName;
     private String teamId;

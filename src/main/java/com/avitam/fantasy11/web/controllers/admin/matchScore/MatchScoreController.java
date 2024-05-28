@@ -70,6 +70,10 @@ public class MatchScoreController {
         if(matchScoreOptional.isPresent()) {
             matchScore.setId(matchScoreOptional.get().getId());
         }
+        Optional<Matches> matchesOptional=matchesRepository.findById(matchScoreForm.getMatchId());
+        if(matchesOptional.isPresent()) {
+            matchScore.setMatchId(matchesOptional.get().getId());
+        }
 
         matchScoreRepository.save(matchScore);
         model.addAttribute("editForm", matchScoreForm);

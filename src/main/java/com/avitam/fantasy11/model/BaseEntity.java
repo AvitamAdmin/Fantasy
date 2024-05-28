@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.model;
 
 
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class BaseEntity {
 
+    @Id
     private ObjectId id;
     private String creator;
     private Boolean status;

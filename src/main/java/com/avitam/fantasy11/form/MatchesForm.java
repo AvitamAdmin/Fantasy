@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class MatchesForm extends BaseEntityForm{
+public class MatchesForm extends BaseForm{
 
     private String teamId1;
 

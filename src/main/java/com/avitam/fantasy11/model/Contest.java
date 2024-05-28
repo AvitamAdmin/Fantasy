@@ -24,7 +24,7 @@ public class Contest extends BaseEntity{
 
     private Map<String,Double> rankPrice;
 
-    private int winPercent;
+    private int winPercentage;
 
     private int maxTeams;
 

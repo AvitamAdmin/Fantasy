@@ -11,19 +11,21 @@
               <input type="hidden" id="rowSelectorId" name="rowSelectorId" value="">
               <thead>
                     <tr>
-                      <th class="th-sm">PK</th>
-                      <th class="th-sm">Pan-Number</th>
-                      <th class="th-sm">User ID</th>
-                      <th class="th-sm">Pan-Image</th>
+                      <th class="th-sm">ID</th>
+                      <th class="th-sm">Player Name</th>
+                      <th class="th-sm">Team ID</th>
+                      <th class="th-sm">Player Role ID</th>
+                      <th class="th-sm">Player Image</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.panNumber}</td>
-                        <td class="td-sm">${model.userId}</td>
-                        <td class="td-sm"><img style="width:50px" src="data:image/jpeg;base64,${model.pic}"</td>
+                        <td class="td-sm">${model.playerName}</td>
+                        <td class="td-sm">${model.teamId}</td>
+                        <td class="td-sm">${model.playerRoleId}</td>
+                        <td class="td-sm"><img style="width:50px;" src="data:image/jpeg;base64,${model.pic}"</td>
                      </tr>
                  </c:forEach>
              </tbody>

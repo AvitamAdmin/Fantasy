@@ -45,8 +45,8 @@ public class PointsUpdateController {
             PointsUpdate pointsUpdate = pointsUpdateOptional.get();
             PointsUpdateForm pointsUpdateForm = modelMapper.map(pointsUpdate, PointsUpdateForm.class);
             model.addAttribute("editForm", pointsUpdateForm);
-            model.addAttribute("match",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
-            model.addAttribute("player",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
         }
         return "pointsUpdate/edit";
     }
@@ -93,8 +93,8 @@ public class PointsUpdateController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("match",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
-        model.addAttribute("player",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("matches",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("players",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
 
         return "pointsUpdate/edit";
     }

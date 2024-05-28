@@ -18,7 +18,6 @@
                       <th class="th-sm">Rank Price</th>
                       <th class="th-sm">Win %</th>
                       <th class="th-sm">Max Teams</th>
-                      <th class="th-sm">Last Modified</th>
                     </tr>
               </thead>
               <tbody>
@@ -31,7 +30,6 @@
                         <td class="td-sm">${contest.rankPrice}</td>
                         <td class="td-sm">${contest.winPercentage}%</td>
                         <td class="td-sm">${contest.maxTeams}</td>
-                        <td class="td-sm">${contest.lastModified}</td>
                      </tr>
                  </c:forEach>
              </tbody>

@@ -5,13 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserWinningsForm {
+public class UserWinningsForm extends BaseForm{
 
-    private  int userId;
+    private  String userId;
 
-    private int matchId;
+    private String matchId;
 
-    private int teamId;
+    private String teamId;
 
     private double winningAmount;
 }

@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.matches;
+
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.form.MatchesForm;
 import com.avitam.fantasy11.model.*;
-import org.apache.commons.lang3.ObjectUtils;
+//import com.avitam.fantasy11.validation.AddressFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,30 +15,37 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/matches")
 public class MatchesController {
 
     @Autowired
-    private TeamRepository teamRepository;
+    MatchesRepository matchesRepository;
+
     @Autowired
-    private SportTypeRepository sportTypeRepository;
+    TeamRepository teamRepository;
+
     @Autowired
-    private ContestRepository contestRepository;
+    TournamentRepository tournamentRepository;
+
     @Autowired
-    private TournamentRepository tournamentRepository;
+    SportTypeRepository sportTypeRepository;
+
+    @Autowired
+    ContestRepository contestRepository;
+
+    @Autowired
+    MatchTypeRepository matchTypeRepository;
+
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
-    @Autowired
-    private MatchesRepository matchesRepository;
 
     @GetMapping
     public String getAllModels(Model model) {
-        model.addAttribute("models", matchesRepository.findAll().stream().filter(matches -> matches.getId() != null).collect(Collectors.toList()));
+        model.addAttribute("models", matchesRepository.findAll());
         return "matches/matchess";
     }
 
@@ -49,18 +58,17 @@ public class MatchesController {
             matchesForm = modelMapper.map(matches, MatchesForm.class);
             model.addAttribute("editForm", matchesForm);
         }
-        //  model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentId() == null).collect(Collectors.toList()));
-        model.addAttribute("teams", teamRepository.findAll().stream().filter(team -> team.getId() != null).collect(Collectors.toList()));
-        model.addAttribute("sportType", sportTypeRepository.findAll().stream().filter(sportTypes -> sportTypes.getId() != null).collect(Collectors.toList()));
-        model.addAttribute("tournament", tournamentRepository.findAll().stream().filter(tournament -> tournament.getId() != null).collect(Collectors.toList()));
-        model.addAttribute("contest", contestRepository.findAll().stream().filter(contest -> contest.getId() != null).collect(Collectors.toList()));
-
+        model.addAttribute("teams", teamRepository.findAll());
+        model.addAttribute("tournaments", tournamentRepository.findAll());
+        model.addAttribute("sportTypes", sportTypeRepository.findAll());
+        model.addAttribute("contests", contestRepository.findAll());
+        model.addAttribute("matchTypes", matchTypeRepository.findAll());
         return "matches/edit";
     }
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") MatchesForm matchesForm, Model model, BindingResult result) {
-        // new KycFormValidator().validate(kycForm, result);
+        //new AddressFormValidator().validate(matchesForm, result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "matches/edit";
@@ -70,17 +78,44 @@ public class MatchesController {
             matchesForm.setCreationTime(new Date());
             matchesForm.setCreator(coreService.getCurrentUser().getEmail());
         }
-        Matches match = modelMapper.map(matchesForm, Matches.class);
-        if (ObjectUtils.isNotEmpty(matchesForm.getId())) {
-            //node.setParentNode(nodeRepository.getById(interfaceForm.getId()));
-            // node.setParentNodeId(kycRepository.getById(kycForm.getId()).getParentNodeId());
-            match.setCreator(coreService.getCurrentUser().getEmail());
+        Matches matches = modelMapper.map(matchesForm, Matches.class);
 
+        Optional<Matches> matchesOptional = matchesRepository.findById(matchesForm.getId());
+        if(matchesOptional.isPresent()){
+            matches.setId(matchesOptional.get().getId());
         }
-//        if (kyc.getDisplayPriority() == null) {
-//            kyc.setDisplayPriority(1000);
-//        }
-        matchesRepository.save(match);
+
+        Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeamId1());
+        if(teamOptional1.isPresent()){
+            matches.setTeamId1(teamOptional1.get().getId());
+        }
+
+        Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeamId2());
+        if(teamOptional2.isPresent()){
+            matches.setTeamId2(teamOptional2.get().getId());
+        }
+
+        Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
+        if(tournamentOptional.isPresent()){
+            matches.setTournamentId(tournamentOptional.get().getId());
+        }
+
+        Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
+        if(sportTypeOptional.isPresent()){
+            matches.setSportTypeId(sportTypeOptional.get().getId());
+        }
+
+        Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
+        if(contestOptional.isPresent()){
+            matches.setContestId(contestOptional.get().getId());
+        }
+
+        Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchesForm.getMatchTypeId());
+        if(matchTypeOptional.isPresent()){
+            matches.setMatchTypeId(matchTypeOptional.get().getId());
+        }
+
+        matchesRepository.save(matches);
         model.addAttribute("editForm", matchesForm);
         return "redirect:/admin/matches";
     }
@@ -92,19 +127,22 @@ public class MatchesController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setMatchStatus(true);
         model.addAttribute("editForm", form);
-        //   model.addAttribute("nodes", kycRepository.findAll().stream().filter(kyc -> kyc.getUserId()  == null).collect(Collectors.toList()));
+        model.addAttribute("teams", teamRepository.findAll());
+        model.addAttribute("tournaments", tournamentRepository.findAll());
+        model.addAttribute("sportTypes", sportTypeRepository.findAll());
+        model.addAttribute("contests", contestRepository.findAll());
+        model.addAttribute("matchTypes", matchTypeRepository.findAll());
         return "matches/edit";
     }
 
     @GetMapping("/delete")
     public String deleteMatches(@RequestParam("id") ObjectId id, Model model) {
-        //  for (String id : ids.split(",")) {
-        //     nodeRepository.deleteById(Integer.valueOf(id));
-        //  }
+        /*for (String id : ids.split(",")) {
+            addressRepository.deleteById(Integer.valueOf(id));
+        }*/
         matchesRepository.deleteById(id);
         return "redirect:/admin/matches";
     }
 }
-
-

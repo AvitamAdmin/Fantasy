@@ -18,7 +18,7 @@ public class ContestForm extends BaseForm{
 
     private Map<String,Double> rankPrice;
 
-    private int winPercent;
+    private int winPercentage;
 
     private int maxTeams;
 

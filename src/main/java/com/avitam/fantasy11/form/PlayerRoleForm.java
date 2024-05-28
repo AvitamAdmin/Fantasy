@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PlayerRoleForm extends BaseEntityForm{
+public class PlayerRoleForm extends BaseForm{
 
     private String playerRole;
 }

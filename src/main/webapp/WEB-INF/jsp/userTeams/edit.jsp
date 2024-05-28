@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-sm-3">
                 <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter UserId" />
-                <span>User Id</span>``
+                <span>User Id</span>
                 <form:errors path="userId" class="text-danger"></form:errors>
             </div>
              <div class="col-sm-3">
@@ -27,10 +27,10 @@
                          <c:forEach items="${matches}" var="child">
                              <c:choose>
                                  <c:when test="${fn:contains( editForm.matchId, child ) }">
-                                       <option value="${child.id}" selected>${child.name}</option>
+                                       <option value="${child.id}" selected>${child.id}</option>
                                  </c:when>
                                  <c:otherwise>
-                                     <option value="${child.id}" >${child.name}</option>
+                                     <option value="${child.id}" >${child.id}</option>
                                  </c:otherwise>
                              </c:choose>
                          </c:forEach>
@@ -38,15 +38,15 @@
              </div>
 
             <div class="col-sm-3">
-               <select class="cheil-select" name="teams">
+               <select class="cheil-select" name="teamName">
                     <option value="">Select Team</option>
                         <c:forEach items="${teams}" var="child">
                             <c:choose>
                                 <c:when test="${fn:contains( editForm.teamName, child ) }">
-                                      <option value="${child.id}" selected>${child.name}</option>
+                                      <option value="${child.id}" selected>${child.teamName}</option>
                                 </c:when>
                                 <c:otherwise>
-                                    <option value="${child.id}" >${child.name}</option>
+                                    <option value="${child.id}">${child.teamName}</option>
                                 </c:otherwise>
                             </c:choose>
                         </c:forEach>
@@ -58,10 +58,10 @@
                     <c:forEach items="${players}" var="child">
                         <c:choose>
                            <c:when test="${fn:contains( editForm.players, child ) }">
-                              <option value="${child.id}" selected>${child.name}</option>
+                              <option value="${child.id}" selected>${child.playerName}</option>
                            </c:when>
                            <c:otherwise>
-                            <option value="${child.id}" >${child.name}</option>
+                            <option value="${child.id}" >${child.playerName}</option>
                            </c:otherwise>
                         </c:choose>
                     </c:forEach>

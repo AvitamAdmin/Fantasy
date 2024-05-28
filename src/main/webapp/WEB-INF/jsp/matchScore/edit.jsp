@@ -23,10 +23,10 @@
                        <c:choose>
                            <c:when test="${fn:contains( editForm.matchId, child ) }">
 
-                             <option value="${child.id}" selected>${child.name}</option>
+                             <option value="${child.id}" selected>${child.id}</option>
                            </c:when>
                            <c:otherwise>
-                                    <option value="${child.id}" >${child.name}</option>
+                                    <option value="${child.id}" >${child.id}</option>
                            </c:otherwise>
                        </c:choose>
                    </c:forEach>

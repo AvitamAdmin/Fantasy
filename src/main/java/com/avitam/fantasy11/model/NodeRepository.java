@@ -18,4 +18,6 @@ public interface NodeRepository extends MongoRepository<Node, ObjectId> {
     Optional<Node> findById(String id);
 
     Node findByParentNode(ObjectId parentNodeId);
+
+    Node findByName(String admin);
 }

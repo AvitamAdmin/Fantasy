@@ -10,8 +10,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class AddressForm extends BaseEntityForm{
-
+public class AddressForm extends BaseForm{
 
     private String mobileNumber;
     private String line_1;

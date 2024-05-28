@@ -12,18 +12,20 @@
               <thead>
                     <tr>
                       <th class="th-sm">PK</th>
-                      <th class="th-sm">Pan-Number</th>
-                      <th class="th-sm">User ID</th>
-                      <th class="th-sm">Pan-Image</th>
+                      <th class="th-sm">User Id</th>
+                      <th class="th-sm">Match Id</th>
+                      <th class="th-sm">Team Id</th>
+                      <th class="th-sm">WinningAmount</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.panNumber}</td>
                         <td class="td-sm">${model.userId}</td>
-                        <td class="td-sm"><img style="width:50px" src="data:image/jpeg;base64,${model.pic}"</td>
+                        <td class="td-sm">${model.matchId}</td>
+                        <td class="td-sm">${model.teamId}</td>
+                        <td class="td-sm">${model.winningAmount}</td>
                      </tr>
                  </c:forEach>
              </tbody>

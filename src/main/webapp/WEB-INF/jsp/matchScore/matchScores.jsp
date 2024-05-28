@@ -16,7 +16,6 @@
                       <th class="th-sm">Team1 Score</th>
                       <th class="th-sm">Team2 Score</th>
                       <th class="th-sm">Overs</th>
-                      <th class="th-sm">Last Modified</th>
                     </tr>
               </thead>
               <tbody>
@@ -27,7 +26,6 @@
                         <td class="td-sm">${model.team1Score}</td>
                         <td class="td-sm">${model.team2Score}</td>
                         <td class="td-sm">${model.overs}</td>
-                        <td class="td-sm">${model.lastModified}</td>
                      </tr>
                  </c:forEach>
              </tbody>
