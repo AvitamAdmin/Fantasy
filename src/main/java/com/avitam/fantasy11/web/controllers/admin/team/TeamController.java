@@ -100,6 +100,7 @@ public class TeamController {
     @GetMapping("/delete")
     public String deleteTeam(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
+
             teamRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/team";

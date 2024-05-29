@@ -39,14 +39,14 @@ public class UserWinningsController {
     }
 
     @GetMapping("/edit")
-    public String editUserWinnings(@RequestParam("id") ObjectId id,Model model){
+    public String editUserWinnings(@RequestParam("id") String id,Model model){
 
         Optional<UserWinnings> userWinningsOptional = userWinningsRepository.findById(id);
         if (userWinningsOptional.isPresent()) {
             UserWinnings userWinnings = userWinningsOptional.get();
             UserWinningsForm userWinningsForm = modelMapper.map(userWinnings, UserWinningsForm.class);
             model.addAttribute("editForm", userWinningsForm);
-            model.addAttribute("userTeams",userTeamsRepository.findById(coreService.getCurrentUser().getMobileNumber()));
+            model.addAttribute("userTeams",userTeamsRepository.findAll());
             model.addAttribute("matches",matchesRepository.findAll());
         }
         return "userWinnings/edit";

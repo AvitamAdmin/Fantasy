@@ -11,6 +11,7 @@
               <input type="hidden" id="rowSelectorId" name="rowSelectorId" value="">
               <thead>
                     <tr>
+                      <th class="th-sm">PK</th>
                       <th class="th-sm">Name</th>
                       <th class="th-sm">TotalPrice</th>
                       <th class="th-sm">Entry Fees</th>
@@ -23,6 +24,7 @@
               <tbody>
                   <c:forEach items="${contests}" var="contest">
                     <tr id="${contest.id}">
+                        <td class="td-sm">${contest.id}</td>
                         <td class="td-sm">${contest.name}</td>
                         <td class="td-sm">Rs.${contest.totalPrice}</td>
                         <td class="td-sm">Rs.${contest.entryFee}</td>

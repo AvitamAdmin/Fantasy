@@ -26,6 +26,6 @@ public class Node extends BaseEntity {
 
     private List<Node> childNodes;
 
-    private Integer displayPriority = 1000;
+    private Integer displayPriority;
 
 }

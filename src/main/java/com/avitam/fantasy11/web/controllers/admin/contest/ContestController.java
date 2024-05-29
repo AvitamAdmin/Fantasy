@@ -3,10 +3,8 @@ package com.avitam.fantasy11.web.controllers.admin.contest;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ContestForm;
 import com.avitam.fantasy11.form.InterfaceForm;
-import com.avitam.fantasy11.model.Contest;
-import com.avitam.fantasy11.model.ContestRepository;
-import com.avitam.fantasy11.model.Node;
-import com.avitam.fantasy11.model.SportType;
+import com.avitam.fantasy11.form.UserWinningsForm;
+import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -39,12 +37,12 @@ public class ContestController {
     }
 
     @GetMapping("/edit")
-    public String editContest(@RequestParam("id") String id, Model model) {
-
+    public String edit  (@RequestParam("id") String id, Model model) {
+        ContestForm contestForm=null;
         Optional<Contest> contestOptional = contestRepository.findById(id);
         if (contestOptional.isPresent()) {
             Contest contest = contestOptional.get();
-            ContestForm contestForm = modelMapper.map(contest, ContestForm.class);
+             contestForm = modelMapper.map(contest, ContestForm.class);
             model.addAttribute("editForm", contestForm);
         }
         return "contest/edit";
