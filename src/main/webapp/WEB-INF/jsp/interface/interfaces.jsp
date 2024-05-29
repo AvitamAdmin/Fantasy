@@ -14,8 +14,7 @@
                       <th class="th-sm">PK</th>
                       <th class="th-sm">Name</th>
                       <th class="th-sm">Parent</th>
-                      <th class="th-sm">Path</th>
-                      <th class="th-sm">Last Modified</th>
+                      <th class="th-sm">Path</th
                     </tr>
               </thead>
               <tbody>
@@ -25,9 +24,8 @@
                         <td class="td-sm">${model.name}</td>
                         <td class="td-sm">${model.parentNode.name}</td>
                         <td class="td-sm">${model.path}</td>
-                        <td class="td-sm">${model.lastModified}</td>
                      </tr>
-                 </c:forEach>
+                  </c:forEach>
              </tbody>
          </table>
     </div>

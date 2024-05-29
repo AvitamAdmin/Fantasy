@@ -14,9 +14,9 @@ import java.util.Set;
 @Setter
 public class Node extends BaseEntity {
 
-    private String path;
-
     private String name;
+
+    private String path;
 
     private Set<Role> roles;
 

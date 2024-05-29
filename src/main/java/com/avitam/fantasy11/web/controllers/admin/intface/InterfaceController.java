@@ -31,7 +31,7 @@ public class InterfaceController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() != null).collect(Collectors.toList()));
+        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getId() != null).collect(Collectors.toList()));
         return "interface/interfaces";
     }
 
