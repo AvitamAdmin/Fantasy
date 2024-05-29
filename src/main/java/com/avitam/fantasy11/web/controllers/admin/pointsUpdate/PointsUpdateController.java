@@ -94,7 +94,7 @@ public class PointsUpdateController {
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         model.addAttribute("matches",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
-        model.addAttribute("players",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("players",playerRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
 
         return "pointsUpdate/edit";
     }

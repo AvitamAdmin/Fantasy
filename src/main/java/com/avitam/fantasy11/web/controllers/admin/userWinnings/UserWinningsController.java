@@ -86,14 +86,14 @@ public class UserWinningsController {
     }
 
     @GetMapping("/add")
-    public String addMatches(Model model) {
+    public String addUserWinnings(Model model) {
         UserWinningsForm form = new UserWinningsForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("teams", userTeamsRepository.findAll());
+        model.addAttribute("userTeams", userTeamsRepository.findAll());
         model.addAttribute("matches",matchesRepository.findAll());
         return "userWinnings/edit";
     }

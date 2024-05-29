@@ -33,7 +33,6 @@ public class NotificationController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        //model.addAttribute("models", addressRepository.findAll().stream().filter(address -> address.getUserId() != null).collect(Collectors.toList()));
         model.addAttribute("models", notificationRepository.findAll());
         return "notification/notifications";
     }
@@ -47,7 +46,6 @@ public class NotificationController {
             notificationForm = modelMapper.map(notification, NotificationForm.class);
             model.addAttribute("editForm", notificationForm);
         }
-        //model.addAttribute("nodes", addressRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "notification/edit";
     }
 
@@ -70,10 +68,6 @@ public class NotificationController {
         if(notificationOptional.isPresent()){
             notification.setId(notificationOptional.get().getId());
         }
-
-       /* if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
-            node.setParentNode(nodeRepository.getByIds(Long.valueOf(interfaceForm.getParentNodeId())));
-        }*/
 
         notificationRepository.save(notification);
         model.addAttribute("editForm", notificationForm);
