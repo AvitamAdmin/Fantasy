@@ -57,7 +57,7 @@ public class UserWinningsController {
         if(result.hasErrors()){
             model.addAttribute("message",result);
             model.addAttribute("editForm",userWinningsForm);
-            return "userWinning/edit";
+            return "userWinnings/edit";
         }
         userWinningsForm.setLastModified(new Date());
         if(userWinningsForm.getId()==null){

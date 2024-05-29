@@ -25,7 +25,7 @@
                         <td class="td-sm">${model.userId}</td>
                         <td class="td-sm">${model.matchId}</td>
                         <td class="td-sm">${model.teamId}</td>
-                        <td class="td-sm">${model.winningAmount}</td>
+                        <td class="td-sm">Rs.${model.winningAmount}</td>
                      </tr>
                  </c:forEach>
              </tbody>

@@ -39,7 +39,7 @@ public class ContestController {
     }
 
     @GetMapping("/edit")
-    public String editContest(@RequestParam("id") ObjectId id, Model model) {
+    public String editContest(@RequestParam("id") String id, Model model) {
 
         Optional<Contest> contestOptional = contestRepository.findById(id);
         if (contestOptional.isPresent()) {
@@ -54,6 +54,7 @@ public class ContestController {
     public String handleEdit(@ModelAttribute("editForm") ContestForm contestForm, Model model, BindingResult result) {
         if (result.hasErrors()) {
             model.addAttribute("message", result);
+            model.addAttribute("editForm",contestForm);
             return "contest/edit";
         }
         contestForm.setLastModified(new Date());
@@ -69,14 +70,13 @@ public class ContestController {
             contest.setId(contestOptional.get().getId());
         }
 
-
         contestRepository.save(contest);
         model.addAttribute("editForm", contestForm);
         return "redirect:/admin/contest";
     }
 
     @GetMapping("/add")
-    public String addInterface(Model model) {
+    public String addContest(Model model) {
         ContestForm form = new ContestForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
@@ -87,11 +87,11 @@ public class ContestController {
     }
 
     @GetMapping("/delete")
-    public String deleteInterface(@RequestParam("id") String id, Model model) {
-       // for (String id : ids.split(",")) {
-      //      contestRepository.deleteById(id);
-        //}
+    public String deleteContest(@RequestParam("id") String ids, Model model) {
+
+        for (String id : ids.split(",")) {
         contestRepository.deleteById(new ObjectId(id));
+        }
         return "redirect:/admin/contest";
     }
 }

@@ -5,11 +5,11 @@
             <p class="navigation" id="navBreadcrumb">Breadcrumb</p>
         </div>
     </div>
-    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/admin/userWinning/edit" class="handle-upload" modelAttribute="editForm" >
+    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/admin/userWinnings/edit" class="handle-upload" modelAttribute="editForm" >
         <div class="row">
             <div class="col-sm-12">
                 <div class="dt-buttons">
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/userWinning')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/userWinnings')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="submitFormById('#editForm');" aria-controls="tableData" type="button" title="Save">Save</button>
                 </div>
             </div>
@@ -27,10 +27,10 @@
                          <c:forEach items="${matches}" var="child">
                            <c:choose>
                              <c:when test="${fn:contains( editForm.matchId, child ) }">
-                               <option value="${child.id}" selected>${child.name}</option>
+                               <option value="${child.id}" selected>${child.id}</option>
                              </c:when>
                              <c:otherwise>
-                              <option value="${child.id}" >${child.name}</option>
+                              <option value="${child.id}" >${child.id}</option>
                              </c:otherwise>
                            </c:choose>
                          </c:forEach>
@@ -42,10 +42,10 @@
                     <c:forEach items="${teams}" var="child">
                       <c:choose>
                         <c:when test="${fn:contains( editForm.teamId, child ) }">
-                          <option value="${child.id}" selected>${child.name}</option>
+                          <option value="${child.id}" selected>${child.teamName}</option>
                         </c:when>
                         <c:otherwise>
-                         <option value="${child.id}" >${child.name}</option>
+                         <option value="${child.id}" >${child.teamName}</option>
                         </c:otherwise>
                       </c:choose>
                     </c:forEach>

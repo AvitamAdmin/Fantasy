@@ -52,7 +52,7 @@ public class ContestJoinedController {
             model.addAttribute("editForm", contestJoinedForm);
             model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
             model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
-            model.addAttribute("user",userRepository.findAll().stream().filter(user -> user.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("user", coreService.getCurrentUser().getMobileNumber());
 
         }
         return "contestJoined/edit";
@@ -62,6 +62,7 @@ public class ContestJoinedController {
     public String handleEdit(@ModelAttribute("editForm") ContestJoinedForm contestJoinedForm, Model model, BindingResult result) {
         if (result.hasErrors()) {
             model.addAttribute("message", result);
+            model.addAttribute("editForm",contestJoinedForm);
             return "contestJoined/edit";
         }
         contestJoinedForm.setLastModified(new Date());
@@ -70,7 +71,6 @@ public class ContestJoinedController {
             contestJoinedForm.setCreationTime(new Date());
             contestJoinedForm.setCreator(coreService.getCurrentUser().getEmail());
         }
-        contestJoinedForm.setUserId(coreService.getCurrentUser().getMobileNumber());
 
         ContestJoined contestJoined = modelMapper.map(contestJoinedForm, ContestJoined.class);
 
@@ -105,7 +105,7 @@ public class ContestJoinedController {
         model.addAttribute("editForm", form);
         model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
         model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
-        model.addAttribute("user",userRepository.findAll().stream().filter(user -> user.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("user",coreService.getCurrentUser().getMobileNumber());
 
         return "contestJoined/edit";
     }

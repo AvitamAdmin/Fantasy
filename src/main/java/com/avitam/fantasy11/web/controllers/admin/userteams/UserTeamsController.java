@@ -48,7 +48,7 @@ public class UserTeamsController {
             UserTeamsForm userTeamsForm = modelMapper.map(userTeams, UserTeamsForm.class);
             model.addAttribute("editForm", userTeamsForm);
             model.addAttribute("teams", teamRepository.findAll());
-            model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("matches",matchesRepository.findAll());
             model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
         }
         return "userTeams/edit";
@@ -61,6 +61,7 @@ public class UserTeamsController {
             model.addAttribute("editForm",userTeamsForm);
             return "userTeams/edit";
         }
+        userTeamsForm.setUserId(coreService.getCurrentUser().getMobileNumber());
         userTeamsForm.setLastModified(new Date());
 
         if (userTeamsForm.getId() == null) {
@@ -96,8 +97,8 @@ public class UserTeamsController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("teams", teamRepository.findAll().stream().filter(team -> team.getId() != null).collect(Collectors.toList()));
-        model.addAttribute("match",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("teams", teamRepository.findAll());
+        model.addAttribute("matches",matchesRepository.findAll());
         model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
 
         return "userTeams/edit";

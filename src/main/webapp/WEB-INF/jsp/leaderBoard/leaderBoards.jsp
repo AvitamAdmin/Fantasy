@@ -17,7 +17,6 @@
                       <th class="th-sm">MatchPlayed</th>
                       <th class="th-sm">Rank</th>
                       <th class="th-sm">BonusAmount</th>
-                      <th class="th-sm">Last Modified</th>
                     </tr>
               </thead>
               <tbody>
@@ -29,7 +28,6 @@
                         <td class="th-sm">${model.matchesPlayed}</td>
                         <td class="th-sm">${model.rank}</td>
                         <td class="th-sm">${model.bonusAmount}</td>
-                        <td class="td-sm">${model.lastModified}</td>
                      </tr>
                  </c:forEach>
              </tbody>
