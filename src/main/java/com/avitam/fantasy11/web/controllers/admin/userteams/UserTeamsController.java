@@ -83,6 +83,14 @@ public class UserTeamsController {
         if(matchesOptional.isPresent()){
             userTeams.setMatchId(matchesOptional.get().getId());
         }
+        Optional<Player> playerOptional1=playerRepository.findById(String.valueOf(userTeamsForm.getTeam1Players()));
+        if(playerOptional1.isPresent()){
+            userTeams.setTeam1Players(playerOptional1.get().getId());
+        }
+        Optional<Player> playerOptional2=playerRepository.findById(String.valueOf(userTeamsForm.getTeam2Players()));
+        if(playerOptional2.isPresent()){
+            userTeams.setTeam2Players(playerOptional2.get().getId());
+        }
 
         userTeamsRepository.save(userTeams);
         model.addAttribute("editForm", userTeamsForm);
@@ -96,6 +104,7 @@ public class UserTeamsController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setUserId(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("matches",matchesRepository.findAll());

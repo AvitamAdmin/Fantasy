@@ -27,11 +27,10 @@
                     <c:forEach items="${tournaments}" var="child">
                         <c:choose>
                             <c:when test="${fn:contains( editForm.tournamentId, child ) }">
-
-                              <option value="${child.id}" selected>${child.name}</option>
+                              <option value="${child.id}" selected>${child.tournamentName}</option>
                             </c:when>
                             <c:otherwise>
-                              <option value="${child.id}" >${child.name}</option>
+                              <option value="${child.id}" >${child.tournamentName}</option>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>

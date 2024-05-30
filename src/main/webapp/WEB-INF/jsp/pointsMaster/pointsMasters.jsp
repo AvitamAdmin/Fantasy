@@ -37,8 +37,8 @@
                         <td class="td-sm">${model.thirtyPlus}</td>
                         <td class="td-sm">${model.threeWickets}</td>
                         <td class="td-sm">${model.fiveWickets}</td>
-                        <td class="td-sm">${model.hatrickWickets}</td>
-                        <td class="td-sm">${model.hatrickSixes}</td>
+                        <td class="td-sm">${model.hattrickWickets}</td>
+                        <td class="td-sm">${model.hattrickSixes}</td>
                         <td class="td-sm">${model.economy}</td>
                         <td class="td-sm">${model.matchTypeId}</td>
                      </tr>

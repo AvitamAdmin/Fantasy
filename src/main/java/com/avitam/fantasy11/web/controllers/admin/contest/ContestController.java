@@ -3,8 +3,10 @@ package com.avitam.fantasy11.web.controllers.admin.contest;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ContestForm;
 import com.avitam.fantasy11.form.InterfaceForm;
-import com.avitam.fantasy11.form.UserWinningsForm;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.Contest;
+import com.avitam.fantasy11.model.ContestRepository;
+import com.avitam.fantasy11.model.Node;
+import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -37,8 +39,8 @@ public class ContestController {
     }
 
     @GetMapping("/edit")
-    public String edit  (@RequestParam("id") String id, Model model) {
-        ContestForm contestForm=null;
+    public String editContest(@RequestParam("id") String id, Model model) {
+        ContestForm contestForm = null;
         Optional<Contest> contestOptional = contestRepository.findById(id);
         if (contestOptional.isPresent()) {
             Contest contest = contestOptional.get();
@@ -85,11 +87,13 @@ public class ContestController {
     }
 
     @GetMapping("/delete")
-    public String deleteContest(@RequestParam("id") String ids, Model model) {
+    public String deleteContest(@RequestParam("id") ObjectId ids, Model model) {
 
-        for (String id : ids.split(",")) {
-        contestRepository.deleteById(new ObjectId(id));
-        }
+      //  for (String id : ids.split(",")) {
+        //contestRepository.deleteById(new ObjectId(id));
+        //}
+        contestRepository.deleteById(ids);
+
         return "redirect:/admin/contest";
     }
 }

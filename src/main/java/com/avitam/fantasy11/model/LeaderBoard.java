@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("LeaderBoard")
+@Document("LeaderBoard") //It will generate in MongoDB like LeaderBoard
 public class LeaderBoard extends BaseEntity{
 
     private String userId;

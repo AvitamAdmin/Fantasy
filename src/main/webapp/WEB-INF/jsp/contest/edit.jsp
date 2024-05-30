@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
+                <form:input path="contestName" class="inputbox-cheil-small" placeholder="Enter Name" />
                 <span>Name</span>
-                <form:errors path="name" class="text-danger"></form:errors>
+                <form:errors path="contestName" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input path="totalPrice" class="inputbox-cheil-small" placeholder="Enter Total Price" />
@@ -32,7 +32,7 @@
                 <form:errors path="entryFee" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                <form:input path="noOfMembers" class="inputbox-cheil" placeholder="Members " />
+                <form:input path="noOfMembers" class="inputbox-cheil" placeholder="Members" />
                 <span>No.Of.Members</span>
                 <form:errors path="noOfMembers" class="text-danger"></form:errors>
             </div>

@@ -8,7 +8,7 @@ import java.util.Map;
 @Setter
 public class ContestForm extends BaseForm{
 
-    private String name;
+    private String contestName;
 
     private Double totalPrice;
 

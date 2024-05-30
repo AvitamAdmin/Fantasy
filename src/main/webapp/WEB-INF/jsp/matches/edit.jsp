@@ -55,10 +55,10 @@
                     <c:forEach items="${tournaments}" var="tournament">
                         <c:choose>
                             <c:when test="${fn:contains( editForm.tournamentId, tournament.id ) }">
-                              <option value="${tournament.id}" selected>${tournament.name}</option>
+                              <option value="${tournament.id}" selected>${tournament.tournamentName}</option>
                             </c:when>
                             <c:otherwise>
-                               <option value="${tournament.id}" >${tournament.name}</option>
+                               <option value="${tournament.id}" >${tournament.tournamentName}</option>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
@@ -87,10 +87,10 @@
                     <c:forEach items="${contests}" var="contest">
                         <c:choose>
                             <c:when test="${fn:contains( editForm.contestId, contest.id ) }">
-                              <option value="${contest.id}" selected>${contest.name}</option>
+                              <option value="${contest.id}" selected>${contest.contestName}</option>
                             </c:when>
                             <c:otherwise>
-                               <option value="${contest.id}" >${contest.name}</option>
+                               <option value="${contest.id}" >${contest.contestName}</option>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
@@ -103,7 +103,7 @@
                     <c:forEach items="${matchTypes}" var="matchType">
                         <c:choose>
                             <c:when test="${fn:contains( editForm.matchTypeId, matchType.id ) }">
-                              <option value="${matchType.id}" selected>${matchType.name}</option>
+                              <option value="${matchType.id}" selected>${matchType.matchType}</option>
                             </c:when>
                             <c:otherwise>
                                <option value="${matchType.id}" >${matchType.name}</option>
@@ -112,7 +112,7 @@
                     </c:forEach>
                 </select>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-6">
                 <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
                 <span>City</span>
                 <form:errors path="dateAndTime" class="text-danger"></form:errors>

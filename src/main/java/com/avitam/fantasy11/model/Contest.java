@@ -14,7 +14,7 @@ import java.util.Map;
 @Document("contest")
 public class Contest extends BaseEntity{
 
-    private String name;
+    private String contestName;
 
     private Double totalPrice;
 

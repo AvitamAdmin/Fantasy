@@ -28,9 +28,9 @@ public class PointsMaster extends BaseEntity{
 
     private float fiveWickets;
 
-    private float hatrickWickets;
+    private float hattrickWickets;
 
-    private float hatrickSixes;
+    private float hattrickSixes;
 
     private float economy;
 

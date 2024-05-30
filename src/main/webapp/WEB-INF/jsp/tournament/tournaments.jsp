@@ -21,7 +21,7 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.name}</td>
+                        <td class="td-sm">${model.tournamentName}</td>
                         <td class="td-sm">${model.dateAndTime}</td>
                         <td class="ts-sm">${model.sportId}</td>
                      </tr>

@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.matches;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.form.MatchesForm;
 import com.avitam.fantasy11.model.*;
-//import com.avitam.fantasy11.validation.AddressFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,10 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/admin/matches")
 public class MatchesController {
+    public static final int TOOL_KIT_NODE = 3;
+    public static final int SCHEDULER_NODE = 2;
+    public static final String TOOLKITS = "Toolkits";
+    public static final String SCHEDULING = "Scheduling";
 
     @Autowired
     MatchesRepository matchesRepository;
@@ -45,6 +47,7 @@ public class MatchesController {
 
     @GetMapping
     public String getAllModels(Model model) {
+        //model.addAttribute("models", addressRepository.findAll().stream().filter(address -> address.getUserId() != null).collect(Collectors.toList()));
         model.addAttribute("models", matchesRepository.findAll());
         return "matches/matchess";
     }
@@ -63,6 +66,7 @@ public class MatchesController {
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
         model.addAttribute("contests", contestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
+        //model.addAttribute("nodes", addressRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "matches/edit";
     }
 

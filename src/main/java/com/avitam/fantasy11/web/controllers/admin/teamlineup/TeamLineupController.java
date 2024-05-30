@@ -38,9 +38,9 @@ public class TeamLineupController {
     @GetMapping("/edit")
     public String editTeamLineup (@RequestParam("id") ObjectId id, Model model){
 
-        Optional<TeamLineup> teamlineupOptional = teamLineupRepository.findById(id);
-        if (teamlineupOptional.isPresent()) {
-            TeamLineup teamLineUp = teamlineupOptional.get();
+        Optional<TeamLineup> teamLineUpOptional = teamLineupRepository.findById(id);
+        if (teamLineUpOptional.isPresent()) {
+            TeamLineup teamLineUp = teamLineUpOptional.get();
             TeamLineUpForm teamLineUpForm = modelMapper.map(teamLineUp, TeamLineUpForm.class);
             model.addAttribute("editForm", teamLineUpForm);
             model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));

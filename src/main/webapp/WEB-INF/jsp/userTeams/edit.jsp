@@ -38,35 +38,37 @@
              </div>
 
             <div class="col-sm-3">
-               <select class="cheil-select" name="teamName">
-                    <option value="">Select Team</option>
-                        <c:forEach items="${teams}" var="child">
+               <select class="cheil-select" name="team1Players">
+                    <option value="">Select Team 1 Players</option>
+                        <c:forEach items="${players}" var="player">
                             <c:choose>
-                                <c:when test="${fn:contains( editForm.teamName, child ) }">
-                                      <option value="${child.id}" selected>${child.teamName}</option>
+                                <c:when test="${fn:contains( editForm.team1Players, player.id ) }">
+                                      <option value="${player.id}" selected>${player.playerName}</option>
                                 </c:when>
                                 <c:otherwise>
-                                    <option value="${child.id}">${child.teamName}</option>
+                                    <option value="${player.id}">${player.playerName}</option>
                                 </c:otherwise>
                             </c:choose>
                         </c:forEach>
                </select>
             </div>
+
              <div class="col-sm-3">
-               <select class="cheil-select" name="players">
-                 <option value="">Select Players</option>
-                    <c:forEach items="${players}" var="child">
-                        <c:choose>
-                           <c:when test="${fn:contains( editForm.players, child ) }">
-                              <option value="${child.id}" selected>${child.playerName}</option>
-                           </c:when>
-                           <c:otherwise>
-                            <option value="${child.id}" >${child.playerName}</option>
-                           </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-               </select>
-             </div>
+                           <select class="cheil-select" name="team2Players">
+                                <option value="">Select Team 2 Players</option>
+                                    <c:forEach items="${players}" var="player">
+                                        <c:choose>
+                                            <c:when test="${fn:contains( editForm.team2Players, player.id ) }">
+                                                  <option value="${player.id}" selected>${child.playerName}</option>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option value="${player.id}">${player.playerName}</option>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                           </select>
+                        </div>
+
        </form:form>
        <c:if test="${not empty message}">
            <div class="alert alert-danger" role="alert" id="errorMessage">

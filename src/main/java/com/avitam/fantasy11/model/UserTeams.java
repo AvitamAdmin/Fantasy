@@ -20,6 +20,10 @@ public class UserTeams extends  BaseEntity {
 
     private String teamName;
 
-    private List<String>  players;
+    private List<String> players;
+
+    private ObjectId team1Players;
+
+    private ObjectId team2Players;
 
 }
