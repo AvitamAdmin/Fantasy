@@ -6,11 +6,11 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
-@Entity
-@Table(name = "role")
+@Document("Role")
 @Getter
 @Setter
 @NoArgsConstructor

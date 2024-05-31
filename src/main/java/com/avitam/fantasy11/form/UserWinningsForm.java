@@ -11,7 +11,7 @@ public class UserWinningsForm extends BaseForm{
 
     private String matchId;
 
-    private String teamId;
+    private String userTeamId;
 
     private double winningAmount;
 }

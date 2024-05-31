@@ -73,7 +73,7 @@
                     <div class="col-sm-6">
                         <select name="role" id="roles" class="lg-btn 3col active cheil-select" required="required">
                             <c:forEach items="${roles}" var="role">
-                                <option value="${role.uid}">${role.name}</option>
+                                <option value="${role.roleId}">${role.name}</option>
                             </c:forEach>
                         </select>
                     </div>

@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("contest")
+@Document("Contest")
 public class Contest extends BaseEntity{
 
     private String contestName;

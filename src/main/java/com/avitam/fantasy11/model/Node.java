@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "node")
+@Document("Node")
 @Getter
 @Setter
 public class Node extends BaseEntity {

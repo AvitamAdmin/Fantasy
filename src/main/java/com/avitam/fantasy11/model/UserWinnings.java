@@ -16,7 +16,7 @@ public class UserWinnings extends BaseEntity{
 
     private ObjectId matchId;
 
-    private ObjectId teamId;
+    private ObjectId userTeamId;
 
     private double winningAmount;
 }

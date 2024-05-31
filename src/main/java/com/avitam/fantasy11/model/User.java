@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.model;
 
-import jakarta.persistence.Transient;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +31,6 @@ public class User extends BaseEntity{
     private String gender;
     private String language;
     private Set<Role>roles;
-    @Transient
     private String passwordConfirm;
     private String ResetPasswordToken;
 

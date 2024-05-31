@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.web.controllers.admin.userteams;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.ContestForm;
 import com.avitam.fantasy11.form.UserTeamsForm;
 import com.avitam.fantasy11.model.*;
 import org.bson.types.ObjectId;
@@ -46,13 +45,15 @@ public class UserTeamsController {
         if (userTeamsOptional.isPresent()) {
             UserTeams userTeams = userTeamsOptional.get();
             UserTeamsForm userTeamsForm = modelMapper.map(userTeams, UserTeamsForm.class);
+            //ObjectId teamId=userTeams.getMatchId();
             model.addAttribute("editForm", userTeamsForm);
-            model.addAttribute("teams", teamRepository.findAll());
+           // model.addAttribute("teams", matchesService.getTeamPlayers());
             model.addAttribute("matches",matchesRepository.findAll());
-            model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("players", playerRepository.findAll());
         }
         return "userTeams/edit";
     }
+
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm")  UserTeamsForm userTeamsForm, Model model, BindingResult result) {

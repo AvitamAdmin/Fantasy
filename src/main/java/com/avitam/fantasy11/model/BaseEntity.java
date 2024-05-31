@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.model;
 
-
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

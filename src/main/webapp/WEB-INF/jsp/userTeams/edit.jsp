@@ -40,34 +40,14 @@
             <div class="col-sm-3">
                <select class="cheil-select" name="team1Players">
                     <option value="">Select Team 1 Players</option>
-                        <c:forEach items="${players}" var="player">
-                            <c:choose>
-                                <c:when test="${fn:contains( editForm.team1Players, player.id ) }">
-                                      <option value="${player.id}" selected>${player.playerName}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option value="${player.id}">${player.playerName}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
                </select>
             </div>
 
              <div class="col-sm-3">
-                           <select class="cheil-select" name="team2Players">
-                                <option value="">Select Team 2 Players</option>
-                                    <c:forEach items="${players}" var="player">
-                                        <c:choose>
-                                            <c:when test="${fn:contains( editForm.team2Players, player.id ) }">
-                                                  <option value="${player.id}" selected>${child.playerName}</option>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <option value="${player.id}">${player.playerName}</option>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>
-                           </select>
-                        </div>
+               <select class="cheil-select" name="team2Players">
+                    <option value="">Select Team 2 Players</option>
+               </select>
+            </div>
 
        </form:form>
        <c:if test="${not empty message}">
@@ -76,5 +56,45 @@
            </div>
        </c:if>
     </div>
-  </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const matchSelect = document.querySelector('[name="matchId"]');
+    const team1PlayersSelect = document.querySelector('[name="team1Players"]');
+    const team2PlayersSelect = document.querySelector('[name="team2Players"]');
+
+    matchSelect.addEventListener('change', function () {
+        const selectedMatchId = this.value;
+        if (selectedMatchId) {
+            fetch(`web/controllers/admin/userTeams/getTeamsByMatchId?matchId=${selectedMatchId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const team1Players = data.team1Players;
+                    const team2Players = data.team2Players;
+
+                    // Clear previous options
+                    team1PlayersSelect.innerHTML = '';
+                    team2PlayersSelect.innerHTML = '';
+
+                    // Populate team 1 players dropdown
+                    team1Players.forEach(player => {
+                        const option = new Option(player.playerName, player.id);
+                        team1PlayersSelect.add(option);
+                    });
+
+                    // Populate team 2 players dropdown
+                    team2Players.forEach(player => {
+                        const option = new Option(player.playerName, player.id);
+                        team2PlayersSelect.add(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching players:', error));
+        } else {
+            // Clear players dropdowns if no match is selected
+            team1PlayersSelect.innerHTML = '';
+            team2PlayersSelect.innerHTML = '';
+        }
+    });
+});
+</script>

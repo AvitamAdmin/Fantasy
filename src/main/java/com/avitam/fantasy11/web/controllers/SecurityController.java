@@ -237,10 +237,7 @@ public class SecurityController {
         userForm.setId(userForm.getId());
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("editForm", userForm);
-      //  model.addAttribute("subsidiaries", subsidiaryRepository.findAll());
-       // model.addAttribute("countries", countryRepository.findAll());
         model.addAttribute("isAdmin", user.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
-
 
         return "admin/usersEditContent";
     }

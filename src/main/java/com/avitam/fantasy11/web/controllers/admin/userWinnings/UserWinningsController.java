@@ -74,9 +74,9 @@ public class UserWinningsController {
         if(matchesOptional.isPresent()){
             userWinnings.setMatchId(matchesOptional.get().getId());
         }
-        Optional<UserTeams>userTeamsOptional=userTeamsRepository.findById(userWinningsForm.getTeamId());
+        Optional<UserTeams>userTeamsOptional=userTeamsRepository.findById(userWinningsForm.getUserTeamId());
         if(userTeamsOptional.isPresent()){
-            userWinnings.setTeamId(userTeamsOptional.get().getId());
+            userWinnings.setUserTeamId(userTeamsOptional.get().getId());
         }
 
         userWinningsRepository.save(userWinnings);
