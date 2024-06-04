@@ -26,7 +26,7 @@ public class User extends BaseEntity{
     private double bonus;
     private String mobileNumber;
     private String dateOfBirth;
-    private int role;
+    private String role;
     private Binary profileImage;
     private String gender;
     private String language;

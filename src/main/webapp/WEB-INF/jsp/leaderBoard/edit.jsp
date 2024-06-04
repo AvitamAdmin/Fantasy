@@ -16,12 +16,12 @@
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
-            <div class="col-sm-2">
-                <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter UserId" />
+            <div class="col-sm-3">
+                <form:input path="userIds" class="inputbox-cheil-small" placeholder="Enter UserId" />
                 <span>UserId</span>
-                <form:errors path="userId" class="text-danger"></form:errors>
+                <form:errors path="userIds" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                  <select class="cheil-select" name="tournamentId">
                     <option value="">Select Tournament</option>
                     <c:forEach items="${tournaments}" var="child">
@@ -36,12 +36,12 @@
                     </c:forEach>
                 </select>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <form:input path="matchesPlayed" class="inputbox-cheil-small" placeholder="Enter MatchPlayed" />
                 <span>MatchPlayed</span>
                 <form:errors path="matchesPlayed" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <form:input path="rank" class="inputbox-cheil-small" placeholder="Enter Rank" />
                 <span>Rank</span>
                 <form:errors path="rank" class="text-danger"></form:errors>

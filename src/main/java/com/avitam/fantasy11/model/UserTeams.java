@@ -14,7 +14,7 @@ import java.util.List;
 @Document("UserTeams")
 public class UserTeams extends  BaseEntity {
 
-    private String userId;
+    private String userIds;
 
     private ObjectId matchId;
 

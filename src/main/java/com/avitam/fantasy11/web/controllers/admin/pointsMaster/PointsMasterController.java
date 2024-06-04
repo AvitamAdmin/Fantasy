@@ -35,15 +35,17 @@ public class PointsMasterController {
     }
 
     @GetMapping("/edit")
-    public String editPointsMaster(@RequestParam("id") ObjectId id, Model model) {
+    public String editPointsMaster(@RequestParam("id") String id, Model model) {
 
         Optional<PointsMaster> pointsMasterOptional = pointsMasterRepository.findById(id);
         if (pointsMasterOptional.isPresent()) {
             PointsMaster pointsMaster = pointsMasterOptional.get();
             PointsMasterForm pointsMasterForm = modelMapper.map(pointsMaster, PointsMasterForm.class);
+
             model.addAttribute("editForm", pointsMasterForm);
-            model.addAttribute("match",matchTypeRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
         }
+        model.addAttribute("match",matchTypeRepository.findAll());
+
         return "pointsMaster/edit";
     }
 
@@ -85,7 +87,7 @@ public class PointsMasterController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("matchTypes",matchTypeRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("matchTypes",matchTypeRepository.findAll());
 
         return "pointsMaster/edit";
     }

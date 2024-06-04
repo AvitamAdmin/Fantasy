@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LeaderBoardForm extends BaseForm{
-    private String userId;
+    private String userIds;
 
     private String tournamentId;
 

@@ -38,16 +38,19 @@ public class PointsUpdateController {
     }
 
     @GetMapping("/edit")
-    public String editPointsUpdate(@RequestParam("id") ObjectId id, Model model) {
+    public String editPointsUpdate(@RequestParam("id") String id, Model model) {
 
         Optional<PointsUpdate> pointsUpdateOptional = pointsUpdateRepository.findById(id);
+
         if (pointsUpdateOptional.isPresent()) {
             PointsUpdate pointsUpdate = pointsUpdateOptional.get();
+
             PointsUpdateForm pointsUpdateForm = modelMapper.map(pointsUpdate, PointsUpdateForm.class);
             model.addAttribute("editForm", pointsUpdateForm);
-            model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
-            model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
         }
+        model.addAttribute("matches",matchesRepository.findAll());
+        model.addAttribute("players",playerRepository.findAll());
+
         return "pointsUpdate/edit";
     }
 
@@ -93,8 +96,8 @@ public class PointsUpdateController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("matches",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
-        model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("matches",matchesRepository.findAll());
+        model.addAttribute("players",playerRepository.findAll());
 
         return "pointsUpdate/edit";
     }

@@ -44,7 +44,9 @@ public class ContestController {
         Optional<Contest> contestOptional = contestRepository.findById(id);
         if (contestOptional.isPresent()) {
             Contest contest = contestOptional.get();
+
              contestForm = modelMapper.map(contest, ContestForm.class);
+
             model.addAttribute("editForm", contestForm);
         }
         return "contest/edit";

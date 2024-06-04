@@ -45,7 +45,7 @@ public class NodeServiceImpl implements NodeService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User currentUser = userRepository.findByEmail(principalObject.getUsername());
-        int roles = currentUser.getRole();
+        String roles = currentUser.getRole();
         Set<Node> nodes = new HashSet<>();
 
         List<Node> allNodes = new ArrayList<>();

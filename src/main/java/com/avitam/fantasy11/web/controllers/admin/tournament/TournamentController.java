@@ -38,14 +38,16 @@ public class TournamentController {
         return "tournament/tournaments";
     }
     @GetMapping("/edit")
-    public String editTournament (@RequestParam("id") ObjectId id, Model model){
+    public String editTournament (@RequestParam("id") String id, Model model){
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(id);
         if (tournamentOptional.isPresent()) {
             Tournament tournament = tournamentOptional.get();
+
             TournamentForm tournamentForm = modelMapper.map(tournament, TournamentForm.class);
+
             model.addAttribute("editForm", tournamentForm);
-            model.addAttribute("sportTypes",sportTypeRepository.findAll().stream().filter(sportType -> sportType.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("sportTypes",sportTypeRepository.findAll());
         }
         return "tournament/edit";
     }
@@ -90,7 +92,7 @@ public class TournamentController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("sportTypes",sportTypeRepository.findAll().stream().filter(sportType -> sportType.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("sportTypes",sportTypeRepository.findAll());
 
         return "tournament/edit";
     }

@@ -67,13 +67,13 @@
                 <div class="col-sm-3"></div>
                     <div class="col-sm-6" style="font-size:12px;">Select the role </div>
                 </div>
-                <spring:bind path="roles">
+                <spring:bind path="role">
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
                         <select name="role" id="roles" class="lg-btn 3col active cheil-select" required="required">
                             <c:forEach items="${roles}" var="role">
-                                <option value="${role.roleId}">${role.name}</option>
+                                <option value="${role.id}">${role.name}</option>
                             </c:forEach>
                         </select>
                     </div>

@@ -39,10 +39,10 @@
                           <c:choose>
                               <c:when test="${fn:contains( editForm.playerId, child ) }">
 
-                                <option value="${child.id}" selected>${child.playerId}</option>
+                                <option value="${child.id}" selected>${child.playerName}</option>
                               </c:when>
                               <c:otherwise>
-                                       <option value="${child.id}" >${child.playerId}</option>
+                                       <option value="${child.id}" >${child.playerName}</option>
                               </c:otherwise>
                           </c:choose>
                       </c:forEach>

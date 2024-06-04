@@ -16,7 +16,7 @@
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-4">
                 <form:input path="lineupStatus" class="inputbox-cheil-small" placeholder="Enter LineupStatus" />
                 <span>LineupStatus</span>
                 <form:errors path="lineupStatus" class="text-danger"></form:errors>

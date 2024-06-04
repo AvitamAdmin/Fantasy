@@ -38,12 +38,14 @@ public class LeaderBoardController {
     }
 
     @GetMapping("/edit")
-    public String editLeaderBoard(@RequestParam("id") ObjectId id, Model model) {
+    public String editLeaderBoard(@RequestParam("id") String id, Model model) {
 
         Optional<LeaderBoard> leaderBoardOptional = leaderBoardRepository.findById(id);
         if (leaderBoardOptional.isPresent()) {
             LeaderBoard leaderBoard = leaderBoardOptional.get();
+
             LeaderBoardForm leaderBoardForm = modelMapper.map(leaderBoard, LeaderBoardForm.class);
+
             model.addAttribute("editForm", leaderBoardForm);
             model.addAttribute("tournaments",tournamentRepository.findAll().stream().filter(tournament -> tournament.getId()!=null).collect(Collectors.toList()));
         }

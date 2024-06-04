@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,18 +40,17 @@ public class UserTeamsController {
     }
 
     @GetMapping("/edit")
-    public String editContest(@RequestParam("id") ObjectId id, Model model) {
+    public String editUserTeams(@RequestParam("id") String id, Model model) {
 
         Optional<UserTeams> userTeamsOptional = userTeamsRepository.findById(id);
         if (userTeamsOptional.isPresent()) {
             UserTeams userTeams = userTeamsOptional.get();
             UserTeamsForm userTeamsForm = modelMapper.map(userTeams, UserTeamsForm.class);
-            //ObjectId teamId=userTeams.getMatchId();
             model.addAttribute("editForm", userTeamsForm);
-           // model.addAttribute("teams", matchesService.getTeamPlayers());
-            model.addAttribute("matches",matchesRepository.findAll());
-            model.addAttribute("players", playerRepository.findAll());
         }
+        model.addAttribute("matches",matchesRepository.findAll());
+        model.addAttribute("players", playerRepository.findAll());
+
         return "userTeams/edit";
     }
 
@@ -62,7 +62,7 @@ public class UserTeamsController {
             model.addAttribute("editForm",userTeamsForm);
             return "userTeams/edit";
         }
-        userTeamsForm.setUserId(coreService.getCurrentUser().getMobileNumber());
+        userTeamsForm.setUserIds(coreService.getCurrentUser().getMobileNumber());
         userTeamsForm.setLastModified(new Date());
 
         if (userTeamsForm.getId() == null) {
@@ -99,17 +99,22 @@ public class UserTeamsController {
     }
 
     @GetMapping("/add")
-    public String addUserTeams(Model model) {
+    public String addUserTeams( Model model) {
         UserTeamsForm form = new UserTeamsForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setUserId(coreService.getCurrentUser().getMobileNumber());
+        form.setUserIds(coreService.getCurrentUser().getMobileNumber());
+        Optional<Matches> match=matchesRepository.findById("hiddenMatchId");
+        if (match.isPresent()){
+            List<Player> teamId1=playerRepository.findByTeamId(match.get().getTeamId1());
+            List<Player> teamId2=playerRepository.findByTeamId(match.get().getTeamId2());
+            model.addAttribute("team1Players",teamId1);
+            model.addAttribute("team2Players",teamId2);
+        }
         model.addAttribute("editForm", form);
-        model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("matches",matchesRepository.findAll());
-        model.addAttribute("players",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
 
         return "userTeams/edit";
     }

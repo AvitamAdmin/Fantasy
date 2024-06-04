@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("LeaderBoard") //It will generate in MongoDB like LeaderBoard
 public class LeaderBoard extends BaseEntity{
 
-    private String userId;
+    private String userIds;
 
     private ObjectId tournamentId;
 

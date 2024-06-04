@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter UserId" />
+                <form:input path="userIds" class="inputbox-cheil-small" placeholder="Enter UserId" />
                 <span>User Id</span>
-                <form:errors path="userId" class="text-danger"></form:errors>
+                <form:errors path="userIds" class="text-danger"></form:errors>
             </div>
              <div class="col-sm-3">
                 <select class="cheil-select" name="matchId">
@@ -39,15 +39,36 @@
 
             <div class="col-sm-3">
                <select class="cheil-select" name="team1Players">
-                    <option value="">Select Team 1 Players</option>
-               </select>
+                     <option value="">Select Team 1 Players</option>
+                        <c:forEach items="${team1Players}" var="child">
+                             <c:choose>
+                                 <c:when test="${fn:contains( editForm.players, child ) }">
+                                       <option value="${child.id}" selected>${child.playerName}</option>
+                                 </c:when>
+                                 <c:otherwise>
+                                     <option value="${child.id}" >${child.playerName}</option>
+                                 </c:otherwise>
+                             </c:choose>
+                         </c:forEach>
+                </select>
             </div>
 
              <div class="col-sm-3">
                <select class="cheil-select" name="team2Players">
-                    <option value="">Select Team 2 Players</option>
+                <option value="">Select Team 2 Players</option>
+                      <c:forEach items="${team2Players}" var="child">
+                             <c:choose>
+                                 <c:when test="${fn:contains( editForm.players, child ) }">
+                                       <option value="${child.id}" selected>${child.playerName}</option>
+                                 </c:when>
+                                 <c:otherwise>
+                                     <option value="${child.id}" >${child.playerName}</option>
+                                 </c:otherwise>
+                             </c:choose>
+                      </c:forEach>
                </select>
             </div>
+       <input type="hidden" id="hiddenMatchId" name="hiddenMatchId" value="${editForm.matchId}">
 
        </form:form>
        <c:if test="${not empty message}">
@@ -58,43 +79,12 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const matchSelect = document.querySelector('[name="matchId"]');
-    const team1PlayersSelect = document.querySelector('[name="team1Players"]');
-    const team2PlayersSelect = document.querySelector('[name="team2Players"]');
-
-    matchSelect.addEventListener('change', function () {
-        const selectedMatchId = this.value;
-        if (selectedMatchId) {
-            fetch(`web/controllers/admin/userTeams/getTeamsByMatchId?matchId=${selectedMatchId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const team1Players = data.team1Players;
-                    const team2Players = data.team2Players;
-
-                    // Clear previous options
-                    team1PlayersSelect.innerHTML = '';
-                    team2PlayersSelect.innerHTML = '';
-
-                    // Populate team 1 players dropdown
-                    team1Players.forEach(player => {
-                        const option = new Option(player.playerName, player.id);
-                        team1PlayersSelect.add(option);
-                    });
-
-                    // Populate team 2 players dropdown
-                    team2Players.forEach(player => {
-                        const option = new Option(player.playerName, player.id);
-                        team2PlayersSelect.add(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching players:', error));
-        } else {
-            // Clear players dropdowns if no match is selected
-            team1PlayersSelect.innerHTML = '';
-            team2PlayersSelect.innerHTML = '';
-        }
+    $(document).ready(function(){
+        $('#matchSelect').change(function(){
+            var selectedMatchId = $(this).val();
+            $('#hiddenMatchId').val(selectedMatchId);
+        });
     });
-});
 </script>

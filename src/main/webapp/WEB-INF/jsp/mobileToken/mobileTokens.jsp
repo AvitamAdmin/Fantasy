@@ -20,7 +20,7 @@
                   <c:forEach items="${tokens}" var="token">
                     <tr id="${token.id}">
                         <td class="td-sm">${token.id}</td>
-                        <td class="td-sm">${token.userId}</td>
+                        <td class="td-sm">${token.mobileNumber}</td>
                         <td class="td-sm">${token.otp}</td>
                      </tr>
                  </c:forEach>

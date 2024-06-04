@@ -57,7 +57,7 @@ public class MobileTokenController {
             model.addAttribute("editForm", mobileTokenForm);
             return "mobileToken/edit";
         }
-        mobileTokenForm.setUserId(coreService.getCurrentUser().getMobileNumber());
+        mobileTokenForm.setMobileNumber(Long.valueOf(coreService.getCurrentUser().getMobileNumber()));
         mobileTokenForm.setLastModified(new Date());
         if (mobileTokenForm.getId() == null) {
             mobileTokenForm.setCreationTime(new Date());

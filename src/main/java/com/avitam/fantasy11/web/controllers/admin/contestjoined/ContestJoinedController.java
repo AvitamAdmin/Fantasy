@@ -43,17 +43,18 @@ public class ContestJoinedController {
     }
 
     @GetMapping("/edit")
-    public String editContestJoined(@RequestParam("id") ObjectId id, Model model) {
+    public String editContestJoined(@RequestParam("id") String id, Model model) {
 
         Optional<ContestJoined> contestJoinedOptional = contestJoinedRepository.findById(id);
+
         if (contestJoinedOptional.isPresent()) {
             ContestJoined contestJoined = contestJoinedOptional.get();
-            ContestJoinedForm contestJoinedForm = modelMapper.map(contestJoined, ContestJoinedForm.class);
-            model.addAttribute("editForm", contestJoinedForm);
-            model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
-            model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
-            model.addAttribute("user", coreService.getCurrentUser().getMobileNumber());
 
+            ContestJoinedForm contestJoinedForm = modelMapper.map(contestJoined, ContestJoinedForm.class);
+
+            model.addAttribute("editForm", contestJoinedForm);
+            model.addAttribute("teams",teamRepository.findAll());
+            model.addAttribute("matches",matchesRepository.findAll());
         }
         return "contestJoined/edit";
     }
@@ -101,11 +102,10 @@ public class ContestJoinedController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setUserId(coreService.getCurrentUser().getMobileNumber());
+        form.setUserIds(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
-        model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
-        model.addAttribute("matches",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
-        model.addAttribute("user",coreService.getCurrentUser().getMobileNumber());
+        model.addAttribute("teams",teamRepository.findAll());
+        model.addAttribute("matches",matchesRepository.findAll());
 
         return "contestJoined/edit";
     }

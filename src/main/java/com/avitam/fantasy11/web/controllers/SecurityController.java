@@ -149,7 +149,6 @@ public class SecurityController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("userForm", new User());
-      //model.addAttribute("countries", countryRepository.findAll());
         model.addAttribute("roles", roleRepository.findAll());
         return "security/signupForm";
     }
@@ -159,7 +158,6 @@ public class SecurityController {
         userValidator.validate(user, bindingResultUser);
         if (bindingResultUser.hasErrors()) {
             model.addAttribute("userForm", new User());
-           // model.addAttribute("countries", countryRepository.findAll());
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("message", bindingResultUser);
             return "security/signupForm";

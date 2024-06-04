@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.model;
 
-import jakarta.persistence.Id;
+import javax.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

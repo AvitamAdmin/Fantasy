@@ -17,8 +17,8 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="name" class="inputbox-cheil-small" placeholder="Name" required="required"/>
-                <span>Name</span>
+                <form:input path="name" class="inputbox-cheil-small" placeholder="Role Name" required="required"/>
+                <span>Role Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-6"></div>

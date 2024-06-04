@@ -42,7 +42,7 @@ public class RoleController {
     }
 
     @GetMapping("/edit")
-    public String editUser(@RequestParam("id") ObjectId id, Model model) {
+    public String editRole(@RequestParam("id") String id, Model model) {
         if (id == null) {
             model.addAttribute("message", "Please select a row for edit operation!");
             return "role/edit";
@@ -50,6 +50,7 @@ public class RoleController {
         Optional<Role> roleOptional = roleRepository.findById(id);
         if (roleOptional.isPresent()) {
             RoleForm roleForm = modelMapper.map(roleOptional.get(), RoleForm.class);
+            roleForm.setId(String.valueOf(roleOptional.get().getId()));
             model.addAttribute("nodes", nodeRepository.findAll());
             model.addAttribute("roleForm", roleForm);
         }
@@ -64,18 +65,17 @@ public class RoleController {
             model.addAttribute("message", result);
             return "role/edit";
         }
-        Role role = null;
+        Role role = modelMapper.map(roleForm,Role.class);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         if (roleForm.getId() != null) {
-            Optional<Role> optionalRole = roleRepository.findById(new ObjectId(roleForm.getId()));
+            Optional<Role> optionalRole = roleRepository.findById(roleForm.getId());
             if (optionalRole.isPresent()) {
                 role = optionalRole.get();
                 role.setName(roleForm.getName());
                 role.setPermissions(roleForm.getPermissions());
             }
         } else {
-            role = modelMapper.map(roleForm, Role.class);
             role.setCreationTime(new Date());
         }
         role.setLastModified(new Date());
@@ -86,7 +86,7 @@ public class RoleController {
     }
 
     @GetMapping("/add")
-    public String addUser(@ModelAttribute RoleForm roleForm, Model model) {
+    public String addRole(Model model) {
         RoleForm form = new RoleForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());

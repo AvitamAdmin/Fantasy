@@ -1,15 +1,15 @@
 package com.avitam.fantasy11.form;
 
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Id;
 import java.util.Date;
 @Getter
 @Setter
 public class BaseForm {
-    @Id
+
     private String id;
     private String creator;
     private Boolean status;

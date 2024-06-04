@@ -15,8 +15,8 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserForm {
-    private ObjectId id;
+public class UserForm  extends BaseForm{
+
     private String userName;
     private String password;
     private String passwordConfirm;
@@ -26,16 +26,10 @@ public class UserForm {
     private String mobileNumber;
     private String dateOfBirth;
     private boolean status;
-    private int role;
+    private String role;
     private Binary profileImage;
     private String gender;
     private String language;
-    private String creator;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date creationTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date lastModified;
-    private String modifier;
     private Set<Role> roles;
     private String email;
 }

@@ -37,11 +37,11 @@ public class InterfaceController {
 
     @GetMapping("/edit")
     public String editInterface(@RequestParam("id") String id, Model model) {
-        InterfaceForm interfaceForm=null;
+
         Optional<Node> interfaceOptional = nodeRepository.findById(id);
         if (interfaceOptional.isPresent()) {
             Node node = interfaceOptional.get();
-            interfaceForm = modelMapper.map(node, InterfaceForm.class);
+            InterfaceForm interfaceForm = modelMapper.map(node, InterfaceForm.class);
             model.addAttribute("editForm", interfaceForm);
         }
         model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));
