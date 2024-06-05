@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class UserWinningsForm extends BaseForm{
 
-    private String userIds;
+    private String userId;
 
     private String matchId;
 

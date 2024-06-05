@@ -14,16 +14,12 @@ import java.util.List;
 @Document("UserTeams")
 public class UserTeams extends  BaseEntity {
 
-    private String userIds;
+    private String userId;
 
-    private ObjectId matchId;
+    private String matchId;
 
     private String teamName;
 
     private List<String> players;
-
-    private ObjectId team1Players;
-
-    private ObjectId team2Players;
 
 }

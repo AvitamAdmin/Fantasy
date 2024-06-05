@@ -22,7 +22,7 @@ public class Node extends BaseEntity {
 
     private Node parentNode;
 
-    private ObjectId parentNodeId;
+    private String parentNodeId;
 
     private List<Node> childNodes;
 

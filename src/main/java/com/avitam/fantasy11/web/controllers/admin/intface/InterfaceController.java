@@ -69,7 +69,7 @@ public class InterfaceController {
         List<Node> nodeList=nodeRepository.findByParentNodeId(null);
         for(Node node1: nodeList){
             node1.getName().equals("Admin");
-            node.setParentNodeId(node1.getId());
+            node.setParentNodeId(String.valueOf(node1.getId()));
         }
 
         if (node.getDisplayPriority() == null) {

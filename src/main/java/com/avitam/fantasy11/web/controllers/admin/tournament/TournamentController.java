@@ -75,7 +75,7 @@ public class TournamentController {
         }
         Optional<SportType> sportTypeOptional=sportTypeRepository.findById(tournamentForm.getSportId());
         if(sportTypeOptional.isPresent()) {
-            tournament.setSportId(sportTypeOptional.get().getId());
+            tournament.setSportId(String.valueOf(sportTypeOptional.get().getId()));
         }
 
         tournamentRepository.save(tournament);

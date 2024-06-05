@@ -17,17 +17,10 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/admin/matches")
 public class MatchesController {
-    public static final int TOOL_KIT_NODE = 3;
-    public static final int SCHEDULER_NODE = 2;
-    public static final String TOOLKITS = "Toolkits";
-    public static final String SCHEDULING = "Scheduling";
-
     @Autowired
     MatchesRepository matchesRepository;
-
     @Autowired
     TeamRepository teamRepository;
-
     @Autowired
     TournamentRepository tournamentRepository;
 
@@ -36,10 +29,8 @@ public class MatchesController {
 
     @Autowired
     ContestRepository contestRepository;
-
     @Autowired
     MatchTypeRepository matchTypeRepository;
-
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -72,7 +63,6 @@ public class MatchesController {
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") MatchesForm matchesForm, Model model, BindingResult result) {
-        //new AddressFormValidator().validate(matchesForm, result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "matches/edit";
@@ -89,34 +79,34 @@ public class MatchesController {
             matches.setId(matchesOptional.get().getId());
         }
 
-        Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeamId1());
+        Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeam1Id());
         if(teamOptional1.isPresent()){
-            matches.setTeamId1(teamOptional1.get().getId());
+            matches.setTeam1Id(String.valueOf(teamOptional1.get().getId()));
         }
 
-        Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeamId2());
+        Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeam2Id());
         if(teamOptional2.isPresent()){
-            matches.setTeamId2(teamOptional2.get().getId());
+            matches.setTeam2Id(String.valueOf(teamOptional2.get().getId()));
         }
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
         if(tournamentOptional.isPresent()){
-            matches.setTournamentId(tournamentOptional.get().getId());
+            matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
         }
 
         Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
         if(sportTypeOptional.isPresent()){
-            matches.setSportTypeId(sportTypeOptional.get().getId());
+            matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
         }
 
         Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
         if(contestOptional.isPresent()){
-            matches.setContestId(contestOptional.get().getId());
+            matches.setContestId(String.valueOf(contestOptional.get().getId()));
         }
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchesForm.getMatchTypeId());
         if(matchTypeOptional.isPresent()){
-            matches.setMatchTypeId(matchTypeOptional.get().getId());
+            matches.setMatchTypeId(String.valueOf(matchTypeOptional.get().getId()));
         }
 
         matchesRepository.save(matches);
@@ -142,11 +132,11 @@ public class MatchesController {
     }
 
     @GetMapping("/delete")
-    public String deleteMatches(@RequestParam("id") ObjectId id, Model model) {
-        /*for (String id : ids.split(",")) {
-            addressRepository.deleteById(Integer.valueOf(id));
-        }*/
-        matchesRepository.deleteById(id);
+    public String deleteMatches(@RequestParam("id") String ids, Model model) {
+        for (String id : ids.split(",")) {
+
+                matchesRepository.deleteById(new ObjectId(id));
+        }
         return "redirect:/admin/matches";
     }
 }

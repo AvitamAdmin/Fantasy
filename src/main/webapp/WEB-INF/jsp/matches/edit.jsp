@@ -18,11 +18,17 @@
         <div class="row">
 
             <div class="col-sm-3">
-                 <select class="cheil-select" name="teamId1">
+                <form:input path="matchName" class="inputbox-cheil-small" placeholder="Match Name" />
+                <span>Match Name</span>
+                <form:errors path="matchName" class="text-danger"></form:errors>
+            </div>
+
+            <div class="col-sm-3">
+                 <select class="cheil-select" name="team1Id">
                     <option value="">Select Team1</option>
                     <c:forEach items="${teams}" var="team">
                         <c:choose>
-                            <c:when test="${fn:contains( editForm.teamId1, team.id ) }">
+                            <c:when test="${fn:contains( editForm.team1Id, team.id ) }">
                               <option value="${team.id}" selected>${team.teamName}</option>
                             </c:when>
                             <c:otherwise>
@@ -34,11 +40,11 @@
             </div>
 
             <div class="col-sm-3">
-                 <select class="cheil-select" name="teamId2">
+                 <select class="cheil-select" name="team2Id">
                     <option value="">Select Team2</option>
                     <c:forEach items="${teams}" var="team">
                         <c:choose>
-                            <c:when test="${fn:contains( editForm.teamId2, team.id ) }">
+                            <c:when test="${fn:contains( editForm.team2Id, team.id ) }">
                               <option value="${team.id}" selected>${team.teamName}</option>
                             </c:when>
                             <c:otherwise>
@@ -114,7 +120,6 @@
             </div>
             <div class="col-sm-6">
                 <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
-                <span>City</span>
                 <form:errors path="dateAndTime" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">

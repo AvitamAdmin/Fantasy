@@ -76,11 +76,11 @@ public class PointsUpdateController {
 
         Optional<Matches> matchesOptional=matchesRepository.findById(pointsUpdateForm.getMatchId());
         if(matchesOptional.isPresent()){
-            pointsUpdate.setMatchId(matchesOptional.get().getId());
+            pointsUpdate.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
         Optional<Player> playerOptional=playerRepository.findById(pointsUpdateForm.getPlayerId());
         if(playerOptional.isPresent()){
-            pointsUpdate.setPlayerId(playerOptional.get().getId());
+            pointsUpdate.setPlayerId(String.valueOf(playerOptional.get().getId()));
         }
 
         pointsUpdateRepository.save(pointsUpdate);

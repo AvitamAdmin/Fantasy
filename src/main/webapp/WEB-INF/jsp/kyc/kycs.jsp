@@ -21,7 +21,7 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.userIds}</td>
+                        <td class="td-sm">${model.userId}</td>
                         <td class="td-sm">${model.panNumber}</td>
                         <td class="td-sm"><img style="width:50px" src="data:image/jpeg;base64,${model.pic}"</td>
                      </tr>

@@ -14,16 +14,16 @@
                       <th class="th-sm">PK</th>
                       <th class="th-sm">User Id</th>
                       <th class="th-sm">Match Id</th>
-                      <th class="th-sm">Team Id</th>
+                      <th class="th-sm">UserTeam Id</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.userIds}</td>
+                        <td class="td-sm">${model.userId}</td>
                         <td class="td-sm">${model.matchId}</td>
-                        <td class="td-sm">${model.teamId}</td>
+                        <td class="td-sm">${model.userTeamId}</td>
                      </tr>
                  </c:forEach>
              </tbody>

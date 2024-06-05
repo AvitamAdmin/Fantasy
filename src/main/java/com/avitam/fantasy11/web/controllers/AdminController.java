@@ -8,6 +8,7 @@ import com.avitam.fantasy11.model.UserRepository;
 import com.avitam.fantasy11.validation.UserFormValidator;
 import com.avitam.fantasy11.validation.UserValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -51,7 +52,7 @@ public class AdminController {
     }
 
     @GetMapping("/user/edit")
-    public String editUser(@RequestParam("id") Integer id, Model model) {
+    public String editUser(@RequestParam("id") ObjectId id, Model model) {
         UserForm userForm = new UserForm();
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
@@ -87,7 +88,7 @@ public class AdminController {
             }
         } else {
             userFormValidator.validate(userForm, result);
-            //user = userRepository.findById(userForm.getId());
+            user = userRepository.findById(userForm.getId());
             user.setUsername(userForm.getUserName());
         }
         if (result.hasErrors()) {
@@ -105,7 +106,7 @@ public class AdminController {
     }
 
     @GetMapping("/user/add")
-    public String addUser(@ModelAttribute UserForm userForm, Model model, BindingResult resultl, RedirectAttributes redirectAttributes) {
+    public String addUser(@ModelAttribute UserForm userForm, Model model, BindingResult result, RedirectAttributes redirectAttributes) {
         model.addAttribute("roles", roleRepository.findAll());
 
 

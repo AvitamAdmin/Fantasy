@@ -12,7 +12,7 @@ public interface NodeRepository extends MongoRepository<Node, ObjectId> {
 
     Node getById(ObjectId aLong);
 
-    List<Node> findByParentNodeId(Object id);
+    List<Node> findByParentNodeId(String id);
 
     Optional<Node> findById(String id);
 

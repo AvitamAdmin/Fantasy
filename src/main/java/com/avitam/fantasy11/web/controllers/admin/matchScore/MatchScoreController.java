@@ -72,7 +72,7 @@ public class MatchScoreController {
         }
         Optional<Matches> matchesOptional=matchesRepository.findById(matchScoreForm.getMatchId());
         if(matchesOptional.isPresent()) {
-            matchScore.setMatchId(matchesOptional.get().getId());
+            matchScore.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
 
         matchScoreRepository.save(matchScore);

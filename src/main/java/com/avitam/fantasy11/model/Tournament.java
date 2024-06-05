@@ -20,5 +20,5 @@ public class Tournament extends BaseEntity{
 
     private String dateAndTime;
 
-    private ObjectId sportId;
+    private String sportId;
 }

@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="userIds" class="inputbox-cheil-small" placeholder="Enter UserId" />
+                <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter UserId" />
                 <span>User Id</span>
-                <form:errors path="userIds" class="text-danger"></form:errors>
+                <form:errors path="userId" class="text-danger"></form:errors>
             </div>
              <div class="col-sm-3">
                 <select class="cheil-select" name="matchId">
@@ -27,10 +27,10 @@
                          <c:forEach items="${matches}" var="child">
                              <c:choose>
                                  <c:when test="${fn:contains( editForm.matchId, child ) }">
-                                       <option value="${child.id}" selected>${child.id}</option>
+                                       <option value="${child.id}" selected>${child.matchName}</option>
                                  </c:when>
                                  <c:otherwise>
-                                     <option value="${child.id}" >${child.id}</option>
+                                     <option value="${child.id}" >${child.matchName}</option>
                                  </c:otherwise>
                              </c:choose>
                          </c:forEach>
@@ -40,7 +40,7 @@
             <div class="col-sm-3">
                <select class="cheil-select" name="team1Players">
                      <option value="">Select Team 1 Players</option>
-                        <c:forEach items="${team1Players}" var="child">
+                        <c:forEach items="${allPlayers}" var="child">
                              <c:choose>
                                  <c:when test="${fn:contains( editForm.players, child ) }">
                                        <option value="${child.id}" selected>${child.playerName}</option>
@@ -56,7 +56,7 @@
              <div class="col-sm-3">
                <select class="cheil-select" name="team2Players">
                 <option value="">Select Team 2 Players</option>
-                      <c:forEach items="${team2Players}" var="child">
+                      <c:forEach items="${allPlayers}" var="child">
                              <c:choose>
                                  <c:when test="${fn:contains( editForm.players, child ) }">
                                        <option value="${child.id}" selected>${child.playerName}</option>

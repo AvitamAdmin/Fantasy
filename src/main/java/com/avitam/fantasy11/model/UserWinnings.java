@@ -12,11 +12,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("UserWinnings")
 public class UserWinnings extends BaseEntity{
 
-    private String userIds;
+    private String userId;
 
-    private ObjectId matchId;
+    private String matchId;
 
-    private ObjectId userTeamId;
+    private String userTeamId;
 
     private double winningAmount;
 }

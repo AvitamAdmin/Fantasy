@@ -12,9 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("PointsUpdate")
 public class PointsUpdate extends BaseEntity{
 
-    private ObjectId matchId;
+    private String matchId;
 
-    private ObjectId playerId;
+    private String playerId;
 
     private float battingPoints;
 

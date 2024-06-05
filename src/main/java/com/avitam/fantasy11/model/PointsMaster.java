@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("PointsMaster")
 public class PointsMaster extends BaseEntity{
 
-    private ObjectId matchTypeId;
+    private String matchTypeId;
 
     private float runs;
 

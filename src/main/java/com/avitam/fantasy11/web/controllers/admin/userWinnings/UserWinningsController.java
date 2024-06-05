@@ -80,12 +80,12 @@ public class UserWinningsController {
         
         Optional<Matches> matchesOptional=matchesRepository.findById(userWinningsForm.getMatchId());
         if(matchesOptional.isPresent()) {
-            userWinnings.setMatchId(matchesOptional.get().getId());
+            userWinnings.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
 
         Optional<UserTeams> userTeamOptional=userTeamsRepository.findById(userWinningsForm.getUserTeamId());
         if(userTeamOptional.isPresent()) {
-            userWinnings.setUserTeamId(userTeamOptional.get().getId());
+            userWinnings.setUserTeamId(String.valueOf(userTeamOptional.get().getId()));
         }
 
         userWinningsRepository.save(userWinnings);

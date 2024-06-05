@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface PlayerRepository extends MongoRepository<Player, ObjectId> {
     Optional<Player> findById(String id);
 
-    List<Player> findByTeamId(ObjectId team1);
+    List<Player> findByTeamId(String teamId);
 }

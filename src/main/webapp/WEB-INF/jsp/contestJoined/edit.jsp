@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="userIds" class="inputbox-cheil-small" placeholder="Enter UserId" />
+                <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter UserId" />
                 <span>User Id</span>
-                <form:errors path="userIds" class="text-danger"></form:errors>
+                <form:errors path="userId" class="text-danger"></form:errors>
             </div>
               <div class="col-sm-3">
                  <select class="cheil-select" name="matchId">
@@ -27,25 +27,25 @@
                          <c:forEach items="${matches}" var="child">
                            <c:choose>
                              <c:when test="${fn:contains( editForm.matchId, child ) }">
-                               <option value="${child.id}" selected>${child.id}</option>
+                               <option value="${child.id}" selected>${child.matchName}</option>
                              </c:when>
                              <c:otherwise>
-                              <option value="${child.id}" >${child.id}</option>
+                              <option value="${child.id}" >${child.matchName}</option>
                              </c:otherwise>
                            </c:choose>
                          </c:forEach>
                  </select>
               </div>
           <div class="col-sm-3">
-                  <select class="cheil-select" name="teamId">
-                    <option value="">Select Team</option>
-                        <c:forEach items="${teams}" var="child">
+                  <select class="cheil-select" name="userTeamId">
+                    <option value="">Select UserTeam</option>
+                        <c:forEach items="${userTeams}" var="child">
                           <c:choose>
-                            <c:when test="${fn:contains( editForm.teamId, child ) }">
-                              <option value="${child.id}" selected>${child.teamName}</option>
+                            <c:when test="${fn:contains( editForm.userTeamId, child ) }">
+                              <option value="${child.id}" selected>${child.id}</option>
                             </c:when>
                             <c:otherwise>
-                             <option value="${child.id}" >${child.teamName}</option>
+                             <option value="${child.id}" >${child.id}</option>
                             </c:otherwise>
                           </c:choose>
                         </c:forEach>

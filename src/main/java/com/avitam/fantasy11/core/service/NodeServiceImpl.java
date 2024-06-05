@@ -30,7 +30,7 @@ public class NodeServiceImpl implements NodeService {
                       Comparator.nullsFirst(Comparator.naturalOrder())));
 
               for (Node node : nodesList) {
-                  List<Node> nodes1 = nodeRepository.findByParentNodeId(node.getId());
+                  List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
                   for (Node childNode : nodes1) {
                       childNode.setParentNode(node); // Set parent node for each child node
                   }

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,31 @@ public class UserTeamsController {
         return "userTeams/userTeam";
     }
 
+    @GetMapping
+    public String getPlayers(Model model){
+        return "matchId";
+    }
+
+    @RequestMapping(value="hiddenMatchId",method = RequestMethod.GET)
+    @ResponseBody
+    public List<Player>playerList(@RequestParam("hiddenMatchId")String hiddenMatchId,Model model){
+
+        Optional<Matches> match=matchesRepository.findById(hiddenMatchId);
+
+           String team1Id = match.get().getTeam1Id();
+           String team2Id = match.get().getTeam2Id();
+
+           List<Player> players1 = playerRepository.findByTeamId(team1Id);
+           List<Player> players2 = playerRepository.findByTeamId(team2Id);
+
+           List<Player> allPlayers = new ArrayList<>();
+           allPlayers.addAll(players1);
+           allPlayers.addAll(players2);
+
+           return allPlayers;
+
+      }
+
     @GetMapping("/edit")
     public String editUserTeams(@RequestParam("id") String id, Model model) {
 
@@ -49,7 +75,7 @@ public class UserTeamsController {
             model.addAttribute("editForm", userTeamsForm);
         }
         model.addAttribute("matches",matchesRepository.findAll());
-        model.addAttribute("players", playerRepository.findAll());
+        model.addAttribute("players",playerRepository.findAll());
 
         return "userTeams/edit";
     }
@@ -62,7 +88,7 @@ public class UserTeamsController {
             model.addAttribute("editForm",userTeamsForm);
             return "userTeams/edit";
         }
-        userTeamsForm.setUserIds(coreService.getCurrentUser().getMobileNumber());
+        userTeamsForm.setUserId(coreService.getCurrentUser().getMobileNumber());
         userTeamsForm.setLastModified(new Date());
 
         if (userTeamsForm.getId() == null) {
@@ -76,21 +102,10 @@ public class UserTeamsController {
         if(userTeamsOptional.isPresent()) {
             userTeams.setId(userTeamsOptional.get().getId());
         }
-        Optional<Team> teamOptional=teamRepository.findById(userTeamsForm.getTeamName());
-        if(teamOptional.isPresent()){
-            userTeams.setTeamName(String.valueOf(teamOptional.get().getId()));
-        }
+
         Optional<Matches> matchesOptional=matchesRepository.findById(String.valueOf(userTeamsForm.getMatchId()));
         if(matchesOptional.isPresent()){
-            userTeams.setMatchId(matchesOptional.get().getId());
-        }
-        Optional<Player> playerOptional1=playerRepository.findById(String.valueOf(userTeamsForm.getTeam1Players()));
-        if(playerOptional1.isPresent()){
-            userTeams.setTeam1Players(playerOptional1.get().getId());
-        }
-        Optional<Player> playerOptional2=playerRepository.findById(String.valueOf(userTeamsForm.getTeam2Players()));
-        if(playerOptional2.isPresent()){
-            userTeams.setTeam2Players(playerOptional2.get().getId());
+            userTeams.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
 
         userTeamsRepository.save(userTeams);
@@ -105,14 +120,7 @@ public class UserTeamsController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setUserIds(coreService.getCurrentUser().getMobileNumber());
-        Optional<Matches> match=matchesRepository.findById("hiddenMatchId");
-        if (match.isPresent()){
-            List<Player> teamId1=playerRepository.findByTeamId(match.get().getTeamId1());
-            List<Player> teamId2=playerRepository.findByTeamId(match.get().getTeamId2());
-            model.addAttribute("team1Players",teamId1);
-            model.addAttribute("team2Players",teamId2);
-        }
+        form.setUserId(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
         model.addAttribute("matches",matchesRepository.findAll());
 

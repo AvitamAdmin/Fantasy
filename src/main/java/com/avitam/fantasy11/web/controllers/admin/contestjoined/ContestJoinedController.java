@@ -5,6 +5,7 @@ import com.avitam.fantasy11.form.ContestJoinedForm;
 import com.avitam.fantasy11.model.*;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +51,11 @@ public class ContestJoinedController {
         if (contestJoinedOptional.isPresent()) {
             ContestJoined contestJoined = contestJoinedOptional.get();
 
-            ContestJoinedForm contestJoinedForm = modelMapper.map(contestJoined, ContestJoinedForm.class);
+            ContestJoinedForm contestJoinedForm = new ContestJoinedForm();
+
+           // modelMapper.map(contestJoined, contestJoinedForm);
+
+            contestJoinedForm.setId(String.valueOf(contestJoined.getId()));
 
             model.addAttribute("editForm", contestJoinedForm);
             model.addAttribute("teams",teamRepository.findAll());
@@ -82,12 +87,12 @@ public class ContestJoinedController {
 
         Optional<Matches> matchesOptional=matchesRepository.findById(contestJoinedForm.getMatchId());
         if(matchesOptional.isPresent()) {
-            contestJoined.setMatchId(matchesOptional.get().getId());
+            contestJoined.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
 
-        Optional<Team> teamOptional=teamRepository.findById(contestJoinedForm.getTeamId());
+        Optional<Team> teamOptional=teamRepository.findById(contestJoinedForm.getUserTeamId());
         if(teamOptional.isPresent()) {
-            contestJoined.setTeamId(teamOptional.get().getId());
+            contestJoined.setUserTeamId(String.valueOf(teamOptional.get().getId()));
         }
 
         contestJoinedRepository.save(contestJoined);
@@ -102,7 +107,7 @@ public class ContestJoinedController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setUserIds(coreService.getCurrentUser().getMobileNumber());
+        form.setUserId(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
         model.addAttribute("teams",teamRepository.findAll());
         model.addAttribute("matches",matchesRepository.findAll());

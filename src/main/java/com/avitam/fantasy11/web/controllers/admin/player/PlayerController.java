@@ -88,12 +88,12 @@ public class PlayerController {
 
         Optional<Team> teamOptional = teamRepository.findById(playerForm.getTeamId());
         if(teamOptional.isPresent()){
-            player.setTeamId(teamOptional.get().getId());
+            player.setTeamId(String.valueOf(teamOptional.get().getId()));
         }
 
         Optional<PlayerRole> playerRoleOptional = playerRoleRepository.findById(playerForm.getPlayerRoleId());
         if(playerRoleOptional.isPresent()){
-            player.setPlayerRoleId(playerRoleOptional.get().getId());
+            player.setPlayerRoleId(String.valueOf(playerRoleOptional.get().getId()));
         }
 
         playerRepository.save(player);

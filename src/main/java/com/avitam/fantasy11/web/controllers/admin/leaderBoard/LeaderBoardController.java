@@ -72,7 +72,7 @@ public class LeaderBoardController {
         }
         Optional<Tournament> tournamentOptional=tournamentRepository.findById(leaderBoardForm.getTournamentId());
         if(tournamentOptional.isPresent()){
-            leaderBoard.setTournamentId(tournamentOptional.get().getId());
+            leaderBoard.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
         }
 
         leaderBoardRepository.save(leaderBoard);

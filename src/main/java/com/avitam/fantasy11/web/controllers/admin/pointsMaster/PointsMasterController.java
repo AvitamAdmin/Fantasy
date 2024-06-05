@@ -71,7 +71,7 @@ public class PointsMasterController {
 
         Optional<MatchType> matchTypeOptional=matchTypeRepository.findById(String.valueOf(pointsMasterForm.getMatchTypeId()));
         if(matchTypeOptional.isPresent()){
-            pointsMaster.setMatchTypeId(matchTypeOptional.get().getId());
+            pointsMaster.setMatchTypeId(String.valueOf(matchTypeOptional.get().getId()));
         }
 
         pointsMasterRepository.save(pointsMaster);

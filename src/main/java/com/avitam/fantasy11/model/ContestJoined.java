@@ -13,10 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class ContestJoined extends BaseEntity{
 
-    private String userIds;
+    private String userId;
 
-    private ObjectId matchId;
+    private String matchId;
 
-    private ObjectId teamId;
+    private String userTeamId;
 
 }

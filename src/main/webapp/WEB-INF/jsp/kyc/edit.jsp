@@ -18,9 +18,9 @@
         <div class="row">
 
             <div class="col-sm-3">
-                <form:input path="userIds" class="inputbox-cheil-small" placeholder="Enter-Id" />
+                <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter-Id" />
                 <span>UserId</span>
-                <form:errors path="userIds" class="text-danger"></form:errors>
+                <form:errors path="userId" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input path="panNumber" class="inputbox-cheil-small" placeholder="Enter Pan-Number" />

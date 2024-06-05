@@ -14,8 +14,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Player extends BaseEntity{
 
     private String playerName;
-    private ObjectId teamId;
+    private String teamId;
     private Binary playerImage;
-    private ObjectId playerRoleId;
+    private String playerRoleId;
 
 }

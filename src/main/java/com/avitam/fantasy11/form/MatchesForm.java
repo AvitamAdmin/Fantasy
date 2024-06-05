@@ -9,9 +9,11 @@ import java.util.Date;
 @Setter
 public class MatchesForm extends BaseForm{
 
-    private String teamId1;
+    private String matchName;
 
-    private String teamId2;
+    private String team1Id;
+
+    private String team2Id;
 
     private String dateAndTime;
 

@@ -71,11 +71,11 @@ public class TeamLineupController {
         }
         Optional<Team> teamOptional=teamRepository.findById(teamLineUpForm.getTeamId());
         if(teamOptional.isPresent()){
-            teamLineup.setTeamId(teamOptional.get().getId());
+            teamLineup.setTeamId(String.valueOf(teamOptional.get().getId()));
         }
         Optional<Player> playerOptional=playerRepository.findById(teamLineUpForm.getPlayerId());
         if(playerOptional.isPresent()){
-            teamLineup.setPlayerId(playerOptional.get().getId());
+            teamLineup.setPlayerId(String.valueOf(playerOptional.get().getId()));
         }
         teamLineupRepository.save(teamLineup);
         model.addAttribute("editForm", teamLineUpForm);
