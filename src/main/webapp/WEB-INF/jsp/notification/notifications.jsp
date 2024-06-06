@@ -12,16 +12,16 @@
               <thead>
                     <tr>
                       <th class="th-sm">ID</th>
-                      <th class="th-sm">Message</th>
                       <th class="th-sm">MobileNumber</th>
+                      <th class="th-sm">Message</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.message}</td>
                         <td class="td-sm">${model.mobileNumber}</td>
+                        <td class="td-sm">${model.message}</td>
                      </tr>
                  </c:forEach>
              </tbody>

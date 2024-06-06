@@ -17,5 +17,6 @@ public class InterfaceForm extends BaseForm implements Serializable {
 
     private String path;
     private Node parentNode;
+    private String parentNodeId;
     private Integer displayPriority;
 }

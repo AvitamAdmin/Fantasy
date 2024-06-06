@@ -59,7 +59,6 @@ public class AddressController {
         if (addressForm.getId() == null) {
             addressForm.setCreationTime(new Date());
             addressForm.setCreator(coreService.getCurrentUser().getEmail());
-            addressForm.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
         }
         Address address = modelMapper.map(addressForm, Address.class);
 

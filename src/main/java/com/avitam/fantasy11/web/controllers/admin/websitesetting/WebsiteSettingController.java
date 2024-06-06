@@ -5,6 +5,7 @@ import com.avitam.fantasy11.model.WebsiteSettingRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.WebsiteSettingForm;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,7 +45,7 @@ public class WebsiteSettingController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") Long id, Model model) {
+    public String edit(@RequestParam("id") String id, Model model) {
         Optional<WebsiteSetting> websiteSettingOptional = websiteSettingRepository.findById(id);
         if (websiteSettingOptional.isPresent()) {
             WebsiteSetting websitesetting = websiteSettingOptional.get();
@@ -106,7 +107,7 @@ public class WebsiteSettingController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            websiteSettingRepository.deleteById(Long.valueOf(id));
+            websiteSettingRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/websitesetting";
     }

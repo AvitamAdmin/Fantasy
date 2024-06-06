@@ -11,7 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,24 @@ public class UserTeamsController {
         return "userTeams/userTeam";
     }
 
+    @GetMapping("/players")
+    @ResponseBody
+    public List<Player> getPlayersByMatchId(@RequestParam("matchId")String matchId){
+              List<Player> allPlayers=new ArrayList<>();
+              Optional<Matches> matchesOptional=matchesRepository.findById(matchId);
+              if(matchesOptional.isPresent()){
+                  Matches matches=matchesOptional.get();
+
+                  String team1Id=matches.getTeam1Id();
+                  String team2Id=matches.getTeam2Id();
+
+                  List<Player>team1Players=playerRepository.findByTeamId(team1Id);
+                  List<Player>team2Players=playerRepository.findByTeamId(team2Id);
+
+                  allPlayers.addAll(team2Players);
+              }
+        return allPlayers;
+    }
     @GetMapping("/edit")
     public String editUserTeams(@RequestParam("id") String id, Model model) {
 

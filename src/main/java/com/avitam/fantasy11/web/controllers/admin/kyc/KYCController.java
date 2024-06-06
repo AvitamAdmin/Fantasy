@@ -50,11 +50,11 @@ public class KYCController {
     @GetMapping("/edit")
     public String editKyc(@RequestParam("id") String id, Model model) {
 
-        KYCForm kycForm=null;
         Optional<KYC> kycOptional = kycRepository.findById(id);
         if (kycOptional.isPresent()) {
             KYC kyc = kycOptional.get();
-            kycForm = modelMapper.map(kyc, KYCForm.class);
+            KYCForm kycForm = modelMapper.map(kyc, KYCForm.class);
+            kycForm.setId(String.valueOf(kyc.getId()));
             model.addAttribute("editForm", kycForm);
         }
         return "kyc/edit";

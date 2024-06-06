@@ -39,7 +39,7 @@ public class MobileTokenController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") ObjectId id, Model model) {
+    public String edit(@RequestParam("id") String id, Model model) {
 
         Optional<MobileToken> mobileTokenOptional = mobileTokenRepository.findById(id);
         if (mobileTokenOptional.isPresent()) {
@@ -57,7 +57,6 @@ public class MobileTokenController {
             model.addAttribute("editForm", mobileTokenForm);
             return "mobileToken/edit";
         }
-        mobileTokenForm.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
         mobileTokenForm.setLastModified(new Date());
         if (mobileTokenForm.getId() == null) {
             mobileTokenForm.setCreationTime(new Date());

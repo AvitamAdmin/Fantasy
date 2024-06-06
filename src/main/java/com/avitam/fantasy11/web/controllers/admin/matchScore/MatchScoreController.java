@@ -43,6 +43,7 @@ public class MatchScoreController {
         if (matchScoreOptional.isPresent()) {
             MatchScore matchScore = matchScoreOptional.get();
             MatchScoreForm matchScoreForm = modelMapper.map(matchScore, MatchScoreForm.class);
+            matchScoreForm.setId(String.valueOf(matchScore.getId()));
             model.addAttribute("editForm", matchScoreForm);
             model.addAttribute("matches",matchesRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
         }

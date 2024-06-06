@@ -51,7 +51,6 @@ public class NotificationController {
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") NotificationForm notificationForm, Model model, BindingResult result) {
-       // new NotificationFormValidator().validate(notificationForm, result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "notification/edit";
@@ -81,7 +80,6 @@ public class NotificationController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
         return "notification/edit";
     }

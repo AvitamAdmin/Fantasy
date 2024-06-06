@@ -44,7 +44,9 @@ public class LeaderBoardController {
         if (leaderBoardOptional.isPresent()) {
             LeaderBoard leaderBoard = leaderBoardOptional.get();
 
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             LeaderBoardForm leaderBoardForm = modelMapper.map(leaderBoard, LeaderBoardForm.class);
+            leaderBoardForm.setId(String.valueOf(leaderBoard.getId()));
 
             model.addAttribute("editForm", leaderBoardForm);
             model.addAttribute("tournaments",tournamentRepository.findAll().stream().filter(tournament -> tournament.getId()!=null).collect(Collectors.toList()));

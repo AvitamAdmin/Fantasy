@@ -40,7 +40,7 @@
             <div class="col-sm-3">
                <select class="cheil-select" name="team1Players">
                      <option value="">Select Team 1 Players</option>
-                        <c:forEach items="${allPlayers}" var="child">
+                        <c:forEach items="${allPlayers.team1Players}" var="child">
                              <c:choose>
                                  <c:when test="${fn:contains( editForm.players, child ) }">
                                        <option value="${child.id}" selected>${child.name}</option>
@@ -56,19 +56,18 @@
              <div class="col-sm-3">
                <select class="cheil-select" name="team2Players">
                 <option value="">Select Team 2 Players</option>
-                      <c:forEach items="${allPlayers}" var="child">
+                      <c:forEach items="${allPlayers.team2Players}" var="child">
                              <c:choose>
                                  <c:when test="${fn:contains( editForm.players, child ) }">
-                                       <option value="${child.id}" selected>${child.playerName}</option>
+                                       <option value="${child.id}" selected>${child.name}</option>
                                  </c:when>
                                  <c:otherwise>
-                                     <option value="${child.id}" >${child.playerName}</option>
+                                     <option value="${child.id}" >${child.name}</option>
                                  </c:otherwise>
                              </c:choose>
                       </c:forEach>
                </select>
             </div>
-       <input type="hidden" id="hiddenMatchId" name="hiddenMatchId" value="${editForm.matchId}">
 
        </form:form>
        <c:if test="${not empty message}">
@@ -79,12 +78,37 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $('#matchSelect').change(function(){
-            var selectedMatchId = $(this).val();
-            $('#hiddenMatchId').val(selectedMatchId);
+    $(document).ready(function() {
+        function getPlayers(matchId) {
+            $.ajax({
+                url: "/admin/userTeams/players?matchId=" + matchId,
+                type: "GET",
+                success: function(response) {
+                    displayPlayers(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function displayPlayers(players) {
+            var playerList = $("#playerList");
+            playerList.empty(); // Clear previous player list
+
+            $.each(players, function(index, player) {
+                playerList.append("<p>" + player.name + "</p>");
+            });
+        }
+
+        // Event handler for match select change
+        $("#matchSelect").change(function() {
+            var matchId = $(this).val();
+            if (matchId) {
+                getPlayers(matchId);
+            }
         });
     });
 </script>

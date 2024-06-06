@@ -11,6 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class KYCForm extends BaseForm{
 
     private String panNumber;
-    private String userIds;
+    private String userId;
     private MultipartFile panImage;
 }

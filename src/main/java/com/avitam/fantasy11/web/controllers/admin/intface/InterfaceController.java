@@ -42,6 +42,7 @@ public class InterfaceController {
         if (interfaceOptional.isPresent()) {
             Node node = interfaceOptional.get();
             InterfaceForm interfaceForm = modelMapper.map(node, InterfaceForm.class);
+            interfaceForm.setId(String.valueOf(node.getId()));
             model.addAttribute("editForm", interfaceForm);
         }
         model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));

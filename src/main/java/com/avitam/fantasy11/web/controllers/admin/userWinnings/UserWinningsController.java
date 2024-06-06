@@ -46,7 +46,9 @@ public class UserWinningsController {
         if (userWinningsOptional.isPresent()) {
             UserWinnings userWinnings = userWinningsOptional.get();
 
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             UserWinningsForm userWinningsForm = modelMapper.map(userWinnings, UserWinningsForm.class);
+            userWinningsForm.setId(String.valueOf(userWinnings.getId()));
 
             model.addAttribute("editForm", userWinningsForm);
         }

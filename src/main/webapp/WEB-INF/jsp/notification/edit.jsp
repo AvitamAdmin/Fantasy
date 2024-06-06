@@ -16,7 +16,7 @@
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-6">
                 <form:input path="message" class="inputbox-cheil-small" placeholder="Message" />
                 <span>Message</span>
                 <form:errors path="message" class="text-danger"></form:errors>

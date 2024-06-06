@@ -45,7 +45,9 @@ public class PointsUpdateController {
         if (pointsUpdateOptional.isPresent()) {
             PointsUpdate pointsUpdate = pointsUpdateOptional.get();
 
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             PointsUpdateForm pointsUpdateForm = modelMapper.map(pointsUpdate, PointsUpdateForm.class);
+            pointsUpdateForm.setId(String.valueOf(pointsUpdate.getId()));
             model.addAttribute("editForm", pointsUpdateForm);
         }
         model.addAttribute("matches",matchesRepository.findAll());

@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "WebsiteSetting")
 @Getter
 @Setter
 @NoArgsConstructor
-public class WebsiteSetting extends CommonFields {
+public class WebsiteSetting extends BaseEntity implements Serializable {
+
     private String logoUrl;
-    private String name = "Fantasy11";
     private String faviconUrl;
 }

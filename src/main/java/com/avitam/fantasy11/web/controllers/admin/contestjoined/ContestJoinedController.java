@@ -28,7 +28,7 @@ public class ContestJoinedController {
     @Autowired
     private UserRepository  userRepository;
     @Autowired
-    private TeamRepository teamRepository;
+    private UserTeamsRepository userTeamsRepository;
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
@@ -53,12 +53,10 @@ public class ContestJoinedController {
 
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
            ContestJoinedForm contestJoinedForm=modelMapper.map(contestJoined,ContestJoinedForm.class);
-
            contestJoinedForm.setId(String.valueOf(contestJoined.getId()));
 
-
             model.addAttribute("editForm", contestJoinedForm);
-            model.addAttribute("teams",teamRepository.findAll());
+            model.addAttribute("userTeams",userTeamsRepository.findAll());
             model.addAttribute("matches",matchesRepository.findAll());
         }
         return "contestJoined/edit";
@@ -90,9 +88,9 @@ public class ContestJoinedController {
             contestJoined.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
 
-        Optional<Team> teamOptional=teamRepository.findById(contestJoinedForm.getUserTeamId());
-        if(teamOptional.isPresent()) {
-            contestJoined.setUserTeamId(String.valueOf(teamOptional.get().getId()));
+        Optional<UserTeams> userTeamOptional=userTeamsRepository.findById(contestJoinedForm.getUserTeamId());
+        if(userTeamOptional.isPresent()) {
+            contestJoined.setUserTeamId(String.valueOf(userTeamOptional.get().getId()));
         }
 
         contestJoinedRepository.save(contestJoined);
@@ -109,7 +107,7 @@ public class ContestJoinedController {
         form.setCreator(coreService.getCurrentUser().getEmail());
         form.setUserId(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
-        model.addAttribute("teams",teamRepository.findAll());
+        model.addAttribute("userTeams",userTeamsRepository.findAll());
         model.addAttribute("matches",matchesRepository.findAll());
 
         return "contestJoined/edit";
