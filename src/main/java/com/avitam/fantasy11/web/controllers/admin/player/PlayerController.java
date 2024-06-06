@@ -47,12 +47,16 @@ public class PlayerController {
         return "player/players";
     }
     @GetMapping("/edit")
-    public String editPlayer(@RequestParam("id")ObjectId id, Model model){
+    public String editPlayer(@RequestParam("id")String id, Model model){
 
         Optional<Player> playerOptional = playerRepository.findById(id);
         if (playerOptional.isPresent()) {
             Player player = playerOptional.get();
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             PlayerForm playerForm = modelMapper.map(player, PlayerForm.class);
+            playerForm.setId(String.valueOf(player.getId()));
+
             model.addAttribute("editForm", playerForm);
         }
         model.addAttribute("teams", teamRepository.findAll());

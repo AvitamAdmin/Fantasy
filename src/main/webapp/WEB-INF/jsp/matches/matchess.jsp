@@ -27,7 +27,7 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.matchName}</td>
+                        <td class="td-sm">${model.name}</td>
                         <td class="td-sm">${model.team1Id}</td>
                         <td class="td-sm">${model.team2Id}</td>
                         <td class="td-sm">${model.dateAndTime}</td>

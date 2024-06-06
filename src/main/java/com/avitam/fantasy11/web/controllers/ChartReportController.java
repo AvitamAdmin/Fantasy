@@ -11,8 +11,8 @@ import java.util.*;
 @RequestMapping("/chart")
 public class ChartReportController {
 
-   /*
-    @GetMapping
+/*
+       @GetMapping
     public String getCharts(Model model) {
         return "chart";
     }

@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
              <div class="col-sm-3">
-                <form:input path="playerName" class="inputbox-cheil-small" placeholder="Player Name"/>
+                <form:input path="name" class="inputbox-cheil-small" placeholder="Player Name"/>
                 <span>Player Name</span>
-                <form:errors path="playerName" class="text-danger"></form:errors>
+                <form:errors path="name" class="text-danger"></form:errors>
              </div>
                <div class="col-sm-3">
                    <select class="cheil-select" name="teamId">
@@ -27,10 +27,10 @@
                       <c:forEach items="${teams}" var="team">
                           <c:choose>
                               <c:when test="${fn:contains( editForm.teamId, team) }">
-                                <option value="${team.id}" selected>${team.teamName}</option>
+                                <option value="${team.id}" selected>${team.name}</option>
                               </c:when>
                               <c:otherwise>
-                                 <option value="${team.id}" >${team.teamName}</option>
+                                 <option value="${team.id}" >${team.name}</option>
                               </c:otherwise>
                           </c:choose>
                       </c:forEach>

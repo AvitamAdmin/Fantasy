@@ -28,7 +28,6 @@ public class PlayerRoleController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        //model.addAttribute("models", addressRepository.findAll().stream().filter(address -> address.getUserId() != null).collect(Collectors.toList()));
         model.addAttribute("models", playerRoleRepository.findAll());
         return "playerRole/playerRoles";
     }

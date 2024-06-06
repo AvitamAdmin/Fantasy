@@ -14,8 +14,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class BaseEntity {
 
-    @Id
     private ObjectId id;
+    private String name;
     private String creator;
     private Boolean status;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")

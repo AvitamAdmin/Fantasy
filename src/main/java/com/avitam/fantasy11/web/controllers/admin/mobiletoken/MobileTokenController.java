@@ -33,7 +33,7 @@ public class MobileTokenController {
 
     @GetMapping
     public String getAll(Model model) {
-        List<MobileToken> mobileTokens= mobileTokenRepository.findAll().stream().filter(mobile-> mobile.getId()!=null).collect(Collectors.toList());
+        List<MobileToken> mobileTokens= mobileTokenRepository.findAll();
         model.addAttribute("tokens", mobileTokens);
         return "mobileToken/mobileTokens";
     }
@@ -57,7 +57,7 @@ public class MobileTokenController {
             model.addAttribute("editForm", mobileTokenForm);
             return "mobileToken/edit";
         }
-        mobileTokenForm.setMobileNumber(Long.valueOf(coreService.getCurrentUser().getMobileNumber()));
+        mobileTokenForm.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
         mobileTokenForm.setLastModified(new Date());
         if (mobileTokenForm.getId() == null) {
             mobileTokenForm.setCreationTime(new Date());

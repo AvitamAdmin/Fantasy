@@ -51,11 +51,11 @@ public class ContestJoinedController {
         if (contestJoinedOptional.isPresent()) {
             ContestJoined contestJoined = contestJoinedOptional.get();
 
-            ContestJoinedForm contestJoinedForm = new ContestJoinedForm();
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+           ContestJoinedForm contestJoinedForm=modelMapper.map(contestJoined,ContestJoinedForm.class);
 
-           // modelMapper.map(contestJoined, contestJoinedForm);
+           contestJoinedForm.setId(String.valueOf(contestJoined.getId()));
 
-            contestJoinedForm.setId(String.valueOf(contestJoined.getId()));
 
             model.addAttribute("editForm", contestJoinedForm);
             model.addAttribute("teams",teamRepository.findAll());

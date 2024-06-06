@@ -16,7 +16,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class Role extends BaseEntity {
 
-    private String name;
     @ManyToMany
     private Set<Node> permissions;
 }

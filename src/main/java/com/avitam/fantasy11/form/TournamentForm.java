@@ -11,7 +11,6 @@ import java.util.Date;
 @Setter
 public class TournamentForm extends BaseForm{
 
-    private String tournamentName;
     private String sportId;
     private String dateAndTime;
 

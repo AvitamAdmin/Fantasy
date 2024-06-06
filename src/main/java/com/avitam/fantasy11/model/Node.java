@@ -14,18 +14,11 @@ import java.util.Set;
 @Setter
 public class Node extends BaseEntity {
 
-    private String name;
-
     private String path;
-
     private Set<Role> roles;
-
     private Node parentNode;
-
     private String parentNodeId;
-
     private List<Node> childNodes;
-
     private Integer displayPriority;
 
 }

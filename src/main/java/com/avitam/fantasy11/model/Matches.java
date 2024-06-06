@@ -15,21 +15,12 @@ import java.util.Date;
 
 public class Matches extends BaseEntity{
 
-    private String matchName;
-
     private String team1Id;
-
     private String team2Id;
-
     private String dateAndTime;
-
     private boolean matchStatus;
-
     private String tournamentId;
-
     private String sportTypeId;
-
     private String contestId;
-
     private String matchTypeId;
 }

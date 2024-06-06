@@ -8,6 +8,5 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class SportTypeForm extends BaseForm{
 
-    private String name;
     private MultipartFile logo;
 }

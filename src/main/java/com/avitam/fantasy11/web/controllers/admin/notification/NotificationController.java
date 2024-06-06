@@ -38,12 +38,12 @@ public class NotificationController {
     }
 
     @GetMapping("/edit")
-    public String editNotification(@RequestParam("id") ObjectId id, Model model) {
-        NotificationForm notificationForm = null;
+    public String editNotification(@RequestParam("id") String id, Model model) {
+
         Optional<Notification> notificationOptional = notificationRepository.findById(id);
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
-            notificationForm = modelMapper.map(notification, NotificationForm.class);
+            NotificationForm notificationForm = modelMapper.map(notification, NotificationForm.class);
             model.addAttribute("editForm", notificationForm);
         }
         return "notification/edit";
@@ -89,6 +89,7 @@ public class NotificationController {
     @GetMapping("/delete")
     public String deleteNotification(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
+
             notificationRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/notification";

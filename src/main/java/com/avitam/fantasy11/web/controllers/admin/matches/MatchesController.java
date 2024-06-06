@@ -38,18 +38,21 @@ public class MatchesController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        //model.addAttribute("models", addressRepository.findAll().stream().filter(address -> address.getUserId() != null).collect(Collectors.toList()));
         model.addAttribute("models", matchesRepository.findAll());
         return "matches/matchess";
     }
 
     @GetMapping("/edit")
-    public String editMatches(@RequestParam("id") ObjectId id, Model model) {
-        MatchesForm matchesForm = null;
+    public String editMatches(@RequestParam("id") String id, Model model) {
+
         Optional<Matches> matchesOptional = matchesRepository.findById(id);
         if (matchesOptional.isPresent()) {
             Matches matches = matchesOptional.get();
-            matchesForm = modelMapper.map(matches, MatchesForm.class);
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+            MatchesForm  matchesForm = modelMapper.map(matches, MatchesForm.class);
+            matchesForm.setId(String.valueOf(matches.getId()));
+
             model.addAttribute("editForm", matchesForm);
         }
         model.addAttribute("teams", teamRepository.findAll());
@@ -57,7 +60,6 @@ public class MatchesController {
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
         model.addAttribute("contests", contestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
-        //model.addAttribute("nodes", addressRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "matches/edit";
     }
 

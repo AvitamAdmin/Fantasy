@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("Player")
 public class Player extends BaseEntity{
 
-    private String playerName;
     private String teamId;
     private Binary playerImage;
     private String playerRoleId;

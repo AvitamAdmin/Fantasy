@@ -46,7 +46,7 @@ public class TeamController {
         return "team/teams";
     }
     @GetMapping("/edit")
-    public String editTeam (@RequestParam("id")ObjectId id, Model model){
+    public String editTeam (@RequestParam("id")String id, Model model){
 
         Optional<Team> teamOptional = teamRepository.findById(id);
         if (teamOptional.isPresent()) {

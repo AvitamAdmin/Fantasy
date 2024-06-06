@@ -23,14 +23,14 @@
             </div>
               <div class="col-sm-3">
                  <select class="cheil-select" name="matchId">
-                     <option value="">Select Match</option>
+                     <option value="editForm.matchId">Select Match</option>
                          <c:forEach items="${matches}" var="child">
                            <c:choose>
                              <c:when test="${fn:contains( editForm.matchId, child ) }">
-                               <option value="${child.id}" selected>${child.matchName}</option>
+                               <option value="${child.id}" selected>${child.name}</option>
                              </c:when>
                              <c:otherwise>
-                              <option value="${child.id}" >${child.matchName}</option>
+                              <option value="${child.id}" >${child.name}</option>
                              </c:otherwise>
                            </c:choose>
                          </c:forEach>

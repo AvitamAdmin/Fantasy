@@ -39,7 +39,7 @@ public class MatchTypeController {
         return "matchType/matchTypes";
     }
     @GetMapping("/edit")
-    public String editTournament (@RequestParam("id") ObjectId id, Model model){
+    public String editTournament (@RequestParam("id") String id, Model model){
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(id);
         if (matchTypeOptional.isPresent()) {

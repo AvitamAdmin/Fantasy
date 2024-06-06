@@ -11,9 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,42 +38,21 @@ public class UserTeamsController {
         return "userTeams/userTeam";
     }
 
-    @GetMapping
-    public String getPlayers(Model model){
-        return "matchId";
-    }
-
-    @RequestMapping(value="hiddenMatchId",method = RequestMethod.GET)
-    @ResponseBody
-    public List<Player>playerList(@RequestParam("hiddenMatchId")String hiddenMatchId,Model model){
-
-        Optional<Matches> match=matchesRepository.findById(hiddenMatchId);
-
-           String team1Id = match.get().getTeam1Id();
-           String team2Id = match.get().getTeam2Id();
-
-           List<Player> players1 = playerRepository.findByTeamId(team1Id);
-           List<Player> players2 = playerRepository.findByTeamId(team2Id);
-
-           List<Player> allPlayers = new ArrayList<>();
-           allPlayers.addAll(players1);
-           allPlayers.addAll(players2);
-
-           return allPlayers;
-
-      }
-
     @GetMapping("/edit")
     public String editUserTeams(@RequestParam("id") String id, Model model) {
 
         Optional<UserTeams> userTeamsOptional = userTeamsRepository.findById(id);
         if (userTeamsOptional.isPresent()) {
+
             UserTeams userTeams = userTeamsOptional.get();
-            UserTeamsForm userTeamsForm = modelMapper.map(userTeams, UserTeamsForm.class);
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+            UserTeamsForm userTeamsForm=modelMapper.map(userTeams,UserTeamsForm.class);
+            userTeamsForm.setId(String.valueOf(userTeams.getId()));
+
             model.addAttribute("editForm", userTeamsForm);
         }
         model.addAttribute("matches",matchesRepository.findAll());
-        model.addAttribute("players",playerRepository.findAll());
 
         return "userTeams/edit";
     }

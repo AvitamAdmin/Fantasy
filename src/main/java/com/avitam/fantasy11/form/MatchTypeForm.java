@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class MatchTypeForm extends BaseForm{
 
-    private String name;
+
 }
