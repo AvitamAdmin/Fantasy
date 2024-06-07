@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.websitesetting;
+package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
 
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.model.WebsiteSettingRepository;

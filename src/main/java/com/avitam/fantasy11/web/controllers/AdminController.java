@@ -126,7 +126,7 @@ public class AdminController {
     @GetMapping("/user/delete")
     public String deleteUser(@RequestParam("id") String ids, RedirectAttributes redirectAttributes) {
         for (String id : ids.split(",")) {
-           // userRepository.deleteById(.id);
+            userRepository.deleteById(new ObjectId(id));
         }
         redirectAttributes.addAttribute("userList", userRepository.findAll());
         return "redirect:/admin/user";

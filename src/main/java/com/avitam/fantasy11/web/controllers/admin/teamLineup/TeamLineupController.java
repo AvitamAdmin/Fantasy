@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.teamlineup;
+package com.avitam.fantasy11.web.controllers.admin.teamLineup;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.TeamLineUpForm;

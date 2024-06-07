@@ -106,9 +106,9 @@
         // Event handler for match select change
         $("#matchSelect").change(function() {
             var matchId = $(this).val();
-            if (matchId) {
-                getPlayers(matchId);
-            }
+            if(matchId){
+               getPlayers(matchId);
+           }
         });
     });
 </script>

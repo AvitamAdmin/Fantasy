@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.userteams;
+package com.avitam.fantasy11.web.controllers.admin.userTeams;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.UserTeamsForm;
@@ -117,7 +117,6 @@ public class UserTeamsController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setUserId(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
         model.addAttribute("matches",matchesRepository.findAll());
 
