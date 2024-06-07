@@ -42,10 +42,14 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public List<Node> getNodesForRoles() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User currentUser = userRepository.findByEmail(principalObject.getUsername());
-        String roles = currentUser.getRole();
+        int roles = currentUser.getRole();
+        if(currentUser.getRole()==2){
+
+        }
         Set<Node> nodes = new HashSet<>();
 
         List<Node> allNodes = new ArrayList<>();
@@ -58,6 +62,9 @@ public class NodeServiceImpl implements NodeService {
             }
             allNodes.add(node);
         }
+        return  allNodes;
+
+        /*
         List<Node> treeNode = new ArrayList<>();
         for (Node node : allNodes) {
             if (node.getParentNodeId() == null) {
@@ -84,6 +91,6 @@ public class NodeServiceImpl implements NodeService {
             }
         }
         return treeNode;
+    }*/
     }
 }
-

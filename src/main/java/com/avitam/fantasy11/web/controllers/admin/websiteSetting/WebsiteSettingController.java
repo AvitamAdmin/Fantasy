@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
 
+import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.model.WebsiteSettingRepository;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -20,9 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin/websitesetting")
@@ -30,7 +29,6 @@ public class WebsiteSettingController {
 
     @Autowired
     private WebsiteSettingRepository websiteSettingRepository;
-
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -40,12 +38,23 @@ public class WebsiteSettingController {
     @GetMapping
     public String getAll(Model model) {
         List<WebsiteSetting> websiteSettings = websiteSettingRepository.findAll();
-        model.addAttribute("models", websiteSettings);
+        List<WebsiteSetting> datas=new ArrayList<>();
+        for(WebsiteSetting data:websiteSettings){
+            if(data.getId()!=null) {
+                byte[] image = data.getLogoUrl().getData();
+                byte[] pic=data.getFaviconUrl().getData();
+                data.setPic(Base64.getEncoder().encodeToString(image));
+                data.setPic2(Base64.getEncoder().encodeToString(pic));
+                datas.add(data);
+            }
+        }
+        model.addAttribute("models", datas);
         return "websitesetting/websitesettings";
     }
 
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
+
         Optional<WebsiteSetting> websiteSettingOptional = websiteSettingRepository.findById(id);
         if (websiteSettingOptional.isPresent()) {
             WebsiteSetting websitesetting = websiteSettingOptional.get();
@@ -76,7 +85,7 @@ public class WebsiteSettingController {
             Path path = Paths.get(imagePath + "logo.png");
             Files.copy(logo.getInputStream(), path,
                     StandardCopyOption.REPLACE_EXISTING);
-            websitesetting.setLogoUrl("logo.png");
+          //  websitesetting.setLogoUrl("logo.png");
         }
 
         MultipartFile favicon = websiteSettingForm.getFavicon();
@@ -84,7 +93,7 @@ public class WebsiteSettingController {
             Path path = Paths.get(imagePath + "favicon.png");
             Files.copy(logo.getInputStream(), path,
                     StandardCopyOption.REPLACE_EXISTING);
-            websitesetting.setFaviconUrl("favicon.png");
+           // websitesetting.setFaviconUrl("favicon.png");
         }
         websiteSettingRepository.save(websitesetting);
         model.addAttribute("editForm", websiteSettingForm);

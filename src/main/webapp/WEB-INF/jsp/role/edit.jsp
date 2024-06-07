@@ -21,6 +21,11 @@
                 <span>Role Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>
             </div>
+            <div class="col-sm-3">
+                <form:input path="roleId" class="inputbox-cheil-small" placeholder="Role Id" required="required"/>
+                <span>Role Id</span>
+                <form:errors path="roleId" class="text-danger"></form:errors>
+            </div>
             <div class="col-sm-6"></div>
         </div>
         <br/></br>

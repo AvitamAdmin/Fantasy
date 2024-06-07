@@ -103,7 +103,6 @@ public class ContestJoinedController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setUserId(coreService.getCurrentUser().getMobileNumber());
         model.addAttribute("editForm", form);
         model.addAttribute("userTeams",userTeamsRepository.findAll());
         model.addAttribute("matches",matchesRepository.findAll());

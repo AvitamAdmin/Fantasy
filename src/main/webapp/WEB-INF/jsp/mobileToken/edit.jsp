@@ -17,7 +17,7 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="mobileNumber" class="inputbox-cheil-small"  />
+                <form:input path="mobileNumber" class="inputbox-cheil-small" placeholder="Mobile Number"  />
                 <span>Mobile Number</span>
                 <form:errors path="mobileNumber" class="text-danger"></form:errors>
             </div>

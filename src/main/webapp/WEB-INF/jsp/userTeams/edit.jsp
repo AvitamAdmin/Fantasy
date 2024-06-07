@@ -68,7 +68,7 @@
                       </c:forEach>
                </select>
             </div>
-
+       <input type="hidden" id="val" name="matchId" value="editForm.matchId">
        </form:form>
        <c:if test="${not empty message}">
            <div class="alert alert-danger" role="alert" id="errorMessage">

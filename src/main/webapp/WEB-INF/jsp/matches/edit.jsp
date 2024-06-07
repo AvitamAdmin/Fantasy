@@ -18,8 +18,8 @@
         <div class="row">
 
             <div class="col-sm-3">
-                <form:input path="name" class="inputbox-cheil-small" placeholder="Name" />
-                <span>Name</span>
+                <form:input path="name" class="inputbox-cheil-small" placeholder="Match Name" />
+                <span>Match Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>
             </div>
 

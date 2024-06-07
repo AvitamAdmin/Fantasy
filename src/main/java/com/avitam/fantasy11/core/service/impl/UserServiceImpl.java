@@ -96,13 +96,12 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User currentUser = userRepository.findByEmail(principalObject.getUsername());
-        List<Role> roles = roleRepository.findAll();
-        for (Role role : roles) {
-            if ("ROLE_ADMIN".equals(role.getName())) {
-                return true;
-            }
+        if(currentUser.getRole() == 1){
+
+            return true;
         }
-        return false;
+
+            return false;
     }
 
     public boolean updateResetPasswordToken(String token, String email) {

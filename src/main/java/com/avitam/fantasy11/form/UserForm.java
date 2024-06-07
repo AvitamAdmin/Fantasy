@@ -26,7 +26,7 @@ public class UserForm  extends BaseForm{
     private String mobileNumber;
     private String dateOfBirth;
     private boolean status;
-    private String role;
+    private int role;
     private Binary profileImage;
     private String gender;
     private String language;

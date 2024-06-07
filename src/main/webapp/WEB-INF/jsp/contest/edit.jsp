@@ -32,17 +32,17 @@
                 <form:errors path="entryFee" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                <form:input path="noOfMembers" class="inputbox-cheil" placeholder="Members" />
+                <form:input path="noOfMembers" class="inputbox-cheil" placeholder="no.of.Members" />
                 <span>No.Of.Members</span>
                 <form:errors path="noOfMembers" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-              <form:input path="winPercentage" class="inputbox-cheil"  />
+              <form:input path="winPercentage" class="inputbox-cheil"  placeholder="Win%"/>
               <span>Win %</span>
               <form:errors path="winPercentage" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                <form:input path="maxTeams" class="inputbox-cheil" placeholder="Teams " />
+                <form:input path="maxTeams" class="inputbox-cheil" placeholder="Max Teams " />
                 <span>Max Teams</span>
                 <form:errors path="maxTeams" class="text-danger"></form:errors>
             </div>
