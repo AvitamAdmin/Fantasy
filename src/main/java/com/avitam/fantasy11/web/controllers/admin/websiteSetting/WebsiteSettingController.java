@@ -38,17 +38,8 @@ public class WebsiteSettingController {
     @GetMapping
     public String getAll(Model model) {
         List<WebsiteSetting> websiteSettings = websiteSettingRepository.findAll();
-        List<WebsiteSetting> datas=new ArrayList<>();
-        for(WebsiteSetting data:websiteSettings){
-            if(data.getId()!=null) {
-                byte[] image = data.getLogoUrl().getData();
-                byte[] pic=data.getFaviconUrl().getData();
-                data.setPic(Base64.getEncoder().encodeToString(image));
-                data.setPic2(Base64.getEncoder().encodeToString(pic));
-                datas.add(data);
-            }
-        }
-        model.addAttribute("models", datas);
+
+        model.addAttribute("models", websiteSettings);
         return "websitesetting/websitesettings";
     }
 
@@ -85,7 +76,7 @@ public class WebsiteSettingController {
             Path path = Paths.get(imagePath + "logo.png");
             Files.copy(logo.getInputStream(), path,
                     StandardCopyOption.REPLACE_EXISTING);
-          //  websitesetting.setLogoUrl("logo.png");
+            websitesetting.setLogoUrl("logo.png");
         }
 
         MultipartFile favicon = websiteSettingForm.getFavicon();
@@ -93,7 +84,7 @@ public class WebsiteSettingController {
             Path path = Paths.get(imagePath + "favicon.png");
             Files.copy(logo.getInputStream(), path,
                     StandardCopyOption.REPLACE_EXISTING);
-           // websitesetting.setFaviconUrl("favicon.png");
+            websitesetting.setFaviconUrl("favicon.png");
         }
         websiteSettingRepository.save(websitesetting);
         model.addAttribute("editForm", websiteSettingForm);

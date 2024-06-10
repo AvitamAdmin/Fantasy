@@ -118,7 +118,7 @@
                     </c:forEach>
                 </select>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
                 <form:errors path="dateAndTime" class="text-danger"></form:errors>
             </div>

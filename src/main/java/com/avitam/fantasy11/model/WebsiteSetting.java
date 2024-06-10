@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class WebsiteSetting extends BaseEntity implements Serializable {
 
-    private Binary logoUrl;
-    private Binary faviconUrl;
+    private String logoUrl;
+    private String faviconUrl;
     private String pic2;
 }

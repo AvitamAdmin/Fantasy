@@ -79,6 +79,7 @@ public class RoleController {
             role.setCreationTime(new Date());
         }
         role.setLastModified(new Date());
+        role.setRoleId(roleForm.getRoleId());
         role.setCreator(principalObject.getUsername());
         roleRepository.save(role);
         model.addAttribute("message", "Role was updated successfully!");
