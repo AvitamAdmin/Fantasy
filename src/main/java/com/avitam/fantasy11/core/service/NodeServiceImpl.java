@@ -23,21 +23,21 @@ public class NodeServiceImpl implements NodeService {
     private ModelMapper modelMapper;
 
     @Override
-    public List<Node>getAllNodes(){
-        List<Node> nodesList=  nodeRepository.findByParentNodeId(null);
-          if(CollectionUtils.isNotEmpty(nodesList)) {
-              nodesList.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
-                      Comparator.nullsFirst(Comparator.naturalOrder())));
+    public List<Node> getAllNodes() {
+        List<Node> allNodes = nodeRepository.findByParentNodeId(null);
+        if (CollectionUtils.isNotEmpty(allNodes)) {
+            allNodes.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
+                    Comparator.nullsFirst(Comparator.naturalOrder())));
 
-              for (Node node : nodesList) {
-                  List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
-                  for (Node childNode : nodes1) {
-                      childNode.setParentNode(node); // Set parent node for each child node
-                  }
-                  node.setChildNodes(nodes1);
-              }
-          }
-     return nodesList;
+            for (Node node : allNodes) {
+                List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
+                for (Node childNode : nodes1) {
+                    childNode.setParentNode(node); // Set parent node for each child node
+                }
+                node.setChildNodes(nodes1);
+            }
+        }
+        return allNodes;
     }
 
     @Override
@@ -47,50 +47,22 @@ public class NodeServiceImpl implements NodeService {
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User currentUser = userRepository.findByEmail(principalObject.getUsername());
         int roles = currentUser.getRole();
-        if(currentUser.getRole()==2){
-
-        }
         Set<Node> nodes = new HashSet<>();
+
+        if (currentUser.getRole() == 2) {
+            nodes.addAll(nodeRepository.findByParentNodeId(null));
+        }
 
         List<Node> allNodes = new ArrayList<>();
         List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
         nodeList.sort(Comparator.comparing(node -> node.getDisplayPriority()));
         for (Node node : nodeList) {
-            if (CollectionUtils.isNotEmpty(node.getChildNodes())) {
-               List<Node> childNodes = node.getChildNodes().stream().sorted(Comparator.comparing(nod -> nod.getDisplayPriority())).collect(Collectors.toList());
-               node.setChildNodes(childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.equals(true))).collect(Collectors.toList()));
-            }
+            List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
+            node.setChildNodes(nodes1);
             allNodes.add(node);
         }
-        return  allNodes;
 
-        /*
-        List<Node> treeNode = new ArrayList<>();
-        for (Node node : allNodes) {
-            if (node.getParentNodeId() == null) {
-                if (!treeNode.stream().anyMatch(e -> e.getName().equals(node.getName()))) {
-                    Node nod = modelMapper.map(node, Node.class);
-                    nod.setChildNodes(new ArrayList<>());
-                    treeNode.add(node);
-                }
-            } else {
-                Node nodeDto=null;
-                Node currentChild = modelMapper.map(node, Node.class);
-                Node parentNodes = currentChild;
-                List<Node> children = new ArrayList<>();
-                Optional<Node> parentNode = treeNode.stream().filter(e -> e.getName().equals(parentNodes.getName())).findFirst();
-                if (parentNode.isPresent()) {
-                    children = parentNode.get().getChildNodes();
-                    children.add (currentChild);
-                    parentNode.get().setChildNodes(children);
-                } else {
-                    children.add(currentChild);
-                    parentNodes.setChildNodes(children);
-                    treeNode.add(parentNodes);
-                }
-            }
-        }
-        return treeNode;
-    }*/
+        return allNodes;
+
     }
 }

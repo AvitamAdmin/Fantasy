@@ -17,6 +17,5 @@ import java.util.Set;
 public class Role extends BaseEntity {
 
     private int roleId;
-    @ManyToMany
     private Set<Node> permissions;
 }

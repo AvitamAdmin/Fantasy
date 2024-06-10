@@ -45,6 +45,7 @@ public class TournamentController {
             Tournament tournament = tournamentOptional.get();
 
             TournamentForm tournamentForm = modelMapper.map(tournament, TournamentForm.class);
+            tournamentForm.setId(String.valueOf(tournament.getId()));
 
             model.addAttribute("editForm", tournamentForm);
             model.addAttribute("sportTypes",sportTypeRepository.findAll());
