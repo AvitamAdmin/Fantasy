@@ -104,8 +104,8 @@ public class KYCController {
     public String deleteKyc(@RequestParam("id") String ids, Model model) {
 
         for (String id : ids.split(",")) {
-        kycRepository.deleteById(new ObjectId(id));
-    }
+           kycRepository.deleteById(new ObjectId(id));
+        }
 
         return "redirect:/admin/kyc";
     }

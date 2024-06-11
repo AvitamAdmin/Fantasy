@@ -40,12 +40,11 @@ public class ContestController {
 
     @GetMapping("/edit")
     public String editContest(@RequestParam("id") String id, Model model) {
-        ContestForm contestForm = null;
         Optional<Contest> contestOptional = contestRepository.findById(id);
         if (contestOptional.isPresent()) {
             Contest contest = contestOptional.get();
 
-             contestForm = modelMapper.map(contest, ContestForm.class);
+            ContestForm contestForm = modelMapper.map(contest, ContestForm.class);
 
             model.addAttribute("editForm", contestForm);
         }
@@ -89,13 +88,11 @@ public class ContestController {
     }
 
     @GetMapping("/delete")
-    public String deleteContest(@RequestParam("id") ObjectId ids, Model model) {
+    public String deleteContest(@RequestParam("id") String ids, Model model) {
 
-      //  for (String id : ids.split(",")) {
-        //contestRepository.deleteById(new ObjectId(id));
-        //}
-        contestRepository.deleteById(ids);
-
+        for (String id : ids.split(",")) {
+           contestRepository.deleteById(new ObjectId(id));
+        }
         return "redirect:/admin/contest";
     }
 }

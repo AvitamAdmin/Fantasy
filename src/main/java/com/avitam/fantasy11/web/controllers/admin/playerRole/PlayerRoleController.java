@@ -20,7 +20,7 @@ import java.util.Optional;
 public class PlayerRoleController {
 
     @Autowired
-    PlayerRoleRepository playerRoleRepository;
+    private PlayerRoleRepository playerRoleRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -34,11 +34,11 @@ public class PlayerRoleController {
 
     @GetMapping("/edit")
     public String editPlayerRole(@RequestParam("id") ObjectId id, Model model) {
-        PlayerRoleForm playerRoleForm = null;
+
         Optional<PlayerRole> playerRoleFormOptional = playerRoleRepository.findById(id);
         if (playerRoleFormOptional.isPresent()) {
             PlayerRole playerRole = playerRoleFormOptional.get();
-            playerRoleForm = modelMapper.map(playerRole, PlayerRoleForm.class);
+            PlayerRoleForm playerRoleForm = modelMapper.map(playerRole, PlayerRoleForm.class);
             model.addAttribute("editForm", playerRoleForm);
         }
         return "playerRole/edit";
@@ -81,11 +81,10 @@ public class PlayerRoleController {
     }
 
     @GetMapping("/delete")
-    public String deletePlayerRole(@RequestParam("id") ObjectId id, Model model) {
-        /*for (String id : ids.split(",")) {
-            addressRepository.deleteById(new Object(id));
-        }*/
-        playerRoleRepository.deleteById(id);
+    public String deletePlayerRole(@RequestParam("id") String ids, Model model) {
+        for (String id : ids.split(",")) {
+            playerRoleRepository.deleteById(new ObjectId(id));
+        }
         return "redirect:/admin/playerRole";
     }
 }

@@ -20,17 +20,15 @@ public class MatchesController {
     @Autowired
     MatchesRepository matchesRepository;
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
     @Autowired
-    TournamentRepository tournamentRepository;
-
+    private TournamentRepository tournamentRepository;
     @Autowired
-    SportTypeRepository sportTypeRepository;
-
+    private SportTypeRepository sportTypeRepository;
     @Autowired
-    ContestRepository contestRepository;
+    private ContestRepository contestRepository;
     @Autowired
-    MatchTypeRepository matchTypeRepository;
+    private MatchTypeRepository matchTypeRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -69,7 +67,7 @@ public class MatchesController {
             model.addAttribute("message", result);
             return "matches/edit";
         }
-        matchesForm.setLastModified(new Date());
+            matchesForm.setLastModified(new Date());
         if (matchesForm.getId() == null) {
             matchesForm.setCreationTime(new Date());
             matchesForm.setCreator(coreService.getCurrentUser().getEmail());
@@ -136,8 +134,7 @@ public class MatchesController {
     @GetMapping("/delete")
     public String deleteMatches(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-
-                matchesRepository.deleteById(new ObjectId(id));
+            matchesRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/matches";
     }

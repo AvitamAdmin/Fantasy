@@ -50,9 +50,9 @@ public class WebsiteSettingController {
         if (websiteSettingOptional.isPresent()) {
             WebsiteSetting websitesetting = websiteSettingOptional.get();
             WebsiteSettingForm websiteSettingForm = modelMapper.map(websitesetting, WebsiteSettingForm.class);
+            websiteSettingForm.setId(String.valueOf(websitesetting.getId()));
             model.addAttribute("editForm", websiteSettingForm);
         }
-
         return "websitesetting/edit";
     }
 

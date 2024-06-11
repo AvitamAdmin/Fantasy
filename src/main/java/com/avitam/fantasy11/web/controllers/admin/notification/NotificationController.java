@@ -21,7 +21,7 @@ import java.util.Optional;
 public class NotificationController {
 
     @Autowired
-    NotificationRepository notificationRepository;
+    private NotificationRepository notificationRepository;
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
@@ -55,7 +55,7 @@ public class NotificationController {
             model.addAttribute("message", result);
             return "notification/edit";
         }
-        notificationForm.setLastModified(new Date());
+            notificationForm.setLastModified(new Date());
         if (notificationForm.getId() == null) {
             notificationForm.setCreationTime(new Date());
             notificationForm.setCreator(coreService.getCurrentUser().getEmail());

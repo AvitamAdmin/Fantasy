@@ -22,7 +22,7 @@
                 <form:errors path="userId" class="text-danger"></form:errors>
             </div>
              <div class="col-sm-3">
-                <select class="cheil-select" name="matchId">
+                <select id="matchId" class="cheil-select" name="matchId">
                      <option value="">Select Match</option>
                          <c:forEach items="${matches}" var="child">
                              <c:choose>
@@ -79,36 +79,26 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
+
+<script type="text/javascript">
     $(document).ready(function() {
-        function getPlayers(matchId) {
+        $('#matchId').change(function() {
+            var matchId = $(this).val();
             $.ajax({
-                url: "/admin/userTeams/players?matchId=" + matchId,
-                type: "GET",
-                success: function(response) {
-                    displayPlayers(response);
+                type: 'GET',
+                url: '/admin/userTeams/getPlayersByMatchId', // URL to your controller method
+                data: { matchId: matchId },
+                success: function(data) {
+                    var options = '<option value="">Select Matches</option>';
+                    $.each(data, function(index, child) {
+                        options += '<option value="' + child.id + '">' + child.name + '</option>';
+                    });
+                    $('#matchDropdown').html(options);
                 },
                 error: function(xhr, status, error) {
-                    console.error(error);
+                    console.log(error);
                 }
             });
-        }
-
-        function displayPlayers(players) {
-            var playerList = $("#playerList");
-            playerList.empty(); // Clear previous player list
-
-            $.each(players, function(index, player) {
-                playerList.append("<p>" + player.name + "</p>");
-            });
-        }
-
-        // Event handler for match select change
-        $("#matchSelect").change(function() {
-            var matchId = $(this).val();
-            if(matchId){
-               getPlayers(matchId);
-           }
         });
     });
 </script>

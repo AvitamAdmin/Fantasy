@@ -54,6 +54,7 @@ public class UserTeamsController {
                   List<Player>team1Players=playerRepository.findByTeamId(team1Id);
                   List<Player>team2Players=playerRepository.findByTeamId(team2Id);
 
+                  allPlayers.addAll(team1Players);
                   allPlayers.addAll(team2Players);
               }
         return allPlayers;
@@ -85,8 +86,7 @@ public class UserTeamsController {
             model.addAttribute("editForm",userTeamsForm);
             return "userTeams/edit";
         }
-        userTeamsForm.setUserId(coreService.getCurrentUser().getMobileNumber());
-        userTeamsForm.setLastModified(new Date());
+            userTeamsForm.setLastModified(new Date());
 
         if (userTeamsForm.getId() == null) {
             userTeamsForm.setCreationTime(new Date());

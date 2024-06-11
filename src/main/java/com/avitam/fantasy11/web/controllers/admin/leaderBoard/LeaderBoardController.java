@@ -60,7 +60,7 @@ public class LeaderBoardController {
             model.addAttribute("message", result);
             return "leaderBoard/edit";
         }
-        leaderBoardForm.setLastModified(new Date());
+            leaderBoardForm.setLastModified(new Date());
 
         if (leaderBoardForm.getId() == null) {
             leaderBoardForm.setCreationTime(new Date());
@@ -73,9 +73,9 @@ public class LeaderBoardController {
             leaderBoard.setId(leaderBoardOptional.get().getId());
         }
         Optional<Tournament> tournamentOptional=tournamentRepository.findById(leaderBoardForm.getTournamentId());
-        if(tournamentOptional.isPresent()){
+         if(tournamentOptional.isPresent()){
             leaderBoard.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
-        }
+         }
 
         leaderBoardRepository.save(leaderBoard);
         model.addAttribute("editForm", leaderBoardForm);

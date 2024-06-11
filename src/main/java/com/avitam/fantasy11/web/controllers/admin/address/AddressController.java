@@ -50,7 +50,7 @@ public class AddressController {
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") AddressForm addressForm, Model model, BindingResult result) {
-        //new AddressFormValidator().validate(addressForm, result);
+       // new AddressFormValidator().validate(addressForm, result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "address/edit";

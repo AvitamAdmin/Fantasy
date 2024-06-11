@@ -96,6 +96,7 @@ public class InterfaceController {
     @GetMapping("/delete")
     public String deleteInterface(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
+
             nodeRepository.deleteById(new ObjectId (id));
         }
         return "redirect:/admin/interface";

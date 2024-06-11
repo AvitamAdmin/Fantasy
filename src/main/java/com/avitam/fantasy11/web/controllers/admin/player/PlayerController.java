@@ -76,7 +76,7 @@ public class PlayerController {
         byte[] fig= playerForm.getPlayerImage().getBytes();
         Binary binary=new Binary(fig);
 
-        playerForm.setLastModified(new Date());
+            playerForm.setLastModified(new Date());
         if (playerForm.getId() == null) {
             playerForm.setCreationTime(new Date());
             playerForm.setCreator(coreService.getCurrentUser().getEmail());

@@ -98,7 +98,7 @@ public class TournamentController {
         return "tournament/edit";
     }
     @GetMapping("/delete")
-    public String deleteTeam(@RequestParam("id") String ids, Model model) {
+    public String delete (@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
             tournamentRepository.deleteById(new ObjectId(id));
         }

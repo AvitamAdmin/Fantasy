@@ -59,7 +59,7 @@ public class MatchTypeController {
             return "matchType/edit";
         }
 
-        matchTypeForm.setLastModified(new Date());
+            matchTypeForm.setLastModified(new Date());
         if (matchTypeForm.getId() == null) {
             matchTypeForm.setCreationTime(new Date());
             matchTypeForm.setCreator(coreService.getCurrentUser().getEmail());

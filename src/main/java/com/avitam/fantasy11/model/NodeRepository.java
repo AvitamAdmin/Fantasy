@@ -10,13 +10,8 @@ import java.util.Optional;
 @Repository
 public interface NodeRepository extends MongoRepository<Node, ObjectId> {
 
-    Node getById(ObjectId aLong);
-
     List<Node> findByParentNodeId(String id);
 
     Optional<Node> findById(String id);
 
-    Node findByParentNode(ObjectId parentNodeId);
-
-    Node findByName(String admin);
 }

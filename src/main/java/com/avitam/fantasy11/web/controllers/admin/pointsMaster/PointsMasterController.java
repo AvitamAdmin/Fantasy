@@ -55,7 +55,7 @@ public class PointsMasterController {
             model.addAttribute("message", result);
             return "pointsMaster/edit";
         }
-        pointsMasterForm.setLastModified(new Date());
+            pointsMasterForm.setLastModified(new Date());
 
         if (pointsMasterForm.getId() == null) {
             pointsMasterForm.setCreationTime(new Date());
