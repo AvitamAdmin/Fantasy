@@ -12,9 +12,9 @@
               <thead>
                     <tr>
                       <th class="th-sm">PK</th>
+                      <th class="th-sm">UserTeam Name</th>
                       <th class="th-sm">UserId</th>
                       <th class="th-sm">MatchId</th>
-                      <th class="th-sm">Team Name</th>
                       <th class="th-sm">Players</th>
                     </tr>
               </thead>
@@ -22,9 +22,9 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
+                        <td class="td-sm">${model.name}</td>
                         <td class="td-sm">${model.userId}</td>
                         <td class="td-sm">${model.matchId}</td>
-                        <td class="ts-sm">${model.teamName}</td>
                         <td class="td-sm">${model.players}</td>
 
 

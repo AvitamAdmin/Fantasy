@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.model;
 
-import jdk.jfr.Percentage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

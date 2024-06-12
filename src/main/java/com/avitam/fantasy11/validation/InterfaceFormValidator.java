@@ -10,6 +10,7 @@ public class InterfaceFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
+
         return InterfaceForm.class.equals(clazz);
     }
 

@@ -39,10 +39,9 @@ public class UserTeamsController {
         model.addAttribute("models", userTeamsRepository.findAll().stream().filter(userTeam -> userTeam.getId() != null).collect(Collectors.toList()));
         return "userTeams/userTeam";
     }
-
-    @GetMapping("/players")
+    @RequestMapping(value="/getMatchDetails",method=RequestMethod.GET)
     @ResponseBody
-    public List<Player> getPlayersByMatchId(@RequestParam("matchId")String matchId){
+    public List<Player> getPlayers(@RequestParam("matchId")String matchId){
               List<Player> allPlayers=new ArrayList<>();
               Optional<Matches> matchesOptional=matchesRepository.findById(matchId);
               if(matchesOptional.isPresent()){
@@ -54,7 +53,6 @@ public class UserTeamsController {
                   List<Player>team1Players=playerRepository.findByTeamId(team1Id);
                   List<Player>team2Players=playerRepository.findByTeamId(team2Id);
 
-                  allPlayers.addAll(team1Players);
                   allPlayers.addAll(team2Players);
               }
         return allPlayers;

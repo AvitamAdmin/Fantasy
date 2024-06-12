@@ -4,6 +4,7 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.model.*;
 //import com.avitam.fantasy11.validation.AddressFormValidator;
+import com.avitam.fantasy11.validation.AddressFormValidator;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -38,11 +39,10 @@ public class AddressController {
 
     @GetMapping("/edit")
     public String editAddress(@RequestParam("id") ObjectId id, Model model) {
-        AddressForm addressForm = null;
         Optional<Address> addressOptional = addressRepository.findById(id);
         if (addressOptional.isPresent()) {
             Address address = addressOptional.get();
-            addressForm = modelMapper.map(address, AddressForm.class);
+            AddressForm addressForm = modelMapper.map(address, AddressForm.class);
             model.addAttribute("editForm", addressForm);
         }
         return "address/edit";
@@ -50,9 +50,10 @@ public class AddressController {
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") AddressForm addressForm, Model model, BindingResult result) {
-       // new AddressFormValidator().validate(addressForm, result);
+        new AddressFormValidator().validate(addressForm, result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
+            model.addAttribute("editForm",addressForm);
             return "address/edit";
         }
         addressForm.setLastModified(new Date());

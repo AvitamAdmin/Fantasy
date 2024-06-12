@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.kyc;
 
 import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.model.SportType;
+import com.avitam.fantasy11.validation.KYCFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.KYCForm;
@@ -63,6 +64,7 @@ public class KYCController {
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") KYCForm kycForm, Model model, BindingResult result) throws IOException {
+       new KYCFormValidator().validate(kycForm,result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "kyc/edit";

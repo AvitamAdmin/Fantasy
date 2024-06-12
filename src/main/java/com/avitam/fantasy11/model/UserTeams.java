@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,8 +18,6 @@ public class UserTeams extends  BaseEntity {
     private String userId;
 
     private String matchId;
-
-    private String teamName;
 
     private List<String> players;
 
