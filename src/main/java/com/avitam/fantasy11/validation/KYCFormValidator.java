@@ -13,7 +13,7 @@ public class KYCFormValidator implements Validator {
     private static final String UserId="UserId Must Not be Null";
     private static final String PanNumber="PanNumber Must Not be Null";
     private static final String PanImage="PanImage Must Not be Null";
-    private static final String PanFormat1="Pan Number Must be 'ABCDE1234F' Like This Format only";
+    private static final String PanFormat1="Must be 'ABCDE1234F' in this Format only";
 
 
     @Override

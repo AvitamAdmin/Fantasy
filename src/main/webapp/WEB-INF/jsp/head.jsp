@@ -5,7 +5,7 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<!DOCTYPE html>
+<!DOC TYPE html>
 <html lang="en">
 
 <head>
@@ -41,7 +41,7 @@
 			<nav class="navbar col-lg-12 col-12 p-0 d-flex flex-row">
 				<div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
 					<a class="navbar-brand brand-logo mr-2" href="${home}"><h1 class="site-logo">
-						<img style="width:90px;background-color:#6495ED" src="${contextPath}/images/${siteSetting.logoUrl}" />
+						<img style="width:90px;background-color:#6D33FF" src="${contextPath}/images/${siteSetting.logoUrl}" />
 					</h1></a>
 					<a class="navbar-brand brand-logo-mini" href="${home}"><h1 class="site-logo">
 						<img src="${contextPath}/images/${siteSetting.faviconUrl}" />

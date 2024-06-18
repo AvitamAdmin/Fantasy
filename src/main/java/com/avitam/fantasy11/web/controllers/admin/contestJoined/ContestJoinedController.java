@@ -20,11 +20,7 @@ import java.util.Optional;
 public class ContestJoinedController {
 
     @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
     private ContestJoinedRepository contestJoinedRepository;
-    @Autowired
-    private UserRepository  userRepository;
     @Autowired
     private UserTeamsRepository userTeamsRepository;
     @Autowired

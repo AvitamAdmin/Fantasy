@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequestMapping("/admin/matches")
 public class MatchesController {
     @Autowired
-    MatchesRepository matchesRepository;
+    private MatchesRepository matchesRepository;
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
@@ -90,9 +90,7 @@ public class MatchesController {
         }
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
-        if(tournamentOptional.isPresent()){
-            matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
-        }
+        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
 
         Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
         if(sportTypeOptional.isPresent()){

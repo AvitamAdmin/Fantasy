@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,4 +20,6 @@ public class InterfaceForm extends BaseForm implements Serializable {
     private Node parentNode;
     private String parentNodeId;
     private Integer displayPriority;
+    private List<InterfaceForm> interfaceFormList;
+
 }

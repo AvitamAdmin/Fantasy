@@ -2,12 +2,8 @@ package com.avitam.fantasy11.web.controllers.admin.contest;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ContestForm;
-import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestRepository;
-import com.avitam.fantasy11.model.Node;
-import com.avitam.fantasy11.model.SportType;
-import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

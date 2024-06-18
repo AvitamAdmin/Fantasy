@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerRepository extends MongoRepository<Player, ObjectId> {
+
     Optional<Player> findById(String id);
 
     List<Player> findByTeamId(String teamId);

@@ -86,9 +86,9 @@
         <div class="row form-group ${status.error ? 'has-error' : ''}">
             <div class="col-sm-3"></div>
             <div class="col-sm-6">
-                <form:input type="text" path="mobileNumber" class="inputbox-cheil" placeholder="Mobile Number" required="required"></form:input>
-                            <span>Mobile Number</span>
-                <form:errors path="mobileNumber" class="text-danger"></form:errors>
+               <form:input type="text" path="mobileNumber" class="inputbox-cheil" placeholder="Mobile Number" required="required"></form:input>
+                  <span>Mobile Number</span>
+               <form:errors path="mobileNumber" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3"></div>
         </div>
@@ -134,7 +134,7 @@
         <br/>
         <div class="row">
         <div class="col-sm-4"></div>
-                            <div class="col-sm-4" style="font-size:13px; text-align:center;">By clicking Submit, I agree to the <a href='#'>Terms and Conditions</a> Platform usage and the Privacy Statement.</div>
+            <div class="col-sm-4" style="font-size:13px; text-align:center;">By clicking Submit, I agree to the <a href='#'>Terms and Conditions</a> Platform usage and the Privacy Statement.</div>
                         </div>
                         <br/>
         <div class="row">

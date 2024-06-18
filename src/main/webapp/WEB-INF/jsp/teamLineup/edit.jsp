@@ -10,7 +10,7 @@
             <div class="col-sm-12">
                 <div class="dt-buttons">
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/teamLineup')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="ajaxformSubmit('editForm');" aria-controls="tableData" type="submit" title="Save">Save</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="submitFormById('#editForm');" aria-controls="tableData" type="button" title="Save">Save</button>
                 </div>
             </div>
         </div>

@@ -23,10 +23,6 @@ public class AddressController {
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
-    private NodeRepository nodeRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;

@@ -16,7 +16,7 @@ public class Node extends BaseEntity {
 
     private String path;
     private Set<Role> roles;
-    private Node parentNode;
+    private String parentNode;
     private String parentNodeId;
     private List<Node> childNodes;
     private Integer displayPriority;

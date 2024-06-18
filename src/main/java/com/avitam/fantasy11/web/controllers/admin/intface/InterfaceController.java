@@ -5,6 +5,7 @@ import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.validation.InterfaceFormValidator;
+import org.apache.commons.collections.CollectionUtils;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +34,7 @@ public class InterfaceController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getId() != null).collect(Collectors.toList()));
+        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() != null).collect(Collectors.toList()));
         return "interface/interfaces";
     }
 
@@ -71,6 +74,7 @@ public class InterfaceController {
         for(Node node1: nodeList){
             node1.getName().equals("Admin");
             node.setParentNodeId(String.valueOf(node1.getId()));
+            node.setParentNode(node1.getName());
         }
 
         if (node.getDisplayPriority() == null) {
@@ -101,4 +105,45 @@ public class InterfaceController {
         }
         return "redirect:/admin/interface";
     }
+
+    @GetMapping("/edits")
+    @ResponseBody
+    public ModelAndView editMultiple(@RequestParam("id") String ids, Model model) {
+        List<InterfaceForm> interfaceForms = new ArrayList<>();
+        InterfaceForm interfaceForm = null;
+        for (String id : ids.split(",")) {
+            Optional<Node> interfaceOptional = nodeRepository.findById(id);
+            if (interfaceOptional.isPresent()) {
+                Node node = interfaceOptional.get();
+                interfaceForm = modelMapper.map(node, InterfaceForm.class);
+            }
+            interfaceForms.add(interfaceForm);
+        }
+        model.addAttribute("editForm", new InterfaceForm());
+        model.addAttribute("dataToEdit", interfaceForms);
+        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
+        return new ModelAndView("interface/edits");
+    }
+
+    @PostMapping("/edits")
+    public String editMultiplePost(@ModelAttribute("editForm") InterfaceForm interfaceForm, Model model, BindingResult result) {
+        List<InterfaceForm> interfaceFormList = interfaceForm.getInterfaceFormList();
+        if (CollectionUtils.isNotEmpty(interfaceFormList)) {
+            for (InterfaceForm interfaceForm1 : interfaceFormList) {
+                Optional<Node> interfaceOptional = nodeRepository.findById(String.valueOf(Long.valueOf(interfaceForm1.getId())));
+                if (interfaceOptional.isPresent()) {
+                    Node node = interfaceOptional.get();
+                    interfaceForm1.setStatus(node.getStatus());
+                    interfaceForm1.setCreator(node.getCreator());
+                    interfaceForm1.setCreationTime(node.getCreationTime());
+                }
+                interfaceForm.setLastModified(new Date());
+                Node node = modelMapper.map(interfaceForm1, Node.class);
+                nodeRepository.save(node);
+            }
+        }
+        model.addAttribute("editForm", interfaceForm);
+        return "redirect:/admin/interface";
+    }
+
 }

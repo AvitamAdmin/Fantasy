@@ -3,7 +3,6 @@
   <br/>
   <br/>
   <br/>
-  <br/>
     <div class="main-content">
 
       <form method="POST" action="${contextPath}/login" class="form-signin">
@@ -11,7 +10,7 @@
       <div class="row">
               <div class="col-sm-4"></div>
               <div  style="text-align:center;" class="col-sm-4">
-                  <img style="width:150px;background-color:#6495ED" src="${contextPath}/images/logo.png"/>
+                  <img style="width:180px;background-color:#6D33FF" src="${contextPath}/images/logo.png"/>
               </div>
               <div class="col-sm-4"></div>
       </div>
@@ -58,7 +57,7 @@
                </div>
                <div class="col-sm-4"></div>
          </div>
-         <br/><br/>
+         <br/>
          <div class="row">
             <div class="col-sm-4"></div>
             <div class="col-sm-4 text-center">

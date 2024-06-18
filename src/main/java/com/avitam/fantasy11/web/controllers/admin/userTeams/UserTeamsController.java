@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 public class UserTeamsController {
 
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
     private PlayerRepository playerRepository;
@@ -39,12 +37,13 @@ public class UserTeamsController {
         model.addAttribute("models", userTeamsRepository.findAll().stream().filter(userTeam -> userTeam.getId() != null).collect(Collectors.toList()));
         return "userTeams/userTeam";
     }
-    @RequestMapping(value="/getMatchDetails",method=RequestMethod.GET)
     @ResponseBody
-    public List<Player> getPlayers(@RequestParam("matchId")String matchId){
+    @RequestMapping("/getPlayersByMatchId")
+    public List<Player> getMatchDetails(@PathVariable("matchId")String matchId){
               List<Player> allPlayers=new ArrayList<>();
-              Optional<Matches> matchesOptional=matchesRepository.findById(matchId);
+              Optional<Matches> matchesOptional=matchesRepository.findById("66556bb7def4a9149009b468");
               if(matchesOptional.isPresent()){
+
                   Matches matches=matchesOptional.get();
 
                   String team1Id=matches.getTeam1Id();
@@ -53,6 +52,7 @@ public class UserTeamsController {
                   List<Player>team1Players=playerRepository.findByTeamId(team1Id);
                   List<Player>team2Players=playerRepository.findByTeamId(team2Id);
 
+                  allPlayers.addAll(team1Players);
                   allPlayers.addAll(team2Players);
               }
         return allPlayers;
@@ -70,8 +70,9 @@ public class UserTeamsController {
             userTeamsForm.setId(String.valueOf(userTeams.getId()));
 
             model.addAttribute("editForm", userTeamsForm);
+            model.addAttribute("matches",matchesRepository.findAll());
+            model.addAttribute("allPlayers",playerRepository.findAll());
         }
-        model.addAttribute("matches",matchesRepository.findAll());
 
         return "userTeams/edit";
     }
@@ -117,6 +118,7 @@ public class UserTeamsController {
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         model.addAttribute("matches",matchesRepository.findAll());
+        model.addAttribute("allPlayers",playerRepository.findAll());
 
         return "userTeams/edit";
     }

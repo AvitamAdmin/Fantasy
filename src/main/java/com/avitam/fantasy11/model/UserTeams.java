@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,9 +17,7 @@ import java.util.List;
 public class UserTeams extends  BaseEntity {
 
     private String userId;
-
     private String matchId;
-
-    private List<String> players;
+    private Set<String> players;
 
 }

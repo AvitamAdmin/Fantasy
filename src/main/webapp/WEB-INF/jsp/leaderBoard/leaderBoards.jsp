@@ -27,7 +27,7 @@
                         <td class="th-sm">${model.tournamentId}</td>
                         <td class="th-sm">${model.matchesPlayed}</td>
                         <td class="th-sm">${model.rank}</td>
-                        <td class="th-sm">${model.bonusAmount}</td>
+                        <td class="th-sm">Rs.${model.bonusAmount}</td>
                      </tr>
                  </c:forEach>
              </tbody>

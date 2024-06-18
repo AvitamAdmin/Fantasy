@@ -37,6 +37,7 @@ public class LineUpStatusController {
         model.addAttribute("models", lineUps);
         return "lineupStatus/lineupStatuses";
     }
+
     @GetMapping("/edit")
     public String editLineupStatus (@RequestParam("id") ObjectId id, Model model){
 

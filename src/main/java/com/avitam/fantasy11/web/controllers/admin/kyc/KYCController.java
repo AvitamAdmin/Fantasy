@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 public class KYCController {
 
     @Autowired
-    private NodeRepository nodeRepository;
-    @Autowired
     private KYCRepository kycRepository;
     @Autowired
     private ModelMapper modelMapper;
