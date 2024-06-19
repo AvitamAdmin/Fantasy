@@ -13,6 +13,7 @@
                     <tr>
                       <th class="th-sm">PK</th>
                       <th class="th-sm">Name</th>
+                      <th class="th-sm">Main Contest Id</th>
                       <th class="th-sm">TotalPrice</th>
                       <th class="th-sm">Entry Fees</th>
                       <th class="th-sm">Members</th>
@@ -26,6 +27,7 @@
                     <tr id="${contest.id}">
                         <td class="td-sm">${contest.id}</td>
                         <td class="td-sm">${contest.name}</td>
+                         <td class="td-sm">${contest.mainContestId}</td>
                         <td class="td-sm">Rs.${contest.totalPrice}</td>
                         <td class="td-sm">Rs.${contest.entryFee}</td>
                         <td class="td-sm">${contest.noOfMembers}</td>

@@ -17,6 +17,22 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
+                 <select class="cheil-select" name="mainContestId">
+                    <option value="">Select MainContest</option>
+                    <c:forEach items="${mainContests}" var="mainContest">
+                        <c:choose>
+                            <c:when test="${fn:contains( editForm.mainContestId, mainContest.id ) }">
+                              <option value="${mainContest.id}" selected>${mainContest.mainContestName}</option>
+                            </c:when>
+                            <c:otherwise>
+                               <option value="${mainContest.id}" >${mainContest.mainContestName}</option>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <div class="col-sm-3">
                 <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
                 <span>Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>

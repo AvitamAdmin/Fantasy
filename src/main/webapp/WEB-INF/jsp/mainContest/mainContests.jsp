@@ -12,20 +12,14 @@
               <thead>
                     <tr>
                       <th class="th-sm">PK</th>
-                      <th class="th-sm">User Id</th>
-                      <th class="th-sm">Match Id</th>
-                      <th class="th-sm">Team Id</th>
-                      <th class="th-sm">WinningAmount</th>
+                      <th class="th-sm">Name</th>
                     </tr>
               </thead>
               <tbody>
-                  <c:forEach items="${models}" var="model">
-                    <tr id="${model.id}">
-                        <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.userId}</td>
-                        <td class="td-sm">${model.matchId}</td>
-                        <td class="td-sm">${model.userTeam}</td>
-                        <td class="td-sm">Rs.${model.winningAmount}</td>
+                  <c:forEach items="${contests}" var="contest">
+                    <tr id="${contest.id}">
+                        <td class="td-sm">${contest.id}</td>
+                        <td class="td-sm">${contest.mainContestName}</td>
                      </tr>
                  </c:forEach>
              </tbody>

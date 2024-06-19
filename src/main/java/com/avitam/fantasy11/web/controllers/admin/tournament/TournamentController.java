@@ -43,10 +43,10 @@ public class TournamentController {
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(id);
         if (tournamentOptional.isPresent()) {
             Tournament tournament = tournamentOptional.get();
-
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             TournamentForm tournamentForm = modelMapper.map(tournament, TournamentForm.class);
             tournamentForm.setId(String.valueOf(tournament.getId()));
-
+            tournamentForm.setId(String.valueOf(tournament.getId()));
             model.addAttribute("editForm", tournamentForm);
             model.addAttribute("sportTypes",sportTypeRepository.findAll());
         }

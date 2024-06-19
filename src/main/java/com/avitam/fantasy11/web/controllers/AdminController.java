@@ -89,7 +89,7 @@ public class AdminController {
         } else {
             userFormValidator.validate(userForm, result);
             user = userRepository.findById(userForm.getId());
-            user.setUsername(userForm.getUserName());
+            user.setUsername(userForm.getEmail());
         }
         if (result.hasErrors()) {
             model.addAttribute("editForm", userForm);
