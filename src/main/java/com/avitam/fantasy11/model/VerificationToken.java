@@ -16,7 +16,7 @@ import java.util.Date;
 public class VerificationToken {
 
     private int id;
-    private int userId;
+    private String userId;
     private int token;
     private int status;
     public User user;

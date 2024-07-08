@@ -12,6 +12,7 @@ public class RoleFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
+
         return RoleForm.class.equals(clazz);
     }
 

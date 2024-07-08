@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,19 +12,12 @@ import java.util.Date;
 
 public class Matches extends BaseEntity{
 
-    private String team1;
-
-    private String team2;
-
-    private Date dateAndTime;
-
-    private int tournamentId;
-
-    private int sportId;
-
-    private int contestId;
-
-    //private int status;
-
-    private int matchTypeId;
+    private String team1Id;
+    private String team2Id;
+    private String dateAndTime;
+    private boolean matchStatus;
+    private String tournamentId;
+    private String sportTypeId;
+    private String contestId;
+    private String matchTypeId;
 }

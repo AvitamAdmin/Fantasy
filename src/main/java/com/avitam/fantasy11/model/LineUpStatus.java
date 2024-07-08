@@ -3,11 +3,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @Document("LineUpStatus")
 
 public class LineUpStatus extends BaseEntity{
+
+    private boolean lineupStatus;
 }

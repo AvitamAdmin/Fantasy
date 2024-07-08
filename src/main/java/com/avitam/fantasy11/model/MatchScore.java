@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("MatchScore")
 public class MatchScore extends BaseEntity{
 
-    private  int matchId;
+    private String matchId;
 
     private int team1Score;
 

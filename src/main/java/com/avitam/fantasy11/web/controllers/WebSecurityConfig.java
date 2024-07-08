@@ -42,8 +42,8 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/home").permitAll()
-                        .loginProcessingUrl("/home")
+                        .loginPage("/login").permitAll()
+                        .loginProcessingUrl("/login")
                 )
                 .logout((logout) -> logout.permitAll());
         return http.build();
@@ -59,6 +59,7 @@ public class WebSecurityConfig {
         return new AccessDecisionProcessor();
     }
 
+
     @Bean
     public AccessDecisionManager accessDecisionManager() {
         List<AccessDecisionVoter<?>> decisionVoters = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor());
@@ -70,7 +71,7 @@ public class WebSecurityConfig {
     }
 
    /*
-    @Autowired
+    /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }*/

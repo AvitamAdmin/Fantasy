@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -17,16 +18,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @ToString
-public class RoleForm implements Serializable {
-    private Long id;
-    private String creator;
-    private String type;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date creationTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date lastModified;
-    private String name;
-    private Boolean status;
+public class RoleForm extends BaseForm implements Serializable {
+
+    private int roleId;
     private Set<User> users;
     private Set<Node> permissions;
 }

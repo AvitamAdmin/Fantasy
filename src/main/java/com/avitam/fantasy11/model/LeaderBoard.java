@@ -11,9 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("LeaderBoard")
 public class LeaderBoard extends BaseEntity{
 
-    private int userId;
+    private String userId;
 
-    private int tournamentId;
+    private String tournamentId;
 
     private int matchesPlayed;
 

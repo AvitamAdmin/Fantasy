@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.Role;
+import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -25,10 +26,10 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
 
         //Get the current request URI
         String requestUrl = object.getRequestUrl();
-/*
+
         if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
             org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User currentUser = userRepository.findByName(principalObject.getUsername());
+            User currentUser = userRepository.findByEmail(principalObject.getUsername());
             Set<Role> roles = currentUser.getRoles();
             Set<Node> nodes = getNodesForRoles(roles);
             if (!nodes.isEmpty()) {
@@ -40,7 +41,6 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
             }
         }
 
- */
         return ACCESS_GRANTED;
     }
 
@@ -54,11 +54,13 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
 
     @Override
     public boolean supports(ConfigAttribute attribute) {
+
         return true;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
+
         return true;
     }
 }

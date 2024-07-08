@@ -1,18 +1,17 @@
 package com.avitam.fantasy11.model;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface NodeRepository extends MongoRepository<Node, Long> {
-    List<Node> findByParentNode(Node parentNode);
+public interface NodeRepository extends MongoRepository<Node, ObjectId> {
 
-    Node findByPath(String path);
+    List<Node> findByParentNodeId(String id);
 
-    Node findByName(String path);
+    Optional<Node> findById(String id);
 
-    Node getById(Long aLong);
 }

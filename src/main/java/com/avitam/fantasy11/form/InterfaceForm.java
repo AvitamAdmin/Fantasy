@@ -8,21 +8,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class InterfaceForm implements Serializable {
-    private Long id;
-    private String creator;
-    private Boolean status;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date creationTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date lastModified;
-    private String name;
+public class InterfaceForm extends BaseForm implements Serializable {
+
+
     private String path;
     private Node parentNode;
     private String parentNodeId;
     private Integer displayPriority;
+    private List<InterfaceForm> interfaceFormList;
+
 }

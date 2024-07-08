@@ -3,6 +3,7 @@ package com.avitam.fantasy11.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -11,9 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("TeamLineup")
 public class TeamLineup extends  BaseEntity{
 
-    private int teamId;
+    private String teamId;
 
-    private int playerId;
+    private String playerId;
 
     private int lineupStatus;
 

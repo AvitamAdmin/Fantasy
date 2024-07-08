@@ -9,7 +9,7 @@ var table = $('#tableData').DataTable({
     "pagingType": "first_last_numbers",
       "lengthMenu": [[100, 200,-1], [100, 200, "All"]],
       dom: 'flripBt',
-    buttons: [
+      buttons: [
          {
              text: '<button class="btn btn-primary btn-icon" type="button">Add</button>',
              titleAttr: "Add",
@@ -21,8 +21,25 @@ var table = $('#tableData').DataTable({
               text: '<button class="btn btn-primary btn-icon" id="editBtn" type="button" disabled="disabled">Edit</button>',
              titleAttr: "Edit",
               action: function ( e, dt, node, config ) {
-                  if( $("#rowSelectorId").val() ) {
+              var value = $("#rowSelectorId").val();
+                  if(value) {
+                      if(value.includes(",")){
+                        $(".modal-backdrop").removeClass('modal-backdrop fade show');
+                        $("#myModalEdit").modal('show');
+                            $.ajax({
+                                 type: 'GET',
+                                 url: "/"+$("#navBreadcrumb").text().split(" > ")[1]+"/"+$("#navBreadcrumb").text().split(" > ")[2]+"/edits?id="+$("#rowSelectorId").val(),
+                                 datatype: "json",
+                                 success: function(data){
+                                    $("#editModelContent").html(data);
+                                 },
+                                 error:function(e){
+                                     console.log(e.statusText);
+                                 }
+                            });
+                      }else{
                     fire_ajax_submit("/"+$("#navBreadcrumb").text().split(" > ")[1]+"/"+$("#navBreadcrumb").text().split(" > ")[2]+"/edit?id="+$("#rowSelectorId").val());
+                  }
                   } else {
                     alert('Please select the row you wanted to edit! ');
                   }
@@ -63,14 +80,14 @@ $("#tableData").on('click','tr',function(e) {
               console.log(selectedIds);
                         $("#rowSelectorId").val(selectedIds);
                         var length=table.rows('.selected').data().length;
-                        if(length==1)
+                        if(length<=5)
                         {
                           $('#editBtn').removeAttr('disabled');
                           $('#deleteBtn').removeAttr('disabled');
                         }
                         if(length>1)
                           {
-                            $('#editBtn').attr('disabled', 'disabled');
+                            //$('#editBtn').attr('disabled', 'disabled');
                             $('#deleteBtn').removeAttr('disabled');
                           }
 
@@ -81,7 +98,8 @@ $(document).ready(function () {
     // Setup - add a text input to each footer cell
     $('#tableData thead th').each(function () {
         var title = $(this).text();
-        $(this).html('<p style="display:none;">'+title+'</p><input type="text" id=' +title+ ' placeholder="Search ' + title + '" />');
+        $(this).html('<p style="display:none;">'+title+'</p><input id="searchInput" type="text" id=' +title+ ' placeholder="Search ' + title + '" />');
+
     });
                 table.columns().eq(0).each(function(colIdx) {
                             $('input', table.column(colIdx).header()).on('change', function() {

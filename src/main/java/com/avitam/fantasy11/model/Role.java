@@ -6,18 +6,16 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
-@Entity
-@Table(name = "role")
+@Document("Role")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Role extends BaseEntity {
-    private String roleId;
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
-    @ManyToMany
+
+    private int roleId;
     private Set<Node> permissions;
 }
