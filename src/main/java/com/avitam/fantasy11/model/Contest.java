@@ -13,11 +13,11 @@ import java.util.Map;
 @Document("Contest")
 public class Contest extends BaseEntity{
 
+    private String mainContestId;
     private Double totalPrice;
     private Double entryFee;
-    private long noOfMembers;
+    private int noOfMembers;
     private Map<String,Double> rankPrice;
     private int winPercentage;
     private int maxTeams;
-    private String mainContestId;
 }

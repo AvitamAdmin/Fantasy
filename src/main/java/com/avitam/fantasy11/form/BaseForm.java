@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Id;
 import java.util.Date;
 @Getter
 @Setter
@@ -14,9 +13,9 @@ public class BaseForm {
     private String name;
     private String creator;
     private Boolean status;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date creationTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date lastModified;
     private String modifier;
 }

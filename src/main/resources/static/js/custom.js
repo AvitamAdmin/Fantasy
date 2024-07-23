@@ -222,6 +222,33 @@ function gerParamsForDataSource(url, index) {
 
 function getMatchId(id) {
     var matchId = $(id).val();
+    //alert(matchId);
+
+    $.ajax({
+        type: "GET",
+        url: "/admin/userTeams/getPlayersByMatchId/" + matchId,
+        timeout: 600000,
+        dataType: 'json',
+        success: function(data) {
+        //alert(data);
+        $('#players').empty();
+        $.each(data, function(i, v) {
+
+           $.each(v, function(index, value){
+            console.log(value);
+            $('#players').append($('<option>', { value : v[index].id}).text(v[index].name));
+            });
+        });
+        },
+        error: function(e) {
+            alert(e);
+        }
+
+    });
+}
+
+function getMatchId(id) {
+    var matchId = $(id).val();
     var playerIds = [];
     var playersName = [];
 

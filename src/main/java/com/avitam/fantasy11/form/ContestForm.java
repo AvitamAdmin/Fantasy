@@ -8,12 +8,12 @@ import java.util.Map;
 @Setter
 public class ContestForm extends BaseForm{
 
+    private String mainContestId;
     private Double totalPrice;
     private Double entryFee;
     private long noOfMembers;
     private Map<String,Double> rankPrice;
     private int winPercentage;
     private int maxTeams;
-    private String mainContestId;
 
 }

@@ -165,7 +165,6 @@ public class SecurityController {
         user.setStatus(true);
         userService.save(user);
         String appUrl = Utility.getSiteURL(request);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getEmail() + " as registered, Kindly approve the same by clicking the link below", "hybris.sup@cheil.com", "1"));
         model.addAttribute("message", "You have signed up successfully! We will notify once account is approved");
         return "security/signupSuccessForm";
     }
@@ -187,38 +186,6 @@ public class SecurityController {
         return "login";
     }
 
-    @GetMapping("/registrationConfirm")
-    public ModelAndView confirmRegistration(final HttpServletRequest request, final ModelMap model, @RequestParam("level") final String level, @RequestParam("token") final String token) throws UnsupportedEncodingException {
-        Locale locale = request.getLocale();
-        model.addAttribute("lang", locale.getLanguage());
-        final String result = userService.validateVerificationToken(token);
-        if (result.equals("valid")) {
-            final User user = userService.getUser(token);
-            if (level.equals("1")) {
-                model.addAttribute("message", "User Approved");
-                String appUrl = Utility.getSiteURL(request);
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getEmail() + " has been approved by admin, Kindly approve by clicking the link below", user.getReferredBy(), "2"));
-                return new ModelAndView("security/signupSuccessForm");
-            } else if (level.equals("2")) {
-                String appUrl = Utility.getSiteURL(request);
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "Registration Successful", "Registration successful, Kindly click link below to verify your account", user.getEmail(), "3"));
-                model.addAttribute("message", "User Approved");
-                return new ModelAndView("security/signupSuccessForm");
-            } else if (level.equals("3")) {
-                model.addAttribute("message", "You have signed up successfully!");
-                user.setStatus(true);
-                userRepository.save(user);
-                return new ModelAndView("security/signupSuccessForm");
-            }
-            model.addAttribute("messageKey", "message.accountVerified");
-            return new ModelAndView("redirect:/login", model);
-        }
-
-        model.addAttribute("messageKey", "auth.message." + result);
-        model.addAttribute("expired", "expired".equals(result));
-        model.addAttribute("token", token);
-        return new ModelAndView("redirect:/badUser", model);
-    }
 
     @GetMapping("/profile")
     public String profile(Model model) {

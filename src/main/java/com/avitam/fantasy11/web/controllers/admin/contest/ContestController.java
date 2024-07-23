@@ -2,9 +2,10 @@ package com.avitam.fantasy11.web.controllers.admin.contest;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ContestForm;
-import com.avitam.fantasy11.form.InterfaceForm;
-import com.avitam.fantasy11.model.*;
-import com.avitam.fantasy11.validation.InterfaceFormValidator;
+import com.avitam.fantasy11.model.Contest;
+import com.avitam.fantasy11.model.ContestRepository;
+import com.avitam.fantasy11.model.MainContest;
+import com.avitam.fantasy11.model.MainContestRepository;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 public class ContestController {
 
     @Autowired
+    private MainContestRepository mainContestRepository;
+    @Autowired
     private ContestRepository contestRepository;
     @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private MainContestRepository mainContestRepository;
 
     @GetMapping
     public String getAllContest(Model model) {
@@ -42,11 +42,9 @@ public class ContestController {
         Optional<Contest> contestOptional = contestRepository.findById(id);
         if (contestOptional.isPresent()) {
             Contest contest = contestOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             ContestForm contestForm = modelMapper.map(contest, ContestForm.class);
-            contestForm.setId(String.valueOf(contest.getId()));
             model.addAttribute("editForm", contestForm);
-            model.addAttribute("mainContests", mainContestRepository.findAll());
+            model.addAttribute("mainContests",mainContestRepository.findAll());
         }
         return "contest/edit";
     }
@@ -70,10 +68,12 @@ public class ContestController {
         if(contestOptional.isPresent()) {
             contest.setId(contestOptional.get().getId());
         }
+
         Optional<MainContest> mainContestOptional=mainContestRepository.findById(contestForm.getMainContestId());
-        if(mainContestOptional.isPresent()) {
+        if(mainContestOptional.isPresent()){
             contest.setMainContestId(String.valueOf(mainContestOptional.get().getId()));
         }
+
         contestRepository.save(contest);
         model.addAttribute("editForm", contestForm);
         return "redirect:/admin/contest";
@@ -87,7 +87,7 @@ public class ContestController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("mainContests", mainContestRepository.findAll());
+        model.addAttribute("mainContests",mainContestRepository.findAll());
         return "contest/edit";
     }
 
