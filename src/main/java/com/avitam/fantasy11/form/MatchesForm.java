@@ -14,7 +14,8 @@ public class MatchesForm extends BaseForm{
     private String dateAndTime;
     private String tournamentId;
     private String sportTypeId;
-    private String contestId;
+    private String parentMainContestId;
     private boolean matchStatus;
     private String matchTypeId;
+
 }

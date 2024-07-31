@@ -10,5 +10,6 @@ import java.util.Map;
 public class MainContestForm extends BaseForm{
 
     private String mainContestName;
+    private String mainContestId;
 
 }

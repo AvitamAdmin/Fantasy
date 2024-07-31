@@ -41,9 +41,9 @@ public class MainContestController {
         Optional<MainContest> mainContestOptional = mainContestRepository.findById(id);
         if (mainContestOptional.isPresent()) {
             MainContest mainContest = mainContestOptional.get();
-
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             MainContestForm mainContestForm = modelMapper.map(mainContest, MainContestForm.class);
-
+            mainContestForm.setId(String.valueOf(mainContest.getId()));
             model.addAttribute("editForm", mainContestForm);
         }
         return "mainContest/edit";
@@ -64,7 +64,12 @@ public class MainContestController {
         }
 
         MainContest mainContest = modelMapper.map(mainContestForm, MainContest.class);
+        Optional<MainContest> mainContestOptional1=mainContestRepository.findByMainContestId(null);
+        if(mainContestOptional1.isPresent()) {
+            mainContest.setMainContestId(String.valueOf(mainContestOptional1.get().getId()));
+        }
         Optional<MainContest> mainContestOptional=mainContestRepository.findById(mainContestForm.getId());
+
         if(mainContestOptional.isPresent()) {
             mainContest.setId(mainContestOptional.get().getId());
         }

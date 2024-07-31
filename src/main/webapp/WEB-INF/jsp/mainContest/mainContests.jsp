@@ -13,6 +13,7 @@
                     <tr>
                       <th class="th-sm">PK</th>
                       <th class="th-sm">Name</th>
+                      <th class="th-sm">MainContestId</th>
                     </tr>
               </thead>
               <tbody>
@@ -20,6 +21,7 @@
                     <tr id="${contest.id}">
                         <td class="td-sm">${contest.id}</td>
                         <td class="td-sm">${contest.mainContestName}</td>
+                        <td class="td-sm">${contest.mainContestId}</td>
                      </tr>
                  </c:forEach>
              </tbody>

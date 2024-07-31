@@ -26,7 +26,7 @@ public class MatchesController {
     @Autowired
     private SportTypeRepository sportTypeRepository;
     @Autowired
-    private ContestRepository contestRepository;
+    private MainContestRepository mainContestRepository;
     @Autowired
     private MatchTypeRepository matchTypeRepository;
     @Autowired
@@ -56,7 +56,7 @@ public class MatchesController {
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("tournaments", tournamentRepository.findAll());
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("contests", contestRepository.findAll());
+        model.addAttribute("mainContests", mainContestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
         return "matches/edit";
     }
@@ -81,25 +81,25 @@ public class MatchesController {
 
         Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeam1Id());
         if(teamOptional1.isPresent()){
-            matches.setTeamId1(String.valueOf(teamOptional1.get().getId()));
+            matches.setTeam1Id(String.valueOf(teamOptional1.get().getId()));
         }
 
         Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeam2Id());
         if(teamOptional2.isPresent()){
-            matches.setTeamId2(String.valueOf(teamOptional2.get().getId()));
+            matches.setTeam2Id(String.valueOf(teamOptional2.get().getId()));
         }
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
-        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
+        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getName()));
 
         Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
         if(sportTypeOptional.isPresent()){
             matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
         }
 
-        Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
+        Optional<MainContest> contestOptional = mainContestRepository.findById(matchesForm.getParentMainContestId());
         if(contestOptional.isPresent()){
-            matches.setContestId(String.valueOf(contestOptional.get().getId()));
+            matches.setParentMainContestId(String.valueOf(contestOptional.get().getId()));
         }
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchesForm.getMatchTypeId());
@@ -119,12 +119,17 @@ public class MatchesController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
+        Optional<MainContest> contestOptional = mainContestRepository.findByMainContestId(null);
+        if(contestOptional.isPresent()){
+            form.setParentMainContestId(String.valueOf(contestOptional.get().getId()));
+        }
+
         form.setMatchStatus(true);
         model.addAttribute("editForm", form);
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("tournaments", tournamentRepository.findAll());
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("contests", contestRepository.findAll());
+        model.addAttribute("mainContests", mainContestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
         return "matches/edit";
     }

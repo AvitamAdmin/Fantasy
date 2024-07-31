@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,6 +8,8 @@ import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 import java.util.Date;
 
@@ -21,5 +24,7 @@ public class Player extends BaseEntity{
     private String teamId;
     private Binary playerImage;
     private String playerRoleId;
+
+
 
 }

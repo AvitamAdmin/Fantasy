@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface MainContestRepository extends MongoRepository<MainContest, ObjectId> {
     Optional<MainContest> findById(String id);
+
+    Optional<MainContest> findByMainContestId(String mainContestId);
 }
