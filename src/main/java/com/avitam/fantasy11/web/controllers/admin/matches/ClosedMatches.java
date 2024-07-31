@@ -12,13 +12,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/admin/matches")
-public class MatchesController {
+@RequestMapping("/admin/closedMatches")
+public class ClosedMatches {
+
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
@@ -28,7 +30,7 @@ public class MatchesController {
     @Autowired
     private SportTypeRepository sportTypeRepository;
     @Autowired
-    private MainContestRepository mainContestRepository;
+    private ContestRepository contestRepository;
     @Autowired
     private MatchTypeRepository matchTypeRepository;
     @Autowired
@@ -39,11 +41,19 @@ public class MatchesController {
     @GetMapping
     public String getAllModels(Model model) {
         List<Matches> matches= matchesRepository.findAll();
+        List<Matches> liveMatches=new ArrayList<>();
+        LocalDateTime currentDateTime=LocalDateTime.now();
+        LocalDateTime currentTime=LocalDateTime.now();
+        LocalDateTime startTime;
+        LocalDateTime endTime;
         for(Matches match:matches)
         {
-            LocalDateTime currentTime=LocalDateTime.now();
-            LocalDateTime startTime=LocalDateTime.parse(match.getStartDateAndTime());
-            LocalDateTime endTime=LocalDateTime.parse(match.getEndDateAndTime());
+            startTime=LocalDateTime.parse(match.getStartDateAndTime());
+            endTime=LocalDateTime.parse(match.getEndDateAndTime());
+            if(currentDateTime.isAfter(endTime))
+            {
+                liveMatches.add(match);
+            }
             if(currentTime.isAfter(endTime))
             {
                 match.setEvent("Closed");
@@ -55,8 +65,8 @@ public class MatchesController {
                 match.setEvent("Upcoming");
             }
         }
-        model.addAttribute("models", matches);
-        return "matches/matchess";
+        model.addAttribute("models", liveMatches);
+        return "matches/closedMatches";
     }
 
     @GetMapping("/edit")
@@ -67,7 +77,7 @@ public class MatchesController {
             Matches matches = matchesOptional.get();
 
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            MatchesForm  matchesForm = modelMapper.map(matches, MatchesForm.class);
+            MatchesForm matchesForm = modelMapper.map(matches, MatchesForm.class);
             matchesForm.setId(String.valueOf(matches.getId()));
 
             model.addAttribute("editForm", matchesForm);
@@ -75,7 +85,7 @@ public class MatchesController {
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("tournaments", tournamentRepository.findAll());
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("mainContests", mainContestRepository.findAll());
+        model.addAttribute("contests", contestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
         return "matches/edit";
     }
@@ -86,7 +96,7 @@ public class MatchesController {
             model.addAttribute("message", result);
             return "matches/edit";
         }
-            matchesForm.setLastModified(new Date());
+        matchesForm.setLastModified(new Date());
         if (matchesForm.getId() == null) {
             matchesForm.setCreationTime(new Date());
             matchesForm.setCreator(coreService.getCurrentUser().getEmail());
@@ -109,16 +119,16 @@ public class MatchesController {
         }
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
-        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getName()));
+        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
 
         Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
         if(sportTypeOptional.isPresent()){
             matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
         }
 
-        Optional<MainContest> contestOptional = mainContestRepository.findById(matchesForm.getParentMainContestId());
+        Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
         if(contestOptional.isPresent()){
-            matches.setParentMainContestId(String.valueOf(contestOptional.get().getId()));
+            matches.setContestId(String.valueOf(contestOptional.get().getId()));
         }
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchesForm.getMatchTypeId());
@@ -138,17 +148,12 @@ public class MatchesController {
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
-        Optional<MainContest> contestOptional = mainContestRepository.findByMainContestId(null);
-        if(contestOptional.isPresent()){
-            form.setParentMainContestId(String.valueOf(contestOptional.get().getId()));
-        }
-
         form.setMatchStatus(true);
         model.addAttribute("editForm", form);
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("tournaments", tournamentRepository.findAll());
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("mainContests", mainContestRepository.findAll());
+        model.addAttribute("contests", contestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
         return "matches/edit";
     }

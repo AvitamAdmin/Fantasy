@@ -16,10 +16,10 @@
                       <th class="th-sm">Team1 ID</th>
                       <th class="th-sm">Team2 ID</th>
                       <th class="th-sm">Starts At | Ends At</th>
-                      <th class="th-sm">Event Status</th>
+                       <th class="th-sm">Event Status</th>
                       <th class="th-sm">Tournament ID</th>
                       <th class="th-sm">Sport Type ID</th>
-                      <th class="th-sm">Parent Main Contest ID</th>
+                      <th class="th-sm">Contest ID</th>
                       <th class="th-sm">Match Type ID</th>
                       <th class="th-sm">Match Status</th>
                     </tr>
@@ -35,7 +35,7 @@
                         <td class="td-sm">${model.event}</td>
                         <td class="td-sm">${model.tournamentId}</td>
                         <td class="td-sm">${model.sportTypeId}</td>
-                        <td class="td-sm">${model.parentMainContestId}</td>
+                        <td class="td-sm">${model.contestId}</td>
                         <td class="td-sm">${model.matchTypeId}</td>
                         <td class="td-sm">${model.matchStatus}</td>
                      </tr>
