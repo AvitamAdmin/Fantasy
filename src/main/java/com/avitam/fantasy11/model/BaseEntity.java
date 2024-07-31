@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.model;
 
-import javax.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,9 +17,9 @@ public class BaseEntity {
     private String name;
     private String creator;
     private Boolean status;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date creationTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date lastModified;
     private String modifier;
     private String pic;

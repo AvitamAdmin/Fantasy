@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 public class MainContestController {
 
     @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;

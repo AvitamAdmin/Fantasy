@@ -100,12 +100,12 @@ public class MatchesController {
 
         Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeam1Id());
         if(teamOptional1.isPresent()){
-            matches.setTeam1Id(String.valueOf(teamOptional1.get().getId()));
+            matches.setTeamId1(String.valueOf(teamOptional1.get().getId()));
         }
 
         Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeam2Id());
         if(teamOptional2.isPresent()){
-            matches.setTeam2Id(String.valueOf(teamOptional2.get().getId()));
+            matches.setTeamId2(String.valueOf(teamOptional2.get().getId()));
         }
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());

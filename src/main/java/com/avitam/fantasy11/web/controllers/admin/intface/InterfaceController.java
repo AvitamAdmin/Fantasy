@@ -108,7 +108,7 @@ public class InterfaceController {
 
     @GetMapping("/edits")
     @ResponseBody
-    public ModelAndView editMultiple(@RequestParam("id") String ids, Model model) {
+    public String editMultiple(@RequestParam("id") String ids, Model model) {
         List<InterfaceForm> interfaceForms = new ArrayList<>();
         InterfaceForm interfaceForm = null;
         for (String id : ids.split(",")) {
@@ -122,7 +122,7 @@ public class InterfaceController {
         model.addAttribute("editForm", new InterfaceForm());
         model.addAttribute("dataToEdit", interfaceForms);
         model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
-        return new ModelAndView("interface/edits");
+        return "interface/edits";
     }
 
     @PostMapping("/edits")
@@ -130,7 +130,7 @@ public class InterfaceController {
         List<InterfaceForm> interfaceFormList = interfaceForm.getInterfaceFormList();
         if (CollectionUtils.isNotEmpty(interfaceFormList)) {
             for (InterfaceForm interfaceForm1 : interfaceFormList) {
-                Optional<Node> interfaceOptional = nodeRepository.findById(String.valueOf(Long.valueOf(interfaceForm1.getId())));
+                Optional<Node> interfaceOptional = nodeRepository.findById(String.valueOf(interfaceForm1.getId()));
                 if (interfaceOptional.isPresent()) {
                     Node node = interfaceOptional.get();
                     interfaceForm1.setStatus(node.getStatus());

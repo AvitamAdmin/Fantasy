@@ -18,6 +18,6 @@ public class UserTeams extends  BaseEntity {
 
     private String userId;
     private String matchId;
-    private Set<String> players;
+    private List<String> players;
 
 }

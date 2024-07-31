@@ -34,8 +34,8 @@ public class PlayerController {
 
     @GetMapping
     public String getAll(Model model){
-        List<Player> players = playerRepository.findAll();
         List<Player> datas=new ArrayList<>();
+        List<Player> players = playerRepository.findAll();
         for(Player player:players){
             if(player.getId()!=null) {
                 byte[] image = player.getPlayerImage().getData();
@@ -56,6 +56,10 @@ public class PlayerController {
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             PlayerForm playerForm = modelMapper.map(player, PlayerForm.class);
             playerForm.setId(String.valueOf(player.getId()));
+
+            byte[] image = player.getPlayerImage().getData();
+            player.setPic(Base64.getEncoder().encodeToString(image));
+            playerForm.setPic(player.getPic());
 
             model.addAttribute("editForm", playerForm);
         }

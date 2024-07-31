@@ -13,6 +13,8 @@
                     <tr>
                       <th class="th-sm">ID</th>
                       <th class="th-sm">Player Name</th>
+                      <th class="th-sm">DOB</th>
+                      <th class="th-sm">Nationality</th>
                       <th class="th-sm">Team ID</th>
                       <th class="th-sm">Player Role ID</th>
                       <th class="th-sm">Player Image</th>
@@ -23,6 +25,8 @@
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
                         <td class="td-sm">${model.name}</td>
+                        <td class="td-sm">${model.dob}</td>
+                        <td class="td-sm">${model.nationality}</td>
                         <td class="td-sm">${model.teamId}</td>
                         <td class="td-sm">${model.playerRoleId}</td>
                         <td class="td-sm"><img style="width:50px;" src="data:image/jpeg;base64,${model.pic}"</td>
