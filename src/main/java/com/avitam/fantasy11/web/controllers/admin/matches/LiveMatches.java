@@ -12,13 +12,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/admin/matches")
-public class MatchesController {
+@RequestMapping("/admin/liveMatches")
+public class LiveMatches {
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
@@ -39,11 +40,20 @@ public class MatchesController {
     @GetMapping
     public String getAllModels(Model model) {
         List<Matches> matches= matchesRepository.findAll();
+        List<Matches> liveMatches=new ArrayList<>();
+        LocalDateTime currentDateTime=LocalDateTime.now();
+        LocalDateTime currentTime=LocalDateTime.now();
+
+        LocalDateTime startTime;
+        LocalDateTime endTime;
         for(Matches match:matches)
         {
-            LocalDateTime currentTime=LocalDateTime.now();
-            LocalDateTime startTime=LocalDateTime.parse(match.getStartDateAndTime());
-            LocalDateTime endTime=LocalDateTime.parse(match.getEndDateAndTime());
+            startTime=LocalDateTime.parse(match.getStartDateAndTime());
+            endTime=LocalDateTime.parse(match.getEndDateAndTime());
+            if(currentDateTime.isAfter(startTime)&&currentDateTime.isBefore(endTime))
+            {
+                liveMatches.add(match);
+            }
             if(currentTime.isAfter(endTime))
             {
                 match.setEvent("Closed");
@@ -55,8 +65,8 @@ public class MatchesController {
                 match.setEvent("Upcoming");
             }
         }
-        model.addAttribute("models", matches);
-        return "matches/matchess";
+        model.addAttribute("models", liveMatches);
+        return "matches/liveMatches";
     }
 
     @GetMapping("/edit")
@@ -67,7 +77,7 @@ public class MatchesController {
             Matches matches = matchesOptional.get();
 
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            MatchesForm  matchesForm = modelMapper.map(matches, MatchesForm.class);
+            MatchesForm matchesForm = modelMapper.map(matches, MatchesForm.class);
             matchesForm.setId(String.valueOf(matches.getId()));
 
             model.addAttribute("editForm", matchesForm);
@@ -86,7 +96,7 @@ public class MatchesController {
             model.addAttribute("message", result);
             return "matches/edit";
         }
-            matchesForm.setLastModified(new Date());
+        matchesForm.setLastModified(new Date());
         if (matchesForm.getId() == null) {
             matchesForm.setCreationTime(new Date());
             matchesForm.setCreator(coreService.getCurrentUser().getEmail());

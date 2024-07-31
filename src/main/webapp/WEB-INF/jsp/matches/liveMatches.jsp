@@ -16,7 +16,7 @@
                       <th class="th-sm">Team1 ID</th>
                       <th class="th-sm">Team2 ID</th>
                       <th class="th-sm">Starts At | Ends At</th>
-                      <th class="th-sm">Event Status</th>
+                       <th class="th-sm">Event Status</th>
                       <th class="th-sm">Tournament ID</th>
                       <th class="th-sm">Sport Type ID</th>
                       <th class="th-sm">Contest ID</th>
