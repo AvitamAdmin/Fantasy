@@ -5,11 +5,11 @@
             <p class="navigation" id="navBreadcrumb">Breadcrumb</p>
         </div>
     </div>
-    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/admin/matches/edit" class="handle-upload" modelAttribute="editForm" >
+    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/matches/matches/edit" class="handle-upload" modelAttribute="editForm" >
         <div class="row">
             <div class="col-sm-12">
                 <div class="dt-buttons">
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/matches')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/matches/matches')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="submitFormById('#editForm');" aria-controls="tableData" type="button" title="Save">Save</button>
                 </div>
             </div>
@@ -119,9 +119,16 @@
                 </select>
             </div>
             <div class="col-sm-3">
-                <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
-                <form:errors path="dateAndTime" class="text-danger"></form:errors>
+                <form:input type="datetime-local" path="startDateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
+                <span>Starts At</span>
+                <form:errors path="startDateAndTime" class="text-danger"></form:errors>
             </div>
+
+               <div class="col-sm-3">
+                            <form:input type="datetime-local" path="endDateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
+                            <span>Ends At</span>
+                            <form:errors path="endDateAndTime" class="text-danger"></form:errors>
+                        </div>
             <div class="col-sm-3">
                 <c:choose>
                     <c:when test="${editForm.matchStatus}">
