@@ -1,7 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.mainContest;
 
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.form.ContestForm;
 import com.avitam.fantasy11.form.MainContestForm;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestRepository;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.model.MainContestRepository;
@@ -21,8 +23,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/mainContest")
 public class MainContestController {
 
-    @Autowired
-    private ContestRepository contestRepository;
     @Autowired
     private CoreService coreService;
     @Autowired
@@ -60,7 +60,7 @@ public class MainContestController {
 
         if (mainContestForm.getId() == null) {
             mainContestForm.setCreationTime(new Date());
-            mainContestForm.setCreator(coreService.getCurrentUser().getEmailId());
+            mainContestForm.setCreator(coreService.getCurrentUser().getEmail());
         }
 
         MainContest mainContest = modelMapper.map(mainContestForm, MainContest.class);
@@ -85,7 +85,7 @@ public class MainContestController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         return "mainContest/edit";
     }

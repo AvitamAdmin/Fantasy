@@ -4,13 +4,14 @@ package com.avitam.fantasy11.form;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class PointsMasterForm extends BaseEntityForm{
+public class PointsMasterForm extends BaseForm{
 
-    private int MatchTypeId;
+    private String matchTypeId;
 
     private float runs;
 
@@ -26,9 +27,9 @@ public class PointsMasterForm extends BaseEntityForm{
 
     private float fiveWickets;
 
-    private float hatrickWickets;
+    private float hattrickWickets;
 
-    private float hatrickSixes;
+    private float hattrickSixes;
 
     private float economy;
 

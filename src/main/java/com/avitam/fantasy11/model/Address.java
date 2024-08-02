@@ -1,11 +1,9 @@
 package com.avitam.fantasy11.model;
 
 
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -26,6 +24,5 @@ public class Address extends BaseEntity {
     private String state;
 
     private String pinCode;
-
 
 }

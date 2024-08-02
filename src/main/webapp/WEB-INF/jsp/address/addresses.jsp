@@ -11,7 +11,8 @@
               <input type="hidden" id="rowSelectorId" name="rowSelectorId" value="">
               <thead>
                     <tr>
-                      <th class="th-sm">ID</th>
+                      <th class="th-sm">PK</th>
+                      <th class="th-sm">Mobile Number</th>
                       <th class="th-sm">Line_1</th>
                       <th class="th-sm">Line_2</th>
                       <th class="th-sm">City</th>
@@ -23,6 +24,7 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
+                        <td class="td-sm">${model.mobileNumber}</td>
                         <td class="td-sm">${model.line_1}</td>
                         <td class="td-sm">${model.line_2}</td>
                         <td class="td-sm">${model.city}</td>

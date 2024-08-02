@@ -1,6 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.kyc;
 
 import com.avitam.fantasy11.model.NodeRepository;
+import com.avitam.fantasy11.model.SportType;
+import com.avitam.fantasy11.validation.KYCFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.KYCForm;
@@ -15,16 +17,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/kyc")
 public class KYCController {
 
-    @Autowired
-    private NodeRepository nodeRepository;
     @Autowired
     private KYCRepository kycRepository;
     @Autowired
@@ -34,17 +33,27 @@ public class KYCController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        model.addAttribute("models", kycRepository.findAll().stream().filter(kyc -> kyc.getId() != null).collect(Collectors.toList()));
-        return "kyc/kycs";
-    }
+        List<KYC> kycs = kycRepository.findAll();
+        List<KYC> datas = new ArrayList<>();
+        for (KYC data : kycs) {
+            if (data.getId() != null) {
+                byte[] image = data.getPanImage().getData();
+                data.setPic(Base64.getEncoder().encodeToString(image));
+                datas.add(data);
+            }
+        }
+            model.addAttribute("models", datas);
+            return "kyc/kycs";
+        }
 
     @GetMapping("/edit")
-    public String editKyc(@RequestParam("id") KYCForm kycForm ,ObjectId id, Model model) {
+    public String editKyc(@RequestParam("id") String id, Model model) {
 
         Optional<KYC> kycOptional = kycRepository.findById(id);
         if (kycOptional.isPresent()) {
             KYC kyc = kycOptional.get();
-            kycForm = modelMapper.map(kyc, KYCForm.class);
+            KYCForm kycForm = modelMapper.map(kyc, KYCForm.class);
+            kycForm.setId(String.valueOf(kyc.getId()));
             model.addAttribute("editForm", kycForm);
         }
         return "kyc/edit";
@@ -53,12 +62,11 @@ public class KYCController {
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") KYCForm kycForm, Model model, BindingResult result) throws IOException {
-        // new KycFormValidator().validate(kycForm, result);
+       new KYCFormValidator().validate(kycForm,result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "kyc/edit";
         }
-
 
         byte[] img = kycForm.getPanImage().getBytes();
         Binary binary = new Binary(img);
@@ -68,11 +76,13 @@ public class KYCController {
             kycForm.setCreationTime(new Date());
             kycForm.setCreator(coreService.getCurrentUser().getEmail());
         }
+
         KYC kyc = modelMapper.map(kycForm, KYC.class);
-        Optional<KYC> kycOptional = kycRepository.findById(new ObjectId(kycForm.getId()));
+        Optional<KYC> kycOptional = kycRepository.findById(kycForm.getId());
         if (kycOptional.isPresent()) {
             kyc.setId(kycOptional.get().getId());
         }
+
         kyc.setPanImage(binary);
         kycRepository.save(kyc);
         model.addAttribute("editForm", kycForm);
@@ -87,18 +97,16 @@ public class KYCController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        //   model.addAttribute("nodes", kycRepository.findAll().stream().filter(kyc -> kyc.getUserId()  == null).collect(Collectors.toList()));
         return "kyc/edit";
     }
 
     @GetMapping("/delete")
-    public String deleteKyc(@RequestParam("id") ObjectId id, Model model) {
-        //  for (String id : ids.split(",")) {
-        //     nodeRepository.deleteById(Integer.valueOf(id));
-        //  }
-        kycRepository.deleteById(id);
+    public String deleteKyc(@RequestParam("id") String ids, Model model) {
+
+        for (String id : ids.split(",")) {
+           kycRepository.deleteById(new ObjectId(id));
+        }
+
         return "redirect:/admin/kyc";
     }
 }
-
-

@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 public class PlayerController {
 
     @Autowired
-    PlayerRepository playerRepository;
+    private PlayerRepository playerRepository;
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    PlayerRoleRepository playerRoleRepository;
+    private PlayerRoleRepository playerRoleRepository;
     @Autowired
     private CoreService coreService;
     @Autowired
@@ -34,8 +34,8 @@ public class PlayerController {
 
     @GetMapping
     public String getAll(Model model){
-        List<Player> players = playerRepository.findAll();
         List<Player> datas=new ArrayList<>();
+        List<Player> players = playerRepository.findAll();
         for(Player player:players){
             if(player.getId()!=null) {
                 byte[] image = player.getPlayerImage().getData();
@@ -47,12 +47,20 @@ public class PlayerController {
         return "player/players";
     }
     @GetMapping("/edit")
-    public String editPlayer(@RequestParam("id")ObjectId id, Model model){
+    public String editPlayer(@RequestParam("id")String id, Model model){
 
         Optional<Player> playerOptional = playerRepository.findById(id);
         if (playerOptional.isPresent()) {
             Player player = playerOptional.get();
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             PlayerForm playerForm = modelMapper.map(player, PlayerForm.class);
+            playerForm.setId(String.valueOf(player.getId()));
+
+            byte[] image = player.getPlayerImage().getData();
+            player.setPic(Base64.getEncoder().encodeToString(image));
+            playerForm.setPic(player.getPic());
+
             model.addAttribute("editForm", playerForm);
         }
         model.addAttribute("teams", teamRepository.findAll());
@@ -72,10 +80,10 @@ public class PlayerController {
         byte[] fig= playerForm.getPlayerImage().getBytes();
         Binary binary=new Binary(fig);
 
-        playerForm.setLastModified(new Date());
+            playerForm.setLastModified(new Date());
         if (playerForm.getId() == null) {
             playerForm.setCreationTime(new Date());
-            playerForm.setCreator(coreService.getCurrentUser().getEmailId());
+            playerForm.setCreator(coreService.getCurrentUser().getEmail());
         }
 
         Player player = modelMapper.map(playerForm, Player.class);
@@ -88,12 +96,12 @@ public class PlayerController {
 
         Optional<Team> teamOptional = teamRepository.findById(playerForm.getTeamId());
         if(teamOptional.isPresent()){
-            player.setTeamId(teamOptional.get().getId());
+            player.setTeamId(String.valueOf(teamOptional.get().getId()));
         }
 
         Optional<PlayerRole> playerRoleOptional = playerRoleRepository.findById(playerForm.getPlayerRoleId());
         if(playerRoleOptional.isPresent()){
-            player.setPlayerRoleId(playerRoleOptional.get().getId());
+            player.setPlayerRoleId(String.valueOf(playerRoleOptional.get().getId()));
         }
 
         playerRepository.save(player);
@@ -108,18 +116,17 @@ public class PlayerController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("playerRoles", playerRoleRepository.findAll());
         return "player/edit";
     }
     @GetMapping("/delete")
-    public String deletePlayer(@RequestParam("id") ObjectId id, Model model) {
-       /* for (String id : ids.split(",")) {
+    public String deletePlayer(@RequestParam("id") String ids, Model model) {
+       for (String id : ids.split(",")) {
             playerRepository.deleteById(new ObjectId(id));
-        }*/
-        playerRepository.deleteById(id);
+        }
         return "redirect:/admin/player";
     }
 }

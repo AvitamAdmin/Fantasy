@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="matchType" class="inputbox-cheil-small" placeholder="Enter MatchType" />
+                <form:input path="name" class="inputbox-cheil-small" placeholder="Enter MatchType" />
                 <span>Match Type Name</span>
-                <form:errors path="matchType" class="text-danger"></form:errors>
+                <form:errors path="name" class="text-danger"></form:errors>
             </div>
         </div>
        </form:form>

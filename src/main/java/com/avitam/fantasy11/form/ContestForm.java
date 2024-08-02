@@ -6,22 +6,14 @@ import lombok.Setter;
 import java.util.Map;
 @Getter
 @Setter
-public class ContestForm extends BaseEntityForm{
+public class ContestForm extends BaseForm{
 
-    private String contestName;
-
-    private String name;
-
+    private String mainContestId;
     private Double totalPrice;
-
     private Double entryFee;
-
     private long noOfMembers;
-
     private Map<String,Double> rankPrice;
-
-    private int winPercent;
-
+    private int winPercentage;
     private int maxTeams;
 
 }

@@ -18,61 +18,41 @@
         <div class="row">
             <div class="col-sm-3">
                 <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter UserId" />
-                <span>User Id</span>``
+                <span>User Id</span>
                 <form:errors path="userId" class="text-danger"></form:errors>
             </div>
-             <div class="col-sm-3">
-                <select class="cheil-select" name="matchId">
-                     <option value="">Select Match</option>
-                         <c:forEach items="${matches}" var="child">
-                             <c:choose>
-                                 <c:when test="${fn:contains( editForm.matchId, child ) }">
-                                       <option value="${child.id}" selected>${child.name}</option>
-                                 </c:when>
-                                 <c:otherwise>
-                                     <option value="${child.id}" >${child.name}</option>
-                                 </c:otherwise>
-                             </c:choose>
-                         </c:forEach>
-                </select>
-             </div>
-
             <div class="col-sm-3">
-               <select class="cheil-select" name="teams">
-                    <option value="">Select Team</option>
-                        <c:forEach items="${teams}" var="child">
-                            <c:choose>
-                                <c:when test="${fn:contains( editForm.teamName, child ) }">
-                                      <option value="${child.id}" selected>${child.name}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option value="${child.id}" >${child.name}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-               </select>
+                <form:input path="name" class="inputbox-cheil-small" placeholder="UserTeamName" />
+                <span>UserTeam Name</span>
+                <form:errors path="name" class="text-danger"></form:errors>
             </div>
-             <div class="col-sm-3">
-               <select class="cheil-select" name="players">
-                 <option value="">Select Players</option>
-                    <c:forEach items="${players}" var="child">
-                        <c:choose>
-                           <c:when test="${fn:contains( editForm.players, child ) }">
-                              <option value="${child.id}" selected>${child.name}</option>
+            <div class="col-sm-3">
+               <select  class="cheil-select" name="matchId" id="matchId" onchange="getMatchId('#matchId');">
+                   <option value="">Select Match</option>
+                   <c:forEach items="${matches}" var="child">
+                       <c:choose>
+                           <c:when test="${fn:contains( editForm.matchId, child ) }">
+                             <option value="${child.id}" selected>${child.name}</option>>
                            </c:when>
                            <c:otherwise>
-                            <option value="${child.id}" >${child.name}</option>
+                               <option value="${child.id}" >${child.name}</option>
                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
+                       </c:choose>
+                   </c:forEach>
                </select>
-             </div>
-       </form:form>
+            </div>
+            <div class="col-sm-3">
+               <select class="cheil-select" id="players" name="players" multiple required="required">
+                  <option value="">Select Team Players</option>
+               </select>
+            </div>
+        </div>
+    </form:form>
+
        <c:if test="${not empty message}">
            <div class="alert alert-danger" role="alert" id="errorMessage">
                <spring:message code="${message}" />
            </div>
        </c:if>
     </div>
-  </div>
 </div>

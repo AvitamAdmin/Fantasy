@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.matches;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.form.MatchesForm;
 import com.avitam.fantasy11.model.*;
-import com.avitam.fantasy11.validation.AddressFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,35 +11,26 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/matches")
 public class MatchesController {
-    public static final int TOOL_KIT_NODE = 3;
-    public static final int SCHEDULER_NODE = 2;
-    public static final String TOOLKITS = "Toolkits";
-    public static final String SCHEDULING = "Scheduling";
-
     @Autowired
-    MatchesRepository matchesRepository;
-
+    private MatchesRepository matchesRepository;
     @Autowired
-    TeamRepository teamRepository;
-
+    private TeamRepository teamRepository;
     @Autowired
-    TournamentRepository tournamentRepository;
-
+    private TournamentRepository tournamentRepository;
     @Autowired
-    SportTypeRepository sportTypeRepository;
-
+    private SportTypeRepository sportTypeRepository;
     @Autowired
-    ContestRepository contestRepository;
-
+    private MainContestRepository mainContestRepository;
     @Autowired
-    MatchTypeRepository matchTypeRepository;
-
+    private MatchTypeRepository matchTypeRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -49,40 +38,58 @@ public class MatchesController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        //model.addAttribute("models", addressRepository.findAll().stream().filter(address -> address.getUserId() != null).collect(Collectors.toList()));
-        model.addAttribute("models", matchesRepository.findAll());
+        List<Matches> matches= matchesRepository.findAll();
+        for(Matches match:matches)
+        {
+            LocalDateTime currentTime=LocalDateTime.now();
+            LocalDateTime startTime=LocalDateTime.parse(match.getStartDateAndTime());
+            LocalDateTime endTime=LocalDateTime.parse(match.getEndDateAndTime());
+            if(currentTime.isAfter(endTime))
+            {
+                match.setEvent("Closed");
+            } else if (currentTime.isAfter(startTime)&&currentTime.isBefore(endTime)) {
+                match.setEvent("Live");
+            }
+            else if(currentTime.isBefore(startTime))
+            {
+                match.setEvent("Upcoming");
+            }
+        }
+        model.addAttribute("models", matches);
         return "matches/matchess";
     }
 
     @GetMapping("/edit")
-    public String editMatches(@RequestParam("id") ObjectId id, Model model) {
-        MatchesForm matchesForm = null;
+    public String editMatches(@RequestParam("id") String id, Model model) {
+
         Optional<Matches> matchesOptional = matchesRepository.findById(id);
         if (matchesOptional.isPresent()) {
             Matches matches = matchesOptional.get();
-            matchesForm = modelMapper.map(matches, MatchesForm.class);
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+            MatchesForm  matchesForm = modelMapper.map(matches, MatchesForm.class);
+            matchesForm.setId(String.valueOf(matches.getId()));
+
             model.addAttribute("editForm", matchesForm);
         }
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("tournaments", tournamentRepository.findAll());
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("contests", contestRepository.findAll());
+        model.addAttribute("mainContests", mainContestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
-        //model.addAttribute("nodes", addressRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "matches/edit";
     }
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") MatchesForm matchesForm, Model model, BindingResult result) {
-        //new AddressFormValidator().validate(matchesForm, result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "matches/edit";
         }
-        matchesForm.setLastModified(new Date());
+            matchesForm.setLastModified(new Date());
         if (matchesForm.getId() == null) {
             matchesForm.setCreationTime(new Date());
-            matchesForm.setCreator(coreService.getCurrentUser().getEmailId());
+            matchesForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         Matches matches = modelMapper.map(matchesForm, Matches.class);
 
@@ -91,39 +98,37 @@ public class MatchesController {
             matches.setId(matchesOptional.get().getId());
         }
 
-        Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeamId1());
+        Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeam1Id());
         if(teamOptional1.isPresent()){
-            matches.setTeamId1(teamOptional1.get().getId());
+            matches.setTeam1Id(String.valueOf(teamOptional1.get().getId()));
         }
 
-        Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeamId2());
+        Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeam2Id());
         if(teamOptional2.isPresent()){
-            matches.setTeamId2(teamOptional2.get().getId());
+            matches.setTeam2Id(String.valueOf(teamOptional2.get().getId()));
         }
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
-        if(tournamentOptional.isPresent()){
-            matches.setTournamentId(tournamentOptional.get().getId());
-        }
+        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getName()));
 
         Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
         if(sportTypeOptional.isPresent()){
-            matches.setSportTypeId(sportTypeOptional.get().getId());
+            matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
         }
 
-        Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
+        Optional<MainContest> contestOptional = mainContestRepository.findById(matchesForm.getParentMainContestId());
         if(contestOptional.isPresent()){
-            matches.setContestId(contestOptional.get().getId());
+            matches.setParentMainContestId(String.valueOf(contestOptional.get().getId()));
         }
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchesForm.getMatchTypeId());
         if(matchTypeOptional.isPresent()){
-            matches.setMatchTypeId(matchTypeOptional.get().getId());
+            matches.setMatchTypeId(String.valueOf(matchTypeOptional.get().getId()));
         }
 
         matchesRepository.save(matches);
         model.addAttribute("editForm", matchesForm);
-        return "redirect:/admin/matches";
+        return "redirect:/matches/matches";
     }
 
     @GetMapping("/add")
@@ -132,23 +137,27 @@ public class MatchesController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
+        Optional<MainContest> contestOptional = mainContestRepository.findByMainContestId(null);
+        if(contestOptional.isPresent()){
+            form.setParentMainContestId(String.valueOf(contestOptional.get().getId()));
+        }
+
         form.setMatchStatus(true);
         model.addAttribute("editForm", form);
         model.addAttribute("teams", teamRepository.findAll());
         model.addAttribute("tournaments", tournamentRepository.findAll());
         model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("contests", contestRepository.findAll());
+        model.addAttribute("mainContests", mainContestRepository.findAll());
         model.addAttribute("matchTypes", matchTypeRepository.findAll());
         return "matches/edit";
     }
 
     @GetMapping("/delete")
-    public String deleteMatches(@RequestParam("id") ObjectId id, Model model) {
-        /*for (String id : ids.split(",")) {
-            addressRepository.deleteById(Integer.valueOf(id));
-        }*/
-        matchesRepository.deleteById(id);
-        return "redirect:/admin/matches";
+    public String deleteMatches(@RequestParam("id") String ids, Model model) {
+        for (String id : ids.split(",")) {
+            matchesRepository.deleteById(new ObjectId(id));
+        }
+        return "redirect:/matches/matches";
     }
 }

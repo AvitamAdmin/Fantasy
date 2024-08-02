@@ -16,9 +16,7 @@ import java.util.Date;
 
 public class Tournament extends BaseEntity{
 
-    private String tournamentName;
-
     private String dateAndTime;
 
-    private ObjectId sportId;
+    private String sportId;
 }

@@ -10,7 +10,7 @@
             <div class="col-sm-12">
                 <div class="dt-buttons">
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/teamLineup')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="ajaxformSubmit('editForm');" aria-controls="tableData" type="submit" title="Save">Save</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="submitFormById('#editForm');" aria-controls="tableData" type="button" title="Save">Save</button>
                 </div>
             </div>
         </div>
@@ -47,13 +47,22 @@
              </select>
            </div>
 
-            <div class="col-sm-3">
-                <form:input path="lineupStatus" class="inputbox-cheil-small" placeholder="Lineup Status" />
-                  <span>Lineup Status</span>
-                <form:errors path="lineupStatus" class="text-danger"></form:errors>
-            </div>
-           </div>
-       </form:form>
+           <div class="col-sm-3">
+                  <h5>Line Up Status</h5>
+                                  <c:choose>
+                                      <c:when test="${editForm.status}">
+                                           <c:set var="varChecked" value="checked"></c:set>
+                                       </c:when>
+                                       <c:otherwise>
+                                           <c:set var="varUnchecked" value="checked"></c:set>
+                                       </c:otherwise>
+                                  </c:choose>
+
+                                  <input type="radio" name="status"  value="true" ${varChecked}> Available
+                                  <input type="radio" name="status" value="false" ${varUnchecked}> Not-Available
+                              </div>
+
+</form:form>
        <c:if test="${not empty message}">
            <div class="alert alert-danger" role="alert" id="errorMessage">
                <spring:message code="${message}" />

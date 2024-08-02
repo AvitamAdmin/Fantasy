@@ -10,7 +10,4 @@ import java.util.Optional;
 public interface AddressRepository extends MongoRepository<Address, ObjectId> {
     Optional<Address> findById(String id);
 
-    // Optional<Address> findByUserId(ObjectId id);
-
-    //Node getByUserId(ObjectId userId);
 }

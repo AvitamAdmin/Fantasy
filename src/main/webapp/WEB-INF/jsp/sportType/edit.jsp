@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="sportName" class="inputbox-cheil-small" placeholder="Enter Sport Name" />
-                <span>Sport Name</span>
-                <form:errors path="sportName" class="text-danger"></form:errors>
+                <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
+                <span>Name</span>
+                <form:errors path="name" class="text-danger"></form:errors>
             </div>
 
             <div class="col-sm-3">

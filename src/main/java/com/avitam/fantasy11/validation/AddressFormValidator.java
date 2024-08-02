@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.validation;
 
 import com.avitam.fantasy11.form.AddressForm;
-import com.avitam.fantasy11.form.InterfaceForm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -15,7 +14,7 @@ public class AddressFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return InterfaceForm.class.equals(clazz);
+        return AddressForm.class.equals(clazz);
     }
 
     @Override
@@ -27,10 +26,10 @@ public class AddressFormValidator implements Validator {
         else if (StringUtils.isEmpty(form.getCity())) {
             errors.reject(CITY_CANNOT_BE_NULL);
         }
-       else if (StringUtils.isEmpty(form.getState())) {
+        else if (StringUtils.isEmpty(form.getState())) {
             errors.reject(STATE_CANNOT_BE_NULL);
         }
-       else if (StringUtils.isEmpty(form.getPinCode())) {
+        else if (StringUtils.isEmpty(form.getPinCode())) {
             errors.reject(PIN_CODE_CANNOT_BE_NULL);
         }
 

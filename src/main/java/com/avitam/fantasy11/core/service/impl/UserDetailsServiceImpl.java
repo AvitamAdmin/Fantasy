@@ -22,13 +22,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String emailId) {
-        User user = userRepository.findByEmailId(emailId);
-        //if (user == null || user.getStatus() != 0) throw new UsernameNotFoundException(emailId);
+    public UserDetails loadUserByUsername(String email) {
+        User user = userRepository.findByEmail(email);
+        //if (user == null || user.getStatus()== null) throw new UsernameNotFoundException(email);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-       /* for (Role role : user.getRoles()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-        }*/
-        return new org.springframework.security.core.userdetails.User(user.getEmailId(), user.getPassword(), grantedAuthorities);
+
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
     }
 }

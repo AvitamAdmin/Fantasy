@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/admin/matchScore")
+@RequestMapping("/matches/matchScore")
 public class MatchScoreController {
     @Autowired
     private MatchesRepository matchesRepository;
@@ -43,6 +43,7 @@ public class MatchScoreController {
         if (matchScoreOptional.isPresent()) {
             MatchScore matchScore = matchScoreOptional.get();
             MatchScoreForm matchScoreForm = modelMapper.map(matchScore, MatchScoreForm.class);
+            matchScoreForm.setId(String.valueOf(matchScore.getId()));
             model.addAttribute("editForm", matchScoreForm);
             model.addAttribute("matches",matchesRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
         }
@@ -70,11 +71,15 @@ public class MatchScoreController {
         if(matchScoreOptional.isPresent()) {
             matchScore.setId(matchScoreOptional.get().getId());
         }
+        Optional<Matches> matchesOptional=matchesRepository.findById(matchScoreForm.getMatchId());
+        if(matchesOptional.isPresent()) {
+            matchScore.setMatchId(String.valueOf(matchesOptional.get().getId()));
+        }
 
         matchScoreRepository.save(matchScore);
         model.addAttribute("editForm", matchScoreForm);
 
-        return "redirect:/admin/matchScore";
+        return "redirect:/matches/matchScore";
     }
 
     @GetMapping("/add")
@@ -94,6 +99,6 @@ public class MatchScoreController {
         for (String id : ids.split(",")) {
             matchScoreRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/matchScore";
+        return "redirect:/matches/matchScore";
     }
 }

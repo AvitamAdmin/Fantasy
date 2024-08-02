@@ -65,7 +65,7 @@ public class SportsTypeController {
         sportTypeForm.setLastModified(new Date());
         if (sportTypeForm.getId() == null) {
             sportTypeForm.setCreationTime(new Date());
-            sportTypeForm.setCreator(coreService.getCurrentUser().getEmailId());
+            sportTypeForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         byte[] fig= sportTypeForm.getLogo().getBytes();
         Binary binary=new Binary(fig);
@@ -81,7 +81,7 @@ public class SportsTypeController {
         sportTypeRepository.save(sportType);
         model.addAttribute("editForm", sportTypeForm);
 
-        return "redirect:/admin/sportType";
+        return "redirect:/matches/sportType";
     }
 
     @GetMapping("/add")
@@ -90,7 +90,7 @@ public class SportsTypeController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         return "sportType/edit";
     }
@@ -99,6 +99,6 @@ public class SportsTypeController {
         for (String id : ids.split(",")) {
             sportTypeRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/sportType";
+        return "redirect:/matches/sportType";
     }
 }

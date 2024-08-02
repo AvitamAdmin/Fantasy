@@ -23,7 +23,7 @@
             </div>
               <div class="col-sm-3">
                  <select class="cheil-select" name="matchId">
-                     <option value="">Select Match</option>
+                     <option value="editForm.matchId">Select Match</option>
                          <c:forEach items="${matches}" var="child">
                            <c:choose>
                              <c:when test="${fn:contains( editForm.matchId, child ) }">
@@ -37,15 +37,15 @@
                  </select>
               </div>
           <div class="col-sm-3">
-                  <select class="cheil-select" name="teamId">
-                    <option value="">Select Team</option>
-                        <c:forEach items="${teams}" var="child">
+                  <select class="cheil-select" name="userTeamId">
+                    <option value="">Select UserTeam</option>
+                        <c:forEach items="${userTeams}" var="child">
                           <c:choose>
-                            <c:when test="${fn:contains( editForm.teamId, child ) }">
-                              <option value="${child.id}" selected>${child.name}</option>
+                            <c:when test="${fn:contains( editForm.userTeamId, child ) }">
+                              <option value="${child.id}" selected>${child.id}</option>
                             </c:when>
                             <c:otherwise>
-                             <option value="${child.id}" >${child.name}</option>
+                             <option value="${child.id}" >${child.id}</option>
                             </c:otherwise>
                           </c:choose>
                         </c:forEach>

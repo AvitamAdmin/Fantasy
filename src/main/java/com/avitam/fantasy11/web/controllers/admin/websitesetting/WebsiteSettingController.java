@@ -1,10 +1,12 @@
-package com.avitam.fantasy11.web.controllers.admin.websitesetting;
+package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
 
+import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.model.WebsiteSettingRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.WebsiteSettingForm;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,12 +21,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
-@RequestMapping("/admin/websitesetting")
+@RequestMapping("/settings/websitesetting")
 public class WebsiteSettingController {
 
     @Autowired
@@ -38,19 +38,21 @@ public class WebsiteSettingController {
     @GetMapping
     public String getAll(Model model) {
         List<WebsiteSetting> websiteSettings = websiteSettingRepository.findAll();
+
         model.addAttribute("models", websiteSettings);
         return "websitesetting/websitesettings";
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") Long id, Model model) {
+    public String edit(@RequestParam("id") String id, Model model) {
+
         Optional<WebsiteSetting> websiteSettingOptional = websiteSettingRepository.findById(id);
         if (websiteSettingOptional.isPresent()) {
             WebsiteSetting websitesetting = websiteSettingOptional.get();
             WebsiteSettingForm websiteSettingForm = modelMapper.map(websitesetting, WebsiteSettingForm.class);
+            websiteSettingForm.setId(String.valueOf(websitesetting.getId()));
             model.addAttribute("editForm", websiteSettingForm);
         }
-
         return "websitesetting/edit";
     }
 
@@ -65,7 +67,7 @@ public class WebsiteSettingController {
         websiteSettingForm.setLastModified(new Date());
         if (websiteSettingForm.getId() == null) {
             websiteSettingForm.setCreationTime(new Date());
-            websiteSettingForm.setCreator(coreService.getCurrentUser().getEmailId());
+            websiteSettingForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         WebsiteSetting websitesetting = modelMapper.map(websiteSettingForm, WebsiteSetting.class);
         MultipartFile logo = websiteSettingForm.getLogo();
@@ -87,7 +89,7 @@ public class WebsiteSettingController {
         websiteSettingRepository.save(websitesetting);
         model.addAttribute("editForm", websiteSettingForm);
 
-        return "redirect:/admin/websitesetting";
+        return "redirect:/settings/websitesetting";
     }
 
     @GetMapping("/add")
@@ -96,7 +98,7 @@ public class WebsiteSettingController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
 
         model.addAttribute("editForm", form);
         return "websitesetting/edit";
@@ -105,8 +107,8 @@ public class WebsiteSettingController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            websiteSettingRepository.deleteById(Long.valueOf(id));
+            websiteSettingRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/websitesetting";
+        return "redirect:/settings/websitesetting";
     }
 }

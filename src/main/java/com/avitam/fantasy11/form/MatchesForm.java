@@ -7,21 +7,18 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class MatchesForm extends BaseEntityForm{
+public class MatchesForm extends BaseForm{
 
-    private String teamId1;
-
-    private String teamId2;
-
-    private String dateAndTime;
-
-    private String tournamentId;
-
-    private String sportTypeId;
-
+    private String team1Id;
+    private String team2Id;
     private String contestId;
-
+    private String startDateAndTime;
+    private String endDateAndTime;
+    private String event;
+    private String tournamentId;
+    private String sportTypeId;
+    private String parentMainContestId;
     private boolean matchStatus;
-
     private String matchTypeId;
+
 }

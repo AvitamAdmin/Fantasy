@@ -15,8 +15,8 @@ import java.util.Date;
 @Document("VerificationToken")
 public class VerificationToken {
 
-    private int ids;
-    private int userId;
+    private int id;
+    private String userId;
     private int token;
     private int status;
     public User user;

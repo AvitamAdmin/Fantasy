@@ -12,16 +12,14 @@
               <thead>
                     <tr>
                       <th class="th-sm">PK</th>
-                      <th class="th-sm">Match Type</th>
-                      <th class="th-sm">Last Modified</th>
+                      <th class="th-sm">Name</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.matchType}</td>
-                        <td class="td-sm">${model.lastModified}</td>
+                        <td class="td-sm">${model.name}</td>
                      </tr>
                  </c:forEach>
              </tbody>

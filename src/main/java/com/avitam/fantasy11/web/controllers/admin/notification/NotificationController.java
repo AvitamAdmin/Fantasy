@@ -1,11 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.notification;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.form.NotificationForm;
 import com.avitam.fantasy11.model.*;
-import com.avitam.fantasy11.validation.AddressFormValidator;
-import com.avitam.fantasy11.validation.NotificationFormValidator;
+//import com.avitam.fantasy11.validation.AddressFormValidator;
+//import com.avitam.fantasy11.validation.NotificationFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import java.util.Optional;
 public class NotificationController {
 
     @Autowired
-    NotificationRepository notificationRepository;
+    private NotificationRepository notificationRepository;
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
@@ -34,35 +33,32 @@ public class NotificationController {
 
     @GetMapping
     public String getAllModels(Model model) {
-        //model.addAttribute("models", addressRepository.findAll().stream().filter(address -> address.getUserId() != null).collect(Collectors.toList()));
         model.addAttribute("models", notificationRepository.findAll());
         return "notification/notifications";
     }
 
     @GetMapping("/edit")
-    public String editNotification(@RequestParam("id") ObjectId id, Model model) {
-        NotificationForm notificationForm = null;
+    public String editNotification(@RequestParam("id") String id, Model model) {
+
         Optional<Notification> notificationOptional = notificationRepository.findById(id);
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
-            notificationForm = modelMapper.map(notification, NotificationForm.class);
+            NotificationForm notificationForm = modelMapper.map(notification, NotificationForm.class);
             model.addAttribute("editForm", notificationForm);
         }
-        //model.addAttribute("nodes", addressRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
         return "notification/edit";
     }
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") NotificationForm notificationForm, Model model, BindingResult result) {
-        new NotificationFormValidator().validate(notificationForm, result);
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "notification/edit";
         }
-        notificationForm.setLastModified(new Date());
+            notificationForm.setLastModified(new Date());
         if (notificationForm.getId() == null) {
             notificationForm.setCreationTime(new Date());
-            notificationForm.setCreator(coreService.getCurrentUser().getEmailId());
+            notificationForm.setCreator(coreService.getCurrentUser().getEmail());
             notificationForm.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
         }
         Notification notification = modelMapper.map(notificationForm, Notification.class);
@@ -71,10 +67,6 @@ public class NotificationController {
         if(notificationOptional.isPresent()){
             notification.setId(notificationOptional.get().getId());
         }
-
-       /* if (StringUtils.isNotEmpty(interfaceForm.getParentNodeId())) {
-            node.setParentNode(nodeRepository.getByIds(Long.valueOf(interfaceForm.getParentNodeId())));
-        }*/
 
         notificationRepository.save(notification);
         model.addAttribute("editForm", notificationForm);
@@ -87,19 +79,17 @@ public class NotificationController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
-        form.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-       // model.addAttribute("nodes", addressRepository.findAll().stream().filter(node -> node.getUserId() == null).collect(Collectors.toList()));
         return "notification/edit";
     }
 
     @GetMapping("/delete")
-    public String deleteNotification(@RequestParam("id") ObjectId id, Model model) {
-        /*for (String id : ids.split(",")) {
-            addressRepository.deleteById(Integer.valueOf(id));
-        }*/
-        notificationRepository.deleteById(id);
+    public String deleteNotification(@RequestParam("id") String ids, Model model) {
+        for (String id : ids.split(",")) {
+
+            notificationRepository.deleteById(new ObjectId(id));
+        }
         return "redirect:/admin/notification";
     }
 }

@@ -19,7 +19,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed text-truncate" id="firstmenu${loop.index}" href="#" data-toggle="collapse" data-target="#submenu1${loop.index}"> <i class="ti-menu menu-icon"></i> <span class="d-sm-inline">${node.name}</span></a>
 
-                <c:if test="${empty node.parentNodeId}">
+                <c:if test="${not empty node.childNodes}">
                 <div class="collapse" id="submenu1${loop.index}" aria-expanded="false">
                     <ul class="flex-column pl-2 nav secondmenu">
                         <c:forEach var="childNode" items="${node.childNodes}" varStatus="loop2">

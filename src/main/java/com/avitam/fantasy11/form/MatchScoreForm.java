@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MatchScoreForm extends BaseEntityForm{
+public class MatchScoreForm extends BaseForm {
 
-    private  int matchId;
+    private  String matchId;
 
     private int team1Score;
 

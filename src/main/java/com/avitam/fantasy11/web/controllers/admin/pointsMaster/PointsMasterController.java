@@ -35,15 +35,17 @@ public class PointsMasterController {
     }
 
     @GetMapping("/edit")
-    public String editPointsMaster(@RequestParam("id") ObjectId id, Model model) {
+    public String editPointsMaster(@RequestParam("id") String id, Model model) {
 
         Optional<PointsMaster> pointsMasterOptional = pointsMasterRepository.findById(id);
         if (pointsMasterOptional.isPresent()) {
             PointsMaster pointsMaster = pointsMasterOptional.get();
             PointsMasterForm pointsMasterForm = modelMapper.map(pointsMaster, PointsMasterForm.class);
+
             model.addAttribute("editForm", pointsMasterForm);
-            model.addAttribute("match",matchTypeRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
         }
+        model.addAttribute("match",matchTypeRepository.findAll());
+
         return "pointsMaster/edit";
     }
 
@@ -53,7 +55,7 @@ public class PointsMasterController {
             model.addAttribute("message", result);
             return "pointsMaster/edit";
         }
-        pointsMasterForm.setLastModified(new Date());
+            pointsMasterForm.setLastModified(new Date());
 
         if (pointsMasterForm.getId() == null) {
             pointsMasterForm.setCreationTime(new Date());
@@ -69,7 +71,7 @@ public class PointsMasterController {
 
         Optional<MatchType> matchTypeOptional=matchTypeRepository.findById(String.valueOf(pointsMasterForm.getMatchTypeId()));
         if(matchTypeOptional.isPresent()){
-            pointsMaster.setMatchTypeId(matchTypeOptional.get().getId());
+            pointsMaster.setMatchTypeId(String.valueOf(matchTypeOptional.get().getId()));
         }
 
         pointsMasterRepository.save(pointsMaster);
@@ -85,7 +87,7 @@ public class PointsMasterController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("matchTypes",matchTypeRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("matchTypes",matchTypeRepository.findAll());
 
         return "pointsMaster/edit";
     }

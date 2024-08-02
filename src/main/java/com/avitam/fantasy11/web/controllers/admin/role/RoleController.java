@@ -6,6 +6,7 @@ import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.validation.RoleFormValidator;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -41,7 +42,7 @@ public class RoleController {
     }
 
     @GetMapping("/edit")
-    public String editUser(@RequestParam("id") Integer id, Model model) {
+    public String editRole(@RequestParam("id") String id, Model model) {
         if (id == null) {
             model.addAttribute("message", "Please select a row for edit operation!");
             return "role/edit";
@@ -49,6 +50,7 @@ public class RoleController {
         Optional<Role> roleOptional = roleRepository.findById(id);
         if (roleOptional.isPresent()) {
             RoleForm roleForm = modelMapper.map(roleOptional.get(), RoleForm.class);
+            roleForm.setId(String.valueOf(roleOptional.get().getId()));
             model.addAttribute("nodes", nodeRepository.findAll());
             model.addAttribute("roleForm", roleForm);
         }
@@ -63,21 +65,21 @@ public class RoleController {
             model.addAttribute("message", result);
             return "role/edit";
         }
-        Role role = null;
+        Role role = modelMapper.map(roleForm,Role.class);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        if (roleForm.getIds() != null) {
-            Optional<Role> optionalRole = roleRepository.findById(roleForm.getIds());
+        if (roleForm.getId() != null) {
+            Optional<Role> optionalRole = roleRepository.findById(roleForm.getId());
             if (optionalRole.isPresent()) {
                 role = optionalRole.get();
                 role.setName(roleForm.getName());
                 role.setPermissions(roleForm.getPermissions());
             }
         } else {
-            role = modelMapper.map(roleForm, Role.class);
             role.setCreationTime(new Date());
         }
         role.setLastModified(new Date());
+        role.setRoleId(roleForm.getRoleId());
         role.setCreator(principalObject.getUsername());
         roleRepository.save(role);
         model.addAttribute("message", "Role was updated successfully!");
@@ -85,12 +87,12 @@ public class RoleController {
     }
 
     @GetMapping("/add")
-    public String addUser(@ModelAttribute RoleForm roleForm, Model model) {
+    public String addRole(Model model) {
         RoleForm form = new RoleForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getName());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("nodes", nodeRepository.findAll());
         model.addAttribute("roleForm", form);
         return "role/edit";
@@ -99,7 +101,7 @@ public class RoleController {
     @GetMapping("/delete")
     public String deleteRole(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            roleRepository.deleteById(Integer.valueOf(id));
+            roleRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/role";
     }

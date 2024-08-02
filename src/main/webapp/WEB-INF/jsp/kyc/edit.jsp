@@ -16,15 +16,16 @@
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
+
             <div class="col-sm-3">
-                <form:input path="panNumber" class="inputbox-cheil-small" placeholder="Enter Pan-Number" />
-                <span>Pan-Number</span>
-                <form:errors path="panNumber" class="text-danger"></form:errors>
-            </div>
-            <div class="col-sm-3">
-                <form:input path="userId" class="inputbox-cheil-small" placeholder="Enter-Id" />
+                <form:input path="userId" class="inputbox-cheil" placeholder="UserId" />
                 <span>UserId</span>
                 <form:errors path="userId" class="text-danger"></form:errors>
+            </div>
+            <div class="col-sm-3">
+                <form:input path="panNumber" class="inputbox-cheil" placeholder="Enter Pan-Number" />
+                <span>Pan-Number</span>
+                <form:errors path="panNumber" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input path="panImage" type="file" class="inputbox-cheil-small" />

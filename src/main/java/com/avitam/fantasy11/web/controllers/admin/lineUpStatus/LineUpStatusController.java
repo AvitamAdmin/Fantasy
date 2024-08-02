@@ -37,6 +37,7 @@ public class LineUpStatusController {
         model.addAttribute("models", lineUps);
         return "lineupStatus/lineupStatuses";
     }
+
     @GetMapping("/edit")
     public String editLineupStatus (@RequestParam("id") ObjectId id, Model model){
 
@@ -58,7 +59,7 @@ public class LineUpStatusController {
             return "lineupStatus/edit";
         }
 
-        lineUpStatusForm.setLastModified(new Date());
+            lineUpStatusForm.setLastModified(new Date());
         if (lineUpStatusForm.getId() == null) {
             lineUpStatusForm.setCreationTime(new Date());
             lineUpStatusForm.setCreator(coreService.getCurrentUser().getEmail());

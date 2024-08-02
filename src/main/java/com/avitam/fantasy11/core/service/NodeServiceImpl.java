@@ -17,102 +17,52 @@ public class NodeServiceImpl implements NodeService {
 
     @Autowired
     private NodeRepository nodeRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ModelMapper modelMapper;
 
     @Override
-    //@Cacheable(cacheNames = "allNodes")
     public List<Node> getAllNodes() {
-       // List<NodeDto> allNodes = new ArrayList<>();
-       // List<Node> childNodes = new ArrayList<>();
-        //List<Node> nodeList = nodeRepository.findAll().stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
+        List<Node> allNodes = nodeRepository.findByParentNodeId(null);
+        if (CollectionUtils.isNotEmpty(allNodes)) {
+            allNodes.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
+                    Comparator.nullsFirst(Comparator.naturalOrder())));
 
-        List<Node> nodeList = nodeRepository.findByParentNodeId(null);
-        if (CollectionUtils.isNotEmpty(nodeList)) {
-            nodeList.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
-                    Comparator.nullsLast(Comparator.naturalOrder())));
-            for (Node node : nodeList) {
-                List<Node> nodeList2 =  nodeRepository.findByParentNodeId(node.getId());
-                node.setChildNodes(nodeList2);
-
-                /*if(node.getParentNodeId() != null){
-                    node.getChildNodes().add(nodeRepository.findByParentNodeId(node.getParentNodeId()));
-                }*/
-                // if (CollectionUtils.isNotEmpty(node.getParentNodeId())) {
-                // List<Node> childNodes = node.getParentNodeId();
-                //node.setChildNodes(nodeRepository.findById(node.getParentNodeId()));
-                //}
-                /*if (CollectionUtils.isNotEmpty(node.getParentNodeId())) {
-                    List<Node> childNodes = node.getParentNodeId().stream().sorted(Comparator.comparing(nodes -> nodes.getDisplayPriority())).collect(Collectors.toList());
-                    node.setParentNodeId(childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.getStatus())).collect(Collectors.toList()));
+            for (Node node : allNodes) {
+                List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
+                for (Node childNode : nodes1) {
+                    childNode.setParentNode(node.getName()); // Set parent node for each child node
                 }
-                allNodes.add(modelMapper.map(node, NodeDto.class));*/
-                //}
+                node.setChildNodes(nodes1);
             }
         }
-            //return allNodes;
-            return nodeList;
-
+        return allNodes;
     }
 
     @Override
-    //@Cacheable(cacheNames = "roleBasedNodes")
     public List<Node> getNodesForRoles() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByEmailId(principalObject.getUsername());
-       // Set<Role> roles = currentUser.getRoles();
-        int role = currentUser.getRole();
+        User currentUser = userRepository.findByEmail(principalObject.getUsername());
+        int roles = currentUser.getRole();
         Set<Node> nodes = new HashSet<>();
-       /* for (Role role : roles) {
-            nodes.addAll(role.getPermissions());
-        }*/
-        if(currentUser.getRole()==2){
+
+        if (currentUser.getRole() == 2) {
             nodes.addAll(nodeRepository.findByParentNodeId(null));
         }
-        //nodes.addAll(nodeRepository.findAll());
+
         List<Node> allNodes = new ArrayList<>();
         List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
         nodeList.sort(Comparator.comparing(node -> node.getDisplayPriority()));
         for (Node node : nodeList) {
-           /* if (CollectionUtils.isNotEmpty(node.getChildNodes())) {
-                List<Node> childNodes = node.getChildNodes().stream().sorted(Comparator.comparing(node1 -> node1.getDisplayPriority())).collect(Collectors.toList());
-                node.setChildNodes(childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.getStatus())).collect(Collectors.toList()));
-            }*/
-            List<Node> nodeList2 =  nodeRepository.findByParentNodeId(node.getId());
-            node.setChildNodes(nodeList2);
+            List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
+            node.setChildNodes(nodes1);
             allNodes.add(node);
         }
+
         return allNodes;
-       /* List<NodeDto> treeNode = new ArrayList<>();
-        for (Node node : allNodes) {
-            if (node.getParentNode() == null) {
-                if (!treeNode.stream().filter(e -> e.getName().equals(node.getName())).findFirst().isPresent()) {
-                    NodeDto nodeDto = modelMapper.map(node, NodeDto.class);
-                    nodeDto.setChildNodes(new ArrayList<>());
-                    treeNode.add(nodeDto);
-                }
-            } else {
-                NodeDto currentChildDto = modelMapper.map(node, NodeDto.class);
-                NodeDto parentNodeDto = currentChildDto.getDtoParentNode();
-                List<NodeDto> children = new ArrayList<>();
-                Optional<NodeDto> parentNode = treeNode.stream().filter(e -> e.getName().equals(parentNodeDto.getName())).findFirst();
-                if (parentNode.isPresent()) {
-                    children = parentNode.get().getChildNodes();
-                    children.add(currentChildDto);
-                    parentNode.get().setChildNodes(children);
-                } else {
-                    children.add(currentChildDto);
-                    parentNodeDto.setChildNodes(children);
-                    treeNode.add(parentNodeDto);
-                }
-            }
-        }
-        return treeNode;*/
 
     }
 }

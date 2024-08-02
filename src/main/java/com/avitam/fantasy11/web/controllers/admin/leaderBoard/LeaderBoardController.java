@@ -38,12 +38,16 @@ public class LeaderBoardController {
     }
 
     @GetMapping("/edit")
-    public String editLeaderBoard(@RequestParam("id") ObjectId id, Model model) {
+    public String editLeaderBoard(@RequestParam("id") String id, Model model) {
 
         Optional<LeaderBoard> leaderBoardOptional = leaderBoardRepository.findById(id);
         if (leaderBoardOptional.isPresent()) {
             LeaderBoard leaderBoard = leaderBoardOptional.get();
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             LeaderBoardForm leaderBoardForm = modelMapper.map(leaderBoard, LeaderBoardForm.class);
+            leaderBoardForm.setId(String.valueOf(leaderBoard.getId()));
+
             model.addAttribute("editForm", leaderBoardForm);
             model.addAttribute("tournaments",tournamentRepository.findAll().stream().filter(tournament -> tournament.getId()!=null).collect(Collectors.toList()));
         }
@@ -56,7 +60,7 @@ public class LeaderBoardController {
             model.addAttribute("message", result);
             return "leaderBoard/edit";
         }
-        leaderBoardForm.setLastModified(new Date());
+            leaderBoardForm.setLastModified(new Date());
 
         if (leaderBoardForm.getId() == null) {
             leaderBoardForm.setCreationTime(new Date());
@@ -69,9 +73,9 @@ public class LeaderBoardController {
             leaderBoard.setId(leaderBoardOptional.get().getId());
         }
         Optional<Tournament> tournamentOptional=tournamentRepository.findById(leaderBoardForm.getTournamentId());
-        if(tournamentOptional.isPresent()){
-            leaderBoard.setTournamentId(leaderBoardOptional.get().getTournamentId());
-        }
+         if(tournamentOptional.isPresent()){
+            leaderBoard.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
+         }
 
         leaderBoardRepository.save(leaderBoard);
         model.addAttribute("editForm", leaderBoardForm);

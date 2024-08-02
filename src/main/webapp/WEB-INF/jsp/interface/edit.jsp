@@ -16,7 +16,6 @@
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
-
             <div class="col-sm-3">
                 <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
                 <span>Name</span>
@@ -33,11 +32,10 @@
                     <c:forEach items="${nodes}" var="child">
                         <c:choose>
                             <c:when test="${fn:contains( editForm.parentNode, child ) }">
-
                               <option value="${child.id}" selected>${child.name}</option>
                             </c:when>
                             <c:otherwise>
-                                     <option value="${child.id}" >${child.name}</option>
+                              <option value="${child.id}" >${child.name}</option>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>

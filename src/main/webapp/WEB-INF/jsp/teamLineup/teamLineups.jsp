@@ -15,7 +15,6 @@
                       <th class="th-sm">Team Id</th>
                       <th class="th-sm">Player Id</th>
                       <th class="th-sm">lineupStatus</th>
-                      <th class="th-sm">Last Modified</th>
                     </tr>
               </thead>
               <tbody>
@@ -25,7 +24,6 @@
                         <td class="td-sm">${model.teamId}</td>
                         <td class="td-sm">${model.playerId}</td>
                         <td class="td-sm">${model.lineupStatus}</td>
-                        <td class="td-sm">${model.lastModified}</td>
                      </tr>
                  </c:forEach>
              </tbody>

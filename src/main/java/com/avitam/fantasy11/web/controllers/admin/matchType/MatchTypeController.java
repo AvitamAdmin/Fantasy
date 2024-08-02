@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Controller
-@RequestMapping("/admin/matchType")
+@RequestMapping("/matches/matchType")
 public class MatchTypeController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class MatchTypeController {
         return "matchType/matchTypes";
     }
     @GetMapping("/edit")
-    public String editTournament (@RequestParam("id") ObjectId id, Model model){
+    public String editTournament (@RequestParam("id") String id, Model model){
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(id);
         if (matchTypeOptional.isPresent()) {
@@ -59,10 +59,10 @@ public class MatchTypeController {
             return "matchType/edit";
         }
 
-        matchTypeForm.setLastModified(new Date());
+            matchTypeForm.setLastModified(new Date());
         if (matchTypeForm.getId() == null) {
             matchTypeForm.setCreationTime(new Date());
-            matchTypeForm.setCreator(coreService.getCurrentUser().getEmailId());
+            matchTypeForm.setCreator(coreService.getCurrentUser().getEmail());
         }
 
         MatchType matchType = modelMapper.map(matchTypeForm, MatchType.class);
@@ -75,7 +75,7 @@ public class MatchTypeController {
         matchTypeRepository.save(matchType);
         model.addAttribute("editForm", matchTypeForm);
 
-        return "redirect:/admin/matchType";
+        return "redirect:/matches/matchType";
     }
 
     @GetMapping("/add")
@@ -84,7 +84,7 @@ public class MatchTypeController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         return "matchType/edit";
     }
@@ -93,6 +93,6 @@ public class MatchTypeController {
         for (String id : ids.split(",")) {
             matchTypeRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/matchType";
+        return "redirect:/matches/matchType";
     }
 }

@@ -22,10 +22,10 @@
                 <span>Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4" >
                Upload Logo<form:input type="file" name="logo" path="logo" accept="image/png"/>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4"  >
                 Upload Favicon<form:input type="file" name="favicon" path="favicon" accept="image/png"/>
             </div>
         </div>

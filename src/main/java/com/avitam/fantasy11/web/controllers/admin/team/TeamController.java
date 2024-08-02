@@ -46,7 +46,7 @@ public class TeamController {
         return "team/teams";
     }
     @GetMapping("/edit")
-    public String editTeam (@RequestParam("id")ObjectId id, Model model){
+    public String editTeam (@RequestParam("id")String id, Model model){
 
         Optional<Team> teamOptional = teamRepository.findById(id);
         if (teamOptional.isPresent()) {
@@ -72,7 +72,7 @@ public class TeamController {
         teamForm.setLastModified(new Date());
         if (teamForm.getId() == null) {
             teamForm.setCreationTime(new Date());
-            teamForm.setCreator(coreService.getCurrentUser().getEmailId());
+            teamForm.setCreator(coreService.getCurrentUser().getEmail());
         }
 
         Team team = modelMapper.map(teamForm, Team.class);
@@ -93,13 +93,14 @@ public class TeamController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         return "team/edit";
     }
     @GetMapping("/delete")
     public String deleteTeam(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
+
             teamRepository.deleteById(new ObjectId(id));
         }
         return "redirect:/admin/team";

@@ -3,10 +3,7 @@ package com.avitam.fantasy11.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -15,19 +12,16 @@ import java.util.Date;
 
 public class Matches extends BaseEntity{
 
-    private ObjectId teamId1;
-
-    private ObjectId teamId2;
-
+    private String team1Id;
+    private String contestId;
+    private String team2Id;
     private String dateAndTime;
-
+    private String startDateAndTime;
+    private String endDateAndTime;
+    private String event;
     private boolean matchStatus;
-
-    private ObjectId tournamentId;
-
-    private ObjectId sportTypeId;
-
-    private ObjectId contestId;
-
-    private ObjectId matchTypeId;
+    private String tournamentId;
+    private String sportTypeId;
+    private String parentMainContestId;
+    private String matchTypeId;
 }

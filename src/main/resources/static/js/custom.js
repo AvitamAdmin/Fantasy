@@ -219,3 +219,269 @@ function gerParamsForDataSource(url, index) {
         }
     });
 }
+
+function getMatchId(id) {
+    var matchId = $(id).val();
+    //alert(matchId);
+
+    $.ajax({
+        type: "GET",
+        url: "/admin/userTeams/getPlayersByMatchId/" + matchId,
+        timeout: 600000,
+        dataType: 'json',
+        success: function(data) {
+        //alert(data);
+        $('#players').empty();
+        $.each(data, function(i, v) {
+
+           $.each(v, function(index, value){
+            console.log(value);
+            $('#players').append($('<option>', { value : v[index].id}).text(v[index].name));
+            });
+        });
+        },
+        error: function(e) {
+            alert(e);
+        }
+
+    });
+}
+
+function getMatchId(id) {
+    var matchId = $(id).val();
+    var playerIds = [];
+    var playersName = [];
+
+    $.ajax({
+        type: "GET",
+        url: "/admin/userTeams/getPlayersByMatchId/" + matchId,
+        timeout: 600000,
+        dataType: 'json',
+        success: function(data) {
+        //alert(data);
+        console.log(data);
+        $('#players').empty();
+
+        $.each(data, function(i, v) {
+            if(i == 1){
+            $.each(v, function(index, value){
+                playerIds[index] = value;
+                console.log(playerIds[index]);
+            });
+            }
+        });
+        $.each(data, function(i, v) {
+            if(i == 2){
+            $.each(v, function(index, value){
+                playersName[index] = value;
+                console.log(playersName[index]);
+            });
+            }
+        });
+        //$('#players').append($('<option>', { value : v[index].id}).text(v[index].playerName));
+        for(var i = 0; i<playerIds.length; i++){
+        $('#players').append($('<option></option>').val(playerIds[i]).html(playersName[i]));
+        }
+        },
+        error: function(e) {
+            alert(e);
+        }
+
+    });
+}
+
+var count=0;
+var kg=0.0;
+var totalPrice=0.0;
+var quantity=0.0;
+var particular="";
+var grossPrice = 0.0;
+var amountReceived=0.0;
+var pendingAmount=0.0;
+var sellingPrice=0.0;
+var adjustableRate=0.0;
+var adjustableTotalPrice=0.0;
+
+
+function getVegetablePrice(counts) {
+
+    count=counts;
+    console.log(count);
+    particular = $('#particulars'+count+'').val();
+    console.log(particular);
+    $.ajax({
+        type: "GET",
+        url: "/admin/billofsupply/getVegetableById/" + particular,
+        timeout: 600000,
+        dataType: 'json',
+        success: function(data) {
+        alert(data);
+        console.log(data);
+        sellingPrice = data;
+        $('#rate'+count+'').val(sellingPrice);
+        $('#quantity'+count+'').val(1);
+        },
+        error: function(e) {
+            alert(e);
+        }
+
+    });
+}
+
+
+function getParticularKgTotalPrice(counts) {
+    count=counts;
+    console.log(count);
+    kg = $('#kg'+count+'').val();
+    console.log(kg);
+    particular = $('#particulars'+count+'').val();
+    sellingPrice = $('#rate'+count+'').val();
+    console.log(sellingPrice);
+
+   $.ajax({
+            type: "GET",
+            url: "/admin/billofsupply/validateProductData/" + particular,
+            timeout: 600000,
+            dataType: 'json',
+            success: function(data) {
+            var stock = data;
+            alert("Available stock "+stock);
+            console.log(stock);
+            if(kg>stock){
+            alert("Kg is greater than stock. Kindly update stock!!!");
+            }
+            else{
+            totalPrice = kg * sellingPrice;
+            $('#totalPrice'+count+'').empty();
+            //$('#grandTotal').empty();
+
+            $('#totalPrice'+count+'').val(totalPrice);
+            grandTotal=parseInt($('#grandTotal').val());
+            grandTotal = grandTotal + totalPrice;
+            $('#grandTotal').val(grandTotal);
+
+            }
+            },
+            error: function(e) {
+                alert(e);
+            }
+   });
+
+}
+
+function getAdjustableRate(counts) {
+    count=counts;
+    //--count;
+    console.log(count);
+    adjustableRate = $('#rate'+count+'').val();
+    kg = $('#kg'+count+'').val();
+    if(kg==null){
+    alert("Kindly enter kilogram");
+    }
+    console.log(kg);
+    console.log(adjustableRate);
+
+   $.ajax({
+            type: "GET",
+            url: "/admin/billofsupply/validateProductData/" + particular,
+            timeout: 600000,
+            dataType: 'json',
+            success: function(data) {
+            var stock = data;
+            alert(stock);
+            console.log(stock);
+
+            if(kg>stock){
+            alert("Kg is greater than stock. Kindly update stock!!!");
+            }
+            else{
+            totalPrice=$('#totalPrice'+count+'').val();
+            adjustableTotalPrice = kg * adjustableRate;
+            $('#totalPrice'+count+'').empty();
+            $('#totalPrice'+count+'').val(adjustableTotalPrice);
+
+            //$('#grossPrice').empty();
+            grossPrice = grossPrice + adjustableTotalPrice - totalPrice;
+            $('#grossPrice').val(grossPrice);
+            //count++;
+            }
+
+            },
+            error: function(e) {
+                alert(e);
+            }
+
+        });
+        }
+
+
+function getPendingAmount(customerName) {
+    var customerName = $(customerName).val();
+
+    $.ajax({
+        type: "GET",
+        url: "/admin/billofsupply/getPendingAmount/" + customerName,
+        timeout: 600000,
+        dataType: 'json',
+        success: function(data) {
+        alert(data);
+        console.log(data);
+        pendingAmount = data;
+        $('#pendingAmount').val(data);
+
+        },
+        error: function(e) {
+            alert(e);
+        }
+
+    });
+}
+
+
+function changePendingAmount() {
+    //console.log(count);
+    amountReceived = $('#amountReceived').val();
+    grossPrice = $('#grossPrice').val();
+    pendingAmount=$('#pendingAmount').val();
+    console.log(amountReceived);
+    console.log(grossPrice);
+    console.log(pendingAmount);
+    $.ajax({
+        type: "GET",
+        url: "/admin/billofsupply/changePendingAmount/" + amountReceived + "/" + grossPrice + "/" + pendingAmount,
+        timeout: 600000,
+        dataType: 'json',
+        success: function(data) {
+        alert(data);
+        console.log(data);
+        $('#pendingAmount').empty();
+        $('#pendingAmount').val(data);
+
+        },
+        error: function(e) {
+            alert(e);
+        }
+
+    });
+}
+
+function removeRow(countVal) {
+
+    console.log(countVal);
+    if(count>=0){
+    //count=count-1;
+    //count = $(".cheil-select").length-1;
+    console.log(count);
+    var totalPriceRemove = $('#totalPrice'+countVal+'').val();
+        console.log(totalPriceRemove);
+        grossPrice=parseInt($('#grossPrice').val());
+        grossPrice = grossPrice - totalPriceRemove;
+        console.log(grossPrice);
+        pendingAmount=parseInt($('#pendingAmount').val());
+        $('#grossPrice').val(grossPrice);
+    $('#inputParamRow'+countVal).remove();
+    }
+
+  }
+
+

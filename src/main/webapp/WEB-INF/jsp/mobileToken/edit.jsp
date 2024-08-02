@@ -17,9 +17,9 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="userId" class="inputbox-cheil-small" placeholder="User Id" />
+                <form:input path="mobileNumber" class="inputbox-cheil-small" placeholder="Mobile Number"  />
                 <span>Mobile Number</span>
-                <form:errors path="userId" class="text-danger"></form:errors>
+                <form:errors path="mobileNumber" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input path="otp" class="inputbox-cheil-small" placeholder="Enter OTP" />

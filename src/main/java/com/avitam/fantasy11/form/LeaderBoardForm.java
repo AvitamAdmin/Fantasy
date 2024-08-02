@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LeaderBoardForm extends BaseEntityForm{
-    private int userId;
+public class LeaderBoardForm extends BaseForm{
+    private String userId;
 
-    private int tournamentId;
+    private String tournamentId;
 
     private int matchesPlayed;
 

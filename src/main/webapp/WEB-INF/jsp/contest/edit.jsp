@@ -17,9 +17,25 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="contestName" class="inputbox-cheil-small" placeholder="Enter Name" />
+                 <select class="cheil-select" name="mainContestId">
+                    <option value="">Select MainContest</option>
+                    <c:forEach items="${mainContests}" var="mainContest">
+                        <c:choose>
+                            <c:when test="${fn:contains( editForm.mainContestId, mainContest.id ) }">
+                              <option value="${mainContest.id}" selected>${mainContest.mainContestName}</option>
+                            </c:when>
+                            <c:otherwise>
+                               <option value="${mainContest.id}" >${mainContest.mainContestName}</option>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <div class="col-sm-3">
+                <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
                 <span>Name</span>
-                <form:errors path="contestName" class="text-danger"></form:errors>
+                <form:errors path="name" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                 <form:input path="totalPrice" class="inputbox-cheil-small" placeholder="Enter Total Price" />
@@ -32,17 +48,17 @@
                 <form:errors path="entryFee" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                <form:input path="numberOfMembers" class="inputbox-cheil" placeholder="Members " />
+                <form:input path="noOfMembers" class="inputbox-cheil" placeholder="no.of.Members" />
                 <span>No.Of.Members</span>
-                <form:errors path="numberOfMembers" class="text-danger"></form:errors>
+                <form:errors path="noOfMembers" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-              <form:input path="winPercentage" class="inputbox-cheil"  />
+              <form:input path="winPercentage" class="inputbox-cheil"  placeholder="Win%"/>
               <span>Win %</span>
               <form:errors path="winPercentage" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
-                <form:input path="maxTeams" class="inputbox-cheil" placeholder="Teams " />
+                <form:input path="maxTeams" class="inputbox-cheil" placeholder="Max Teams " />
                 <span>Max Teams</span>
                 <form:errors path="maxTeams" class="text-danger"></form:errors>
             </div>

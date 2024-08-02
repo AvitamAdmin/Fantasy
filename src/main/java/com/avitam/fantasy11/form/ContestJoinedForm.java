@@ -5,12 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ContestJoinedForm extends BaseEntityForm {
+public class ContestJoinedForm extends BaseForm {
     
     private String userId;
 
     private String matchId;
 
-    private String teamId;
+    private String userTeamId;
 
 }

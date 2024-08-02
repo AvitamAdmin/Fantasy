@@ -5,12 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PointsUpdateForm extends BaseEntityForm{
+public class PointsUpdateForm extends BaseForm{
 
+    private String matchId;
 
-    private int matchId;
-
-    private int playerId;
+    private String playerId;
 
     private float battingPoints;
 
@@ -36,5 +35,5 @@ public class PointsUpdateForm extends BaseEntityForm{
 
     private float catches;
 
-    private float startingEleven;
+    private float starting11;
 }

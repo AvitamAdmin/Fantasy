@@ -5,8 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LineUpStatusForm extends BaseEntityForm{
+public class LineUpStatusForm extends BaseForm{
 
-    //private int status;
+    private Boolean lineupStatus;
+
 
 }

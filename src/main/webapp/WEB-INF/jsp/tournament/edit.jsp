@@ -17,29 +17,29 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
             <div class="col-sm-3">
-                <form:input path="tournamentName" class="inputbox-cheil-small" placeholder="Enter Tournament Name" />
-                <span>Name</span>``
-                <form:errors path="tournamentName" class="text-danger"></form:errors>
+                <form:input path="name" class="inputbox-cheil-small" placeholder="Enter Name" />
+                <span>Name</span>
+                <form:errors path="name" class="text-danger"></form:errors>
+            </div>
+            <div class="col-sm-3">
+                <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" />
+                <span>Date</span>
+                <form:errors path="dateAndTime" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-3">
                <select class="cheil-select" name="sportId">
                     <option value="">Select SportType</option>
-                        <c:forEach items="${sportTypes}" var="sportType">
+                        <c:forEach items="${sportTypes}" var="child">
                             <c:choose>
-                                <c:when test="${fn:contains( editForm.sportId, sportType.id ) }">
-                                      <option value="${sportType.id}" selected>${sportType.sportName}</option>
+                                <c:when test="${fn:contains( editForm.sportId, child.id ) }">
+                                    <option value="${child.id}" selected>${child.name}</option>
                                 </c:when>
                                 <c:otherwise>
-                                    <option value="${sportType.id}" >${sportType.sportName}</option>
+                                    <option value="${child.id}" >${child.name}</option>
                                 </c:otherwise>
                             </c:choose>
                         </c:forEach>-
                </select>
-            </div>
-            <div class="col-sm-6">
-                <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
-                <span>City</span>
-                <form:errors path="dateAndTime" class="text-danger"></form:errors>
             </div>
        </form:form>
        <c:if test="${not empty message}">

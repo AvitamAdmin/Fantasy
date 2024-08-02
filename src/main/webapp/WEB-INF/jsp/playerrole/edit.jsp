@@ -5,20 +5,22 @@
             <p class="navigation" id="navBreadcrumb">Breadcrumb</p>
         </div>
     </div>
-    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/admin/playerrole/edit" class="handle-upload" modelAttribute="editForm" >
+    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/admin/playerRole/edit" class="handle-upload" modelAttribute="editForm" >
         <div class="row">
             <div class="col-sm-12">
                 <div class="dt-buttons">
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/playerrole')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/playerRole')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="submitFormById('#editForm');" aria-controls="tableData" type="button" title="Save">Save</button>
                 </div>
             </div>
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
-             <div class="col-sm-6">
-                <form:input path="playerRole" class="inputbox-cheil-small" placeholder="Player Role"/>
-             </div>
+                <div class="col-sm-3">
+                       <form:input path="playerRole" class="inputbox-cheil-small" placeholder="Enter PlayerRole" />
+                       <span>Player Role</span>
+                       <form:errors path="playerRole" class="text-danger"></form:errors>
+                </div>
 
         </div>
        </form:form>

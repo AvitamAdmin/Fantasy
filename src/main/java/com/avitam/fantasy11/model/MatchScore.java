@@ -3,7 +3,6 @@ package com.avitam.fantasy11.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -12,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("MatchScore")
 public class MatchScore extends BaseEntity{
 
-    private ObjectId matchId;
+    private String matchId;
 
     private int team1Score;
 

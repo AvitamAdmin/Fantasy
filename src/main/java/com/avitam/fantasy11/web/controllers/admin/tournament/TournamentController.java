@@ -1,9 +1,11 @@
 package com.avitam.fantasy11.web.controllers.admin.tournament;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.TeamForm;
 import com.avitam.fantasy11.form.TournamentForm;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.SportType;
+import com.avitam.fantasy11.model.SportTypeRepository;
+import com.avitam.fantasy11.model.Tournament;
+import com.avitam.fantasy11.model.TournamentRepository;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -32,21 +32,23 @@ public class TournamentController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public String getAll(Model model){
+    public String getAllTournament(Model model){
         List<Tournament> tournaments = tournamentRepository.findAll();
         model.addAttribute("models", tournaments);
         return "tournament/tournaments";
     }
     @GetMapping("/edit")
-    public String editTournament (@RequestParam("id") ObjectId id, Model model){
-        List<SportType> sportTypes=sportTypeRepository.findAll().stream().filter(sport->sport.getId()!=null).collect(Collectors.toList());
+    public String editTournament (@RequestParam("id") String id, Model model){
 
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(id);
         if (tournamentOptional.isPresent()) {
-            Tournament tournament= tournamentOptional.get();
+            Tournament tournament = tournamentOptional.get();
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             TournamentForm tournamentForm = modelMapper.map(tournament, TournamentForm.class);
+            tournamentForm.setId(String.valueOf(tournament.getId()));
+            tournamentForm.setId(String.valueOf(tournament.getId()));
             model.addAttribute("editForm", tournamentForm);
-            model.addAttribute("sportTypes",sportTypes);
+            model.addAttribute("sportTypes",sportTypeRepository.findAll());
         }
         return "tournament/edit";
     }
@@ -63,26 +65,24 @@ public class TournamentController {
         tournamentForm.setLastModified(new Date());
         if (tournamentForm.getId() == null) {
             tournamentForm.setCreationTime(new Date());
-            tournamentForm.setCreator(coreService.getCurrentUser().getEmailId());
+            tournamentForm.setCreator(coreService.getCurrentUser().getEmail());
         }
-        //tournamentForm.setDateAndTime(new Date());
 
         Tournament tournament = modelMapper.map(tournamentForm, Tournament.class);
 
         Optional<Tournament> tournamentOptional=tournamentRepository.findById(tournamentForm.getId());
-        if(tournamentOptional.isPresent()){
+        if(tournamentOptional.isPresent()) {
             tournament.setId(tournamentOptional.get().getId());
         }
-
         Optional<SportType> sportTypeOptional=sportTypeRepository.findById(tournamentForm.getSportId());
-        if(sportTypeOptional.isPresent()){
-            tournament.setSportId(sportTypeOptional.get().getId());
+        if(sportTypeOptional.isPresent()) {
+            tournament.setSportId(String.valueOf(sportTypeOptional.get().getId()));
         }
 
         tournamentRepository.save(tournament);
         model.addAttribute("editForm", tournamentForm);
 
-        return "redirect:/admin/tournament";
+        return "redirect:/matches/tournament";
     }
 
     @GetMapping("/add")
@@ -91,16 +91,17 @@ public class TournamentController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("sportTypes", sportTypeRepository.findAll());
+        model.addAttribute("sportTypes",sportTypeRepository.findAll());
+
         return "tournament/edit";
     }
     @GetMapping("/delete")
-    public String deleteTournament(@RequestParam("id") String ids, Model model) {
+    public String delete (@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
             tournamentRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/tournament";
+        return "redirect:/matches/tournament";
     }
 }

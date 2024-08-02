@@ -14,16 +14,14 @@
                       <th class="th-sm">PK</th>
                       <th class="th-sm">UserId</th>
                       <th class="th-sm">OTP
-                      <th class="th-sm">Last Modified</th>
                     </tr>
               </thead>
               <tbody>
                   <c:forEach items="${tokens}" var="token">
                     <tr id="${token.id}">
                         <td class="td-sm">${token.id}</td>
-                        <td class="td-sm">${token.userId}</td>
+                        <td class="td-sm">${token.mobileNumber}</td>
                         <td class="td-sm">${token.otp}</td>
-                        <td class="td-sm">${token.lastModified}</td>
                      </tr>
                  </c:forEach>
              </tbody>

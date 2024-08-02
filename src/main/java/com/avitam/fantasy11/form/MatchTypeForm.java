@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MatchTypeForm extends BaseEntityForm{
+public class MatchTypeForm extends BaseForm{
 
-    private String matchType;
+
 }

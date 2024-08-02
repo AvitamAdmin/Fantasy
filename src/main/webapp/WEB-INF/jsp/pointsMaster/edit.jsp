@@ -68,14 +68,14 @@
                 <form:errors path="fiveWickets" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-1">
-                  <form:input path="hatrickWickets" class="inputbox-cheil-small" placeholder="hattrickWickets" />
+                  <form:input path="hattrickWickets" class="inputbox-cheil-small" placeholder="hattrickWickets" />
                   <span>Hattrick Wickets</span>
-                  <form:errors path="hatrickWickets" class="text-danger"></form:errors>
+                  <form:errors path="hattrickWickets" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-1">
-                <form:input path="hatrickSixes" class="inputbox-cheil-small" placeholder="hattrickSixes" />
+                <form:input path="hattrickSixes" class="inputbox-cheil-small" placeholder="hattrickSixes" />
                 <span>Hattrick-Sixes</span>
-                <form:errors path="hatrickSixes" class="text-danger"></form:errors>
+                <form:errors path="hattrickSixes" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-1">
                   <form:input path="economy" class="inputbox-cheil-small" placeholder="economy" />

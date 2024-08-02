@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.model;
 
-import jdk.jfr.Percentage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,21 +10,14 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("contest")
+@Document("Contest")
 public class Contest extends BaseEntity{
 
-    private String contestName;
-
+    private String mainContestId;
     private Double totalPrice;
-
     private Double entryFee;
-
-    private long noOfMembers;
-
+    private int noOfMembers;
     private Map<String,Double> rankPrice;
-
-    private int winPercent;
-
+    private int winPercentage;
     private int maxTeams;
-
 }

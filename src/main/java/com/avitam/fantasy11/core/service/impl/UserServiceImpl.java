@@ -2,18 +2,15 @@ package com.avitam.fantasy11.core.service.impl;
 
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.*;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.validation.Valid;
+import jxl.write.Number;
+import jxl.write.NumberFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,18 +29,19 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private VerificationTokenRepository tokenRepository;
 
+
     @Override
-    public void save(@Valid @RequestBody User user) {
+    public void save(User user) {
+        Date date=new Date();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-       // Role role = roleRepository.findByName("Role_User")
-        //user.setRoles(new HashSet<>(Set.of(role)));
+        user.setCreationTime(date);
         userRepository.save(user);
     }
 
     @Override
-    public User findByName(String username) {
+    public User findByEmail(String email) {
 
-        return userRepository.findByName(username);
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -78,8 +76,8 @@ public class UserServiceImpl implements UserService {
             return TOKEN_EXPIRED;
         }
 
-        //user.setStatus(true);
-        // tokenRepository.delete(verificationToken);
+        user.setStatus(true);
+        tokenRepository.delete(verificationToken);
         userRepository.save(user);
         return TOKEN_VALID;
     }
@@ -97,22 +95,17 @@ public class UserServiceImpl implements UserService {
     public boolean isAdminRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByEmailId(principalObject.getUsername());
-       // Set<Role> roles = currentUser.getRoles();
-        /*List<Role> roles = roleRepository.findAll();
-        for (Role role : roles) {
-            if ("ROLE_ADMIN".equals(role.getName())) {
-                return true;
-            }
-        }*/
+        User currentUser = userRepository.findByEmail(principalObject.getUsername());
         if(currentUser.getRole() == 1){
+
             return true;
         }
-        return false;
+
+            return false;
     }
 
     public boolean updateResetPasswordToken(String token, String email) {
-        User user = userRepository.findByEmailId(email);
+        User user = userRepository.findByEmail(email);
         if (user != null) {
             user.setResetPasswordToken(token);
             userRepository.save(user);
@@ -122,6 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getByResetPasswordToken(String token) {
+
         return userRepository.findByResetPasswordToken(token);
     }
 

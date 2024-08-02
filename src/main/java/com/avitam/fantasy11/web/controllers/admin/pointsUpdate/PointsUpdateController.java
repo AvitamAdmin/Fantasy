@@ -38,16 +38,21 @@ public class PointsUpdateController {
     }
 
     @GetMapping("/edit")
-    public String editPointsUpdate(@RequestParam("id") ObjectId id, Model model) {
+    public String editPointsUpdate(@RequestParam("id") String id, Model model) {
 
         Optional<PointsUpdate> pointsUpdateOptional = pointsUpdateRepository.findById(id);
+
         if (pointsUpdateOptional.isPresent()) {
             PointsUpdate pointsUpdate = pointsUpdateOptional.get();
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             PointsUpdateForm pointsUpdateForm = modelMapper.map(pointsUpdate, PointsUpdateForm.class);
+            pointsUpdateForm.setId(String.valueOf(pointsUpdate.getId()));
             model.addAttribute("editForm", pointsUpdateForm);
-            model.addAttribute("match",matchesRepository.findAll().stream().filter(match -> match.getId()!=null).collect(Collectors.toList()));
-            model.addAttribute("player",playerRepository.findAll().stream().filter(player -> player.getId()!=null).collect(Collectors.toList()));
         }
+        model.addAttribute("matches",matchesRepository.findAll());
+        model.addAttribute("players",playerRepository.findAll());
+
         return "pointsUpdate/edit";
     }
 
@@ -73,11 +78,11 @@ public class PointsUpdateController {
 
         Optional<Matches> matchesOptional=matchesRepository.findById(pointsUpdateForm.getMatchId());
         if(matchesOptional.isPresent()){
-            pointsUpdate.setMatchId(matchesOptional.get().getId());
+            pointsUpdate.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
         Optional<Player> playerOptional=playerRepository.findById(pointsUpdateForm.getPlayerId());
         if(playerOptional.isPresent()){
-            pointsUpdate.setPlayerId(playerOptional.get().getId());
+            pointsUpdate.setPlayerId(String.valueOf(playerOptional.get().getId()));
         }
 
         pointsUpdateRepository.save(pointsUpdate);
@@ -93,8 +98,8 @@ public class PointsUpdateController {
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        model.addAttribute("match",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
-        model.addAttribute("player",matchesRepository.findAll().stream().filter(matches -> matches.getId()!=null).collect(Collectors.toList()));
+        model.addAttribute("matches",matchesRepository.findAll());
+        model.addAttribute("players",playerRepository.findAll());
 
         return "pointsUpdate/edit";
     }

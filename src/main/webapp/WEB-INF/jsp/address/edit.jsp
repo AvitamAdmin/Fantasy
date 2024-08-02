@@ -17,11 +17,13 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
              <div class="col-sm-6">
-                <form:input path="mobileNumber" class="inputbox-cheil-small" placeholder="Mobile Number" readonly="true"/>
+                <form:input path="mobileNumber" class="inputbox-cheil-small" placeholder="Mobile Number" />
+                <span>UserId</span>
+                <form:errors path="mobileNumber" class="text-danger"></form:errors>
              </div>
             <div class="col-sm-6">
                 <form:input path="line_1" class="inputbox-cheil-small" placeholder="Line_1" />
-                <span>Line_1</span>
+                 <span>Line_1</span>
                 <form:errors path="line_1" class="text-danger"></form:errors>
             </div>
             <div class="col-sm-6">

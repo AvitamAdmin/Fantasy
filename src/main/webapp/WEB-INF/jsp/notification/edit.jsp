@@ -10,20 +10,23 @@
             <div class="col-sm-12">
                 <div class="dt-buttons">
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/notification')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="submitFormById('#editForm');" aria-controls="tableData" type="button" title="Save">Save</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="ajaxformSubmit('editForm');" aria-controls="tableData" type="submit" title="Save">Save</button>
                 </div>
             </div>
         </div>
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
-             <div class="col-sm-6">
-                <form:input path="mobileNumber" class="inputbox-cheil-small" placeholder="Mobile Number" readonly="true"/>
-             </div>
             <div class="col-sm-6">
-                 <form:textarea path="message" id="message" rows="6" cols="30" class="inputbox-cheil-textarea" placeholder="please enter message"/>
-                 <span class="searchtext">Please enter message</span>
+                <form:input path="message" class="inputbox-cheil-small" placeholder="Message" />
+                <span>Message</span>
+                <form:errors path="message" class="text-danger"></form:errors>
             </div>
-
+            <div class="col-sm-3">
+                <form:input path="mobileNumber" class="inputbox-cheil-small" placeholder="Mobile Number" />
+                <span>Mobile Number</span>
+                <form:errors path="mobileNumber" class="text-danger"></form:errors>
+            </div>
+                </div>
         </div>
        </form:form>
        <c:if test="${not empty message}">

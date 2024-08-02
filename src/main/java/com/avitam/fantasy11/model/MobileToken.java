@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("mobileToken")
+@Document("MobileToken")
 public class MobileToken extends BaseEntity{
 
-    private long userId;
+    private String mobileNumber;
 
     private String otp;
 

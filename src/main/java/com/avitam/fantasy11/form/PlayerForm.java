@@ -6,12 +6,17 @@ import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
+
 @Getter
 @Setter
-public class PlayerForm extends BaseEntityForm{
+public class PlayerForm extends BaseForm{
 
-    private String playerName;
+    private String dob;
+    private String nationality;
     private String teamId;
     private MultipartFile playerImage;
     private String playerRoleId;
+    private String pic;
+
 }
