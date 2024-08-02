@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface SportsApiRepository extends MongoRepository<SportsApi, ObjectId> {
+public interface LanguageRepository extends MongoRepository<Language, ObjectId> {
 
-    Optional<SportsApi> findById(String id);
+    Optional<Language> findById(String id);
 }

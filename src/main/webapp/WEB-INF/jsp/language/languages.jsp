@@ -17,11 +17,11 @@
                     </tr>
               </thead>
               <tbody>
-                  <c:forEach items="${tokens}" var="token">
-                    <tr id="${token.id}">
-                        <td class="td-sm">${token.id}</td>
-                        <td class="td-sm">${token.name}</td>
-                        <td class="td-sm">${token.code}</td>
+                  <c:forEach items="${models}" var="model">
+                    <tr id="${model.id}">
+                        <td class="td-sm">${model.id}</td>
+                        <td class="td-sm">${model.name}</td>
+                        <td class="td-sm">${model.code}</td>
                      </tr>
                  </c:forEach>
              </tbody>

@@ -36,12 +36,12 @@
                 <span>Transaction Id</span>
                 <form:errors path="transactionId" class="text-danger"></form:errors>
             </div>
-
-              <div class="col-sm-3">
-                            <form:input path="depositStatus" class="inputbox-cheil-small" placeholder="Deposit Status" />
-                            <span>Status</span>
-                            <form:errors path="depositStatus" class="text-danger"></form:errors>
-                        </div>
+            <br><br>
+            <div class="col-sm-3">
+                 <form:input path="depositStatus" class="inputbox-cheil-small" placeholder="Deposit Status" />
+                 <span>Status</span>
+                 <form:errors path="depositStatus" class="text-danger"></form:errors>
+            </div>
         </div>
        </form:form>
        <c:if test="${not empty message}">

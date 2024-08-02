@@ -1,13 +1,11 @@
 package com.avitam.fantasy11.web.controllers.admin.seo;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.ExtensionForm;
-import com.avitam.fantasy11.form.NotificationForm;
 import com.avitam.fantasy11.form.SEOForm;
-import com.avitam.fantasy11.model.Extension;
-import com.avitam.fantasy11.model.Notification;
+import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.model.SEORepository;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 @RequestMapping("/settings/seo")
@@ -32,12 +29,21 @@ public class SEOController {
     private CoreService coreService;
 
     @GetMapping
-    public String getAllSEO(Model model){
-        model.addAttribute("seos",seoRepository.findAll());
+    public String getAll(Model model){
+        List<SEO> datas=new ArrayList<>();
+        List<SEO> seos = seoRepository.findAll();
+        for(SEO seo:seos){
+            if(seo.getId()!=null) {
+                byte[] image = seo.getImage().getData();
+                seo.setPic(Base64.getEncoder().encodeToString(image));
+                datas.add(seo);
+            }
+        }
+        model.addAttribute("models",datas);
         return "seo/seos";
     }
     @GetMapping("/edit")
-        public String editSEO(@RequestParam("id")String id, Model model){
+        public String edit(@RequestParam("id")String id, Model model){
 
         Optional<SEO> seoOptional = seoRepository.findById(id);
         if (seoOptional.isPresent()) {
@@ -47,13 +53,17 @@ public class SEOController {
             SEOForm seoForm = modelMapper.map(seo, SEOForm.class);
             seoForm.setId(String.valueOf(seo.getId()));
 
+            byte[] image = seo.getImage().getData();
+            seo.setPic(Base64.getEncoder().encodeToString(image));
+            seoForm.setPic(seo.getPic());
+
             model.addAttribute("editForm", seoForm);
         }
-        return "extension/edit";
+        return "seo/edit";
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") SEOForm seoForm, Model model, BindingResult result) {
+    public String handleEdit(@ModelAttribute("editForm") SEOForm seoForm, Model model, BindingResult result) throws IOException {
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             return "seo/edit";
@@ -65,18 +75,21 @@ public class SEOController {
         }
         SEO seo = modelMapper.map(seoForm, SEO.class);
 
+        byte[] fig= seoForm.getImage().getBytes();
+        Binary binary=new Binary(fig);
+
         Optional<SEO> seoOptional = seoRepository.findById(seoForm.getId());
         if(seoOptional.isPresent()){
             seo.setId(seoOptional.get().getId());
         }
-
+        seo.setImage(binary);
         seoRepository.save(seo);
         model.addAttribute("editForm", seoForm);
         return "redirect:/settings/seo";
     }
 
     @GetMapping("/add")
-    public String addSEO(Model model){
+    public String add(Model model){
         SEOForm form = new SEOForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
@@ -86,12 +99,12 @@ public class SEOController {
         return "seo/edit";
     }
     @GetMapping("/delete")
-    public String deleteNotification(@RequestParam("id") String ids, Model model) {
+    public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
 
             seoRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/settings/seos";
+        return "redirect:/settings/seo";
     }
 
 }

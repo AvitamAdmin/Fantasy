@@ -2,7 +2,6 @@ package com.avitam.fantasy11.web.controllers.admin.depositsLog;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.DepositsLogForm;
-//import com.avitam.fantasy11.form.Playing11Form;
 import com.avitam.fantasy11.model.*;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -13,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/deposit")
@@ -90,7 +88,6 @@ public class depositsLogController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setUserId(coreService.getCurrentUser().getMobileNumber());
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
         model.addAttribute("depositsLog", depositsLogRepository.findAll());
