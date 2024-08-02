@@ -33,17 +33,22 @@ public class depositsLogController {
         return "deposit/depositLog";
     }
 
-    @GetMapping("/pendingDeposit")
+    @GetMapping("/pendingDeposits")
     public String getAllPendingDeposit(Model model) {
-        model.addAttribute("models", depositsLogRepository.findByStatus("Pending"));
-
+        model.addAttribute("models", depositsLogRepository.findByDepositStatus("Pending"));
         return "deposit/depositLog";
     }
 
-    @GetMapping({"/pendingDeposit/edit" ,"/approvedDeposit/edit" })
+    @GetMapping("/approvedDeposits")
+    public String getAllApprovedDeposit(Model model) {
+        model.addAttribute("models", depositsLogRepository.findByDepositStatus("Approved"));
+        return "deposit/depositLog";
+    }
+
+    @GetMapping({"/depositLog/edit","/pendingDeposits/edit" ,"/approvedDeposits/edit" })
     public String editPlaying11(@RequestParam("id") String id, Model model) {
 
-        Optional<DepositsLog> depositsLogOptional = depositsLogRepository.findById(new ObjectId(id));
+        Optional<DepositsLog> depositsLogOptional = depositsLogRepository.findById((id));
         if (depositsLogOptional.isPresent()) {
             DepositsLog depositsLog = depositsLogOptional.get();
 
@@ -56,7 +61,7 @@ public class depositsLogController {
         return "deposit/edit";
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/depositLog/edit")
     public String handleEdit(@ModelAttribute("editForm") DepositsLogForm depositsLogForm, Model model, BindingResult result) {
         if (result.hasErrors()) {
             model.addAttribute("message", result);
@@ -67,14 +72,14 @@ public class depositsLogController {
             depositsLogForm.setCreationTime(new Date());
             depositsLogForm.setCreator(coreService.getCurrentUser().getEmail());
         }
-        DepositsLog depositsLog = modelMapper.map(depositsLogForm, DepositsLog.class);
+        DepositsLog depositLog = modelMapper.map(depositsLogForm, DepositsLog.class);
 
         Optional<DepositsLog> depositsLogOptional = depositsLogRepository.findById(depositsLogForm.getId());
         if(depositsLogOptional.isPresent()){
-            depositsLog.setId(depositsLogOptional.get().getId());
+            depositLog.setId(depositsLogOptional.get().getId());
         }
 
-        depositsLogRepository.save(depositsLog);
+        depositsLogRepository.save(depositLog);
         model.addAttribute("editForm", depositsLogForm);
         return "redirect:/deposit/depositLog";
     }

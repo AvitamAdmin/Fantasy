@@ -5,11 +5,11 @@
             <p class="navigation" id="navBreadcrumb">Breadcrumb</p>
         </div>
     </div>
-    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/deposit/depositsLog/edit" class="handle-upload" modelAttribute="editForm" >
+    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/deposit/depositLog/edit" class="handle-upload" modelAttribute="editForm" >
         <div class="row">
             <div class="col-sm-3">
                 <div class="dt-buttons">
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/deposit/depositsLog')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/deposit/depositLog')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="submitFormById('#editForm');" aria-controls="tableData" type="button" title="Save">Save</button>
                 </div>
             </div>
@@ -38,9 +38,9 @@
             </div>
 
               <div class="col-sm-3">
-                            <form:input path="status" class="inputbox-cheil-small" placeholder="Status" />
+                            <form:input path="depositStatus" class="inputbox-cheil-small" placeholder="Deposit Status" />
                             <span>Status</span>
-                            <form:errors path="status" class="text-danger"></form:errors>
+                            <form:errors path="depositStatus" class="text-danger"></form:errors>
                         </div>
         </div>
        </form:form>

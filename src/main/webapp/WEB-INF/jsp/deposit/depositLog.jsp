@@ -23,11 +23,11 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.id}</td>
-                        <td class="td-sm">${model.userName}</td>
+                        <td class="td-sm">${model.userId}</td>
                         <td class="td-sm">${model.payingAmount}</td>
                         <td class="td-sm">${model.gatewayName}</td>
                         <td class="td-sm">${model.transactionId}</td>
-                        <td class="td-sm">${model.status}</td>
+                        <td class="td-sm">${model.depositStatus}</td>
                      </tr>
                  </c:forEach>
              </tbody>

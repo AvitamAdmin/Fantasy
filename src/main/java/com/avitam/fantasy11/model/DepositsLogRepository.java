@@ -12,4 +12,6 @@ public interface DepositsLogRepository extends MongoRepository<DepositsLog, Obje
     Optional<DepositsLog> findById(String id);
 
     Object findByStatus(String pending);
+
+   List<DepositsLog>  findByDepositStatus(String pending);
 }
