@@ -17,7 +17,7 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
               <div class="col-sm-3">
-                <form:input type="textarea" path="script" class="inputbox-cheil" placeholder="Script" />
+                <form:textarea path="script" class="inputbox-cheil" placeholder="Script" />
                 <span>Name</span>
                 <form:errors path="script" class="text-danger"></form:errors>
             </div>

@@ -24,7 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Controller
-@RequestMapping("/admin/websitesetting")
+@RequestMapping("/settings/websitesetting")
 public class WebsiteSettingController {
 
     @Autowired
