@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("DepositsLog")
-public class DepositsLog extends BaseEntity{
+@Document("Deposits")
+public class Deposits extends BaseEntity{
 
     private String userId;
     private int payingAmount;

@@ -17,7 +17,7 @@
         <%@ include file="../commonFields.jsp" %>
         <div class="row">
              <div class="col-sm-3">
-                <form:input path="userId" class="inputbox-cheil-small" placeholder="User Id" readonly="true" />
+                <form:input path="userId" class="inputbox-cheil-small" placeholder="User Id"  />
                 <span>User Id</span>
                 <form:errors path="userId" class="text-danger"></form:errors>
              </div>

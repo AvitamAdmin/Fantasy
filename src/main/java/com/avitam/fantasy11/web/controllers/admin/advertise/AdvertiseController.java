@@ -101,7 +101,7 @@ public class AdvertiseController {
         bannerRepository.save(banner);
         model.addAttribute("editForm", bannerForm);
 
-        return "redirect:/advertise/banners";
+        return "redirect:/advertise/banner";
     }
 
     @GetMapping("/add")
@@ -121,6 +121,6 @@ public class AdvertiseController {
         for (String id : ids.split(",")) {
             bannerRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/advertise/banners";
+        return "redirect:/advertise/banner";
     }
 }

@@ -59,7 +59,7 @@ public class GeneralController {
 
         generalRepository.save(general);
         model.addAttribute("editForm", generalForm);
-        return "redirect:/settings/general";
+        return "redirect:/home";
     }
 
 }

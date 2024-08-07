@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DepositsLogForm extends BaseForm{
+public class DepositsForm extends BaseForm{
     private String userId;
     private int payingAmount;
     private String gatewayName;
