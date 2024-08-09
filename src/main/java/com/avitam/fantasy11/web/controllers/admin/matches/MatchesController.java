@@ -56,7 +56,7 @@ public class MatchesController {
             }
         }
         model.addAttribute("models", matches);
-        return "matches/matchess";
+        return "admin/matchess";
     }
 
     @GetMapping("/edit")
@@ -128,7 +128,7 @@ public class MatchesController {
 
         matchesRepository.save(matches);
         model.addAttribute("editForm", matchesForm);
-        return "redirect:/matches/matches";
+        return "redirect:/admin/matches";
     }
 
     @GetMapping("/add")
@@ -158,6 +158,6 @@ public class MatchesController {
         for (String id : ids.split(",")) {
             matchesRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/matches/matches";
+        return "redirect:/admin/matches";
     }
 }

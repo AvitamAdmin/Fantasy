@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
+package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.WebsiteSetting;
@@ -67,7 +67,7 @@ public class WebsiteSettingController {
         websiteSettingForm.setLastModified(new Date());
         if (websiteSettingForm.getId() == null) {
             websiteSettingForm.setCreationTime(new Date());
-            websiteSettingForm.setCreator(coreService.getCurrentUser().getEmailId());
+            websiteSettingForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         WebsiteSetting websitesetting = modelMapper.map(websiteSettingForm, WebsiteSetting.class);
         MultipartFile logo = websiteSettingForm.getLogo();
@@ -89,7 +89,7 @@ public class WebsiteSettingController {
         websiteSettingRepository.save(websitesetting);
         model.addAttribute("editForm", websiteSettingForm);
 
-        return "redirect:/admin/websitesetting";
+        return "redirect:/settings/websitesetting";
     }
 
     @GetMapping("/add")
@@ -98,7 +98,7 @@ public class WebsiteSettingController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmailId());
+        form.setCreator(coreService.getCurrentUser().getEmail());
 
         model.addAttribute("editForm", form);
         return "websitesetting/edit";
@@ -109,6 +109,6 @@ public class WebsiteSettingController {
         for (String id : ids.split(",")) {
             websiteSettingRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/websitesetting";
+        return "redirect:/settings/websitesetting";
     }
 }

@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.core.Utility;
-import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
 import com.avitam.fantasy11.form.UserForm;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.SecurityService;
@@ -20,13 +19,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -78,7 +73,7 @@ public class SecurityController {
         EMail eMail = new EMail();
 
         //eMail.setFrom("healthcheck@cheil.com");
-        eMail.setTo(recipientEmail);
+        //eMail.setTo(recipientEmail);
 
         String subject = "Here's the link to reset your password";
 

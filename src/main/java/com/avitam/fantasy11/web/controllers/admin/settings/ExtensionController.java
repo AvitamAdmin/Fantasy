@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.extension;
+package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ExtensionForm;
