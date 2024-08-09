@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/mobileToken")
@@ -29,21 +30,22 @@ public class MobileTokenController {
 
     @GetMapping
     public String getAll(Model model) {
-        List<MobileToken> mobileTokens= mobileTokenRepository.findAll();
+        List<MobileToken> mobileTokens= mobileTokenRepository.findAll().stream().filter(mobile-> mobile.getId()!=null).collect(Collectors.toList());
         model.addAttribute("tokens", mobileTokens);
         return "mobileToken/mobileTokens";
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") String id, Model model) {
+    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,String id, User user, Model model) {
 
-        Optional<MobileToken> mobileTokenOptional = mobileTokenRepository.findById(id);
-        if (mobileTokenOptional.isPresent()) {
-            MobileToken mobileToken = mobileTokenOptional.get();
-            MobileTokenForm mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
-            model.addAttribute("editForm", mobileTokenForm);
+      Optional<MobileToken> mobileOptional = mobileTokenRepository.findById(id);
+        if (mobileOptional.isPresent()) {
+        MobileToken mobileToken = mobileOptional.get();
+        mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
+        model.addAttribute("editForm", mobileTokenForm);
         }
-        return "mobileToken/edit";
+        model.addAttribute("user", userRepository.findByEmail(coreService.getCurrentUser().getEmail()));
+          return "mobileToken/edit";
     }
 
     @PostMapping("/edit")
