@@ -81,7 +81,7 @@ public class SportsTypeController {
         sportTypeRepository.save(sportType);
         model.addAttribute("editForm", sportTypeForm);
 
-        return "redirect:/admin/sportType";
+        return "redirect:/matches/sportType";
     }
 
     @GetMapping("/add")
@@ -99,6 +99,6 @@ public class SportsTypeController {
         for (String id : ids.split(",")) {
             sportTypeRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/sportType";
+        return "redirect:/matches/sportType";
     }
 }

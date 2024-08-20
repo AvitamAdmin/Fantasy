@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/admin/matchScore")
+@RequestMapping("/matches/matchScore")
 public class MatchScoreController {
     @Autowired
     private MatchesRepository matchesRepository;
@@ -79,7 +79,7 @@ public class MatchScoreController {
         matchScoreRepository.save(matchScore);
         model.addAttribute("editForm", matchScoreForm);
 
-        return "redirect:/admin/matchScore";
+        return "redirect:/matches/matchScore";
     }
 
     @GetMapping("/add")
@@ -99,6 +99,6 @@ public class MatchScoreController {
         for (String id : ids.split(",")) {
             matchScoreRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/matchScore";
+        return "redirect:/matches/matchScore";
     }
 }

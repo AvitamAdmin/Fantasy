@@ -119,9 +119,16 @@
                 </select>
             </div>
             <div class="col-sm-3">
-                <form:input type="datetime-local" path="dateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
-                <form:errors path="dateAndTime" class="text-danger"></form:errors>
+                <form:input type="datetime-local" path="startDateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
+                <span>Starts At</span>
+                <form:errors path="startDateAndTime" class="text-danger"></form:errors>
             </div>
+
+               <div class="col-sm-3">
+                            <form:input type="datetime-local" path="endDateAndTime" class="inputbox-cheil-small" placeholder="Date And Time" />
+                            <span>Ends At</span>
+                            <form:errors path="endDateAndTime" class="text-danger"></form:errors>
+                        </div>
             <div class="col-sm-3">
                 <c:choose>
                     <c:when test="${editForm.matchStatus}">

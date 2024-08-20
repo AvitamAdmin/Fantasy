@@ -82,7 +82,7 @@ public class TournamentController {
         tournamentRepository.save(tournament);
         model.addAttribute("editForm", tournamentForm);
 
-        return "redirect:/admin/tournament";
+        return "redirect:/matches/tournament";
     }
 
     @GetMapping("/add")
@@ -102,6 +102,6 @@ public class TournamentController {
         for (String id : ids.split(",")) {
             tournamentRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/tournament";
+        return "redirect:/matches/tournament";
     }
 }

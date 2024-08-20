@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Matches extends BaseEntity{
 
     private String team1Id;
+    private String contestId;
     private String team2Id;
     private String dateAndTime;
     private String startDateAndTime;

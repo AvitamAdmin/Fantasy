@@ -37,7 +37,7 @@ public class MatchesController {
     private CoreService coreService;
 
     @GetMapping
-    public String getAllModels(Model model) {
+    public String getAllModel(Model model) {
         List<Matches> matches= matchesRepository.findAll();
         for(Matches match:matches)
         {
@@ -56,7 +56,7 @@ public class MatchesController {
             }
         }
         model.addAttribute("models", matches);
-        return "matches/matchess";
+        return "admin/matchess";
     }
 
     @GetMapping("/edit")

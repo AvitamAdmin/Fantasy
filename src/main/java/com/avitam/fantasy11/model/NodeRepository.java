@@ -10,8 +10,8 @@ import java.util.Optional;
 @Repository
 public interface NodeRepository extends MongoRepository<Node, ObjectId> {
 
+
     List<Node> findByParentNodeId(String id);
 
     Optional<Node> findById(String id);
-
 }

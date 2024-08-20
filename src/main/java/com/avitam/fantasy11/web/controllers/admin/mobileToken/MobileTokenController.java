@@ -1,8 +1,10 @@
-package com.avitam.fantasy11.web.controllers.admin.mobileToken;
+package com.avitam.fantasy11.web.controllers.admin.mobiletoken;
 
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.form.MobileTokenForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/mobileToken")
@@ -29,21 +32,22 @@ public class MobileTokenController {
 
     @GetMapping
     public String getAll(Model model) {
-        List<MobileToken> mobileTokens= mobileTokenRepository.findAll();
+        List<MobileToken> mobileTokens= mobileTokenRepository.findAll().stream().filter(mobile-> mobile.getId()!=null).collect(Collectors.toList());
         model.addAttribute("tokens", mobileTokens);
         return "mobileToken/mobileTokens";
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") String id, Model model) {
+    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,ObjectId id, User user, Model model) {
 
-        Optional<MobileToken> mobileTokenOptional = mobileTokenRepository.findById(id);
-        if (mobileTokenOptional.isPresent()) {
-            MobileToken mobileToken = mobileTokenOptional.get();
-            MobileTokenForm mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
-            model.addAttribute("editForm", mobileTokenForm);
+      Optional<MobileToken> mobileOptional = mobileTokenRepository.findById(id);
+        if (mobileOptional.isPresent()) {
+        MobileToken mobileToken = mobileOptional.get();
+        mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
+        model.addAttribute("editForm", mobileTokenForm);
         }
-        return "mobileToken/edit";
+        model.addAttribute("user", userRepository.findByEmail(coreService.getCurrentUser().getEmail()));
+          return "mobileToken/edit";
     }
 
     @PostMapping("/edit")
@@ -74,7 +78,7 @@ public class MobileTokenController {
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
+        form.setCreator(coreService.getCurrentUser().getEmailId());
         model.addAttribute("editForm", form);
         return "mobileToken/edit";
     }

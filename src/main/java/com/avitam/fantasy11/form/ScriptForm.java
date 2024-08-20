@@ -1,0 +1,10 @@
+package com.avitam.fantasy11.form;
+
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
+public class ScriptForm extends BaseForm{
+
+    private String script;
+}

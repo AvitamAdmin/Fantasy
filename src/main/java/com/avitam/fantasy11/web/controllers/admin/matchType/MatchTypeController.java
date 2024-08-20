@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Controller
-@RequestMapping("/admin/matchType")
+@RequestMapping("/matches/matchType")
 public class MatchTypeController {
 
     @Autowired
@@ -75,7 +75,7 @@ public class MatchTypeController {
         matchTypeRepository.save(matchType);
         model.addAttribute("editForm", matchTypeForm);
 
-        return "redirect:/admin/matchType";
+        return "redirect:/matches/matchType";
     }
 
     @GetMapping("/add")
@@ -93,6 +93,6 @@ public class MatchTypeController {
         for (String id : ids.split(",")) {
             matchTypeRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/matchType";
+        return "redirect:/matches/matchType";
     }
 }

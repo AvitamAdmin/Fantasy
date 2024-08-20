@@ -130,7 +130,7 @@ public class InterfaceController {
         List<InterfaceForm> interfaceFormList = interfaceForm.getInterfaceFormList();
         if (CollectionUtils.isNotEmpty(interfaceFormList)) {
             for (InterfaceForm interfaceForm1 : interfaceFormList) {
-                Optional<Node> interfaceOptional = nodeRepository.findById(String.valueOf(interfaceForm1.getId()));
+                Optional<Node> interfaceOptional = nodeRepository.findById(interfaceForm1.getId());
                 if (interfaceOptional.isPresent()) {
                     Node node = interfaceOptional.get();
                     interfaceForm1.setStatus(node.getStatus());

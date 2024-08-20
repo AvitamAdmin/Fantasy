@@ -26,7 +26,7 @@
                 <span>UserTeam Name</span>
                 <form:errors path="name" class="text-danger"></form:errors>
             </div>
-             <div class="col-sm-3">
+            <div class="col-sm-3">
                <select  class="cheil-select" name="matchId" id="matchId" onchange="getMatchId('#matchId');">
                    <option value="">Select Match</option>
                    <c:forEach items="${matches}" var="child">
@@ -40,11 +40,10 @@
                        </c:choose>
                    </c:forEach>
                </select>
-             </div>
-
+            </div>
             <div class="col-sm-3">
                <select class="cheil-select" id="players" name="players" multiple required="required">
-                     <option value="">Select Team Players</option>
+                  <option value="">Select Team Players</option>
                </select>
             </div>
         </div>

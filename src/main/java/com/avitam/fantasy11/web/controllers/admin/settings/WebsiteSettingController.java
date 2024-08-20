@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
+package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.WebsiteSetting;
@@ -24,7 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Controller
-@RequestMapping("/admin/websitesetting")
+@RequestMapping("/settings/websitesetting")
 public class WebsiteSettingController {
 
     @Autowired
@@ -89,7 +89,7 @@ public class WebsiteSettingController {
         websiteSettingRepository.save(websitesetting);
         model.addAttribute("editForm", websiteSettingForm);
 
-        return "redirect:/admin/websitesetting";
+        return "redirect:/settings/websitesetting";
     }
 
     @GetMapping("/add")
@@ -109,6 +109,6 @@ public class WebsiteSettingController {
         for (String id : ids.split(",")) {
             websiteSettingRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/websitesetting";
+        return "redirect:/settings/websitesetting";
     }
 }

@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface MatchesRepository extends MongoRepository<Matches, ObjectId> {
     Optional<Matches> findById(String id);
 
+    List<Matches> findByEvent(String live);
 }

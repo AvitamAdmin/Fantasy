@@ -305,11 +305,7 @@ var adjustableTotalPrice=0.0;
 
 function getVegetablePrice(counts) {
 
-    //var indexCount = $(".cheil-select2").length-1;
-    //console.log(indexCount);
-    //count = indexCount;
     count=counts;
-    //++count;
     console.log(count);
     particular = $('#particulars'+count+'').val();
     console.log(particular);
@@ -322,11 +318,8 @@ function getVegetablePrice(counts) {
         alert(data);
         console.log(data);
         sellingPrice = data;
-        //$('#rate'+count+'').empty();
         $('#rate'+count+'').val(sellingPrice);
         $('#quantity'+count+'').val(1);
-        //$('#rate'+count+'').append($('<option></option>').val(data).html(data));
-
         },
         error: function(e) {
             alert(e);
@@ -360,20 +353,19 @@ function getParticularKgTotalPrice(counts) {
             else{
             totalPrice = kg * sellingPrice;
             $('#totalPrice'+count+'').empty();
-            //$('#grossPrice').empty();
+            //$('#grandTotal').empty();
 
             $('#totalPrice'+count+'').val(totalPrice);
-            grossPrice=parseInt($('#grossPrice').val());
-            grossPrice = grossPrice + totalPrice;
-            $('#grossPrice').val(grossPrice);
-            //count++;
+            grandTotal=parseInt($('#grandTotal').val());
+            grandTotal = grandTotal + totalPrice;
+            $('#grandTotal').val(grandTotal);
+
             }
             },
             error: function(e) {
                 alert(e);
             }
-
-        });
+   });
 
 }
 
