@@ -1,20 +1,10 @@
 <%@ include file="../include.jsp" %>
 <style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: left;
-    }
-
-    .data-box {
+      .data-box {
         border: 1px solid #ddd;
         border-radius: 5px;
         padding: 15px;
-        background-color: #f9f9f9;
+        background-color: #dbe1e6;
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
@@ -31,7 +21,7 @@
   <br><br>
   <div class="container">
      <div class="row">
-           <h2 style="text-align:center; color:Orange"><b>DASHBOARD</b></h2>
+           <h3 style="text:center; color:Orange"><b>DASHBOARD</b></h3>
      </div>
       <br><br>
       <div class="row">
@@ -119,19 +109,19 @@
           <div class="col-sm-3">
              <div class="data-box">
                 <p>Live Matches</p>
-                <h4>6<h4>
+                <h4>${live}<h4>
              </div>
           </div>
           <div class="col-sm-3">
             <div class="data-box">
               <p>Upcoming Matches</p>
-              <h4>3<h4>
+              <h4>${upcoming}<h4>
             </div>
           </div>
           <div class="col-sm-3">
             <div class="data-box">
               <p>Closed Matches</p>
-              <h4>5<h4>
+              <h4>${closed}<h4>
             </div>
           </div>
       </div>

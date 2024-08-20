@@ -36,6 +36,17 @@ public class DashBoardController {
         model.addAttribute("approvedDeposits", approvedSize);
 
         List<Matches> liveMatches=matchesRepository.findByEvent("Live");
+        List<Matches> upcomingMatches=matchesRepository.findByEvent("Upcoming");
+        List<Matches> closedMatches=matchesRepository.findByEvent("Closed");
+
+        int live=liveMatches.size();
+        int upcoming=upcomingMatches.size();
+        int closed=closedMatches.size();
+
+        model.addAttribute("live", live);
+        model.addAttribute("upcoming", upcoming);
+        model.addAttribute("closed", closed);
+
 
         return "dashboard/dashboards";
     }
