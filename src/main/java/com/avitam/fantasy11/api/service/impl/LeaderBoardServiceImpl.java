@@ -10,7 +10,6 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
         return null;
     }
 
-
     @Override
     public LeaderBoard deleteByUserId(String userId) {
         return null;
