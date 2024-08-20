@@ -39,24 +39,8 @@ public class MatchesController {
     @GetMapping
     public String getAllModel(Model model) {
         List<Matches> matches= matchesRepository.findAll();
-        for(Matches match:matches)
-        {
-            LocalDateTime currentTime=LocalDateTime.now();
-            LocalDateTime startTime=LocalDateTime.parse(match.getStartDateAndTime());
-            LocalDateTime endTime=LocalDateTime.parse(match.getEndDateAndTime());
-            if(currentTime.isAfter(endTime))
-            {
-                match.setEvent("Closed");
-            } else if (currentTime.isAfter(startTime)&&currentTime.isBefore(endTime)) {
-                match.setEvent("Live");
-            }
-            else if(currentTime.isBefore(startTime))
-            {
-                match.setEvent("Upcoming");
-            }
-        }
         model.addAttribute("models", matches);
-        return "admin/matchess";
+        return "matches/matchess";
     }
 
     @GetMapping("/edit")
