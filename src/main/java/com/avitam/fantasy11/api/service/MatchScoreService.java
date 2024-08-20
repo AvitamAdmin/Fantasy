@@ -9,5 +9,6 @@ public interface MatchScoreService {
 
         void save(MatchScore matchScore);
 
+
         MatchScore updateByMatchId(String matchId);
 }

@@ -9,5 +9,6 @@ public interface LeaderBoardService {
 
         void save(LeaderBoard leaderBoard);
 
+
         LeaderBoard updateByUserId(String userId);
 }
