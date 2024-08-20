@@ -41,6 +41,12 @@ public class WebSecurityConfig {
                         .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm").permitAll()
                         .anyRequest().authenticated()
                 )
+                .rememberMe((rememberMe) -> rememberMe
+                        .key("rem-me-key") // Key used for encoding the token
+                        .rememberMeParameter("remember") // Name of the checkbox in the login form
+                        .rememberMeCookieName("rememberlogin") // Name of the cookie
+                        .tokenValiditySeconds(86400) // Token validity in seconds (e.g., 1 day)
+                )
                 .formLogin((form) -> form
                         .loginPage("/login").permitAll()
                         .loginProcessingUrl("/login")

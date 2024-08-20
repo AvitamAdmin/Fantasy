@@ -103,6 +103,21 @@ public class LiveMatches {
         }
         Matches matches = modelMapper.map(matchesForm, Matches.class);
 
+        LocalDateTime currentTime=LocalDateTime.now();
+        LocalDateTime startTime=LocalDateTime.parse(matches.getStartDateAndTime());
+        LocalDateTime endTime=LocalDateTime.parse(matches.getEndDateAndTime());
+
+        if(currentTime.isAfter(endTime))
+        {
+            matches.setEvent("Closed");
+        } else if (currentTime.isAfter(startTime)&&currentTime.isBefore(endTime)) {
+            matches.setEvent("Live");
+        }
+        else if(currentTime.isBefore(startTime))
+        {
+            matches.setEvent("Upcoming");
+        }
+
         Optional<Matches> matchesOptional = matchesRepository.findById(matchesForm.getId());
         if(matchesOptional.isPresent()){
             matches.setId(matchesOptional.get().getId());
@@ -126,9 +141,9 @@ public class LiveMatches {
             matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
         }
 
-        Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
+        Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getParentMainContestId());
         if(contestOptional.isPresent()){
-            matches.setContestId(String.valueOf(contestOptional.get().getId()));
+            matches.setParentMainContestId(String.valueOf(contestOptional.get().getId()));
         }
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchesForm.getMatchTypeId());

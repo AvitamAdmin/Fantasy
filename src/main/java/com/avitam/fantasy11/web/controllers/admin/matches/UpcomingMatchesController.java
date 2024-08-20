@@ -38,6 +38,8 @@ public class UpcomingMatchesController {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private MainContestRepository mainContestRepository;
 
     @GetMapping
     public String getAllModels(Model model) {
@@ -105,6 +107,21 @@ public class UpcomingMatchesController {
             matchesForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         Matches matches = modelMapper.map(matchesForm, Matches.class);
+
+        LocalDateTime currentTime=LocalDateTime.now();
+        LocalDateTime startTime=LocalDateTime.parse(matches.getStartDateAndTime());
+        LocalDateTime endTime=LocalDateTime.parse(matches.getEndDateAndTime());
+
+        if(currentTime.isAfter(endTime))
+        {
+            matches.setEvent("Closed");
+        } else if (currentTime.isAfter(startTime)&&currentTime.isBefore(endTime)) {
+            matches.setEvent("Live");
+        }
+        else if(currentTime.isBefore(startTime))
+        {
+            matches.setEvent("Upcoming");
+        }
 
         Optional<Matches> matchesOptional = matchesRepository.findById(matchesForm.getId());
         if(matchesOptional.isPresent()){

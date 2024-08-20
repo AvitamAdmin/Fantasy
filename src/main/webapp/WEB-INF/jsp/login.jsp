@@ -16,10 +16,10 @@
               <div class="col-sm-4"></div>
       </div>
       <br/><br/>
-      <div class="row form-group ${error != null ? 'has-error' : ''}">
+      <div class="row form-group ${message != null ? 'has-error' : ''}">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
-                <span>${message}</span>
+
                 <input name="username" type="email" class="inputbox-cheil-small" placeholder="Email" required/>
                 <span>Email Id</span>
             </div>
@@ -34,7 +34,13 @@
                 </div>
                 <div class="col-sm-4"></div>
         </div>
+         <div class="row form-group ${error != null ? 'has-error' : ''}">
+                     <label for="remember">Remember Me:</label>
+                            <input type="checkbox" id="remember" name="remember">
+                            <br><br>
+                </div>
         <br/>
+        <span style="color:red;">${message}</span>
         <div class="row form-group ${error != null ? 'has-error' : ''}">
             <div class="col-sm-4"></div>
                 <div class="col-sm-4 text-center">
