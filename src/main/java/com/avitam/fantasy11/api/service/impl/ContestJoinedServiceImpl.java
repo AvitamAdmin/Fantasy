@@ -5,9 +5,11 @@ import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestJoined;
 import com.avitam.fantasy11.model.ContestJoinedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class ContestJoinedServiceImpl implements ContestJoinedService {
 
     @Autowired
@@ -17,8 +19,6 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
     public Optional<ContestJoined> findByRecordId(String recordId) {
         return contestJoinedRepository.findByRecordId(recordId);
     }
-
-
 
     @Override
     public void deleteByRecordId(String recordId) {
@@ -30,10 +30,7 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
 
         Optional<ContestJoined> contestJoinedOptional=contestJoinedRepository.findByRecordId(recordId);
 
-        if(contestJoinedOptional.isPresent())
-        {
-            contestJoinedRepository.save(contestJoinedOptional.get());
-        }
+        contestJoinedOptional.ifPresent(contestJoined -> contestJoinedRepository.save(contestJoined));
 
 
     }

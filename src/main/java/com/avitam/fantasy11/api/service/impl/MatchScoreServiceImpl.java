@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.MatchScoreService;
 import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.model.MatchScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class MatchScoreServiceImpl implements MatchScoreService {
    @Autowired
    private MatchScoreRepository matchScoreRepository;

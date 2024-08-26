@@ -16,6 +16,6 @@ public interface NotificationRepository extends MongoRepository<Notification, Ob
 
     void deleteByRecordId(String recordId);
 
-    Optional<Notification> updateByRecordId(String recordId);
+
 
 }

@@ -15,5 +15,5 @@ public interface PointsMasterRepository extends MongoRepository<PointsMaster, Ob
 
     void deleteByRecordId(String recordId);
 
-    Optional<PointsMaster> updateByRecordId(String recordId);
+
 }

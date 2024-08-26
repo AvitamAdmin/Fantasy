@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class PlayerServiceImpl implements PlayerService {
 
     @Autowired

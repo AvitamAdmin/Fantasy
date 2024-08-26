@@ -14,5 +14,5 @@ public interface LeaderBoardRepository extends MongoRepository<LeaderBoard, Obje
 
     void deleteByRecordId(String recordId);
 
-    Optional<LeaderBoard> updateByRecordId(String recordId);
+
 }

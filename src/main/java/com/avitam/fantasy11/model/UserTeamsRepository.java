@@ -19,6 +19,6 @@ public interface UserTeamsRepository extends MongoRepository <UserTeams, ObjectI
 
     void deleteByRecordId(String recordId);
 
-    Optional<UserTeams> updateByRecordId(String recordId);
+
 
 }

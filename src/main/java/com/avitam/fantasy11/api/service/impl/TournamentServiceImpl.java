@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.TournamentService;
 import com.avitam.fantasy11.model.Tournament;
 import com.avitam.fantasy11.model.TournamentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class TournamentServiceImpl implements TournamentService {
 
     @Autowired

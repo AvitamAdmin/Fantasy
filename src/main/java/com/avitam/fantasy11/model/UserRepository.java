@@ -20,5 +20,5 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<User> updateByRecordId(String recordId);
+
 }

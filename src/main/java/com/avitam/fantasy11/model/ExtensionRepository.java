@@ -13,5 +13,5 @@ public interface ExtensionRepository extends MongoRepository<Extension, ObjectId
 
     void deleteByRecordId(String recordId);
 
-    Optional<Extension> updateByRecordId(String recordId);
+
 }

@@ -14,5 +14,5 @@ public interface UserWinningsRepository extends MongoRepository<UserWinnings, Ob
 
     void deleteByRecordId(String recordId);
 
-    Optional<UserWinnings> updateByRecordId(String recordId);
+
 }

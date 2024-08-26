@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.TeamService;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class TeamServiceImpl implements TeamService {
     @Autowired
     private TeamRepository teamRepository;

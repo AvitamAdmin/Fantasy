@@ -31,6 +31,8 @@ public class NodeServiceImpl implements NodeService {
 
             for (Node node : allNodes) {
                 List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
+//                nodes1.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
+//                        Comparator.nullsFirst(Comparator.naturalOrder())));
                 for (Node childNode : nodes1) {
                     childNode.setParentNode(node.getName()); // Set parent node for each child node
                 }
@@ -48,20 +50,17 @@ public class NodeServiceImpl implements NodeService {
         User currentUser = userRepository.findByEmail(principalObject.getUsername());
         int roles = currentUser.getRole();
         Set<Node> nodes = new HashSet<>();
-
         if (currentUser.getRole() == 2) {
             nodes.addAll(nodeRepository.findByParentNodeId(null));
         }
-
         List<Node> allNodes = new ArrayList<>();
-        List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toList());
+        List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isNotFalse(node.getStatus())).collect(Collectors.toList());
         nodeList.sort(Comparator.comparing(node -> node.getDisplayPriority()));
         for (Node node : nodeList) {
             List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
             node.setChildNodes(nodes1);
             allNodes.add(node);
         }
-
         return allNodes;
 
     }

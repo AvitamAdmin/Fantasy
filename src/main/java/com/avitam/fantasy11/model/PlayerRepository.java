@@ -16,5 +16,5 @@ public interface PlayerRepository extends MongoRepository<Player, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<Player> updateByRecordId(String recordId);
+
 }

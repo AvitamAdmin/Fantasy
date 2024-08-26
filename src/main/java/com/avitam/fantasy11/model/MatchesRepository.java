@@ -18,5 +18,5 @@ public interface MatchesRepository extends MongoRepository<Matches, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<Matches> updateByRecordId(String recordId);
+
 }

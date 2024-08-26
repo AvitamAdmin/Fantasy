@@ -15,5 +15,5 @@ public interface KYCRepository extends MongoRepository<KYC, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<KYC> updateByRecordId(String recordId);
+
 }

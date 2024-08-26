@@ -14,5 +14,5 @@ public interface SEORepository extends MongoRepository<SEO, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<SEO> updateByRecordId(String recordId);
+
 }

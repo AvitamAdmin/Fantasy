@@ -15,5 +15,5 @@ public interface TournamentRepository extends MongoRepository<Tournament, Object
 
     void deleteByRecordId(String recordId);
 
-    Optional<Tournament> updateByRecordId(String recordId);
+
 }

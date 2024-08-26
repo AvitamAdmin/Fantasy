@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.PointsUpdateService;
 import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.model.PointsUpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class PointsUpdateServiceImpl implements PointsUpdateService {
     @Autowired
     private PointsUpdateRepository pointsUpdateRepository;

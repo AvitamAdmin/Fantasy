@@ -14,5 +14,4 @@ public interface ScriptRepository extends MongoRepository<Script, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<Script> updateByRecordId(String recordId);
 }

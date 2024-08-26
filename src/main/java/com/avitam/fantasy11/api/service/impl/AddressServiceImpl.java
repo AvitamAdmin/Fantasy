@@ -5,9 +5,11 @@ import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.AddressRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class AddressServiceImpl implements AddressService {
 
     @Autowired

@@ -14,5 +14,5 @@ public interface GeneralRepository extends MongoRepository<General, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<General> updateByRecordId(String recordId);
+
 }

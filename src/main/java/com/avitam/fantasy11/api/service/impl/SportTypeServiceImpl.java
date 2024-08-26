@@ -5,9 +5,11 @@ import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.model.SportTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class SportTypeServiceImpl implements SportTypeService {
    @Autowired
    private SportTypeRepository sportTypeRepository;

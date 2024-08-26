@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.model.KYCRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class KycServiceImpl implements KycService {
 
 

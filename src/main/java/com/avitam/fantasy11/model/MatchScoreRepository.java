@@ -15,5 +15,5 @@ public interface MatchScoreRepository extends MongoRepository<MatchScore, Object
 
     void deleteByRecordId(String recordId);
 
-    Optional<MatchScore> updateByRecordId(String recordId);
+
 }

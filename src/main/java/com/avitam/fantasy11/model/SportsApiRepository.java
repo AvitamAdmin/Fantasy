@@ -13,5 +13,5 @@ public interface SportsApiRepository extends MongoRepository<SportsApi, ObjectId
 
     void deleteByRecordId(String recordId);
 
-    Optional<SportsApi> updateByRecordId(String recordId);
+
 }

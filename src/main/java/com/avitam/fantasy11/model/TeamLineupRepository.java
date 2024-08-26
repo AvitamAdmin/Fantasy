@@ -15,5 +15,5 @@ public interface TeamLineupRepository extends MongoRepository<TeamLineup, Object
 
     void deleteByRecordId(String recordId);
 
-    Optional<TeamLineup> updateByRecordId(String recordId);
+
 }

@@ -14,5 +14,5 @@ public interface ContestJoinedRepository extends MongoRepository<ContestJoined, 
 
     void deleteByRecordId(String recordId);
 
-    Optional<ContestJoined> updateByRecordId(String recordId);
+
 }

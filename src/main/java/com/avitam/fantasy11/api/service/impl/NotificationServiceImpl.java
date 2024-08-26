@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.NotificationService;
 import com.avitam.fantasy11.model.Notification;
 import com.avitam.fantasy11.model.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;

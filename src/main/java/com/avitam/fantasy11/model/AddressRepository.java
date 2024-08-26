@@ -12,7 +12,7 @@ public interface AddressRepository extends MongoRepository<Address, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<Address> updateByRecordId(String recordId);
+
 
     Optional<Address> findById(String id);
 }

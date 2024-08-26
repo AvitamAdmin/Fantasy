@@ -13,5 +13,5 @@ public interface WithdrawRepository extends MongoRepository<Withdraw, ObjectId> 
 
     void deleteByRecordId(String recordId);
 
-    Optional<Withdraw> updateByRecordId(String recordId);
+
 }

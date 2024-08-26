@@ -14,5 +14,5 @@ public interface MobileTokenRepository extends MongoRepository<MobileToken, Obje
 
     void deleteByRecordId(String recordId);
 
-    Optional<MobileToken> updateByRecordId(String recordId);
+
 }

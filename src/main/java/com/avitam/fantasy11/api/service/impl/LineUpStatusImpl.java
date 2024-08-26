@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.LineUpStatusService;
 import com.avitam.fantasy11.model.LineUpStatus;
 import com.avitam.fantasy11.model.LineUpStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class LineUpStatusImpl implements LineUpStatusService {
 
     @Autowired

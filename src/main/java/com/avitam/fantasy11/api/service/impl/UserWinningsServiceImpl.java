@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.UserWinningsService;
 import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.model.UserWinningsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserWinningsServiceImpl implements UserWinningsService {
     @Autowired
     private UserWinningsRepository userWinningsRepository;

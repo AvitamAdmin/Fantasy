@@ -6,9 +6,11 @@ import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.model.MatchTypeRepository;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class MatchTypeServiceImpl implements MatchTypeService {
 
     @Autowired
@@ -27,7 +29,7 @@ public class MatchTypeServiceImpl implements MatchTypeService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Optional<MatchType> matchTypeOptional=matchTypeRepository.updateByRecordId(recordId);
+        Optional<MatchType> matchTypeOptional=matchTypeRepository.findByRecordId(recordId);
         matchTypeOptional.ifPresent(matchType -> matchTypeRepository.save(matchType));
     }
 

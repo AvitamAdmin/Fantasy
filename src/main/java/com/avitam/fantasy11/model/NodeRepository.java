@@ -19,5 +19,5 @@ public interface NodeRepository extends MongoRepository<Node, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<Node> updateByRecordId(String recordId);
+
 }

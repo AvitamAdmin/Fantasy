@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class ContestServiceImpl implements ContestService {
 
     @Autowired

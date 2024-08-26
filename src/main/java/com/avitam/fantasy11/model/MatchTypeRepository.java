@@ -15,5 +15,5 @@ public interface MatchTypeRepository extends MongoRepository<MatchType, ObjectId
 
     void deleteByRecordId(String recordId);
 
-    Optional<MatchType> updateByRecordId(String recordId);
+
 }

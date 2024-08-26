@@ -14,5 +14,5 @@ public interface LineUpStatusRepository extends MongoRepository<LineUpStatus, Ob
 
     void deleteByRecordId(String recordId);
 
-    Optional<LineUpStatus> updateByRecordId(String recordId);
+
 }

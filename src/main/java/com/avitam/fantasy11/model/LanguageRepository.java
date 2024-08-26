@@ -13,5 +13,5 @@ public interface LanguageRepository extends MongoRepository<Language, ObjectId> 
 
     void deleteByRecordId(String recordId);
 
-    Optional<Language> updateByRecordId(String recordId);
+
 }

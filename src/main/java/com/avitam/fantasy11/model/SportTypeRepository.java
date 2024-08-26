@@ -16,5 +16,5 @@ SportTypeRepository extends MongoRepository<SportType, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    Optional<SportType> updateByRecordId(String recordId);
+
 }

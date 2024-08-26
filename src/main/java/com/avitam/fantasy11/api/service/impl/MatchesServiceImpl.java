@@ -4,9 +4,11 @@ import com.avitam.fantasy11.api.service.MatchesService;
 import com.avitam.fantasy11.model.Matches;
 import com.avitam.fantasy11.model.MatchesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class MatchesServiceImpl implements MatchesService {
 
     @Autowired
