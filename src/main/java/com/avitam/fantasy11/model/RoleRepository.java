@@ -10,4 +10,10 @@ import java.util.Optional;
 public interface RoleRepository extends MongoRepository<Role, ObjectId> {
 
     Optional<Role> findById(String id);
+
+    Optional<Role> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Role> updateByRecordId(String recordId);
 }

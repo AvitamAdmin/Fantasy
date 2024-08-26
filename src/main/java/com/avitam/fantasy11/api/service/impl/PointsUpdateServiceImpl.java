@@ -2,25 +2,30 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.service.PointsUpdateService;
 import com.avitam.fantasy11.model.PointsUpdate;
+import com.avitam.fantasy11.model.PointsUpdateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class PointsUpdateServiceImpl implements PointsUpdateService {
+    @Autowired
+    private PointsUpdateRepository pointsUpdateRepository;
+
     @Override
-    public PointsUpdate findById(String Id) {
-        return null;
+    public Optional<PointsUpdate> findByRecordId(String recordId) {
+        return pointsUpdateRepository.findByRecordId(recordId);
     }
 
     @Override
-    public PointsUpdate deleteById(String id) {
-        return null;
+    public void deleteByRecordId(String recordId) {
+        pointsUpdateRepository.deleteByRecordId(recordId);
     }
 
     @Override
-    public PointsUpdate updatePoints(String id) {
-        return null;
-    }
+    public void updateByRecordId(String recordId) {
 
-    @Override
-    public void save(PointsUpdate pointsUpdate) {
+        Optional<PointsUpdate> pointsUpdateOptional=pointsUpdateRepository.findByRecordId(recordId);
+        pointsUpdateOptional.ifPresent(pointsUpdate -> pointsUpdateRepository.save(pointsUpdate));
 
     }
 }

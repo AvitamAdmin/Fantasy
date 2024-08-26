@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Controller
-@RequestMapping("/matches/matchType")
+@RequestMapping("/admin/matchType")
 public class MatchTypeController {
 
     @Autowired

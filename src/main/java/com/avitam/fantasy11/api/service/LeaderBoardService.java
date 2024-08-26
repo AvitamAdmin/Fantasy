@@ -2,13 +2,15 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.LeaderBoard;
 
+import java.util.Optional;
+
 public interface LeaderBoardService {
-        LeaderBoard findByUserId(String userId);
+        Optional<LeaderBoard> findByRecordId(String userId);
 
-        LeaderBoard deleteByUserId(String userId);
-
-        void save(LeaderBoard leaderBoard);
+        void deleteByRecordId(String recordId);
 
 
-        LeaderBoard updateByUserId(String userId);
+
+
+       void updateByRecordId(String recordId);
 }

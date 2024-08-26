@@ -2,18 +2,18 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.MatchType;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 public interface MatchTypeService {
 
 
-    public MatchType findById(String matchTypeId);
+    public Optional<MatchType> findByRecordId(String recordId);
 
 
 
-    public MatchType deleteById(String matchTypeId);
+    public void deleteByRecordId(String recordId);
 
 
-    public void save(MatchType matchType) ;
-
-
-    public MatchType updateByMatchTypeId(String matchTypeId);
+    public void updateByRecordId(String recordId);
 }

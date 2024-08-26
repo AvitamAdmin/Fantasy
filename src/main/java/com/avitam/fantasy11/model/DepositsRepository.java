@@ -12,4 +12,10 @@ public interface DepositsRepository extends MongoRepository<Deposits, ObjectId> 
     Optional<Deposits> findById(String id);
 
     List<Deposits> findByDepositStatus(String approved);
+
+    Optional<Deposits> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Deposits> updateByRecordId(String recordId);
 }

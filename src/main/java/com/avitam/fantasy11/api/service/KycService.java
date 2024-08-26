@@ -3,13 +3,15 @@ package com.avitam.fantasy11.api.service;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.KYC;
 
+import java.util.Optional;
+
 public interface KycService {
-        KYC findByUserId(String userId);
+       Optional<KYC> findByRecordId(String recordId);
 
-        KYC deleteByUserId(String userId);
+        void deleteByRecordId(String recordId);
 
 
-        void save(KYC kyc);
 
-        KYC updateByUserId(String userId);
+
+        void updateByRecordId(String recordId);
 }

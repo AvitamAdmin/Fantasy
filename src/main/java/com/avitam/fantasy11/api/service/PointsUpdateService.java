@@ -2,13 +2,15 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.PointsUpdate;
 
+import java.util.Optional;
+
 public interface PointsUpdateService {
 
-    PointsUpdate findById(String Id);
+    Optional<PointsUpdate> findByRecordId(String recordId);
 
-    PointsUpdate deleteById(String id);
+    void deleteByRecordId(String recordId);
 
-    PointsUpdate updatePoints(String id);
+    void updateByRecordId(String recordId);
 
-    void save(PointsUpdate pointsUpdate);
+
 }

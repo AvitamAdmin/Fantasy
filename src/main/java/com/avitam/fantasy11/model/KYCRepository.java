@@ -10,4 +10,10 @@ import java.util.Optional;
 public interface KYCRepository extends MongoRepository<KYC, ObjectId> {
 
     Optional<KYC> findById(String objectId);
+
+    Optional<KYC> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<KYC> updateByRecordId(String recordId);
 }

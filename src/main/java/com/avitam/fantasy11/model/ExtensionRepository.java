@@ -8,4 +8,10 @@ import java.util.Optional;
 @Repository
 public interface ExtensionRepository extends MongoRepository<Extension, ObjectId> {
     Optional<Extension> findById(String id);
+
+    Optional<Extension> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Extension> updateByRecordId(String recordId);
 }

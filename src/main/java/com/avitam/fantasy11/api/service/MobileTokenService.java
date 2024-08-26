@@ -2,14 +2,14 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.MobileToken;
 
+import java.util.Optional;
+
 public interface MobileTokenService {
 
-    MobileToken findByMobileNumber(String mobileNumber);
+    Optional<MobileToken> findByRecordId(String recordId);
 
-    void save(MobileToken mobile);
+    void deleteByRecordId(String recordId);
 
-    MobileToken deleteById(String id);
-
-    MobileToken updateMobileNumber(String mobileNumber);
+    void updateByRecordId(String recordId);
 
 }

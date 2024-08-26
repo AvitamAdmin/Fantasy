@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class BaseEntity {
 
+    private String recordId;
     private ObjectId id;
     private String name;
     private String creator;

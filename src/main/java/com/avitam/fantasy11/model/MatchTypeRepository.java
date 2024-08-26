@@ -10,4 +10,10 @@ import java.util.Optional;
 public interface MatchTypeRepository extends MongoRepository<MatchType, ObjectId> {
 
     Optional<MatchType> findById(String id);
+
+    Optional<MatchType> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<MatchType> updateByRecordId(String recordId);
 }

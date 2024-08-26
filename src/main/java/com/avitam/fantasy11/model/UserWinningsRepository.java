@@ -9,4 +9,10 @@ import java.util.Optional;
 @Repository
 public interface UserWinningsRepository extends MongoRepository<UserWinnings, ObjectId> {
     Optional<UserWinnings> findById(String id);
+
+    Optional<UserWinnings> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<UserWinnings> updateByRecordId(String recordId);
 }

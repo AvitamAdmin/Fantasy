@@ -2,26 +2,29 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.service.LineUpStatusService;
 import com.avitam.fantasy11.model.LineUpStatus;
+import com.avitam.fantasy11.model.LineUpStatusRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class LineUpStatusImpl implements LineUpStatusService {
 
+    @Autowired
+    private LineUpStatusRepository lineUpStatusRepository;
+
     @Override
-    public LineUpStatus findById(String id) {
-        return null;
+    public Optional<LineUpStatus> findByRecordId(String recordId) {
+        return lineUpStatusRepository.findByRecordId(recordId);
     }
 
     @Override
-    public void save(LineUpStatus lineUpStatus) {
-
+    public void deleteByRecordId(String recordId) {
+        lineUpStatusRepository.deleteByRecordId(recordId);
     }
 
     @Override
-    public LineUpStatus deleteById(String id) {
-        return null;
-    }
-
-    @Override
-    public LineUpStatus updateStatus(String id) {
-        return null;
+    public void updateByRecordId(String recordId) {
+        Optional<LineUpStatus> lineUpStatusOptional=lineUpStatusRepository.findByRecordId(recordId);
+        lineUpStatusOptional.ifPresent(lineUpStatus -> lineUpStatusRepository.save(lineUpStatus));
     }
 }

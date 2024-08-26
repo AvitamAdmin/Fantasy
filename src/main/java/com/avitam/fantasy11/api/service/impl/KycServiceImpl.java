@@ -2,26 +2,32 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.model.KYC;
+import com.avitam.fantasy11.model.KYCRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class KycServiceImpl implements KycService {
-    @Override
-    public KYC findByUserId(String userId) {
-        return null;
-    }
 
 
-    @Override
-    public KYC deleteByUserId(String userId) {
-        return null;
-    }
+    @Autowired
+    private KYCRepository kycRepository;
 
     @Override
-    public void save(KYC kyc) {
-
+    public Optional<KYC> findByRecordId(String recordId) {
+        return kycRepository.findByRecordId(recordId) ;
     }
 
     @Override
-    public KYC updateByUserId(String userId) {
-        return null;
+    public void deleteByRecordId(String recordId) {
+        kycRepository.deleteByRecordId(recordId);
     }
+
+    @Override
+    public void updateByRecordId(String recordId) {
+       Optional<KYC> kycOptional= kycRepository.findByRecordId(recordId) ;
+        kycOptional.ifPresent(kyc -> kycRepository.save(kyc));
+    }
+
+
 }

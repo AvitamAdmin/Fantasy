@@ -1,13 +1,12 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.PlayerRole;
 
 import java.util.Optional;
 
-public interface PlayerService {
+public interface PlayerRoleService {
 
-    public Optional<Player> findByRecordId(String recordId);
+    public Optional<PlayerRole> findByRecordId(String recordId);
 
     public void deleteByRecordId(String recordId);
 

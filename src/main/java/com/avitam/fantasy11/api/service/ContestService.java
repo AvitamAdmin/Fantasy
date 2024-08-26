@@ -2,12 +2,12 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.Contest;
 
+import java.util.Optional;
+
 public interface ContestService {
-    Contest findById(String id);
+    Optional<Contest> findByRecordId(String recordId);
 
-    void save(Contest contest);
+    void deleteByRecordId(String recordId);
 
-    Contest deleteById(String id);
-
-    Contest updateContest(String id);
+    void updateByRecordId(String recordId);
 }

@@ -8,4 +8,10 @@ import java.util.Optional;
 public interface LanguageRepository extends MongoRepository<Language, ObjectId> {
 
     Optional<Language> findById(String id);
+
+    Optional<Language> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Language> updateByRecordId(String recordId);
 }

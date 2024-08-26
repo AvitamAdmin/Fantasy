@@ -2,25 +2,29 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.service.MobileTokenService;
 import com.avitam.fantasy11.model.MobileToken;
+import com.avitam.fantasy11.model.MobileTokenRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class MobileTokenServiceImpl implements MobileTokenService {
+
+    @Autowired
+    private MobileTokenRepository mobileTokenRepository;
+
     @Override
-    public MobileToken findByMobileNumber(String mobileNumber) {
-        return null;
+    public Optional<MobileToken> findByRecordId(String recordId) {
+        return mobileTokenRepository.findByRecordId(recordId);
     }
 
     @Override
-    public void save(MobileToken mobile) {
-
+    public void deleteByRecordId(String recordId) {
+        mobileTokenRepository.deleteByRecordId(recordId);
     }
 
     @Override
-    public MobileToken deleteById(String id) {
-        return null;
-    }
-
-    @Override
-    public MobileToken updateMobileNumber(String mobileNumber) {
-        return null;
+    public void updateByRecordId(String recordId) {
+        Optional<MobileToken> mobileTokenOptional=mobileTokenRepository.findByRecordId(recordId);
+        mobileTokenOptional.ifPresent(mobileToken -> mobileTokenRepository.save(mobileToken));
     }
 }

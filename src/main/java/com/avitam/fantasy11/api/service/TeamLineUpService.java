@@ -1,19 +1,16 @@
 package com.avitam.fantasy11.api.service;
 
+import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.model.TeamLineup;
+
+import java.util.Optional;
 
 public interface TeamLineUpService {
 
 
-    public TeamLineup findByTeamId(String teamId);
+    Optional<TeamLineup> findByRecordId(String recordId);
 
+    void deleteByRecordId(String recordId);
 
-
-    public TeamLineup deleteByTeamId(String teamId);
-
-
-    public void save(TeamLineup teamLineup) ;
-
-
-    public TeamLineup updateByTeamId(String teamId);
+    void updateByRecordId(String recordId);
 }

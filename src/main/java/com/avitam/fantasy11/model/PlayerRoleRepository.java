@@ -9,4 +9,10 @@ import java.util.Optional;
 @Repository
 public interface PlayerRoleRepository extends MongoRepository<PlayerRole, ObjectId> {
     Optional<PlayerRole> findById(String id);
+
+    Optional<PlayerRole> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<PlayerRole> updateByRecordId(String recordId);
 }

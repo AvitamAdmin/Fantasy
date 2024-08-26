@@ -9,4 +9,10 @@ import java.util.Optional;
 @Repository
 public interface MobileTokenRepository extends MongoRepository<MobileToken, ObjectId> {
     Optional<MobileToken> findById(String id);
+
+    Optional<MobileToken> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<MobileToken> updateByRecordId(String recordId);
 }

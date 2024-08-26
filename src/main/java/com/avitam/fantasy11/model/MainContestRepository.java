@@ -11,4 +11,10 @@ public interface MainContestRepository extends MongoRepository<MainContest, Obje
     Optional<MainContest> findById(String id);
 
     Optional<MainContest> findByMainContestId(String mainContestId);
+
+    Optional<MainContest> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<MainContest> updateByRecordId(String recordId);
 }

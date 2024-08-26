@@ -3,27 +3,29 @@ package com.avitam.fantasy11.api.service.impl;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
 import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.model.TeamLineup;
+import com.avitam.fantasy11.model.TeamLineupRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class TeamLineUpServiceImpl implements TeamLineUpService {
 
-    @Override
-    public TeamLineup findByTeamId(String teamId) {
-        return null;
-    }
-
+    @Autowired
+    private TeamLineupRepository teamLineupRepository;
 
     @Override
-    public TeamLineup deleteByTeamId(String teamId) {
-        return null;
+    public Optional<TeamLineup> findByRecordId(String recordId) {
+        return teamLineupRepository.findByRecordId(recordId);
     }
 
     @Override
-    public void save(TeamLineup teamLineup) {
-
+    public void deleteByRecordId(String recordId) {
+        teamLineupRepository.deleteByRecordId(recordId);
     }
 
     @Override
-    public TeamLineup updateByTeamId(String teamId) {
-        return null;
+    public void updateByRecordId(String recordId) {
+        Optional<TeamLineup> teamLineupOptional=teamLineupRepository.findByRecordId(recordId);
+        teamLineupOptional.ifPresent(teamLineup -> teamLineupRepository.save(teamLineup));
     }
 }

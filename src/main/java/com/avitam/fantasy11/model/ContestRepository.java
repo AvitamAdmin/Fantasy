@@ -12,4 +12,10 @@ public interface ContestRepository extends MongoRepository<Contest, ObjectId> {
     Optional<Contest> findById(String id);
 
     Optional<Contest> findByMainContestId(String id);
+
+    Optional<Contest> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Contest> updateByRecordId(String recordId);
 }

@@ -9,4 +9,10 @@ import java.util.Optional;
 @Repository
 public interface LineUpStatusRepository extends MongoRepository<LineUpStatus, ObjectId> {
     Optional<LineUpStatus> findById(String id);
+
+    Optional<LineUpStatus> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<LineUpStatus> updateByRecordId(String recordId);
 }

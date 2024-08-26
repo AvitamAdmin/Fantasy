@@ -3,14 +3,16 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.LineUpStatus;
 
+import java.util.Optional;
+
 public interface LineUpStatusService {
 
 
-    LineUpStatus findById(String id);
+    Optional<LineUpStatus> findByRecordId(String recordId);
 
-    void save(LineUpStatus lineUpStatus);
 
-    LineUpStatus deleteById(String id);
 
-    LineUpStatus updateStatus(String id);
+    void deleteByRecordId(String recordId);
+
+    void updateByRecordId(String recordId);
 }

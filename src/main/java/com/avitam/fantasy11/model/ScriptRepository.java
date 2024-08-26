@@ -9,4 +9,10 @@ import java.util.Optional;
 public interface ScriptRepository extends MongoRepository<Script, ObjectId> {
 
     Optional<Script> findById(String id);
+
+    Optional<Script> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Script> updateByRecordId(String recordId);
 }

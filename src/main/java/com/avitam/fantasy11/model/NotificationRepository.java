@@ -12,4 +12,10 @@ public interface NotificationRepository extends MongoRepository<Notification, Ob
 
     Optional<Notification> findById(String id);
 
+    Optional<Notification> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Notification> updateByRecordId(String recordId);
+
 }

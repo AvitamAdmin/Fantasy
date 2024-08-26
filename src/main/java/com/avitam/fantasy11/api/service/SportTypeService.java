@@ -1,18 +1,16 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.Contest;
+import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.model.SportType;
+
+import java.util.Optional;
 
 public interface SportTypeService {
 
-    public SportType findBySportId(String id);
+    Optional<SportType> findByRecordId(String recordId);
 
+    void deleteByRecordId(String recordId);
 
-    public void save(SportType sportType) ;
-
-
-    public SportType deleteBySportId(String id);
-
-
-    public SportType updateSportType(String id);
+    void updateByRecordId(String recordId);
 }

@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/matches/matchScore")
+@RequestMapping("/admin/matchScore")
 public class MatchScoreController {
     @Autowired
     private MatchesRepository matchesRepository;

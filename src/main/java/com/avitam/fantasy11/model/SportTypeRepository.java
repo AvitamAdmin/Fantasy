@@ -11,4 +11,10 @@ public interface
 SportTypeRepository extends MongoRepository<SportType, ObjectId> {
 
     Optional<SportType> findById(String id);
+
+    Optional<SportType> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<SportType> updateByRecordId(String recordId);
 }

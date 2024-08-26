@@ -4,6 +4,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends MongoRepository<User, ObjectId> {
     User findByUsername(String email);
@@ -13,4 +15,10 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
     User findByEmail(String email);
 
     User findById(String id);
+
+    Optional<User> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<User> updateByRecordId(String recordId);
 }

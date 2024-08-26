@@ -13,4 +13,10 @@ public interface MatchesRepository extends MongoRepository<Matches, ObjectId> {
     Optional<Matches> findById(String id);
 
     List<Matches> findByEvent(String live);
+
+    Optional<Matches> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<Matches> updateByRecordId(String recordId);
 }

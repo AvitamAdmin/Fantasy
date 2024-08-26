@@ -9,4 +9,10 @@ import java.util.Optional;
 @Repository
 public interface LeaderBoardRepository extends MongoRepository<LeaderBoard, ObjectId>{
     Optional<LeaderBoard> findById(String id);
+
+    Optional<LeaderBoard> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<LeaderBoard> updateByRecordId(String recordId);
 }

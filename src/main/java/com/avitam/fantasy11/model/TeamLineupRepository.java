@@ -10,4 +10,10 @@ import java.util.Optional;
 public interface TeamLineupRepository extends MongoRepository<TeamLineup, ObjectId> {
 
     Optional<TeamLineup> findById(String id);
+
+    Optional<TeamLineup> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<TeamLineup> updateByRecordId(String recordId);
 }

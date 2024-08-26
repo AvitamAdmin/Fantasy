@@ -15,4 +15,10 @@ public interface UserTeamsRepository extends MongoRepository <UserTeams, ObjectI
     @Query("{matchId:?0)}")
     List<Team>getTeamsByMatchId(String matchId);
 
+    Optional<UserTeams> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<UserTeams> updateByRecordId(String recordId);
+
 }

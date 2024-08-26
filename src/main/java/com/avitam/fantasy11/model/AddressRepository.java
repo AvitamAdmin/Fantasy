@@ -8,6 +8,11 @@ import java.util.Optional;
 
 @Repository
 public interface AddressRepository extends MongoRepository<Address, ObjectId> {
-    Optional<Address> findById(String id);
+    Optional<Address> findByRecordId(String recordId);
 
+    void deleteByRecordId(String recordId);
+
+    Optional<Address> updateByRecordId(String recordId);
+
+    Optional<Address> findById(String id);
 }

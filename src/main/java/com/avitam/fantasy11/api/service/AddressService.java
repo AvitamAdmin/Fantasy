@@ -2,13 +2,15 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.Address;
 
+import java.util.Optional;
+
 public interface AddressService {
 
-    Address findByUserId(String userId);
+    Optional<Address> findByRecordId(String recordId);
 
-    Address deleteByUserId(String userId) ;
+    void deleteByRecordId(String recordId) ;
 
-     void save(Address address) ;
 
-     Address updateByUserId(String userId);
+
+    void updateByRecordId(String recordId);
 }

@@ -9,4 +9,10 @@ import java.util.Optional;
 @Repository
 public interface GeneralRepository extends MongoRepository<General, ObjectId> {
     Optional<General> findById(String id);
+
+    Optional<General> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<General> updateByRecordId(String recordId);
 }

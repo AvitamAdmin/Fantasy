@@ -3,25 +3,27 @@ package com.avitam.fantasy11.api.service.impl;
 import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.SportType;
+import com.avitam.fantasy11.model.SportTypeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class SportTypeServiceImpl implements SportTypeService {
+   @Autowired
+   private SportTypeRepository sportTypeRepository;
     @Override
-    public SportType findBySportId(String id) {
-        return null;
+    public Optional<SportType> findByRecordId(String recordId) {
+        return sportTypeRepository.findByRecordId(recordId);
     }
 
     @Override
-    public void save(SportType sportType) {
-
+    public void deleteByRecordId(String recordId) {
+        sportTypeRepository.findByRecordId(recordId);
     }
 
     @Override
-    public SportType deleteBySportId(String id) {
-        return null;
-    }
-
-    @Override
-    public SportType updateSportType(String id) {
-        return null;
+    public void updateByRecordId(String recordId) {
+        Optional<SportType> sportTypeOptional=sportTypeRepository.findByRecordId(recordId);
+        sportTypeOptional.ifPresent(sportType -> sportTypeRepository.save(sportType));
     }
 }

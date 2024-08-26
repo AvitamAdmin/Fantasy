@@ -9,4 +9,10 @@ import java.util.Optional;
 @Repository
 public interface SEORepository extends MongoRepository<SEO, ObjectId> {
     Optional<SEO> findById(String id);
+
+    Optional<SEO> findByRecordId(String recordId);
+
+    void deleteByRecordId(String recordId);
+
+    Optional<SEO> updateByRecordId(String recordId);
 }
