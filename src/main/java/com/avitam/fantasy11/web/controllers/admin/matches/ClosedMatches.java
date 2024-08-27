@@ -69,10 +69,11 @@ public class ClosedMatches {
         return "matches/closedMatches";
     }
 
+
     @GetMapping("/edit")
     public String editMatches(@RequestParam("id") String id, Model model) {
 
-        Optional<Matches> matchesOptional = matchesRepository.findById(id);
+        Optional<Matches> matchesOptional = matchesRepository.findByRecordId(id);
         if (matchesOptional.isPresent()) {
             Matches matches = matchesOptional.get();
 
@@ -154,6 +155,11 @@ public class ClosedMatches {
         }
 
         matchesRepository.save(matches);
+        if(matches.getRecordId()==null)
+        {
+            matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
+        }
+        matchesRepository.save(matches);
         model.addAttribute("editForm", matchesForm);
         return "redirect:/admin/matches";
     }
@@ -178,7 +184,7 @@ public class ClosedMatches {
     @GetMapping("/delete")
     public String deleteMatches(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            matchesRepository.deleteById(new ObjectId(id));
+            matchesRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/matches";
     }

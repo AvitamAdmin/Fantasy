@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.Contest;
-import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.model.SportType;
 
 import java.util.Optional;

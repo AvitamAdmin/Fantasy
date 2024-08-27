@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,10 +35,12 @@ public class PointsMasterController {
         return "pointsMaster/pointsMasters";
     }
 
+
+
     @GetMapping("/edit")
     public String editPointsMaster(@RequestParam("id") String id, Model model) {
 
-        Optional<PointsMaster> pointsMasterOptional = pointsMasterRepository.findById(id);
+        Optional<PointsMaster> pointsMasterOptional = pointsMasterRepository.findByRecordId(id);
         if (pointsMasterOptional.isPresent()) {
             PointsMaster pointsMaster = pointsMasterOptional.get();
             PointsMasterForm pointsMasterForm = modelMapper.map(pointsMaster, PointsMasterForm.class);
@@ -75,6 +78,11 @@ public class PointsMasterController {
         }
 
         pointsMasterRepository.save(pointsMaster);
+        if(pointsMaster.getRecordId()==null)
+        {
+            pointsMaster.setRecordId(String.valueOf(pointsMaster.getId().getTimestamp()));
+        }
+        pointsMasterRepository.save(pointsMaster);
         model.addAttribute("editForm", pointsMasterForm);
         return "redirect:/admin/pointsMaster";
     }
@@ -95,7 +103,7 @@ public class PointsMasterController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            pointsMasterRepository.deleteById(new ObjectId(id));
+            pointsMasterRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/pointsMaster";
     }

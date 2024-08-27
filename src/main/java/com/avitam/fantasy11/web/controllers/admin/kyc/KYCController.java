@@ -1,13 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.kyc;
 
-import com.avitam.fantasy11.model.NodeRepository;
-import com.avitam.fantasy11.model.SportType;
+import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.validation.KYCFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.KYCForm;
-import com.avitam.fantasy11.model.KYC;
-import com.avitam.fantasy11.model.KYCRepository;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -31,6 +28,8 @@ public class KYCController {
     @Autowired
     private CoreService coreService;
 
+
+
     @GetMapping
     public String getAllModels(Model model) {
         List<KYC> kycs = kycRepository.findAll();
@@ -49,7 +48,7 @@ public class KYCController {
     @GetMapping("/edit")
     public String editKyc(@RequestParam("id") String id, Model model) {
 
-        Optional<KYC> kycOptional = kycRepository.findById(id);
+        Optional<KYC> kycOptional = kycRepository.findByRecordId(id);
         if (kycOptional.isPresent()) {
             KYC kyc = kycOptional.get();
             KYCForm kycForm = modelMapper.map(kyc, KYCForm.class);
@@ -85,6 +84,11 @@ public class KYCController {
 
         kyc.setPanImage(binary);
         kycRepository.save(kyc);
+        if(kyc.getRecordId()==null)
+        {
+            kyc.setRecordId(String.valueOf(kyc.getId().getTimestamp()));
+        }
+        kycRepository.save(kyc);
         model.addAttribute("editForm", kycForm);
         return "redirect:/admin/kyc";
     }
@@ -104,7 +108,7 @@ public class KYCController {
     public String deleteKyc(@RequestParam("id") String ids, Model model) {
 
         for (String id : ids.split(",")) {
-           kycRepository.deleteById(new ObjectId(id));
+           kycRepository.deleteByRecordId(id);
         }
 
         return "redirect:/admin/kyc";

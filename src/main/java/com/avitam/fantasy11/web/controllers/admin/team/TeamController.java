@@ -45,10 +45,21 @@ public class TeamController {
         model.addAttribute("models", datas);
         return "team/teams";
     }
+
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<Team> teams=teamRepository.findAll();
+        for(Team team:teams)
+        {
+            team.setRecordId(String.valueOf(team.getId().getTimestamp()));
+            teamRepository.save(team);
+        }
+    }
     @GetMapping("/edit")
     public String editTeam (@RequestParam("id")String id, Model model){
 
-        Optional<Team> teamOptional = teamRepository.findById(id);
+        Optional<Team> teamOptional = teamRepository.findByRecordId(id);
         if (teamOptional.isPresent()) {
             Team team = teamOptional.get();
             TeamForm teamForm = modelMapper.map(team, TeamForm.class);
@@ -82,6 +93,11 @@ public class TeamController {
         }
          team.setLogo(binary);
         teamRepository.save(team);
+        if(team.getRecordId()==null)
+        {
+            team.setRecordId(String.valueOf(team.getId().getTimestamp()));
+        }
+        teamRepository.save(team);
         model.addAttribute("editForm", teamForm);
 
         return "redirect:/admin/team";
@@ -101,7 +117,7 @@ public class TeamController {
     public String deleteTeam(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
 
-            teamRepository.deleteById(new ObjectId(id));
+            teamRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/team";
     }

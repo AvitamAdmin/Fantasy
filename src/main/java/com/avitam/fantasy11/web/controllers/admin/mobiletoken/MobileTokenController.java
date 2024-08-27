@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.mobileToken;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.form.MobileTokenForm;
 import com.avitam.fantasy11.model.*;
-import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +36,9 @@ public class MobileTokenController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,ObjectId id, User user, Model model) {
+    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,String id, User user, Model model) {
 
-      Optional<MobileToken> mobileOptional = mobileTokenRepository.findById(id);
+      Optional<MobileToken> mobileOptional = mobileTokenRepository.findByRecordId(id);
         if (mobileOptional.isPresent()) {
         MobileToken mobileToken = mobileOptional.get();
         mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
@@ -68,6 +66,11 @@ public class MobileTokenController {
             mobileToken.setId(teamOptional.get().getId());
         }
         mobileTokenRepository.save(mobileToken);
+        if(mobileToken.getRecordId()==null)
+        {
+            mobileToken.setRecordId(String.valueOf(mobileToken.getId().getTimestamp()));
+        }
+        mobileTokenRepository.save(mobileToken);
         model.addAttribute("editForm", mobileTokenForm);
         return "redirect:/admin/mobileToken";
     }
@@ -86,7 +89,7 @@ public class MobileTokenController {
     @GetMapping("/delete")
     public String deleteMobileToken(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            mobileTokenRepository.deleteById(new ObjectId(id));
+            mobileTokenRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/mobileToken";
     }

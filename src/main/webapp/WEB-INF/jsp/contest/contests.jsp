@@ -25,7 +25,7 @@
               <tbody>
                   <c:forEach items="${contests}" var="contest">
                     <tr id="${contest.id}">
-                        <td class="td-sm">${contest.id}</td>
+                        <td class="td-sm">${contest.recordId}</td>
                         <td class="td-sm">${contest.name}</td>
                          <td class="td-sm">${contest.mainContestId}</td>
                         <td class="td-sm">Rs.${contest.totalPrice}</td>

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/contestJoined")
@@ -27,7 +26,7 @@ public class ContestJoinedController {
     @Autowired
     private UserRepository  userRepository;
     @Autowired
-    private TeamRepository teamRepository;
+    private UserTeamsRepository userTeamsRepository;
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
@@ -39,27 +38,35 @@ public class ContestJoinedController {
     public String getAll(Model model) {
         List<ContestJoined> contestJoineds=contestJoinedRepository.findAll();
         model.addAttribute("models", contestJoineds);
-        return "contestjoined/contestjoin";
+        return "contestJoined/contestjoin";
     }
 
     @GetMapping("/edit")
-    public String editContestJoined(@RequestParam("id") ObjectId id, Model model) {
+    public String edit(@RequestParam("id") String id, Model model) {
 
-        Optional<ContestJoined> contestJoinedOptional = contestJoinedRepository.findById(id);
+        Optional<ContestJoined> contestJoinedOptional = contestJoinedRepository.findByRecordId(id);
+
         if (contestJoinedOptional.isPresent()) {
             ContestJoined contestJoined = contestJoinedOptional.get();
-            ContestJoinedForm contestJoinedForm = modelMapper.map(contestJoined, ContestJoinedForm.class);
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+           ContestJoinedForm contestJoinedForm=modelMapper.map(contestJoined,ContestJoinedForm.class);
+           contestJoinedForm.setId(String.valueOf(contestJoined.getId()));
+
             model.addAttribute("editForm", contestJoinedForm);
-            model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
+            model.addAttribute("userTeams",userTeamsRepository.findAll());
+            model.addAttribute("matches",matchesRepository.findAll());
         }
-        return "contestjoined/edit";
+        return "contestJoined/edit";
     }
+
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") ContestJoinedForm contestJoinedForm, Model model, BindingResult result) {
         if (result.hasErrors()) {
             model.addAttribute("message", result);
-            return "contestjoined/edit";
+            model.addAttribute("editForm",contestJoinedForm);
+            return "contestJoined/edit";
         }
         contestJoinedForm.setLastModified(new Date());
 
@@ -75,28 +82,32 @@ public class ContestJoinedController {
             contestJoined.setId(contestJoinedOptional.get().getId());
         }
 
-
+        contestJoinedRepository.save(contestJoined);
+        if (contestJoined.getRecordId()==null)
+        {
+            contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
+        }
         contestJoinedRepository.save(contestJoined);
         model.addAttribute("editForm", contestJoinedForm);
-        return "redirect:/admin/contestjoin";
+        return "redirect:/admin/contestJoined";
     }
 
     @GetMapping("/add")
-    public String addInterface(Model model) {
+    public String add(Model model) {
         ContestJoinedForm form = new ContestJoinedForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
         form.setStatus(true);
         form.setCreator(coreService.getCurrentUser().getEmail());
         model.addAttribute("editForm", form);
-        return "contestjoined/edit";
+        return "contestJoined/edit";
     }
 
     @GetMapping("/delete")
-    public String deleteContestJoined(@RequestParam("id") String ids, Model model) {
+    public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            contestJoinedRepository.deleteById(new ObjectId(id));
+            contestJoinedRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/contestjoin";
+        return "redirect:/admin/contestJoined";
     }
 }

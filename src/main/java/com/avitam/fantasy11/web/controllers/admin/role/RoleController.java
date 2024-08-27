@@ -41,13 +41,25 @@ public class RoleController {
         return "role/roles";
     }
 
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<Role> roleList=roleRepository.findAll();
+        for(Role role:roleList)
+        {
+            role.setRecordId(String.valueOf(role.getId().getTimestamp()));
+            roleRepository.save(role);
+
+        }
+    }
+
     @GetMapping("/edit")
     public String editRole(@RequestParam("id") String id, Model model) {
         if (id == null) {
             model.addAttribute("message", "Please select a row for edit operation!");
             return "role/edit";
         }
-        Optional<Role> roleOptional = roleRepository.findById(id);
+        Optional<Role> roleOptional = roleRepository.findByRecordId(id);
         if (roleOptional.isPresent()) {
             RoleForm roleForm = modelMapper.map(roleOptional.get(), RoleForm.class);
             roleForm.setId(String.valueOf(roleOptional.get().getId()));
@@ -82,6 +94,11 @@ public class RoleController {
         role.setRoleId(roleForm.getRoleId());
         role.setCreator(principalObject.getUsername());
         roleRepository.save(role);
+        if(role.getRecordId()==null)
+        {
+            role.setRecordId(String.valueOf(role.getId().getTimestamp()));
+        }
+        roleRepository.save(role);
         model.addAttribute("message", "Role was updated successfully!");
         return "redirect:/admin/role";
     }
@@ -101,7 +118,7 @@ public class RoleController {
     @GetMapping("/delete")
     public String deleteRole(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            roleRepository.deleteById(new ObjectId(id));
+            roleRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/role";
     }

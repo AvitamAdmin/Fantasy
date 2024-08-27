@@ -38,10 +38,12 @@ public class InterfaceController {
         return "interface/interfaces";
     }
 
+
+
     @GetMapping("/edit")
     public String editInterface(@RequestParam("id") String id, Model model) {
 
-        Optional<Node> interfaceOptional = nodeRepository.findById(id);
+        Optional<Node> interfaceOptional = nodeRepository.findByRecordId(id);
         if (interfaceOptional.isPresent()) {
             Node node = interfaceOptional.get();
             InterfaceForm interfaceForm = modelMapper.map(node, InterfaceForm.class);
@@ -81,6 +83,11 @@ public class InterfaceController {
             node.setDisplayPriority(1000);
         }
         nodeRepository.save(node);
+        if(node.getRecordId()==null)
+        {
+            node.setRecordId(String.valueOf(node.getId().getTimestamp()));
+        }
+        nodeRepository.save(node);
         model.addAttribute("editForm", interfaceForm);
         return "redirect:/admin/interface";
     }
@@ -101,7 +108,7 @@ public class InterfaceController {
     public String deleteInterface(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
 
-            nodeRepository.deleteById(new ObjectId (id));
+            nodeRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/interface";
     }

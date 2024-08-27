@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/settings/extension")
+@RequestMapping("/admin/extension")
 public class ExtensionController {
 
     @Autowired
@@ -41,10 +41,21 @@ public class ExtensionController {
         model.addAttribute("models", datas);
         return "extension/extensions";
     }
+
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<Extension> extensions=extensionRepository.findAll();
+        for(Extension extension:extensions)
+        {
+            extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
+            extensionRepository.save(extension);
+        }
+    }
     @GetMapping("/edit")
     public String editPlayer(@RequestParam("id")String id, Model model){
 
-        Optional<Extension> extensionOptional = extensionRepository.findById(id);
+        Optional<Extension> extensionOptional = extensionRepository.findByRecordId(id);
         if (extensionOptional.isPresent()) {
             Extension extension = extensionOptional.get();
 
@@ -87,6 +98,11 @@ public class ExtensionController {
         extension.setImage(binary);
 
         extensionRepository.save(extension);
+        if(extension.getRecordId()==null)
+        {
+            extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
+        }
+        extensionRepository.save(extension);
         model.addAttribute("editForm", extensionForm);
 
         return "redirect:/settings/extension";
@@ -105,7 +121,7 @@ public class ExtensionController {
     @GetMapping("/delete")
     public String deletePlayer(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            extensionRepository.deleteById(new ObjectId(id));
+            extensionRepository.deleteByRecordId(id);
         }
         return "redirect:/settings/extension";
     }

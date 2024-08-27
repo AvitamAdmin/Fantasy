@@ -21,7 +21,7 @@
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
-                        <td class="td-sm">${model.id}</td>
+                        <td class="td-sm">${model.recordId}</td>
                         <td class="td-sm"><img style="width:50px;" src="data:image/jpeg;base64,${model.pic}"</td>
                         <td class="td-sm">${model.name}</td>
                         <td class="td-sm">${model.extendStatus}</td>

@@ -22,7 +22,7 @@
               <tbody>
                   <c:forEach items="${roles}" var="role">
                     <tr id="${role.id}">
-                        <td class="td-sm">${role.id}</td>
+                        <td class="td-sm">${role.recordId}</td>
                         <td class="td-sm">${role.name}</td>
                         <td class="td-sm">${role.roleId}</td>
                         <td class="td-sm">${role.creator}</td>

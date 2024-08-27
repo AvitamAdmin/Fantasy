@@ -15,10 +15,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/settings/language")
+@RequestMapping("/admin/language")
 public class LanguageController {
 
     @Autowired
@@ -34,10 +35,21 @@ public class LanguageController {
         return "language/languages";
     }
 
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<Language> languageList=languageRepository.findAll();
+        for(Language language:languageList)
+        {
+            language.setRecordId(String.valueOf(language.getId().getTimestamp()));
+            languageRepository.save(language);
+        }
+    }
+
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
 
-        Optional<Language> languageOptional = languageRepository.findById(id);
+        Optional<Language> languageOptional = languageRepository.findByRecordId(id);
         if (languageOptional.isPresent()) {
             Language language =languageOptional.get();
 
@@ -66,6 +78,11 @@ public class LanguageController {
         }
 
         languageRepository.save(language);
+        if(language.getRecordId()==null)
+        {
+            language.setRecordId(String.valueOf(language.getId().getTimestamp()));
+        }
+        languageRepository.save(language);
         model.addAttribute("editForm", languageForm);
         return "redirect:/settings/language";
     }
@@ -85,7 +102,7 @@ public class LanguageController {
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
 
-            languageRepository.deleteById(new ObjectId(id));
+            languageRepository.deleteByRecordId(id);
         }
         return "redirect:/settings/language";
     }

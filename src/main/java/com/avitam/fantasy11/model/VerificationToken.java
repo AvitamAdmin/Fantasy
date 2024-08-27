@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Document("VerificationToken")
-public class VerificationToken {
+public class VerificationToken  {
 
     private int id;
     private String userId;

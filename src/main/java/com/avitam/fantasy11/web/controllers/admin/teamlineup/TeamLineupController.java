@@ -35,10 +35,22 @@ public class TeamLineupController {
         model.addAttribute("models", teamLineupRepository.findAll());
         return "teamLineup/teamLineups";
     }
-    @GetMapping("/edit")
-    public String editTeamLineup (@RequestParam("id") ObjectId id, Model model){
 
-        Optional<TeamLineup> teamLineUpOptional = teamLineupRepository.findById(id);
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<TeamLineup> teamLineups=teamLineupRepository.findAll();
+        for(TeamLineup teamLineup:teamLineups)
+        {
+            teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
+            teamLineupRepository.save(teamLineup);
+        }
+    }
+
+    @GetMapping("/edit")
+    public String editTeamLineup (@RequestParam("id") String id, Model model){
+
+        Optional<TeamLineup> teamLineUpOptional = teamLineupRepository.findByRecordId(id);
         if (teamLineUpOptional.isPresent()) {
             TeamLineup teamLineUp = teamLineUpOptional.get();
             TeamLineUpForm teamLineUpForm = modelMapper.map(teamLineUp, TeamLineUpForm.class);
@@ -78,6 +90,11 @@ public class TeamLineupController {
             teamLineup.setPlayerId(String.valueOf(playerOptional.get().getId()));
         }
         teamLineupRepository.save(teamLineup);
+        if(teamLineup.getRecordId()==null)
+        {
+            teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
+        }
+        teamLineupRepository.save(teamLineup);
         model.addAttribute("editForm", teamLineUpForm);
 
         return "redirect:/admin/teamLineup";
@@ -99,7 +116,7 @@ public class TeamLineupController {
     @GetMapping("/delete")
     public String deleteTeamLineup(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            teamLineupRepository.deleteById(new ObjectId(id));
+            teamLineupRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/teamLineup";
     }

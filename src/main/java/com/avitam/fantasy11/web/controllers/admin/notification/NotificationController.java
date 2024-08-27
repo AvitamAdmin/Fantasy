@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -40,7 +41,7 @@ public class NotificationController {
     @GetMapping("/edit")
     public String editNotification(@RequestParam("id") String id, Model model) {
 
-        Optional<Notification> notificationOptional = notificationRepository.findById(id);
+        Optional<Notification> notificationOptional = notificationRepository.findByRecordId(id);
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
             NotificationForm notificationForm = modelMapper.map(notification, NotificationForm.class);
@@ -69,6 +70,11 @@ public class NotificationController {
         }
 
         notificationRepository.save(notification);
+        if(notification.getRecordId()==null)
+        {
+            notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
+        }
+        notificationRepository.save(notification);
         model.addAttribute("editForm", notificationForm);
         return "redirect:/admin/notification";
     }
@@ -88,7 +94,7 @@ public class NotificationController {
     public String deleteNotification(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
 
-            notificationRepository.deleteById(new ObjectId(id));
+            notificationRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/notification";
     }

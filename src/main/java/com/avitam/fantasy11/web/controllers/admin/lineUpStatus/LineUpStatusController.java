@@ -38,10 +38,12 @@ public class LineUpStatusController {
         return "lineupStatus/lineupStatuses";
     }
 
-    @GetMapping("/edit")
-    public String editLineupStatus (@RequestParam("id") ObjectId id, Model model){
 
-        Optional<LineUpStatus> lineUpStatusOptional = lineUpStatusRepository.findById(id);
+
+    @GetMapping("/edit")
+    public String editLineupStatus (@RequestParam("id") String  id, Model model){
+
+        Optional<LineUpStatus> lineUpStatusOptional = lineUpStatusRepository.findByRecordId(id);
         if (lineUpStatusOptional.isPresent()) {
             LineUpStatus lineUpStatus= lineUpStatusOptional.get();
             LineUpStatusForm lineUpStatusForm= modelMapper.map(lineUpStatus, LineUpStatusForm.class);
@@ -73,6 +75,11 @@ public class LineUpStatusController {
             }
         }
         lineUpStatusRepository.save(lineUpStatus);
+        if(lineUpStatus.getRecordId()==null)
+        {
+            lineUpStatus.setRecordId(String.valueOf(lineUpStatus.getId().getTimestamp()));
+        }
+        lineUpStatusRepository.save(lineUpStatus);
         model.addAttribute("editForm", lineUpStatusForm);
 
         return "redirect:/admin/lineupStatus";
@@ -91,7 +98,7 @@ public class LineUpStatusController {
     @GetMapping("/delete")
     public String deleteLineupStatus(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            lineUpStatusRepository.deleteById(new ObjectId(id));
+            lineUpStatusRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/lineupStatus";
     }

@@ -38,10 +38,11 @@ public class MatchTypeController {
         model.addAttribute("models", matchTypes);
         return "matchType/matchTypes";
     }
+
     @GetMapping("/edit")
     public String editTournament (@RequestParam("id") String id, Model model){
 
-        Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(id);
+        Optional<MatchType> matchTypeOptional = matchTypeRepository.findByRecordId(id);
         if (matchTypeOptional.isPresent()) {
             MatchType matchType= matchTypeOptional.get();
             MatchTypeForm matchTypeForm= modelMapper.map(matchType, MatchTypeForm.class);
@@ -73,6 +74,11 @@ public class MatchTypeController {
             }
         }
         matchTypeRepository.save(matchType);
+        if(matchType.getRecordId()==null)
+        {
+            matchType.setRecordId(String.valueOf(matchType.getId().getTimestamp()));
+        }
+        matchTypeRepository.save(matchType);
         model.addAttribute("editForm", matchTypeForm);
 
         return "redirect:/matches/matchType";
@@ -91,7 +97,7 @@ public class MatchTypeController {
     @GetMapping("/delete")
     public String deleteMatchType(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            matchTypeRepository.deleteById(new ObjectId(id));
+            matchTypeRepository.deleteByRecordId(id);
         }
         return "redirect:/matches/matchType";
     }

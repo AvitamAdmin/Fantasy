@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,9 +34,9 @@ public class PlayerRoleController {
     }
 
     @GetMapping("/edit")
-    public String editPlayerRole(@RequestParam("id") ObjectId id, Model model) {
+    public String editPlayerRole(@RequestParam("id") String id, Model model) {
 
-        Optional<PlayerRole> playerRoleFormOptional = playerRoleRepository.findById(id);
+        Optional<PlayerRole> playerRoleFormOptional = playerRoleRepository.findByRecordId(id);
         if (playerRoleFormOptional.isPresent()) {
             PlayerRole playerRole = playerRoleFormOptional.get();
             PlayerRoleForm playerRoleForm = modelMapper.map(playerRole, PlayerRoleForm.class);
@@ -65,6 +66,11 @@ public class PlayerRoleController {
         }
 
         playerRoleRepository.save(playerRole);
+        if(playerRole.getRecordId()==null)
+        {
+            playerRole.setRecordId(String.valueOf(playerRole.getId().getTimestamp()));
+        }
+        playerRoleRepository.save(playerRole);
         model.addAttribute("editForm", playerRoleForm);
         return "redirect:/admin/playerRole";
     }
@@ -83,7 +89,7 @@ public class PlayerRoleController {
     @GetMapping("/delete")
     public String deletePlayerRole(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            playerRoleRepository.deleteById(new ObjectId(id));
+            playerRoleRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/playerRole";
     }

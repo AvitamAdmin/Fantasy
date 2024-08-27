@@ -40,7 +40,7 @@ public class LeaderBoardController {
     @GetMapping("/edit")
     public String editLeaderBoard(@RequestParam("id") String id, Model model) {
 
-        Optional<LeaderBoard> leaderBoardOptional = leaderBoardRepository.findById(id);
+        Optional<LeaderBoard> leaderBoardOptional = leaderBoardRepository.findByRecordId(id);
         if (leaderBoardOptional.isPresent()) {
             LeaderBoard leaderBoard = leaderBoardOptional.get();
 
@@ -78,6 +78,11 @@ public class LeaderBoardController {
          }
 
         leaderBoardRepository.save(leaderBoard);
+         if(leaderBoard.getRecordId()==null)
+         {
+             leaderBoard.setRecordId(String.valueOf(leaderBoard.getId().getTimestamp()));
+         }
+        leaderBoardRepository.save(leaderBoard);
         model.addAttribute("editForm", leaderBoardForm);
         return "redirect:/admin/leaderBoard";
     }
@@ -98,7 +103,7 @@ public class LeaderBoardController {
     @GetMapping("/delete")
     public String deleteLeaderBoard(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-              leaderBoardRepository.deleteById(new ObjectId(id));
+              leaderBoardRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/leaderBoard";
     }

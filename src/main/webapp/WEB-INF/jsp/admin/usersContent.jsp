@@ -14,9 +14,7 @@
                       <th class="th-sm">PK</th>
                       <th class="th-sm">Email</th>
                       <th class="th-sm">Status</th>
-
                       <th class="th-sm">Role</th>
-
                     </tr>
               </thead>
               <tbody>
@@ -33,7 +31,6 @@
                              </c:otherwise>
                         </c:choose>
                         <td class="td-sm">${varChecked}</td>
-
                         <td class="td-sm">
                             <c:forEach items="${model.roles}" var="child">
                                  ${child.name},

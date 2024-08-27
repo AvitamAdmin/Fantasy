@@ -5,7 +5,7 @@
       <div class="row">
               <div class="col-sm-3"></div>
               <div style="text-align:center;" class="col-sm-6">
-                <img style="width:150px;" src="${contextPath}/images/logo.png"/>
+                <img style="width:150px;background-color:#6495ED" src="${contextPath}/images/logo.png"/>
               </div>
               <div  class="col-sm-3"></div>
       </div>
@@ -71,9 +71,9 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
-                        <select name="role" id="roles" class="lg-btn 3col active cheil-select" required="required">
+                        <select name="role" id="roles" class="lg-btn 3col active cheil-select" multiple required="required">
                             <c:forEach items="${roles}" var="role">
-                                <option value="${role.id}">${role.name}</option>
+                                <option value="${role.ids}">${role.name}</option>
                             </c:forEach>
                         </select>
                     </div>

@@ -18,7 +18,7 @@
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
-                        <td class="td-sm">${model.id}</td>
+                        <td class="td-sm">${model.recordId}</td>
                         <td class="td-sm">${model.name}</td>
                      </tr>
                  </c:forEach>

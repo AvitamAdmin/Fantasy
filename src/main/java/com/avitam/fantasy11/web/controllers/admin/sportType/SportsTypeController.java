@@ -41,10 +41,21 @@ public class SportsTypeController {
         model.addAttribute("models", datas);
         return "sportType/sportTypes";
     }
-    @GetMapping("/edit")
-    public String editSportType (@RequestParam("id") ObjectId id, Model model){
 
-        Optional<SportType> sportTypeOptional = sportTypeRepository.findById(id);
+    @GetMapping("/migrate")
+    public  void migrate()
+    {
+        List<SportType> sportTypes=sportTypeRepository.findAll();
+        for(SportType sportType:sportTypes)
+        {
+            sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
+            sportTypeRepository.save(sportType);
+        }
+    }
+    @GetMapping("/edit")
+    public String editSportType (@RequestParam("id") String id, Model model){
+
+        Optional<SportType> sportTypeOptional = sportTypeRepository.findByRecordId(id);
         if (sportTypeOptional.isPresent()) {
             SportType sportType = sportTypeOptional.get();
             SportTypeForm sportTypeForm = modelMapper.map(sportType, SportTypeForm.class);
@@ -79,6 +90,11 @@ public class SportsTypeController {
         }
         sportType.setLogo(binary);
         sportTypeRepository.save(sportType);
+        if(sportType.getRecordId()==null)
+        {
+            sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
+        }
+        sportTypeRepository.save(sportType);
         model.addAttribute("editForm", sportTypeForm);
 
         return "redirect:/matches/sportType";
@@ -97,7 +113,7 @@ public class SportsTypeController {
     @GetMapping("/delete")
     public String deleteTeam(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            sportTypeRepository.deleteById(new ObjectId(id));
+            sportTypeRepository.deleteByRecordId(id);
         }
         return "redirect:/matches/sportType";
     }

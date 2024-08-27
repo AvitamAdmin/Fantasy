@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/settings/seo")
+@RequestMapping("/admin/seo")
 public class SEOController {
 
     @Autowired

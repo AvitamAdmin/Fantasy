@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/settings/general")
+@RequestMapping("/admin/general")
 public class GeneralController {
     @Autowired
     private GeneralRepository generalRepository;
@@ -57,6 +57,11 @@ public class GeneralController {
             general.setId(generalOptional.get().getId());
         }
 
+        generalRepository.save(general);
+        if(general.getRecordId()==null)
+        {
+            general.setRecordId(String.valueOf(general.getId().getTimestamp()));
+        }
         generalRepository.save(general);
         model.addAttribute("editForm", generalForm);
         return "redirect:/home";

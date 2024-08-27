@@ -23,7 +23,7 @@
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
-                        <td class="td-sm">${model.id}</td>
+                        <td class="td-sm">${model.recordId}</td>
                         <td class="td-sm">${model.mobileNumber}</td>
                         <td class="td-sm">${model.line_1}</td>
                         <td class="td-sm">${model.line_2}</td>

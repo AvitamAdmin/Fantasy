@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/settings/sportsApi")
+@RequestMapping("/admin/sportsApi")
 public class SportAPIController {
 
     @Autowired

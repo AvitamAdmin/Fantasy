@@ -39,14 +39,30 @@ public class MatchesController {
     @GetMapping
     public String getAllModel(Model model) {
         List<Matches> matches= matchesRepository.findAll();
+        for(Matches match:matches){
+        LocalDateTime currentTime=LocalDateTime.now();
+        LocalDateTime startTime=LocalDateTime.parse(match.getStartDateAndTime());
+        LocalDateTime endTime=LocalDateTime.parse(match.getEndDateAndTime());
+
+        if(currentTime.isAfter(endTime))
+        {
+            match.setEvent("Closed");
+        } else if (currentTime.isAfter(startTime)&&currentTime.isBefore(endTime)) {
+            match.setEvent("Live");
+        }
+        else if(currentTime.isBefore(startTime))
+        {
+            match.setEvent("Upcoming");
+        }}
         model.addAttribute("models", matches);
         return "matches/matchess";
     }
 
+
     @GetMapping("/edit")
     public String editMatches(@RequestParam("id") String id, Model model) {
 
-        Optional<Matches> matchesOptional = matchesRepository.findById(id);
+        Optional<Matches> matchesOptional = matchesRepository.findByRecordId(id);
         if (matchesOptional.isPresent()) {
             Matches matches = matchesOptional.get();
 
@@ -126,6 +142,11 @@ public class MatchesController {
         }
 
         matchesRepository.save(matches);
+        if(matches.getRecordId()==null)
+        {
+            matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
+        }
+        matchesRepository.save(matches);
         model.addAttribute("editForm", matchesForm);
         return "redirect:/admin/matches";
     }
@@ -155,7 +176,7 @@ public class MatchesController {
     @GetMapping("/delete")
     public String deleteMatches(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            matchesRepository.deleteById(new ObjectId(id));
+            matchesRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/matches";
     }

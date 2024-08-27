@@ -36,10 +36,11 @@ public class MatchScoreController {
         model.addAttribute("models", matchScores);
         return "matchScore/matchScores";
     }
-    @GetMapping("/edit")
-    public String editMatchScore (@RequestParam("id") ObjectId id, Model model){
 
-        Optional<MatchScore> matchScoreOptional = matchScoreRepository.findById(id);
+    @GetMapping("/edit")
+    public String editMatchScore (@RequestParam("id") String id, Model model){
+
+        Optional<MatchScore> matchScoreOptional = matchScoreRepository.findByRecordId(id);
         if (matchScoreOptional.isPresent()) {
             MatchScore matchScore = matchScoreOptional.get();
             MatchScoreForm matchScoreForm = modelMapper.map(matchScore, MatchScoreForm.class);
@@ -77,6 +78,11 @@ public class MatchScoreController {
         }
 
         matchScoreRepository.save(matchScore);
+        if(matchScore.getRecordId()==null)
+        {
+            matchScore.setRecordId(String.valueOf(matchScore.getId().getTimestamp()));
+        }
+        matchScoreRepository.save(matchScore);
         model.addAttribute("editForm", matchScoreForm);
 
         return "redirect:/matches/matchScore";
@@ -97,7 +103,7 @@ public class MatchScoreController {
     @GetMapping("/delete")
     public String deleteTeam(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            matchScoreRepository.deleteById(new ObjectId(id));
+            matchScoreRepository.deleteByRecordId(id);
         }
         return "redirect:/matches/matchScore";
     }

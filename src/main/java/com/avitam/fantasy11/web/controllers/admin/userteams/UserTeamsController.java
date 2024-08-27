@@ -33,12 +33,12 @@ public class UserTeamsController {
     @GetMapping
     public String getAllUserTeams(Model model) {
         model.addAttribute("models", userTeamsRepository.findAll().stream().filter(userTeam -> userTeam.getId() != null).collect(Collectors.toList()));
-             return "userTeams/userTeam";
+        return "userTeams/userTeam";
     }
 
     @ResponseBody
     @GetMapping("/getPlayersByMatchId/{matchId}")
-    public Map<Integer,List<String>> getMatchDetails(@PathVariable String matchId){
+    public Map<Integer,List<String>> getMatchDetails(@PathVariable String matchId, Model model){
         Map<Integer, List<String>> userTeamPlayers = new HashMap<>();
 
         List<Player> playersList1 = new ArrayList<>();
@@ -67,16 +67,30 @@ public class UserTeamsController {
             playersName.add(player.getName());
         }
 
+        model.addAttribute("playerIds", playersId);
+        model.addAttribute("playerNames", playersName);
+
         userTeamPlayers.put(1, playersId);
         userTeamPlayers.put(2, playersName);
 
         return userTeamPlayers;
     }
 
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<UserTeams> userTeams=userTeamsRepository.findAll();
+        for(UserTeams userTeams1:userTeams)
+        {
+            userTeams1.setRecordId(String.valueOf(userTeams1.getId().getTimestamp()));
+            userTeamsRepository.save(userTeams1);
+        }
+    }
+
     @GetMapping("/edit")
     public String editUserTeams(@RequestParam("id") String id, Model model) {
 
-        Optional<UserTeams> userTeamsOptional = userTeamsRepository.findById(id);
+        Optional<UserTeams> userTeamsOptional = userTeamsRepository.findByRecordId(id);
         if (userTeamsOptional.isPresent()) {
 
             UserTeams userTeams = userTeamsOptional.get();
@@ -99,7 +113,7 @@ public class UserTeamsController {
             model.addAttribute("editForm",userTeamsForm);
             return "userTeams/edit";
         }
-            userTeamsForm.setLastModified(new Date());
+        userTeamsForm.setLastModified(new Date());
 
         if (userTeamsForm.getId() == null) {
             userTeamsForm.setCreationTime(new Date());
@@ -118,6 +132,11 @@ public class UserTeamsController {
             userTeams.setMatchId(String.valueOf(matchesOptional.get().getId()));
         }
 
+        userTeamsRepository.save(userTeams);
+        if(userTeams.getRecordId()==null)
+        {
+            userTeams.setRecordId(String.valueOf(userTeams.getId().getTimestamp()));
+        }
         userTeamsRepository.save(userTeams);
         model.addAttribute("editForm", userTeamsForm);
         return "redirect:/admin/userTeams";
@@ -139,7 +158,7 @@ public class UserTeamsController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-             userTeamsRepository.deleteById(new ObjectId(id));
+            userTeamsRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/userTeams";
     }

@@ -28,10 +28,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void updateByRecordId(String recordId) {
         Optional<Address>  addressOptional=addressRepository.findByRecordId(recordId);
-        if(addressOptional.isPresent())
-        {
-            addressRepository.save(addressOptional.get());
-        }
+        addressOptional.ifPresent(address -> addressRepository.save(address));
     }
 
 

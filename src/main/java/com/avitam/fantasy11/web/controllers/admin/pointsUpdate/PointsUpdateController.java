@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class PointsUpdateController {
     @GetMapping("/edit")
     public String editPointsUpdate(@RequestParam("id") String id, Model model) {
 
-        Optional<PointsUpdate> pointsUpdateOptional = pointsUpdateRepository.findById(id);
+        Optional<PointsUpdate> pointsUpdateOptional = pointsUpdateRepository.findByRecordId(id);
 
         if (pointsUpdateOptional.isPresent()) {
             PointsUpdate pointsUpdate = pointsUpdateOptional.get();
@@ -55,6 +56,8 @@ public class PointsUpdateController {
 
         return "pointsUpdate/edit";
     }
+
+
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm")  PointsUpdateForm pointsUpdateForm, Model model, BindingResult result) {
@@ -86,6 +89,11 @@ public class PointsUpdateController {
         }
 
         pointsUpdateRepository.save(pointsUpdate);
+        if(pointsUpdate.getRecordId()==null)
+        {
+            pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));
+        }
+        pointsUpdateRepository.save(pointsUpdate);
         model.addAttribute("editForm", pointsUpdateForm);
         return "redirect:/admin/pointsUpdate";
     }
@@ -107,7 +115,7 @@ public class PointsUpdateController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            pointsUpdateRepository.deleteById(new ObjectId(id));
+            pointsUpdateRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/pointsUpdate";
     }

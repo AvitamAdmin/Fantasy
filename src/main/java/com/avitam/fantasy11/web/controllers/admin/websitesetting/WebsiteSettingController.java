@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
+package com.avitam.fantasy11.web.controllers.admin.websitesetting;
 
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.WebsiteSetting;
@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +23,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Controller
-@RequestMapping("/settings/websitesetting")
+@RequestMapping("/admin/websitesetting")
 public class WebsiteSettingController {
 
     @Autowired
@@ -43,10 +42,21 @@ public class WebsiteSettingController {
         return "websitesetting/websitesettings";
     }
 
+    @GetMapping("/migrate")
+    public  void migrate()
+    {
+        List<WebsiteSetting> websiteSettings=websiteSettingRepository.findAll();
+        for(WebsiteSetting websiteSetting:websiteSettings)
+        {
+            websiteSetting.setRecordId(String.valueOf(websiteSetting.getId().getTimestamp()));
+            websiteSettingRepository.save(websiteSetting);
+        }
+    }
+
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
 
-        Optional<WebsiteSetting> websiteSettingOptional = websiteSettingRepository.findById(id);
+        Optional<WebsiteSetting> websiteSettingOptional = websiteSettingRepository.findByRecordId(id);
         if (websiteSettingOptional.isPresent()) {
             WebsiteSetting websitesetting = websiteSettingOptional.get();
             WebsiteSettingForm websiteSettingForm = modelMapper.map(websitesetting, WebsiteSettingForm.class);
@@ -87,9 +97,14 @@ public class WebsiteSettingController {
             websitesetting.setFaviconUrl("favicon.png");
         }
         websiteSettingRepository.save(websitesetting);
+        if(websitesetting.getRecordId()==null)
+        {
+            websitesetting.setRecordId(String.valueOf(websitesetting.getId().getTimestamp()));
+        }
+        websiteSettingRepository.save(websitesetting);
         model.addAttribute("editForm", websiteSettingForm);
 
-        return "redirect:/settings/websitesetting";
+        return "redirect:/admin/websitesetting";
     }
 
     @GetMapping("/add")
@@ -109,6 +124,6 @@ public class WebsiteSettingController {
         for (String id : ids.split(",")) {
             websiteSettingRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/settings/websitesetting";
+        return "redirect:/admin/websitesetting";
     }
 }

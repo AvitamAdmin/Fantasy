@@ -46,10 +46,22 @@ public class PlayerController {
         model.addAttribute("models", datas);
         return "player/players";
     }
+
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<Player> playerList=playerRepository.findAll();
+        for(Player player:playerList)
+        {
+            player.setRecordId(String.valueOf(player.getId().getTimestamp()));
+            playerRepository.save(player);
+        }
+    }
+
     @GetMapping("/edit")
     public String editPlayer(@RequestParam("id")String id, Model model){
 
-        Optional<Player> playerOptional = playerRepository.findById(id);
+        Optional<Player> playerOptional = playerRepository.findByRecordId(id);
         if (playerOptional.isPresent()) {
             Player player = playerOptional.get();
 
@@ -105,6 +117,11 @@ public class PlayerController {
         }
 
         playerRepository.save(player);
+        if(player.getRecordId()==null)
+        {
+            player.setRecordId(String.valueOf(player.getId().getTimestamp()));
+        }
+        playerRepository.save(player);
         model.addAttribute("editForm", playerForm);
 
         return "redirect:/admin/player";
@@ -125,7 +142,7 @@ public class PlayerController {
     @GetMapping("/delete")
     public String deletePlayer(@RequestParam("id") String ids, Model model) {
        for (String id : ids.split(",")) {
-            playerRepository.deleteById(new ObjectId(id));
+            playerRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/player";
     }

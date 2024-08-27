@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -34,8 +35,8 @@ public class AddressController {
     }
 
     @GetMapping("/edit")
-    public String editAddress(@RequestParam("id") ObjectId id, Model model) {
-        Optional<Address> addressOptional = addressRepository.findById(id);
+    public String editAddress(@RequestParam("id") String id, Model model) {
+        Optional<Address> addressOptional = addressRepository.findByRecordId(id);
         if (addressOptional.isPresent()) {
             Address address = addressOptional.get();
             AddressForm addressForm = modelMapper.map(address, AddressForm.class);
@@ -43,6 +44,8 @@ public class AddressController {
         }
         return "address/edit";
     }
+
+
 
     @PostMapping("/edit")
     public String handleEdit(@ModelAttribute("editForm") AddressForm addressForm, Model model, BindingResult result) {
@@ -65,6 +68,11 @@ public class AddressController {
         }
 
         addressRepository.save(address);
+        if(address.getRecordId()==null)
+        {
+            address.setRecordId(String.valueOf(address.getId().getTimestamp()));
+        }
+        addressRepository.save(address);
         model.addAttribute("editForm", addressForm);
         return "redirect:/admin/address";
     }
@@ -84,7 +92,7 @@ public class AddressController {
     @GetMapping("/delete")
     public String deleteAddress(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-        addressRepository.deleteById(new ObjectId(id));
+        addressRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/address";
     }

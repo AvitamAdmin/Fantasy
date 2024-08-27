@@ -20,7 +20,7 @@
               <tbody>
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
-                        <td class="td-sm">${model.id}</td>
+                        <td class="td-sm">${model.recordId}</td>
                         <td class="td-sm">${model.userId}</td>
                         <td class="td-sm">${model.matchId}</td>
                         <td class="td-sm">${model.userTeamId}</td>

@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.mainContest;
 
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.ContestForm;
 import com.avitam.fantasy11.form.MainContestForm;
 import com.avitam.fantasy11.model.Contest;
-import com.avitam.fantasy11.model.ContestRepository;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.model.MainContestRepository;
 import org.bson.types.ObjectId;
@@ -16,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,9 +35,11 @@ public class MainContestController {
         return "mainContest/mainContests";
     }
 
+
+
     @GetMapping("/edit")
     public String editContest(@RequestParam("id") String id, Model model) {
-        Optional<MainContest> mainContestOptional = mainContestRepository.findById(id);
+        Optional<MainContest> mainContestOptional = mainContestRepository.findByRecordId(id);
         if (mainContestOptional.isPresent()) {
             MainContest mainContest = mainContestOptional.get();
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
@@ -75,6 +76,11 @@ public class MainContestController {
         }
 
         mainContestRepository.save(mainContest);
+        if(mainContest.getRecordId()==null)
+        {
+            mainContest.setRecordId(String.valueOf(mainContest.getId().getTimestamp()));
+        }
+        mainContestRepository.save(mainContest);
         model.addAttribute("editForm", mainContestForm);
         return "redirect:/admin/mainContest";
     }
@@ -94,7 +100,7 @@ public class MainContestController {
     public String deleteContest(@RequestParam("id") String ids, Model model) {
 
         for (String id : ids.split(",")) {
-           mainContestRepository.deleteById(new ObjectId(id));
+           mainContestRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/mainContest";
     }

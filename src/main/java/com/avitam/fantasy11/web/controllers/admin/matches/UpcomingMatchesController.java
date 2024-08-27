@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,7 +76,7 @@ public class UpcomingMatchesController {
     @GetMapping("/edit")
     public String editMatches(@RequestParam("id") String id, Model model) {
 
-        Optional<Matches> matchesOptional = matchesRepository.findById(id);
+        Optional<Matches> matchesOptional = matchesRepository.findByRecordId(id);
         if (matchesOptional.isPresent()) {
             Matches matches = matchesOptional.get();
 
@@ -157,6 +156,11 @@ public class UpcomingMatchesController {
         }
 
         matchesRepository.save(matches);
+        if(matches.getRecordId()==null)
+        {
+            matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
+        }
+        matchesRepository.save(matches);
         model.addAttribute("editForm", matchesForm);
         return "redirect:/admin/matches";
     }
@@ -181,7 +185,7 @@ public class UpcomingMatchesController {
     @GetMapping("/delete")
     public String deleteMatches(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            matchesRepository.deleteById(new ObjectId(id));
+            matchesRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/matches";
     }

@@ -42,7 +42,7 @@ public class UserWinningsController {
     @GetMapping("/edit")
     public String editUserWinnings(@RequestParam("id") String id,Model model){
 
-        Optional<UserWinnings> userWinningsOptional = userWinningsRepository.findById(id);
+        Optional<UserWinnings> userWinningsOptional = userWinningsRepository.findByRecordId(id);
         if (userWinningsOptional.isPresent()) {
             UserWinnings userWinnings = userWinningsOptional.get();
 
@@ -91,6 +91,11 @@ public class UserWinningsController {
         }
 
         userWinningsRepository.save(userWinnings);
+        if(userWinnings.getRecordId()==null)
+        {
+            userWinnings.setRecordId(String.valueOf(userWinnings.getId().getTimestamp()));
+        }
+        userWinningsRepository.save(userWinnings);
         model.addAttribute("editForm", userWinningsForm);
         return "redirect:/admin/userWinnings";
     }
@@ -111,7 +116,7 @@ public class UserWinningsController {
     @GetMapping("/delete")
     public String deleteUserWinnings(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            userWinningsRepository.deleteById(new ObjectId(id));
+            userWinningsRepository.deleteByRecordId(id);
         }
         return "redirect:/admin/userWinnings";
     }

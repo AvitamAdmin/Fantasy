@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.core.Utility;
+import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
 import com.avitam.fantasy11.form.UserForm;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.SecurityService;
@@ -19,9 +20,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
 import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -30,12 +36,17 @@ public class SecurityController {
 
     @Autowired
     private UserService userService;
+
     @Autowired
     private UserValidator userValidator;
+
     @Autowired
     private SecurityService securityService;
+
+
     @Autowired
     ApplicationEventPublisher eventPublisher;
+
     @Autowired
     private MailService mailService;
 
@@ -73,7 +84,7 @@ public class SecurityController {
         EMail eMail = new EMail();
 
         //eMail.setFrom("healthcheck@cheil.com");
-        //eMail.setTo(recipientEmail);
+        eMail.setTo(recipientEmail);
 
         String subject = "Here's the link to reset your password";
 
@@ -146,7 +157,7 @@ public class SecurityController {
     @PostMapping("/register")
     public String processRegister(HttpServletRequest request, @ModelAttribute("userForm") User user, BindingResult bindingResultUser, Model model) {
         userValidator.validate(user, bindingResultUser);
-        if (bindingResultUser.hasErrors()) {
+        if (bindingResultUser.hasErrors()){
             model.addAttribute("userForm", new User());
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("message", bindingResultUser);
@@ -155,6 +166,7 @@ public class SecurityController {
         user.setStatus(true);
         userService.save(user);
         String appUrl = Utility.getSiteURL(request);
+     //   eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getEmail() + " as registered, Kindly approve the same by clicking the link below", "hybris.sup@cheil.com", "1"));
         model.addAttribute("message", "You have signed up successfully! We will notify once account is approved");
         return "security/signupSuccessForm";
     }
