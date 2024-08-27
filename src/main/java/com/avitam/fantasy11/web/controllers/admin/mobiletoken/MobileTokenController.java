@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.mobileToken;
 
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.form.InterfaceForm;
 import com.avitam.fantasy11.form.MobileTokenForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.validation.InterfaceFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class MobileTokenController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,String id, User user, Model model) {
+    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,ObjectId id, User user, Model model) {
 
       Optional<MobileToken> mobileOptional = mobileTokenRepository.findById(id);
         if (mobileOptional.isPresent()) {
