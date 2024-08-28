@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) {
         User user = userRepository.findByEmail(email);
-        if (user == null || !user.getStatus()) throw new UsernameNotFoundException(email);
+        //if (user == null || !user.getStatus()) throw new UsernameNotFoundException(email);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);

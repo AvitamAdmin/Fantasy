@@ -42,18 +42,8 @@ public class ExtensionController {
         return "extension/extensions";
     }
 
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<Extension> extensions=extensionRepository.findAll();
-        for(Extension extension:extensions)
-        {
-            extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
-            extensionRepository.save(extension);
-        }
-    }
     @GetMapping("/edit")
-    public String editPlayer(@RequestParam("id")String id, Model model){
+    public String edit(@RequestParam("id")String id, Model model){
 
         Optional<Extension> extensionOptional = extensionRepository.findByRecordId(id);
         if (extensionOptional.isPresent()) {
@@ -78,7 +68,7 @@ public class ExtensionController {
         if (result.hasErrors()) {
             model.addAttribute("message", result);
             model.addAttribute("editForm", extensionForm);
-            return "player/edit";
+            return "extension/edit";
         }
 
         byte[] fig= extensionForm.getImage().getBytes();
@@ -97,7 +87,7 @@ public class ExtensionController {
         }
         extension.setImage(binary);
 
-        extensionRepository.save(extension);
+
         if(extension.getRecordId()==null)
         {
             extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
@@ -105,11 +95,11 @@ public class ExtensionController {
         extensionRepository.save(extension);
         model.addAttribute("editForm", extensionForm);
 
-        return "redirect:/settings/extension";
+        return "redirect:/admin/extension";
     }
 
     @GetMapping("/add")
-    public String addPlayer(Model model) {
+    public String add(Model model) {
         ExtensionForm form = new ExtensionForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
@@ -119,11 +109,11 @@ public class ExtensionController {
         return "extension/edit";
     }
     @GetMapping("/delete")
-    public String deletePlayer(@RequestParam("id") String ids, Model model) {
+    public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
             extensionRepository.deleteByRecordId(id);
         }
-        return "redirect:/settings/extension";
+        return "redirect:/admin/extension";
     }
 }
 

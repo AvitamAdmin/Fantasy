@@ -39,7 +39,7 @@ public class SportAPIController {
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
 
-        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findById(id);
+        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findByRecordId(id);
         if (sportsApiOptional.isPresent()) {
             SportsApi sportsApi =sportsApiOptional.get();
 
@@ -62,14 +62,14 @@ public class SportAPIController {
         }
         SportsApi sportsApi = modelMapper.map(sportsApiForm, SportsApi.class);
 
-        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findById(sportsApiForm.getId());
+        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findByRecordId(sportsApiForm.getId());
         if(sportsApiOptional.isPresent()){
             sportsApi.setId(sportsApiOptional.get().getId());
         }
 
         sportsApiRepository.save(sportsApi);
         model.addAttribute("editForm", sportsApiForm);
-        return "redirect:/settings/sportsApi";
+        return "redirect:/admin/sportsApi";
     }
 
     @GetMapping("/add")
@@ -87,8 +87,8 @@ public class SportAPIController {
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
 
-            sportsApiRepository.deleteById(new ObjectId(id));
+            sportsApiRepository.deleteByRecordId(id);
         }
-        return "redirect:/settings/sportsApi";
+        return "redirect:/admin/sportsApi";
     }
 }

@@ -64,7 +64,7 @@ public class GeneralController {
         }
         generalRepository.save(general);
         model.addAttribute("editForm", generalForm);
-        return "redirect:/home";
+        return "redirect:/admin/general";
     }
 
 }

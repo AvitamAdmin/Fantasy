@@ -72,7 +72,7 @@ public class LanguageController {
         }
         Language language = modelMapper.map(languageForm, Language.class);
 
-        Optional<Language> languageOptional = languageRepository.findById(languageForm.getId());
+        Optional<Language> languageOptional = languageRepository.findByRecordId(languageForm.getId());
         if(languageOptional.isPresent()){
             language.setId(languageOptional.get().getId());
         }
@@ -84,7 +84,7 @@ public class LanguageController {
         }
         languageRepository.save(language);
         model.addAttribute("editForm", languageForm);
-        return "redirect:/settings/language";
+        return "redirect:/admin/language";
     }
 
     @GetMapping("/add")
@@ -104,6 +104,6 @@ public class LanguageController {
 
             languageRepository.deleteByRecordId(id);
         }
-        return "redirect:/settings/language";
+        return "redirect:/admin/language";
     }
 }

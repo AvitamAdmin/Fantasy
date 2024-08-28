@@ -45,7 +45,7 @@ public class SEOController {
     @GetMapping("/edit")
         public String edit(@RequestParam("id")String id, Model model){
 
-        Optional<SEO> seoOptional = seoRepository.findById(id);
+        Optional<SEO> seoOptional = seoRepository.findByRecordId(id);
         if (seoOptional.isPresent()) {
             SEO seo = seoOptional.get();
 
@@ -85,7 +85,7 @@ public class SEOController {
         seo.setImage(binary);
         seoRepository.save(seo);
         model.addAttribute("editForm", seoForm);
-        return "redirect:/settings/seo";
+        return "redirect:/admin/seo";
     }
 
     @GetMapping("/add")
@@ -102,9 +102,9 @@ public class SEOController {
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
 
-            seoRepository.deleteById(new ObjectId(id));
+            seoRepository.deleteByRecordId(id);
         }
-        return "redirect:/settings/seo";
+        return "redirect:/admin/seo";
     }
 
 }
