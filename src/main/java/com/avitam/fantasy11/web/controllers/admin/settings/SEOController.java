@@ -2,11 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.SEOForm;
-import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.model.SEORepository;
 import org.bson.types.Binary;
-import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +40,17 @@ public class SEOController {
         model.addAttribute("models",datas);
         return "seo/seos";
     }
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<SEO> languageList=seoRepository.findAll();
+        for(SEO language:languageList)
+        {
+            language.setRecordId(String.valueOf(language.getId().getTimestamp()));
+            seoRepository.save(language);
+        }
+    }
+
     @GetMapping("/edit")
         public String edit(@RequestParam("id")String id, Model model){
 

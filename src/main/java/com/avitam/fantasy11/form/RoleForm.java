@@ -16,8 +16,7 @@ import java.util.Set;
 @ToString
 public class RoleForm extends BaseForm implements Serializable {
 
-    private String roleId;
-    private  int ids;
+    private int roleId;
     private Set<User> users;
     private Set<Node> permissions;
 }
