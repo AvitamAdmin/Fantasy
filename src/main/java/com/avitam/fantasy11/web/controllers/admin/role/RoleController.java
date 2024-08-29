@@ -81,7 +81,7 @@ public class RoleController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         if (roleForm.getId() != null) {
-            Optional<Role> optionalRole = roleRepository.findById(roleForm.getId());
+            Optional<Role> optionalRole = roleRepository.findByRecordId(roleForm.getId());
             if (optionalRole.isPresent()) {
                 role = optionalRole.get();
                 role.setName(roleForm.getName());
