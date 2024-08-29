@@ -91,7 +91,7 @@ public class RoleController {
             role.setCreationTime(new Date());
         }
         role.setLastModified(new Date());
-        role.setRoleId(roleForm.getRoleId());
+        role.setRoleId(Integer.parseInt(roleForm.getRoleId()));
         role.setCreator(principalObject.getUsername());
         roleRepository.save(role);
         if(role.getRecordId()==null)

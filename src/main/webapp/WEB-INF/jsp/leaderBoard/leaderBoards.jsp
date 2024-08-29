@@ -23,11 +23,11 @@
                   <c:forEach items="${models}" var="model">
                     <tr id="${model.id}">
                         <td class="td-sm">${model.recordId}</td>
-                        <td class="th-sm">${model.userId}</td>
-                        <td class="th-sm">${model.tournamentId}</td>
-                        <td class="th-sm">${model.matchesPlayed}</td>
-                        <td class="th-sm">${model.rank}</td>
-                        <td class="th-sm">Rs.${model.bonusAmount}</td>
+                        <td class="td-sm">${model.userId}</td>
+                        <td class="td-sm">${model.tournamentId}</td>
+                        <td class="td-sm">${model.matchesPlayed}</td>
+                        <td class="td-sm">${model.rank}</td>
+                        <td class="td-sm">Rs.${model.bonusAmount}</td>
                      </tr>
                  </c:forEach>
              </tbody>

@@ -90,4 +90,17 @@ public class DepositsLogController {
         }
         return "redirect:/deposit/depositLog";
     }
+
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<Deposits> depositsList=depositsRepository.findAll();
+        for(Deposits deposits:depositsList)
+        {
+            deposits.setRecordId(String.valueOf(deposits.getId().getTimestamp()));
+            depositsRepository.save(deposits);
+
+        }
+    }
+
 }
