@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("/SportAPI")
+@Document("SportAPI")
 public class SportsApi extends BaseEntity{
 
     private String host;
