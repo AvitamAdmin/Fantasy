@@ -40,12 +40,13 @@ public class MatchTypeController {
     }
 
     @GetMapping("/edit")
-    public String editTournament (@RequestParam("id") String id, Model model){
+    public String edit (@RequestParam("id") String id, Model model){
 
         Optional<MatchType> matchTypeOptional = matchTypeRepository.findByRecordId(id);
         if (matchTypeOptional.isPresent()) {
             MatchType matchType= matchTypeOptional.get();
             MatchTypeForm matchTypeForm= modelMapper.map(matchType, MatchTypeForm.class);
+            matchTypeForm.setId(String.valueOf(matchType.getId()));
             model.addAttribute("editForm", matchTypeForm);
         }
         return "matchType/edit";
@@ -81,11 +82,11 @@ public class MatchTypeController {
         matchTypeRepository.save(matchType);
         model.addAttribute("editForm", matchTypeForm);
 
-        return "redirect:/matches/matchType";
+        return "redirect:/admin/matchType";
     }
 
     @GetMapping("/add")
-    public String addMatchType(Model model) {
+    public String add(Model model) {
         MatchTypeForm form = new MatchTypeForm();
         form.setCreationTime(new Date());
         form.setLastModified(new Date());
@@ -95,10 +96,10 @@ public class MatchTypeController {
         return "matchType/edit";
     }
     @GetMapping("/delete")
-    public String deleteMatchType(@RequestParam("id") String ids, Model model) {
+    public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
             matchTypeRepository.deleteByRecordId(id);
         }
-        return "redirect:/matches/matchType";
+        return "redirect:/admin/matchType";
     }
 }

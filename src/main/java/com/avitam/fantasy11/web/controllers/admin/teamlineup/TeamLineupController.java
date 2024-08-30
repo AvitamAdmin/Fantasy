@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.teamLineup;
+package com.avitam.fantasy11.web.controllers.admin.teamlineup;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.TeamLineUpForm;
@@ -36,24 +36,17 @@ public class TeamLineupController {
         return "teamLineup/teamLineups";
     }
 
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<TeamLineup> teamLineups=teamLineupRepository.findAll();
-        for(TeamLineup teamLineup:teamLineups)
-        {
-            teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
-            teamLineupRepository.save(teamLineup);
-        }
-    }
-
     @GetMapping("/edit")
     public String editTeamLineup (@RequestParam("id") String id, Model model){
 
         Optional<TeamLineup> teamLineUpOptional = teamLineupRepository.findByRecordId(id);
         if (teamLineUpOptional.isPresent()) {
             TeamLineup teamLineUp = teamLineUpOptional.get();
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             TeamLineUpForm teamLineUpForm = modelMapper.map(teamLineUp, TeamLineUpForm.class);
+            teamLineUpForm.setId(String.valueOf(teamLineUp.getId()));
+
             model.addAttribute("editForm", teamLineUpForm);
             model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
             model.addAttribute("players",playerRepository.findAll().stream().filter(player ->player.getId()!=null).collect(Collectors.toList()));

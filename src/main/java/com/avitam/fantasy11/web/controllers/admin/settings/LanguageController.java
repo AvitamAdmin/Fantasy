@@ -35,25 +35,14 @@ public class LanguageController {
         return "language/languages";
     }
 
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<Language> languageList=languageRepository.findAll();
-        for(Language language:languageList)
-        {
-            language.setRecordId(String.valueOf(language.getId().getTimestamp()));
-            languageRepository.save(language);
-        }
-    }
-
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
 
         Optional<Language> languageOptional = languageRepository.findByRecordId(id);
         if (languageOptional.isPresent()) {
             Language language =languageOptional.get();
-
             LanguageForm languageForm = modelMapper.map(language, LanguageForm.class);
+            languageForm.setId(String.valueOf(language.getId()));
             model.addAttribute("editForm", languageForm);
         }
         return "language/edit";
@@ -72,7 +61,7 @@ public class LanguageController {
         }
         Language language = modelMapper.map(languageForm, Language.class);
 
-        Optional<Language> languageOptional = languageRepository.findByRecordId(languageForm.getId());
+        Optional<Language> languageOptional = languageRepository.findById(languageForm.getId());
         if(languageOptional.isPresent()){
             language.setId(languageOptional.get().getId());
         }

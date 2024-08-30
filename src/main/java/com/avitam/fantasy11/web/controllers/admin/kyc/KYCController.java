@@ -51,6 +51,7 @@ public class KYCController {
         Optional<KYC> kycOptional = kycRepository.findByRecordId(id);
         if (kycOptional.isPresent()) {
             KYC kyc = kycOptional.get();
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             KYCForm kycForm = modelMapper.map(kyc, KYCForm.class);
             kycForm.setId(String.valueOf(kyc.getId()));
             model.addAttribute("editForm", kycForm);

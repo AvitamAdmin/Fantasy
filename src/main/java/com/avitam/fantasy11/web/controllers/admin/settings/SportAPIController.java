@@ -42,6 +42,7 @@ public class SportAPIController {
             SportsApi sportsApi =sportsApiOptional.get();
 
             SportsApiForm sportsApiForm = modelMapper.map(sportsApi, SportsApiForm.class);
+            sportsApiForm.setId(String.valueOf(sportsApi.getId()));
             model.addAttribute("editForm", sportsApiForm);
         }
         return "sportsApi/edit";

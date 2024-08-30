@@ -45,6 +45,7 @@ public class NotificationController {
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
             NotificationForm notificationForm = modelMapper.map(notification, NotificationForm.class);
+            notificationForm.setId(String.valueOf(notification.getId()));
             model.addAttribute("editForm", notificationForm);
         }
         return "notification/edit";

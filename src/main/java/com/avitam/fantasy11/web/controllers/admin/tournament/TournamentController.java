@@ -38,17 +38,6 @@ public class TournamentController {
         return "tournament/tournaments";
     }
 
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<Tournament> tournaments=tournamentRepository.findAll();
-        for(Tournament tournament:tournaments)
-        {
-            tournament.setRecordId(String.valueOf(tournament.getId().getTimestamp()));
-            tournamentRepository.save(tournament);
-        }
-    }
-
     @GetMapping("/edit")
     public String editTournament (@RequestParam("id") String id, Model model){
 
@@ -57,7 +46,6 @@ public class TournamentController {
             Tournament tournament = tournamentOptional.get();
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             TournamentForm tournamentForm = modelMapper.map(tournament, TournamentForm.class);
-            tournamentForm.setId(String.valueOf(tournament.getId()));
             tournamentForm.setId(String.valueOf(tournament.getId()));
             model.addAttribute("editForm", tournamentForm);
             model.addAttribute("sportTypes",sportTypeRepository.findAll());
@@ -99,7 +87,7 @@ public class TournamentController {
         tournamentRepository.save(tournament);
         model.addAttribute("editForm", tournamentForm);
 
-        return "redirect:/matches/tournament";
+        return "redirect:/admin/tournament";
     }
 
     @GetMapping("/add")
@@ -119,6 +107,6 @@ public class TournamentController {
         for (String id : ids.split(",")) {
             tournamentRepository.deleteByRecordId(id);
         }
-        return "redirect:/matches/tournament";
+        return "redirect:/admin/tournament";
     }
 }

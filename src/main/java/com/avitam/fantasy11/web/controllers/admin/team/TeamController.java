@@ -45,17 +45,6 @@ public class TeamController {
         model.addAttribute("models", datas);
         return "team/teams";
     }
-
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<Team> teams=teamRepository.findAll();
-        for(Team team:teams)
-        {
-            team.setRecordId(String.valueOf(team.getId().getTimestamp()));
-            teamRepository.save(team);
-        }
-    }
     @GetMapping("/edit")
     public String editTeam (@RequestParam("id")String id, Model model){
 
@@ -63,6 +52,7 @@ public class TeamController {
         if (teamOptional.isPresent()) {
             Team team = teamOptional.get();
             TeamForm teamForm = modelMapper.map(team, TeamForm.class);
+            teamForm.setId(String.valueOf(team.getId()));
             model.addAttribute("editForm", teamForm);
         }
         return "team/edit";

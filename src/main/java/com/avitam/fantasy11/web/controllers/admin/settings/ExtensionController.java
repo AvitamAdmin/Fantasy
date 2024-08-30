@@ -52,11 +52,6 @@ public class ExtensionController {
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             ExtensionForm extensionForm = modelMapper.map(extension, ExtensionForm.class);
             extensionForm.setId(String.valueOf(extension.getId()));
-
-            byte[] image = extension.getImage().getData();
-            extension.setPic(Base64.getEncoder().encodeToString(image));
-            extensionForm.setPic(extension.getPic());
-
             model.addAttribute("editForm", extensionForm);
         }
         return "extension/edit";
@@ -87,7 +82,7 @@ public class ExtensionController {
         }
         extension.setImage(binary);
 
-
+        extensionRepository.save(extension);
         if(extension.getRecordId()==null)
         {
             extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));

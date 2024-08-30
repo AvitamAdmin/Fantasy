@@ -40,6 +40,7 @@ public class ScriptController {
         if (scriptOptional.isPresent()) {
             Script script = scriptOptional.get();
             ScriptForm scriptForm = modelMapper.map(script, ScriptForm.class);
+            scriptForm.setId(String.valueOf(script.getId()));
             model.addAttribute("editForm", scriptForm);
         }
         return "advertise/scriptEdit";
