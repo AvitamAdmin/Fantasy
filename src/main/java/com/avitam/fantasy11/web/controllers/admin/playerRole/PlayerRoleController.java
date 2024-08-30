@@ -40,6 +40,7 @@ public class PlayerRoleController {
         if (playerRoleFormOptional.isPresent()) {
             PlayerRole playerRole = playerRoleFormOptional.get();
             PlayerRoleForm playerRoleForm = modelMapper.map(playerRole, PlayerRoleForm.class);
+            playerRoleForm.setId(String.valueOf(playerRole.getId()));
             model.addAttribute("editForm", playerRoleForm);
         }
         return "playerRole/edit";

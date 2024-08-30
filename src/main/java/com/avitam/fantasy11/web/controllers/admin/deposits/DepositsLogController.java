@@ -34,7 +34,7 @@ public class DepositsLogController {
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
 
-        Optional<Deposits> depositsLogOptional = depositsRepository.findById((id));
+        Optional<Deposits> depositsLogOptional = depositsRepository.findByRecordId((id));
         if (depositsLogOptional.isPresent()) {
             Deposits depositsLog = depositsLogOptional.get();
 
@@ -66,6 +66,11 @@ public class DepositsLogController {
         }
 
         depositsRepository.save(depositLog);
+        if(depositLog.getRecordId()==null){
+            depositLog.setRecordId(String.valueOf(depositLog.getId().getTimestamp()));
+        }
+
+        depositsRepository.save(depositLog);
         model.addAttribute("editForm", depositsForm);
         return "redirect:/deposit/depositLog";
     }
@@ -86,7 +91,7 @@ public class DepositsLogController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            depositsRepository.deleteById(new ObjectId(id));
+            depositsRepository.deleteByRecordId(id);
         }
         return "redirect:/deposit/depositLog";
     }

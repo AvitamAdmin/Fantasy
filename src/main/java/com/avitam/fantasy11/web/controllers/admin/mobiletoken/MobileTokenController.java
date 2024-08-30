@@ -1,4 +1,4 @@
-package com.avitam.fantasy11.web.controllers.admin.mobileToken;
+package com.avitam.fantasy11.web.controllers.admin.mobiletoken;
 
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.MobileTokenForm;
@@ -36,15 +36,14 @@ public class MobileTokenController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") MobileTokenForm mobileTokenForm,String id, User user, Model model) {
+    public String editMobileToken(@RequestParam("id") String id, Model model) {
 
       Optional<MobileToken> mobileOptional = mobileTokenRepository.findByRecordId(id);
         if (mobileOptional.isPresent()) {
         MobileToken mobileToken = mobileOptional.get();
-        mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
+        MobileTokenForm mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
         model.addAttribute("editForm", mobileTokenForm);
         }
-        model.addAttribute("user", userRepository.findByEmail(coreService.getCurrentUser().getEmail()));
           return "mobileToken/edit";
     }
 
@@ -61,9 +60,9 @@ public class MobileTokenController {
             mobileTokenForm.setCreator(coreService.getCurrentUser().getEmail());
         }
         MobileToken mobileToken=modelMapper.map(mobileTokenForm,MobileToken.class);
-        Optional<MobileToken> teamOptional=mobileTokenRepository.findById(mobileTokenForm.getId());
-        if(teamOptional.isPresent()){
-            mobileToken.setId(teamOptional.get().getId());
+        Optional<MobileToken> mobileTokenOptional=mobileTokenRepository.findById(mobileTokenForm.getId());
+        if(mobileTokenOptional.isPresent()){
+            mobileToken.setId(mobileTokenOptional.get().getId());
         }
         mobileTokenRepository.save(mobileToken);
         if(mobileToken.getRecordId()==null)

@@ -42,16 +42,6 @@ public class SportsTypeController {
         return "sportType/sportTypes";
     }
 
-    @GetMapping("/migrate")
-    public  void migrate()
-    {
-        List<SportType> sportTypes=sportTypeRepository.findAll();
-        for(SportType sportType:sportTypes)
-        {
-            sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
-            sportTypeRepository.save(sportType);
-        }
-    }
     @GetMapping("/edit")
     public String editSportType (@RequestParam("id") String id, Model model){
 
@@ -59,6 +49,7 @@ public class SportsTypeController {
         if (sportTypeOptional.isPresent()) {
             SportType sportType = sportTypeOptional.get();
             SportTypeForm sportTypeForm = modelMapper.map(sportType, SportTypeForm.class);
+            sportTypeForm.setId(String.valueOf(sportType.getId()));
             model.addAttribute("editForm", sportTypeForm);
         }
         return "sportType/edit";

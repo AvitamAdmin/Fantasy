@@ -3,10 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.LanguageForm;
 import com.avitam.fantasy11.form.SportsApiForm;
-import com.avitam.fantasy11.model.Language;
-import com.avitam.fantasy11.model.LanguageRepository;
-import com.avitam.fantasy11.model.SportsApi;
-import com.avitam.fantasy11.model.SportsApiRepository;
+import com.avitam.fantasy11.model.*;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -44,6 +42,7 @@ public class SportAPIController {
             SportsApi sportsApi =sportsApiOptional.get();
 
             SportsApiForm sportsApiForm = modelMapper.map(sportsApi, SportsApiForm.class);
+            sportsApiForm.setId(String.valueOf(sportsApi.getId()));
             model.addAttribute("editForm", sportsApiForm);
         }
         return "sportsApi/edit";
@@ -62,11 +61,15 @@ public class SportAPIController {
         }
         SportsApi sportsApi = modelMapper.map(sportsApiForm, SportsApi.class);
 
-        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findByRecordId(sportsApiForm.getId());
+        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findById(sportsApiForm.getId());
         if(sportsApiOptional.isPresent()){
             sportsApi.setId(sportsApiOptional.get().getId());
         }
+        sportsApiRepository.save(sportsApi);
 
+        if(sportsApi.getRecordId()==null){
+            sportsApi.setRecordId(String.valueOf(sportsApi.getId().getTimestamp()));
+        }
         sportsApiRepository.save(sportsApi);
         model.addAttribute("editForm", sportsApiForm);
         return "redirect:/admin/sportsApi";

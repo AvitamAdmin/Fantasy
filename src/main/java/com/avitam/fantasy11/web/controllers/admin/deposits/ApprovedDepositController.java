@@ -4,7 +4,6 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.DepositsForm;
 import com.avitam.fantasy11.model.Deposits;
 import com.avitam.fantasy11.model.DepositsRepository;
-import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.UserRepository;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -15,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -40,7 +38,7 @@ public class ApprovedDepositController {
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
 
-        Optional<Deposits> depositsLogOptional = depositsRepository.findById((id));
+        Optional<Deposits> depositsLogOptional = depositsRepository.findByRecordId((id));
         if (depositsLogOptional.isPresent()) {
             Deposits depositsLog = depositsLogOptional.get();
 
@@ -70,7 +68,11 @@ public class ApprovedDepositController {
         if(depositsLogOptional.isPresent()){
             depositLog.setId(depositsLogOptional.get().getId());
         }
+        depositsRepository.save(depositLog);
 
+        if(depositLog.getRecordId()==null){
+            depositLog.setRecordId(String.valueOf(depositLog.getId().getTimestamp()));
+        }
         depositsRepository.save(depositLog);
         model.addAttribute("editForm", depositsForm);
         return "redirect:/deposit/depositLog";
@@ -91,11 +93,9 @@ public class ApprovedDepositController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") String ids, Model model) {
         for (String id : ids.split(",")) {
-            depositsRepository.deleteById(new ObjectId(id));
+            depositsRepository.deleteByRecordId(id);
         }
         return "redirect:/deposit/depositLog";
     }
-
-
 
 }

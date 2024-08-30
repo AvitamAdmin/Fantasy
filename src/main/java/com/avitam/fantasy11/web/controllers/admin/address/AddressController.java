@@ -40,6 +40,7 @@ public class AddressController {
         if (addressOptional.isPresent()) {
             Address address = addressOptional.get();
             AddressForm addressForm = modelMapper.map(address, AddressForm.class);
+            addressForm.setId(String.valueOf(address.getId()));
             model.addAttribute("editForm", addressForm);
         }
         return "address/edit";

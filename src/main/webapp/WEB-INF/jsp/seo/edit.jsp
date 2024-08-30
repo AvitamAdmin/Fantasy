@@ -5,11 +5,11 @@
             <p class="navigation" id="navBreadcrumb">Breadcrumb</p>
         </div>
     </div>
-    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/settings/seo/edit" class="handle-upload" modelAttribute="editForm" >
+    <form:form method="POST" id="editForm" enctype="multipart/form-data" action="/admin/seo/edit" class="handle-upload" modelAttribute="editForm" >
         <div class="row">
             <div class="col-sm-12">
                 <div class="dt-buttons">
-                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/settings/seo')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
+                    <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="javascript:fire_ajax_submit('/admin/seo')" aria-controls="tableData" title="Cancel" type="button">Cancel</button>
                     <button class="btn btn-primary btn-icon btn-icon-small" tabindex="2" onclick="ajaxformSubmit('editForm');" aria-controls="tableData" type="submit" title="Save">Save</button>
                 </div>
             </div>

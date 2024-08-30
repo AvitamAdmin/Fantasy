@@ -40,16 +40,6 @@ public class SEOController {
         model.addAttribute("models",datas);
         return "seo/seos";
     }
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<SEO> languageList=seoRepository.findAll();
-        for(SEO language:languageList)
-        {
-            language.setRecordId(String.valueOf(language.getId().getTimestamp()));
-            seoRepository.save(language);
-        }
-    }
 
     @GetMapping("/edit")
         public String edit(@RequestParam("id")String id, Model model){
@@ -92,6 +82,11 @@ public class SEOController {
             seo.setId(seoOptional.get().getId());
         }
         seo.setImage(binary);
+        seoRepository.save(seo);
+
+        if(seo.getRecordId()==null){
+                        seo.setRecordId(String.valueOf(seo.getId().getTimestamp()));
+        }
         seoRepository.save(seo);
         model.addAttribute("editForm", seoForm);
         return "redirect:/admin/seo";

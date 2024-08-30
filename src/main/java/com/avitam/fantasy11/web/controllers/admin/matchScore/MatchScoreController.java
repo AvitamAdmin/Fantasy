@@ -43,6 +43,8 @@ public class MatchScoreController {
         Optional<MatchScore> matchScoreOptional = matchScoreRepository.findByRecordId(id);
         if (matchScoreOptional.isPresent()) {
             MatchScore matchScore = matchScoreOptional.get();
+
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             MatchScoreForm matchScoreForm = modelMapper.map(matchScore, MatchScoreForm.class);
             matchScoreForm.setId(String.valueOf(matchScore.getId()));
             model.addAttribute("editForm", matchScoreForm);
@@ -85,7 +87,7 @@ public class MatchScoreController {
         matchScoreRepository.save(matchScore);
         model.addAttribute("editForm", matchScoreForm);
 
-        return "redirect:/matches/matchScore";
+        return "redirect:/admin/matchScore";
     }
 
     @GetMapping("/add")
@@ -105,6 +107,6 @@ public class MatchScoreController {
         for (String id : ids.split(",")) {
             matchScoreRepository.deleteByRecordId(id);
         }
-        return "redirect:/matches/matchScore";
+        return "redirect:/admin/matchScore";
     }
 }
