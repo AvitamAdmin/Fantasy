@@ -42,6 +42,7 @@ public class MobileTokenController {
         if (mobileOptional.isPresent()) {
         MobileToken mobileToken = mobileOptional.get();
         MobileTokenForm mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
+        mobileTokenForm.setId(String.valueOf(mobileToken.getId()));
         model.addAttribute("editForm", mobileTokenForm);
         }
           return "mobileToken/edit";

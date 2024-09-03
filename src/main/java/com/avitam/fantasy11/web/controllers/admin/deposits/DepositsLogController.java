@@ -40,7 +40,7 @@ public class DepositsLogController {
 
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             DepositsForm depositsForm = modelMapper.map(depositsLog, DepositsForm.class);
-            depositsLog.setId(depositsLog.getId());
+            depositsForm.setId(String.valueOf(depositsLog.getId()));
 
             model.addAttribute("editForm", depositsForm);
         }
