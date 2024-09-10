@@ -26,8 +26,8 @@ public class ContestController {
     @ResponseBody
     public ContestDto getAllContest(PaginationDto paginationDto) {
         ContestDto contestDto = new ContestDto();
-        contestDto.setContestList(contestRepository.findAll(Pageable.unpaged()).getContent());
         Pageable pageable = PageRequest.of(paginationDto.getPage(), paginationDto.getSizePerPage(), paginationDto.getSortDirection(), "identifier");
+        contestDto.setContestList(contestRepository.findAll(pageable).getContent());
         return contestDto;
     }
 
