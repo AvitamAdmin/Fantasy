@@ -1,13 +1,13 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.model.PointsUpdate;
+import com.avitam.fantasy11.api.dto.TournamentDto;
 import com.avitam.fantasy11.model.Tournament;
-
-import java.util.Optional;
 
 public interface TournamentService {
 
-    Optional<Tournament> findByRecordId(String recordId);
+    Tournament findByRecordId(String recordId);
+
+    TournamentDto handleEdit(TournamentDto request);
 
     void deleteByRecordId(String recordId);
 

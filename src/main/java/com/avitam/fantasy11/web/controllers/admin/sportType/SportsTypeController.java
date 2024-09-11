@@ -1,111 +1,70 @@
 package com.avitam.fantasy11.web.controllers.admin.sportType;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.SportTypeForm;
+import com.avitam.fantasy11.api.dto.SportTypeDto;
+import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.model.SportTypeRepository;
-import org.bson.types.Binary;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.*;
 
 @Controller
 @RequestMapping("/admin/sportType")
-public class SportsTypeController {
+public class SportsTypeController extends BaseController {
 
     @Autowired
     private SportTypeRepository sportTypeRepository;
     @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
+    private SportTypeService sportTypeService;
 
-    @GetMapping
-    public String getAllSportType(Model model){
-        List<SportType> sportTypes = sportTypeRepository.findAll();
-        List<SportType> datas=new ArrayList<>();
-        for(SportType data:sportTypes){
-            if(data.getId()!=null) {
-                byte[] image = data.getLogo().getData();
-                data.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(data);
-            }
-        }
-        model.addAttribute("models", datas);
-        return "sportType/sportTypes";
+    @GetMapping("/get")
+    @ResponseBody
+    public SportTypeDto getAllSportType(SportTypeDto sportTypeDto){
+        Pageable pageable=getPageable(sportTypeDto.getPage(),sportTypeDto.getSizePerPage(),sportTypeDto.getSortDirection(), sportTypeDto.getSortField());
+        SportType sportType=sportTypeDto.getSportType();
+        Page<SportType> page=isSearchActive(sportType)!=null ? sportTypeRepository.findAll(Example.of(sportType),pageable):sportTypeRepository.findAll(pageable);
+        sportTypeDto.setSportTypeList(page.getContent());
+        sportTypeDto.setTotalPages(page.getTotalPages());
+        sportTypeDto.setTotalRecords(page.getTotalElements());
+        return sportTypeDto;
     }
 
     @GetMapping("/edit")
-    public String editSportType (@RequestParam("id") String id, Model model){
+    @ResponseBody
+    public SportTypeDto editSportType (@RequestBody SportTypeDto request){
+        SportTypeDto sportTypeDto=new SportTypeDto();
+        SportType sportType=sportTypeRepository.findByRecordId(request.getRecordId());
 
-        Optional<SportType> sportTypeOptional = sportTypeRepository.findByRecordId(id);
-        if (sportTypeOptional.isPresent()) {
-            SportType sportType = sportTypeOptional.get();
-            SportTypeForm sportTypeForm = modelMapper.map(sportType, SportTypeForm.class);
-            sportTypeForm.setId(String.valueOf(sportType.getId()));
-            model.addAttribute("editForm", sportTypeForm);
-        }
-        return "sportType/edit";
+        return sportTypeDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")SportTypeForm sportTypeForm, Model model, BindingResult result) throws IOException {
+    @ResponseBody
+    public SportTypeDto handleEdit(@RequestBody SportTypeDto request){
 
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", sportTypeForm);
-            return "sportType/edit";
-        }
-
-        sportTypeForm.setLastModified(new Date());
-        if (sportTypeForm.getId() == null) {
-            sportTypeForm.setCreationTime(new Date());
-            sportTypeForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        byte[] fig= sportTypeForm.getLogo().getBytes();
-        Binary binary=new Binary(fig);
-
-
-        SportType sportType = modelMapper.map(sportTypeForm, SportType.class);
-
-        Optional<SportType> sportTypeOptional=sportTypeRepository.findById(sportTypeForm.getId());
-        if(sportTypeOptional.isPresent()) {
-            sportType.setId(sportTypeOptional.get().getId());
-        }
-        sportType.setLogo(binary);
-        sportTypeRepository.save(sportType);
-        if(sportType.getRecordId()==null)
-        {
-            sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
-        }
-        sportTypeRepository.save(sportType);
-        model.addAttribute("editForm", sportTypeForm);
-
-        return "redirect:/matches/sportType";
+        return sportTypeService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addSportType(Model model) {
-        SportTypeForm form = new SportTypeForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "sportType/edit";
+    @ResponseBody
+    public SportTypeDto addSportType(Model model) {
+        SportTypeDto sportTypeDto= new SportTypeDto();
+
+        sportTypeDto.setSportTypeList(sportTypeRepository.findStatusOrderByIdentifier(true));
+        return sportTypeDto;
     }
     @GetMapping("/delete")
-    public String deleteTeam(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public SportTypeDto delete(@RequestBody SportTypeDto sportTypeDto ) {
+        for (String id : sportTypeDto.getRecordId().split(",")) {
             sportTypeRepository.deleteByRecordId(id);
         }
-        return "redirect:/matches/sportType";
+        sportTypeDto.setMessage("Data deleted Successfully");
+        return sportTypeDto;
     }
 }

@@ -24,4 +24,5 @@ public class BaseEntity {
     private Date lastModified;
     private String modifier;
     private String pic;
+    private String identifier;
 }

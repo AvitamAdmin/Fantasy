@@ -4,15 +4,16 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface MobileTokenRepository extends MongoRepository<MobileToken, ObjectId> {
     Optional<MobileToken> findById(String id);
 
-    Optional<MobileToken> findByRecordId(String recordId);
+    MobileToken findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
-
+    List<MobileToken> findStatusOrderByIdentifier(boolean b);
 }

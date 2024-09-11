@@ -1,106 +1,72 @@
 package com.avitam.fantasy11.web.controllers.admin.contest;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.ContestForm;
+import com.avitam.fantasy11.api.dto.ContestDto;
+import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/contest")
-public class ContestController {
+public class ContestController extends BaseController {
 
     @Autowired
-    private MainContestRepository mainContestRepository;
-    @Autowired
     private ContestRepository contestRepository;
+
     @Autowired
-    private CoreService coreService;
+    private ContestService contestService;
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
-    public String getAllContest(Model model) {
-        model.addAttribute("contests", contestRepository.findAll().stream().filter(contest -> contest.getId() != null).collect(Collectors.toList()));
-        return "contest/contests";
+    @PostMapping
+    @ResponseBody
+    public ContestDto getAllContest( ContestDto contestDto) {
+        Pageable pageable = getPageable(contestDto.getPage(),contestDto.getSizePerPage(),contestDto.getSortDirection(),contestDto.getSortField());
+        Contest contest=contestDto.getContest();
+        Page<Contest> page=isSearchActive(contest)!=null?contestRepository.findAll(Example.of(contest),pageable):contestRepository.findAll(pageable);
+        contestDto.setContestList(page.getContent());
+        contestDto.setTotalPages(page.getTotalPages());
+        contestDto.setTotalRecords(page.getTotalElements());
+        return contestDto;
     }
 
     @GetMapping("/edit")
-    public String editContest(@RequestParam("id") String id, Model model) {
-        Optional<Contest> contestOptional = contestRepository.findByRecordId(id);
-        if (contestOptional.isPresent()) {
-            Contest contest = contestOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            ContestForm contestForm = modelMapper.map(contest, ContestForm.class);
-            contestForm.setId(String.valueOf(contest.getId()));
-            model.addAttribute("editForm", contestForm);
-            model.addAttribute("mainContests",mainContestRepository.findAll());
-        }
-        return "contest/edit";
+    @ResponseBody
+    public ContestDto editContest(@RequestBody ContestDto request) {
+        ContestDto contestDto = new ContestDto();
+        Contest contest = contestRepository.findByRecordId(request.getRecordId());
+        return contestDto;
     }
 
-
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") ContestForm contestForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm",contestForm);
-            return "contest/edit";
-        }
-        contestForm.setLastModified(new Date());
+    @ResponseBody
+    public ContestDto handleEdit(@RequestBody ContestDto request) {
 
-        if (contestForm.getId() == null) {
-            contestForm.setCreationTime(new Date());
-            contestForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        Contest contest = modelMapper.map(contestForm, Contest.class);
-        Optional<Contest> contestOptional=contestRepository.findById(contestForm.getId());
-        if(contestOptional.isPresent()) {
-            contest.setId(contestOptional.get().getId());
-        }
-
-        Optional<MainContest> mainContestOptional=mainContestRepository.findById(contestForm.getMainContestId());
-        if(mainContestOptional.isPresent()){
-            contest.setMainContestId(String.valueOf(mainContestOptional.get().getId()));
-        }
-
-        contestRepository.save(contest);
-        if (contest.getRecordId()==null)
-        {
-            contest.setRecordId(String.valueOf(contest.getId().getTimestamp()));
-        }
-        contestRepository.save(contest);
-        model.addAttribute("editForm", contestForm);
-        return "redirect:/admin/contest";
+        return contestService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addContest(Model model) {
-        ContestForm form = new ContestForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("mainContests",mainContestRepository.findAll());
-        return "contest/edit";
+    @ResponseBody
+    public ContestDto addContest() {
+        ContestDto contestDto = new ContestDto();
+        contestDto.setContestList(contestRepository.findStatusOrderByIdentifier(true));
+        return contestDto;
     }
 
-    @GetMapping("/delete")
-    public String deleteContest(@RequestParam("id") String ids, Model model) {
+    @PostMapping("/delete")
+    @ResponseBody
+    public ContestDto deleteContest(@RequestBody ContestDto contestDto) {
 
-        for (String id : ids.split(",")) {
-           contestRepository.deleteByRecordId(id);
+        for (String id : contestDto.getRecordId().split(",")) {
+            contestRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/contest";
+        contestDto.setMessage("Data deleted Successfully");
+        return contestDto;
     }
 }

@@ -1,17 +1,17 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.model.Address;
+import com.avitam.fantasy11.api.dto.KYCDto;
 import com.avitam.fantasy11.model.KYC;
+import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
+@Service
 public interface KycService {
-       Optional<KYC> findByRecordId(String recordId);
+       KYC findByRecordId(String recordId);
 
         void deleteByRecordId(String recordId);
 
-
-
+        KYCDto  handleEdit(KYCDto request);
 
         void updateByRecordId(String recordId);
 }

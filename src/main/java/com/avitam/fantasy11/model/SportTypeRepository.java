@@ -4,17 +4,17 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface
 SportTypeRepository extends MongoRepository<SportType, ObjectId> {
 
-    Optional<SportType> findById(String id);
+    SportType findById(String id);
 
-    Optional<SportType> findByRecordId(String recordId);
+    SportType findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
-
+    List<SportType> findStatusOrderByIdentifier(boolean b);
 }
