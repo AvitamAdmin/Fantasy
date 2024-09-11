@@ -74,9 +74,9 @@ public class InterfaceController {
 
         List<Node> nodeList=nodeRepository.findByParentNodeId(null);
         for(Node node1: nodeList){
-         if(node1.getId().equals(interfaceForm.getParentNodeId())){
-             node.setParentNodeId(String.valueOf(node1.getId()));
-         }
+            if(node1.getId().equals(interfaceForm.getParentNodeId())){
+                node.setParentNodeId(String.valueOf(node1.getId()));
+            }
         }
 
         if (node.getDisplayPriority() == null) {

@@ -4,16 +4,17 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
+
 
 @Repository
 public interface TournamentRepository extends MongoRepository<Tournament, ObjectId> {
 
-    Optional<Tournament> findById(String id);
+    Tournament findById(String id);
 
-    Optional<Tournament> findByRecordId(String recordId);
+    Tournament findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
-
+    List<Tournament> findOrderStatusByIdentifier(boolean b);
 }

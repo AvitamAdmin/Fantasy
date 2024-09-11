@@ -1,117 +1,70 @@
 package com.avitam.fantasy11.web.controllers.admin.kyc;
 
+import com.avitam.fantasy11.api.dto.KYCDto;
+import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.model.*;
-import com.avitam.fantasy11.validation.KYCFormValidator;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.KYCForm;
-import org.bson.types.Binary;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/kyc")
-public class KYCController {
+public class KYCController extends BaseController {
 
     @Autowired
     private KYCRepository kycRepository;
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
+    private KycService kycService;
 
-
-
-    @GetMapping
-    public String getAllModels(Model model) {
-        List<KYC> kycs = kycRepository.findAll();
-        List<KYC> datas = new ArrayList<>();
-        for (KYC data : kycs) {
-            if (data.getId() != null) {
-                byte[] image = data.getPanImage().getData();
-                data.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(data);
-            }
-        }
-            model.addAttribute("models", datas);
-            return "kyc/kycs";
-        }
-
-    @GetMapping("/edit")
-    public String editKyc(@RequestParam("id") String id, Model model) {
-
-        Optional<KYC> kycOptional = kycRepository.findByRecordId(id);
-        if (kycOptional.isPresent()) {
-            KYC kyc = kycOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            KYCForm kycForm = modelMapper.map(kyc, KYCForm.class);
-            kycForm.setId(String.valueOf(kyc.getId()));
-            model.addAttribute("editForm", kycForm);
-        }
-        return "kyc/edit";
+    @GetMapping("/get")
+    @ResponseBody
+    public KYCDto getAllModels(KYCDto kycDto) {
+        Pageable pageable= getPageable(kycDto.getPage(),kycDto.getSizePerPage(),kycDto.getSortDirection(),kycDto.getSortField());
+        KYC kyc=kycDto.getKyc();
+        Page<KYC> page=isSearchActive(kyc)!=null ? kycRepository.findAll(Example.of(kyc),pageable):kycRepository.findAll(pageable);
+        kycDto.setKycList(page.getContent());
+        kycDto.setTotalPages(page.getTotalPages());
+        kycDto.setTotalRecords(page.getTotalElements());
+        return kycDto;
     }
 
+    @GetMapping("/edit")
+    @ResponseBody
+    public KYCDto editKyc(@RequestBody KYCDto request) {
+        KYCDto kycDto=new KYCDto();
+        KYC  kyc = kycRepository.findByRecordId(request.getRecordId());
+        return kycDto;
+    }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") KYCForm kycForm, Model model, BindingResult result) throws IOException {
-       new KYCFormValidator().validate(kycForm,result);
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "kyc/edit";
-        }
+    @ResponseBody
+    public KYCDto handleEdit(@RequestBody KYCDto request) {
 
-        byte[] img = kycForm.getPanImage().getBytes();
-        Binary binary = new Binary(img);
-
-        kycForm.setLastModified(new Date());
-        if (kycForm.getId() == null) {
-            kycForm.setCreationTime(new Date());
-            kycForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        KYC kyc = modelMapper.map(kycForm, KYC.class);
-        Optional<KYC> kycOptional = kycRepository.findById(kycForm.getId());
-        if (kycOptional.isPresent()) {
-            kyc.setId(kycOptional.get().getId());
-        }
-
-        kyc.setPanImage(binary);
-        kycRepository.save(kyc);
-        if(kyc.getRecordId()==null)
-        {
-            kyc.setRecordId(String.valueOf(kyc.getId().getTimestamp()));
-        }
-        kycRepository.save(kyc);
-        model.addAttribute("editForm", kycForm);
-        return "redirect:/admin/kyc";
+        return kycService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addKyc(Model model) {
-        KYCForm form = new KYCForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "kyc/edit";
+    @ResponseBody
+    public KYCDto addKyc() {
+        KYCDto kycDto = new KYCDto();
+        kycDto.setKycList(kycRepository.findStatusOrderByIdentifier(true));
+        return kycDto;
     }
 
     @GetMapping("/delete")
-    public String deleteKyc(@RequestParam("id") String ids, Model model) {
+    @ResponseBody
+    public KYCDto deleteKyc(@RequestBody KYCDto kycDto) {
 
-        for (String id : ids.split(",")) {
+        for (String id : kycDto.getRecordId().split(",")) {
            kycRepository.deleteByRecordId(id);
         }
-
-        return "redirect:/admin/kyc";
+        kycDto.setMessage("Data deleted Successfully");
+        return kycDto;
     }
 }

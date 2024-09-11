@@ -1,33 +1,38 @@
 package com.avitam.fantasy11.web.controllers.admin.contest;
 
 import com.avitam.fantasy11.api.dto.ContestDto;
-import com.avitam.fantasy11.api.dto.PaginationDto;
 import com.avitam.fantasy11.api.service.ContestService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/contest")
-public class ContestController {
+public class ContestController extends BaseController {
 
     @Autowired
     private ContestRepository contestRepository;
 
-    @Autowired(required = false)
+    @Autowired
     private ContestService contestService;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    @GetMapping("/get")
+    @PostMapping
     @ResponseBody
-    public ContestDto getAllContest(PaginationDto paginationDto) {
-        ContestDto contestDto = new ContestDto();
-        Pageable pageable = PageRequest.of(paginationDto.getPage(), paginationDto.getSizePerPage(), paginationDto.getSortDirection(), "identifier");
-        contestDto.setContestList(contestRepository.findAll(pageable).getContent());
+    public ContestDto getAllContest( ContestDto contestDto) {
+        Pageable pageable = getPageable(contestDto.getPage(),contestDto.getSizePerPage(),contestDto.getSortDirection(),contestDto.getSortField());
+        Contest contest=contestDto.getContest();
+        Page<Contest> page=isSearchActive(contest)!=null?contestRepository.findAll(Example.of(contest),pageable):contestRepository.findAll(pageable);
+        contestDto.setContestList(page.getContent());
+        contestDto.setTotalPages(page.getTotalPages());
+        contestDto.setTotalRecords(page.getTotalElements());
         return contestDto;
     }
 

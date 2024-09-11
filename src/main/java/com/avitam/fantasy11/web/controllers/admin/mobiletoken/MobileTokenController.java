@@ -1,96 +1,71 @@
 package com.avitam.fantasy11.web.controllers.admin.mobiletoken;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.MobileTokenForm;
+import com.avitam.fantasy11.api.dto.MobileTokenDto;
+import com.avitam.fantasy11.api.service.MobileTokenService;
 import com.avitam.fantasy11.model.*;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/mobileToken")
-public class MobileTokenController {
+public class MobileTokenController extends BaseController {
     @Autowired
     private MobileTokenRepository mobileTokenRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
+    private MobileTokenService mobileTokenService;
 
-    @GetMapping
-    public String getAll(Model model) {
-        List<MobileToken> mobileTokens= mobileTokenRepository.findAll().stream().filter(mobile-> mobile.getId()!=null).collect(Collectors.toList());
-        model.addAttribute("tokens", mobileTokens);
-        return "mobileToken/mobileTokens";
+
+    @GetMapping("/get")
+    @ResponseBody
+    public MobileTokenDto getAll(MobileTokenDto mobileTokenDto) {
+        Pageable pageable=getPageable(mobileTokenDto.getPage(),mobileTokenDto.getSizePerPage(),mobileTokenDto.getSortDirection(),mobileTokenDto.getSortField());
+        MobileToken mobileToken=mobileTokenDto.getMobileToken();
+        Page<MobileToken> page=isSearchActive(mobileToken)!=null ? mobileTokenRepository.findAll(Example.of(mobileToken),pageable):mobileTokenRepository.findAll(pageable);
+        mobileTokenDto.setMobileTokenList(page.getContent());
+        mobileTokenDto.setTotalPages(page.getTotalPages());
+        mobileTokenDto.setTotalRecords(page.getTotalElements());
+        return mobileTokenDto;
     }
 
     @GetMapping("/edit")
-    public String editMobileToken(@RequestParam("id") String id, Model model) {
+    @ResponseBody
+    public MobileTokenDto editMobileToken(@RequestBody MobileTokenDto request) {
 
-      Optional<MobileToken> mobileOptional = mobileTokenRepository.findByRecordId(id);
-        if (mobileOptional.isPresent()) {
-        MobileToken mobileToken = mobileOptional.get();
-        MobileTokenForm mobileTokenForm = modelMapper.map(mobileToken, MobileTokenForm.class);
-        mobileTokenForm.setId(String.valueOf(mobileToken.getId()));
-        model.addAttribute("editForm", mobileTokenForm);
-        }
-          return "mobileToken/edit";
+        MobileTokenDto mobileTokenDto=new MobileTokenDto();
+        MobileToken mobileToken=mobileTokenRepository.findByRecordId(request.getRecordId());
+
+        return mobileTokenDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") MobileTokenForm mobileTokenForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", mobileTokenForm);
-            return "mobileToken/edit";
-        }
-        mobileTokenForm.setLastModified(new Date());
-        if (mobileTokenForm.getId() == null) {
-            mobileTokenForm.setCreationTime(new Date());
-            mobileTokenForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        MobileToken mobileToken=modelMapper.map(mobileTokenForm,MobileToken.class);
-        Optional<MobileToken> mobileTokenOptional=mobileTokenRepository.findById(mobileTokenForm.getId());
-        if(mobileTokenOptional.isPresent()){
-            mobileToken.setId(mobileTokenOptional.get().getId());
-        }
-        mobileTokenRepository.save(mobileToken);
-        if(mobileToken.getRecordId()==null)
-        {
-            mobileToken.setRecordId(String.valueOf(mobileToken.getId().getTimestamp()));
-        }
-        mobileTokenRepository.save(mobileToken);
-        model.addAttribute("editForm", mobileTokenForm);
-        return "redirect:/admin/mobileToken";
+    @ResponseBody
+    public MobileTokenDto handleEdit(@RequestBody MobileTokenDto request) {
+         return mobileTokenService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addMobileToken(Model model) {
-        MobileTokenForm form = new MobileTokenForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "mobileToken/edit";
+    @ResponseBody
+    public MobileTokenDto addMobileToken(Model model) {
+        MobileTokenDto mobileTokenDto = new MobileTokenDto();
+        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findStatusOrderByIdentifier(true));
+        return mobileTokenDto;
     }
 
     @GetMapping("/delete")
-    public String deleteMobileToken(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public MobileTokenDto deleteMobileToken(@RequestBody MobileTokenDto mobileTokenDto) {
+        for (String id : mobileTokenDto.getRecordId().split(",")) {
             mobileTokenRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/mobileToken";
+        mobileTokenDto.setMessage("Data deleted successfully");
+        return mobileTokenDto;
     }
+
 }

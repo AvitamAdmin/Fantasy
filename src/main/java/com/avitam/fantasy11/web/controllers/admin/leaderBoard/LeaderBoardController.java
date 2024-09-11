@@ -1,110 +1,66 @@
 package com.avitam.fantasy11.web.controllers.admin.leaderBoard;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.ContestForm;
-import com.avitam.fantasy11.form.LeaderBoardForm;
+import com.avitam.fantasy11.api.dto.LeaderBoardDto;
+import com.avitam.fantasy11.api.service.LeaderBoardService;
 import com.avitam.fantasy11.model.*;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/leaderBoard")
-public class LeaderBoardController {
+public class LeaderBoardController extends BaseController {
 
     @Autowired
     private LeaderBoardRepository leaderBoardRepository;
     @Autowired
-    private TournamentRepository tournamentRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
+    private LeaderBoardService leaderBoardService;
 
-    @GetMapping
-    public String getAll(Model model){
-        List<LeaderBoard> leaderBoardList=leaderBoardRepository.findAll();
-        model.addAttribute("models",leaderBoardList);
-        return "leaderBoard/leaderBoards";
+    @PostMapping
+    @ResponseBody
+    public LeaderBoardDto getAll(LeaderBoardDto leaderBoardDto){
+        Pageable pageable=getPageable(leaderBoardDto.getPage(),leaderBoardDto.getSizePerPage(),leaderBoardDto.getSortDirection(),leaderBoardDto.getSortField());
+        LeaderBoard leaderBoard=leaderBoardDto.getLeaderBoard();
+        Page<LeaderBoard>page=isSearchActive(leaderBoard)!=null ? leaderBoardRepository.findAll(Example.of(leaderBoard),pageable) : leaderBoardRepository.findAll(pageable);
+        leaderBoardDto.setLeaderBoardList(page.getContent());
+        leaderBoardDto.setTotalPages(page.getTotalPages());
+        leaderBoardDto.setTotalRecords(page.getTotalElements());
+        return leaderBoardDto;
     }
 
     @GetMapping("/edit")
-    public String editLeaderBoard(@RequestParam("id") String id, Model model) {
-
-        Optional<LeaderBoard> leaderBoardOptional = leaderBoardRepository.findByRecordId(id);
-        if (leaderBoardOptional.isPresent()) {
-            LeaderBoard leaderBoard = leaderBoardOptional.get();
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            LeaderBoardForm leaderBoardForm = modelMapper.map(leaderBoard, LeaderBoardForm.class);
-            leaderBoardForm.setId(String.valueOf(leaderBoard.getId()));
-
-            model.addAttribute("editForm", leaderBoardForm);
-            model.addAttribute("tournaments",tournamentRepository.findAll().stream().filter(tournament -> tournament.getId()!=null).collect(Collectors.toList()));
-        }
-        return "leaderBoard/edit";
+    @ResponseBody
+    public LeaderBoardDto editLeaderBoard(@RequestBody LeaderBoardDto request) {
+        LeaderBoardDto leaderBoardDto=new LeaderBoardDto();
+        LeaderBoard leaderBoard=leaderBoardRepository.findByRecordId(request.getRecordId());
+        return leaderBoardDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") LeaderBoardForm leaderBoardForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "leaderBoard/edit";
-        }
-            leaderBoardForm.setLastModified(new Date());
-
-        if (leaderBoardForm.getId() == null) {
-            leaderBoardForm.setCreationTime(new Date());
-            leaderBoardForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        LeaderBoard leaderBoard = modelMapper.map(leaderBoardForm, LeaderBoard.class);
-        Optional<LeaderBoard> leaderBoardOptional=leaderBoardRepository.findById(leaderBoardForm.getId());
-        if(leaderBoardOptional.isPresent()) {
-            leaderBoard.setId(leaderBoardOptional.get().getId());
-        }
-        Optional<Tournament> tournamentOptional=tournamentRepository.findById(leaderBoardForm.getTournamentId());
-         if(tournamentOptional.isPresent()){
-            leaderBoard.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
-         }
-
-        leaderBoardRepository.save(leaderBoard);
-         if(leaderBoard.getRecordId()==null)
-         {
-             leaderBoard.setRecordId(String.valueOf(leaderBoard.getId().getTimestamp()));
-         }
-        leaderBoardRepository.save(leaderBoard);
-        model.addAttribute("editForm", leaderBoardForm);
-        return "redirect:/admin/leaderBoard";
+    @ResponseBody
+    public LeaderBoardDto handleEdit(@RequestBody LeaderBoardDto request) {
+        return leaderBoardService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addLeaderBoard(Model model) {
-        LeaderBoardForm form = new LeaderBoardForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("tournaments",tournamentRepository.findAll().stream().filter(tournament -> tournament.getId()!=null).collect(Collectors.toList()));
-
-        return "leaderBoard/edit";
+    @ResponseBody
+    public LeaderBoardDto addLeaderBoard() {
+        LeaderBoardDto leaderBoardDto = new LeaderBoardDto();
+        leaderBoardDto.setLeaderBoardList(leaderBoardRepository.findOrderStatusByIdentifier(true));
+        return leaderBoardDto;
     }
 
     @GetMapping("/delete")
-    public String deleteLeaderBoard(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public LeaderBoardDto deleteLeaderBoard(@RequestBody LeaderBoardDto leaderBoardDto) {
+        for (String id : leaderBoardDto.getRecordId().split(",")) {
               leaderBoardRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/leaderBoard";
+        return leaderBoardDto;
     }
 }

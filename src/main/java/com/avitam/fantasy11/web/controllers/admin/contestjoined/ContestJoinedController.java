@@ -1,113 +1,70 @@
-package com.avitam.fantasy11.web.controllers.admin.contestJoined;
+package com.avitam.fantasy11.web.controllers.admin.contestjoined;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.ContestJoinedForm;
+import com.avitam.fantasy11.api.dto.ContestJoinedDto;
+import com.avitam.fantasy11.api.service.ContestJoinedService;
 import com.avitam.fantasy11.model.*;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/contestJoined")
-public class ContestJoinedController {
+public class ContestJoinedController extends BaseController {
 
-    @Autowired
-    private ContestRepository contestRepository;
     @Autowired
     private ContestJoinedRepository contestJoinedRepository;
     @Autowired
-    private UserRepository  userRepository;
-    @Autowired
-    private UserTeamsRepository userTeamsRepository;
-    @Autowired
-    private MatchesRepository matchesRepository;
-    @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
+    private ContestJoinedService contestJoinedService;
+
 
     @GetMapping
-    public String getAll(Model model) {
-        List<ContestJoined> contestJoineds=contestJoinedRepository.findAll();
-        model.addAttribute("models", contestJoineds);
-        return "contestJoined/contestjoin";
+    @ResponseBody
+    public ContestJoinedDto getAll(ContestJoinedDto contestJoinedDto) {
+        Pageable pageable=getPageable(contestJoinedDto.getPage(),contestJoinedDto.getSizePerPage(),contestJoinedDto.getSortDirection(),contestJoinedDto.getSortField());
+        ContestJoined contestJoined=contestJoinedDto.getContestJoined();
+        Page<ContestJoined> page=isSearchActive(contestJoined) !=null ? contestJoinedRepository.findAll(Example.of(contestJoined),pageable) :contestJoinedRepository.findAll(pageable);
+        contestJoinedDto.setContestJoinedList(page.getContent());
+        contestJoinedDto.setTotalPages(page.getTotalPages());
+        contestJoinedDto.setTotalRecords(page.getTotalElements());
+        return contestJoinedDto;
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") String id, Model model) {
-
-        Optional<ContestJoined> contestJoinedOptional = contestJoinedRepository.findByRecordId(id);
-
-        if (contestJoinedOptional.isPresent()) {
-            ContestJoined contestJoined = contestJoinedOptional.get();
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-           ContestJoinedForm contestJoinedForm=modelMapper.map(contestJoined,ContestJoinedForm.class);
-           contestJoinedForm.setId(String.valueOf(contestJoined.getId()));
-
-            model.addAttribute("editForm", contestJoinedForm);
-            model.addAttribute("userTeams",userTeamsRepository.findAll());
-            model.addAttribute("matches",matchesRepository.findAll());
-        }
-        return "contestJoined/edit";
+    @ResponseBody
+    public ContestJoinedDto edit(@RequestBody ContestJoinedDto request) {
+        ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
+        ContestJoined contestJoined=contestJoinedRepository.findByRecordId(request.getRecordId());
+        return contestJoinedDto;
     }
 
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") ContestJoinedForm contestJoinedForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm",contestJoinedForm);
-            return "contestJoined/edit";
-        }
-        contestJoinedForm.setLastModified(new Date());
+    @ResponseBody
+    public ContestJoinedDto handleEdit(@RequestBody ContestJoinedDto request) {
 
-        if (contestJoinedForm.getId() == null) {
-            contestJoinedForm.setCreationTime(new Date());
-            contestJoinedForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        ContestJoined contestJoined = modelMapper.map(contestJoinedForm, ContestJoined.class);
-
-        Optional<ContestJoined> contestJoinedOptional=contestJoinedRepository.findById(contestJoinedForm.getId());
-        if(contestJoinedOptional.isPresent()) {
-            contestJoined.setId(contestJoinedOptional.get().getId());
-        }
-
-        contestJoinedRepository.save(contestJoined);
-        if (contestJoined.getRecordId()==null)
-        {
-            contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
-        }
-        contestJoinedRepository.save(contestJoined);
-        model.addAttribute("editForm", contestJoinedForm);
-        return "redirect:/admin/contestJoined";
+        return contestJoinedService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String add(Model model) {
-        ContestJoinedForm form = new ContestJoinedForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "contestJoined/edit";
+    @ResponseBody
+    public ContestJoinedDto add(Model model) {
+        ContestJoinedDto contestJoinedDto = new ContestJoinedDto();
+        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findOrderStatusByIdentifier(true));
+        return contestJoinedDto;
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public ContestJoinedDto delete(@RequestBody ContestJoinedDto contestJoinedDto) {
+        for (String id : contestJoinedDto.getRecordId().split(",")) {
             contestJoinedRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/contestJoined";
+        return contestJoinedDto;
     }
 }

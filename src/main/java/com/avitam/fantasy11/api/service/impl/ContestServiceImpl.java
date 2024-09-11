@@ -7,9 +7,10 @@ import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
-
+@Service
 public class ContestServiceImpl implements ContestService {
 
     @Autowired
@@ -48,7 +49,6 @@ public class ContestServiceImpl implements ContestService {
         return contestDto;
     }
 
-
     @Override
     public void deleteByRecordId(String recordId) {
 
@@ -57,10 +57,10 @@ public class ContestServiceImpl implements ContestService {
 
     @Override
     public void updateByRecordId(String recordId) {
-       Contest contestOptional=contestRepository.findByRecordId(recordId);
-       if(contestOptional!=null) {
+       Contest contest=contestRepository.findByRecordId(recordId);
+       if(contest!=null) {
 
-           contestRepository.save(contestOptional);
+           contestRepository.save(contest);
        }
     }
 

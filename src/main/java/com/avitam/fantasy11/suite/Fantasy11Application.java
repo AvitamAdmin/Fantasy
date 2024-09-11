@@ -18,6 +18,7 @@ import java.util.Locale;
 @EnableMongoRepositories("com.avitam.fantasy11.model")
 @ComponentScan(
 		{
+				"com.avitam.fantasy11.api",
 				"com.avitam.fantasy11.web.controllers",
 				"com.avitam.fantasy11.core",
 				"com.avitam.fantasy11.qa",
