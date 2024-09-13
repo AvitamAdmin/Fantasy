@@ -20,7 +20,7 @@ public class TournamentController extends BaseController {
     private TournamentService tournamentService;
     @Autowired
     private TournamentRepository tournamentRepository;
-
+    private static final String ADMIN_TOURNAMENT="/admin/tournament";
 
     @PostMapping
     @ResponseBody
@@ -30,18 +30,27 @@ public class TournamentController extends BaseController {
         Tournament tournament=tournamentDto.getTournament();
         Page<Tournament> page=isSearchActive(tournament)!=null ? tournamentRepository.findAll(Example.of(tournament),pageable) : tournamentRepository.findAll(pageable);
         tournamentDto.setTournamentList(page.getContent());
+        tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
         tournamentDto.setTotalPages(page.getTotalPages());
         tournamentDto.setTotalRecords(page.getTotalElements());
         return tournamentDto;
     }
+    @GetMapping("/get")
+    @ResponseBody
+    public TournamentDto getTournament(){
+        TournamentDto tournamentDto = new TournamentDto();
+        tournamentDto.setTournamentList(tournamentRepository.findStatusOrderByIdentifier(true));
+        tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
+        return tournamentDto;
 
+    }
     @GetMapping("/edit")
     @ResponseBody
     public TournamentDto editTournament (@RequestBody TournamentDto request){
            TournamentDto tournamentDto=new TournamentDto();
            Tournament tournament=tournamentRepository.findByRecordId(request.getRecordId());
-
-        return tournamentDto;
+           tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
+           return tournamentDto;
     }
 
     @PostMapping("/edit")
@@ -55,7 +64,8 @@ public class TournamentController extends BaseController {
     @ResponseBody
     public TournamentDto addTournament() {
         TournamentDto tournamentDto = new TournamentDto();
-        tournamentDto.setTournamentList(tournamentRepository.findOrderStatusByIdentifier(true));
+        tournamentDto.setTournamentList(tournamentRepository.findStatusOrderByIdentifier(true));
+        tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
         return tournamentDto;
     }
 
@@ -65,6 +75,8 @@ public class TournamentController extends BaseController {
         for (String id : tournamentDto.getRecordId().split(",")) {
             tournamentRepository.deleteByRecordId(id);
         }
+        tournamentDto.setMessage("Data deleted Successfully");
+        tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
         return tournamentDto;
     }
 }

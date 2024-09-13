@@ -21,17 +21,26 @@ public class ContestJoinedController extends BaseController {
     private ContestJoinedRepository contestJoinedRepository;
     @Autowired
     private ContestJoinedService contestJoinedService;
+    private static final String ADMIN_CONTESTJOINED="/admin/contestJoined";
 
-
-    @GetMapping
+    @PostMapping
     @ResponseBody
-    public ContestJoinedDto getAll(ContestJoinedDto contestJoinedDto) {
+    public ContestJoinedDto getAllContestJoined(ContestJoinedDto contestJoinedDto) {
         Pageable pageable=getPageable(contestJoinedDto.getPage(),contestJoinedDto.getSizePerPage(),contestJoinedDto.getSortDirection(),contestJoinedDto.getSortField());
         ContestJoined contestJoined=contestJoinedDto.getContestJoined();
         Page<ContestJoined> page=isSearchActive(contestJoined) !=null ? contestJoinedRepository.findAll(Example.of(contestJoined),pageable) :contestJoinedRepository.findAll(pageable);
         contestJoinedDto.setContestJoinedList(page.getContent());
+        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         contestJoinedDto.setTotalPages(page.getTotalPages());
         contestJoinedDto.setTotalRecords(page.getTotalElements());
+        return contestJoinedDto;
+    }
+    @GetMapping("/get")
+    @ResponseBody
+    public ContestJoinedDto getContestJoined(){
+        ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
+        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findStatusOrderByIdentifier(true));
+        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }
 
@@ -40,9 +49,9 @@ public class ContestJoinedController extends BaseController {
     public ContestJoinedDto edit(@RequestBody ContestJoinedDto request) {
         ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
         ContestJoined contestJoined=contestJoinedRepository.findByRecordId(request.getRecordId());
+        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }
-
 
     @PostMapping("/edit")
     @ResponseBody
@@ -53,9 +62,10 @@ public class ContestJoinedController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public ContestJoinedDto add(Model model) {
+    public ContestJoinedDto add() {
         ContestJoinedDto contestJoinedDto = new ContestJoinedDto();
-        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findOrderStatusByIdentifier(true));
+        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findStatusOrderByIdentifier(true));
+        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }
 
@@ -65,6 +75,8 @@ public class ContestJoinedController extends BaseController {
         for (String id : contestJoinedDto.getRecordId().split(",")) {
             contestJoinedRepository.deleteByRecordId(id);
         }
+        contestJoinedDto.setMessage("Data deleted Successfully");
+        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }
 }

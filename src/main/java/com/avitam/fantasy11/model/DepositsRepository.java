@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DepositsRepository extends MongoRepository<Deposits, ObjectId> {
-    Object findByStatus(String pending);
 
-    Optional<Deposits> findById(String id);
+    Deposits findById(String id);
 
     List<Deposits> findByDepositStatus(String approved);
 
-    Optional<Deposits> findByRecordId(String recordId);
+    Deposits findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
-
+    List<Deposits> findStatusOrderByIdentifier(boolean b);
 }

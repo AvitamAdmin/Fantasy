@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.web.controllers.admin.sportType;
 
+import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.dto.SportTypeDto;
 import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.model.SportType;
@@ -21,25 +22,35 @@ public class SportsTypeController extends BaseController {
     private SportTypeRepository sportTypeRepository;
     @Autowired
     private SportTypeService sportTypeService;
+    private static final String ADMIN_SPORTSTYPE="/admin/sportType";
 
-    @GetMapping("/get")
+    @PostMapping
     @ResponseBody
     public SportTypeDto getAllSportType(SportTypeDto sportTypeDto){
         Pageable pageable=getPageable(sportTypeDto.getPage(),sportTypeDto.getSizePerPage(),sportTypeDto.getSortDirection(), sportTypeDto.getSortField());
         SportType sportType=sportTypeDto.getSportType();
         Page<SportType> page=isSearchActive(sportType)!=null ? sportTypeRepository.findAll(Example.of(sportType),pageable):sportTypeRepository.findAll(pageable);
         sportTypeDto.setSportTypeList(page.getContent());
+        sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         sportTypeDto.setTotalPages(page.getTotalPages());
         sportTypeDto.setTotalRecords(page.getTotalElements());
         return sportTypeDto;
     }
 
+    @GetMapping("/get")
+    @ResponseBody
+    public SportTypeDto getSportType(){
+        SportTypeDto sportTypeDto= new SportTypeDto();
+        sportTypeDto.setSportTypeList(sportTypeRepository.findStatusOrderByIdentifier(true));
+        sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
+        return sportTypeDto;
+    }
     @GetMapping("/edit")
     @ResponseBody
     public SportTypeDto editSportType (@RequestBody SportTypeDto request){
         SportTypeDto sportTypeDto=new SportTypeDto();
         SportType sportType=sportTypeRepository.findByRecordId(request.getRecordId());
-
+        sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }
 
@@ -54,8 +65,8 @@ public class SportsTypeController extends BaseController {
     @ResponseBody
     public SportTypeDto addSportType(Model model) {
         SportTypeDto sportTypeDto= new SportTypeDto();
-
         sportTypeDto.setSportTypeList(sportTypeRepository.findStatusOrderByIdentifier(true));
+        sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }
     @GetMapping("/delete")
@@ -65,6 +76,7 @@ public class SportsTypeController extends BaseController {
             sportTypeRepository.deleteByRecordId(id);
         }
         sportTypeDto.setMessage("Data deleted Successfully");
+        sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }
 }

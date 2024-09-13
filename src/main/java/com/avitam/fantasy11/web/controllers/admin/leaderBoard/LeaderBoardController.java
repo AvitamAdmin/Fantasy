@@ -20,24 +20,34 @@ public class LeaderBoardController extends BaseController {
     private LeaderBoardRepository leaderBoardRepository;
     @Autowired
     private LeaderBoardService leaderBoardService;
+    private static final String ADMIN_LEADERBOARD="/admin/leaderBoard";
 
     @PostMapping
     @ResponseBody
-    public LeaderBoardDto getAll(LeaderBoardDto leaderBoardDto){
+    public LeaderBoardDto getAllLeaderBoard(LeaderBoardDto leaderBoardDto){
         Pageable pageable=getPageable(leaderBoardDto.getPage(),leaderBoardDto.getSizePerPage(),leaderBoardDto.getSortDirection(),leaderBoardDto.getSortField());
         LeaderBoard leaderBoard=leaderBoardDto.getLeaderBoard();
         Page<LeaderBoard>page=isSearchActive(leaderBoard)!=null ? leaderBoardRepository.findAll(Example.of(leaderBoard),pageable) : leaderBoardRepository.findAll(pageable);
         leaderBoardDto.setLeaderBoardList(page.getContent());
+        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
         leaderBoardDto.setTotalPages(page.getTotalPages());
         leaderBoardDto.setTotalRecords(page.getTotalElements());
         return leaderBoardDto;
     }
-
+    @GetMapping("/get")
+    @ResponseBody
+    public LeaderBoardDto getLeaderBoard(){
+        LeaderBoardDto leaderBoardDto=new LeaderBoardDto();
+        leaderBoardDto.setLeaderBoardList(leaderBoardRepository.findStatusOrderByIdentifier(true));
+        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
+        return leaderBoardDto;
+    }
     @GetMapping("/edit")
     @ResponseBody
     public LeaderBoardDto editLeaderBoard(@RequestBody LeaderBoardDto request) {
         LeaderBoardDto leaderBoardDto=new LeaderBoardDto();
         LeaderBoard leaderBoard=leaderBoardRepository.findByRecordId(request.getRecordId());
+        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardDto;
     }
 
@@ -51,7 +61,8 @@ public class LeaderBoardController extends BaseController {
     @ResponseBody
     public LeaderBoardDto addLeaderBoard() {
         LeaderBoardDto leaderBoardDto = new LeaderBoardDto();
-        leaderBoardDto.setLeaderBoardList(leaderBoardRepository.findOrderStatusByIdentifier(true));
+        leaderBoardDto.setLeaderBoardList(leaderBoardRepository.findStatusOrderByIdentifier(true));
+        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardDto;
     }
 
@@ -61,6 +72,8 @@ public class LeaderBoardController extends BaseController {
         for (String id : leaderBoardDto.getRecordId().split(",")) {
               leaderBoardRepository.deleteByRecordId(id);
         }
+        leaderBoardDto.setMessage("Data deleted Successfully");
+        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardDto;
     }
 }

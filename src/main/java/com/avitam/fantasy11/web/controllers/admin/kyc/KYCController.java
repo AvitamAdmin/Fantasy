@@ -21,24 +21,35 @@ public class KYCController extends BaseController {
     private KYCRepository kycRepository;
     @Autowired
     private KycService kycService;
+    private static final String ADMIN_KYC="/admin/kyc";
 
-    @GetMapping("/get")
+    @PostMapping
     @ResponseBody
     public KYCDto getAllModels(KYCDto kycDto) {
         Pageable pageable= getPageable(kycDto.getPage(),kycDto.getSizePerPage(),kycDto.getSortDirection(),kycDto.getSortField());
         KYC kyc=kycDto.getKyc();
         Page<KYC> page=isSearchActive(kyc)!=null ? kycRepository.findAll(Example.of(kyc),pageable):kycRepository.findAll(pageable);
         kycDto.setKycList(page.getContent());
+        kycDto.setBaseUrl(ADMIN_KYC);
         kycDto.setTotalPages(page.getTotalPages());
         kycDto.setTotalRecords(page.getTotalElements());
         return kycDto;
     }
+    @GetMapping("/get")
+    @ResponseBody
+    public KYCDto getKYC(){
+        KYCDto kycDto=new KYCDto();
+        kycDto.setKycList(kycRepository.findStatusOrderByIdentifier(true));
+        kycDto.setBaseUrl(ADMIN_KYC);
+        return kycDto;
 
+    }
     @GetMapping("/edit")
     @ResponseBody
     public KYCDto editKyc(@RequestBody KYCDto request) {
         KYCDto kycDto=new KYCDto();
         KYC  kyc = kycRepository.findByRecordId(request.getRecordId());
+        kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
     }
 
@@ -54,6 +65,7 @@ public class KYCController extends BaseController {
     public KYCDto addKyc() {
         KYCDto kycDto = new KYCDto();
         kycDto.setKycList(kycRepository.findStatusOrderByIdentifier(true));
+        kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
     }
 
@@ -65,6 +77,8 @@ public class KYCController extends BaseController {
            kycRepository.deleteByRecordId(id);
         }
         kycDto.setMessage("Data deleted Successfully");
+        kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
     }
+
 }

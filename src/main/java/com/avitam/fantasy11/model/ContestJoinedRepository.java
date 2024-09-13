@@ -15,6 +15,5 @@ public interface ContestJoinedRepository extends MongoRepository<ContestJoined, 
 
     void deleteByRecordId(String recordId);
 
-
-    List<ContestJoined> findOrderStatusByIdentifier(boolean b);
+    List<ContestJoined> findStatusOrderByIdentifier(boolean b);
 }
