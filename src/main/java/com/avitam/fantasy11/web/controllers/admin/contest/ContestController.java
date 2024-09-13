@@ -39,7 +39,7 @@ public class ContestController extends BaseController {
     @ResponseBody
     public ContestDto getContest(){
         ContestDto contestDto=new ContestDto();
-        contestDto.setContestList(contestRepository.findStatusOrderByIdentifier(true));
+        contestDto.setContestList(contestRepository.findByStatusOrderByIdentifier(true));
         contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }
@@ -64,7 +64,7 @@ public class ContestController extends BaseController {
     @ResponseBody
     public ContestDto addContest() {
         ContestDto contestDto = new ContestDto();
-        contestDto.setContestList(contestRepository.findStatusOrderByIdentifier(true));
+        contestDto.setContestList(contestRepository.findByStatusOrderByIdentifier(true));
         contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }

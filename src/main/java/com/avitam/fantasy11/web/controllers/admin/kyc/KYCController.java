@@ -39,7 +39,7 @@ public class KYCController extends BaseController {
     @ResponseBody
     public KYCDto getKYC(){
         KYCDto kycDto=new KYCDto();
-        kycDto.setKycList(kycRepository.findStatusOrderByIdentifier(true));
+        kycDto.setKycList(kycRepository.findByStatusOrderByIdentifier(true));
         kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
 
@@ -64,7 +64,7 @@ public class KYCController extends BaseController {
     @ResponseBody
     public KYCDto addKyc() {
         KYCDto kycDto = new KYCDto();
-        kycDto.setKycList(kycRepository.findStatusOrderByIdentifier(true));
+        kycDto.setKycList(kycRepository.findByStatusOrderByIdentifier(true));
         kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
     }

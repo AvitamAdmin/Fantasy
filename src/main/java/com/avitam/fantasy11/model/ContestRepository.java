@@ -13,7 +13,7 @@ public interface ContestRepository extends MongoRepository<Contest, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    List<Contest> findStatusOrderByIdentifier(Boolean b);
+    List<Contest> findByStatusOrderByIdentifier(Boolean b);
 
     Contest findByRecordId(String recordId);
 }

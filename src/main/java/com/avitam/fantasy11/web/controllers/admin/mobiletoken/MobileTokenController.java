@@ -40,7 +40,7 @@ public class MobileTokenController extends BaseController {
     @ResponseBody
     public MobileTokenDto getMobileToken() {
         MobileTokenDto mobileTokenDto = new MobileTokenDto();
-        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findStatusOrderByIdentifier(true));
+        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findByStatusOrderByIdentifier(true));
         mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }
@@ -65,7 +65,7 @@ public class MobileTokenController extends BaseController {
     @ResponseBody
     public MobileTokenDto addMobileToken() {
         MobileTokenDto mobileTokenDto = new MobileTokenDto();
-        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findStatusOrderByIdentifier(true));
+        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findByStatusOrderByIdentifier(true));
         mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }

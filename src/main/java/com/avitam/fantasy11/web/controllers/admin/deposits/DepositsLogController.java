@@ -38,7 +38,7 @@ public class DepositsLogController extends BaseController {
     @ResponseBody
     public DepositsDto getDeposit(){
         DepositsDto depositsDto=new DepositsDto();
-        depositsDto.setDepositsList(depositsRepository.findStatusOrderByIdentifier(true));
+        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_DEPOSIT);
         return depositsDto;
     }
@@ -62,7 +62,7 @@ public class DepositsLogController extends BaseController {
     @ResponseBody
     public DepositsDto add() {
         DepositsDto depositsDto = new DepositsDto();
-        depositsDto.setDepositsList(depositsRepository.findStatusOrderByIdentifier(true));
+        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_DEPOSIT);
         return depositsDto;
     }

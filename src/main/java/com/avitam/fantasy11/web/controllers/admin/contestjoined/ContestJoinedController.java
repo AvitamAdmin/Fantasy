@@ -39,7 +39,7 @@ public class ContestJoinedController extends BaseController {
     @ResponseBody
     public ContestJoinedDto getContestJoined(){
         ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
-        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findStatusOrderByIdentifier(true));
+        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findByStatusOrderByIdentifier(true));
         contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }
@@ -64,7 +64,7 @@ public class ContestJoinedController extends BaseController {
     @ResponseBody
     public ContestJoinedDto add() {
         ContestJoinedDto contestJoinedDto = new ContestJoinedDto();
-        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findStatusOrderByIdentifier(true));
+        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findByStatusOrderByIdentifier(true));
         contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }

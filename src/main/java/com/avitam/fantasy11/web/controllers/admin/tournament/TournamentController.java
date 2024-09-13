@@ -39,7 +39,7 @@ public class TournamentController extends BaseController {
     @ResponseBody
     public TournamentDto getTournament(){
         TournamentDto tournamentDto = new TournamentDto();
-        tournamentDto.setTournamentList(tournamentRepository.findStatusOrderByIdentifier(true));
+        tournamentDto.setTournamentList(tournamentRepository.findByStatusOrderByIdentifier(true));
         tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
         return tournamentDto;
 
@@ -64,7 +64,7 @@ public class TournamentController extends BaseController {
     @ResponseBody
     public TournamentDto addTournament() {
         TournamentDto tournamentDto = new TournamentDto();
-        tournamentDto.setTournamentList(tournamentRepository.findStatusOrderByIdentifier(true));
+        tournamentDto.setTournamentList(tournamentRepository.findByStatusOrderByIdentifier(true));
         tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
         return tournamentDto;
     }

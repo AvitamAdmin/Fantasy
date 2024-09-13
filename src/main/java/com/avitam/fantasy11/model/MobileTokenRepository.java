@@ -15,6 +15,6 @@ public interface MobileTokenRepository extends MongoRepository<MobileToken, Obje
 
     void deleteByRecordId(String recordId);
 
-    List<MobileToken> findStatusOrderByIdentifier(boolean b);
+    List<MobileToken> findByStatusOrderByIdentifier(boolean b);
 
 }

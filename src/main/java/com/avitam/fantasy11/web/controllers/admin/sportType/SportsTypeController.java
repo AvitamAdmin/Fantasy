@@ -41,7 +41,7 @@ public class SportsTypeController extends BaseController {
     @ResponseBody
     public SportTypeDto getSportType(){
         SportTypeDto sportTypeDto= new SportTypeDto();
-        sportTypeDto.setSportTypeList(sportTypeRepository.findStatusOrderByIdentifier(true));
+        sportTypeDto.setSportTypeList(sportTypeRepository.findByStatusOrderByIdentifier(true));
         sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }
@@ -65,7 +65,7 @@ public class SportsTypeController extends BaseController {
     @ResponseBody
     public SportTypeDto addSportType(Model model) {
         SportTypeDto sportTypeDto= new SportTypeDto();
-        sportTypeDto.setSportTypeList(sportTypeRepository.findStatusOrderByIdentifier(true));
+        sportTypeDto.setSportTypeList(sportTypeRepository.findByStatusOrderByIdentifier(true));
         sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }

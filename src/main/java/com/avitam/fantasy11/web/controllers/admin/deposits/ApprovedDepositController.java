@@ -39,7 +39,7 @@ public class ApprovedDepositController extends BaseController {
     @ResponseBody
     public DepositsDto getDeposit(){
         DepositsDto depositsDto=new DepositsDto();
-        depositsDto.setDepositsList(depositsRepository.findStatusOrderByIdentifier(true));
+        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_APPROVEDDEPOSIT);
         return depositsDto;
     }
@@ -63,7 +63,7 @@ public class ApprovedDepositController extends BaseController {
     @ResponseBody
     public DepositsDto add() {
         DepositsDto depositsDto = new DepositsDto();
-        depositsDto.setDepositsList(depositsRepository.findStatusOrderByIdentifier(true));
+        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_APPROVEDDEPOSIT);
         return depositsDto;
     }
