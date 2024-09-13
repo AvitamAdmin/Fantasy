@@ -12,8 +12,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class BaseController {
+
     protected <T> T isSearchActive(T type) {
-        if (type != null) {
+        if(type != null) {
             Field[] fields = type.getClass().getDeclaredFields();
             boolean isSearchActive = isSearchActive(fields, type);
             if (!isSearchActive) {

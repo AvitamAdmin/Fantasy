@@ -1,17 +1,26 @@
 package com.avitam.fantasy11.web.controllers.admin.notification;
 
+import com.avitam.fantasy11.api.dto.AddressDto;
+import com.avitam.fantasy11.api.dto.NotificationDto;
+import com.avitam.fantasy11.api.dto.PaginationDto;
+import com.avitam.fantasy11.api.service.NotificationService;
+import com.avitam.fantasy11.api.service.Pagination;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.NotificationForm;
 import com.avitam.fantasy11.model.*;
 //import com.avitam.fantasy11.validation.AddressFormValidator;
 //import com.avitam.fantasy11.validation.NotificationFormValidator;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
 import java.util.List;
@@ -19,7 +28,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/notification")
-public class NotificationController {
+public class NotificationController extends BaseController {
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -28,75 +37,70 @@ public class NotificationController {
     @Autowired
     private NodeRepository nodeRepository;
     @Autowired
+    private NotificationService notificationService;
+    @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
 
-    @GetMapping
-    public String getAllModels(Model model) {
-        model.addAttribute("models", notificationRepository.findAll());
-        return "notification/notifications";
+    public static final String ADMIN_NOTIFICATION = "/admin/notification";
+
+    @PostMapping
+    @ResponseBody
+    public NotificationDto getAllNotifications(NotificationDto notificationDto) {
+        Pageable pageable=getPageable(notificationDto.getPage(),notificationDto.getSizePerPage(),notificationDto.getSortDirection(),notificationDto.getSortField());
+        Notification notification=notificationDto.getNotification();
+        Page<Notification> page=isSearchActive(notification)!=null ? notificationRepository.findAll(Example.of(notification),pageable) : notificationRepository.findAll(pageable);
+        notificationDto.setNotificationList(page.getContent());
+        notificationDto.setTotalPages(page.getTotalPages());
+        notificationDto.setTotalRecords(page.getTotalElements());
+        notificationDto.setBaseUrl(ADMIN_NOTIFICATION);
+        return notificationDto;
+
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public NotificationDto getActiveNotificationList(){
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.setNotificationList(notificationRepository.findByStatusOrderByIdentifier(true));
+        notificationDto.setBaseUrl(ADMIN_NOTIFICATION);
+        return notificationDto;
     }
 
     @GetMapping("/edit")
-    public String editNotification(@RequestParam("id") String id, Model model) {
+    @ResponseBody
+    public NotificationDto editNotification(@RequestBody NotificationDto request) {
+        NotificationDto notificationDto = new NotificationDto();
 
-        Optional<Notification> notificationOptional = notificationRepository.findByRecordId(id);
-        if (notificationOptional.isPresent()) {
-            Notification notification = notificationOptional.get();
-            NotificationForm notificationForm = modelMapper.map(notification, NotificationForm.class);
-            notificationForm.setId(String.valueOf(notification.getId()));
-            model.addAttribute("editForm", notificationForm);
-        }
-        return "notification/edit";
+        Notification notification = notificationRepository.findByRecordId(request.getRecordId());
+        notificationDto.setNotification(notification);
+        notificationDto.setBaseUrl(ADMIN_NOTIFICATION);
+        return notificationDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") NotificationForm notificationForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "notification/edit";
-        }
-            notificationForm.setLastModified(new Date());
-        if (notificationForm.getId() == null) {
-            notificationForm.setCreationTime(new Date());
-            notificationForm.setCreator(coreService.getCurrentUser().getEmail());
-            notificationForm.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
-        }
-        Notification notification = modelMapper.map(notificationForm, Notification.class);
-
-        Optional<Notification> notificationOptional = notificationRepository.findById(notificationForm.getId());
-        if(notificationOptional.isPresent()){
-            notification.setId(notificationOptional.get().getId());
-        }
-
-        notificationRepository.save(notification);
-        if(notification.getRecordId()==null)
-        {
-            notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
-        }
-        notificationRepository.save(notification);
-        model.addAttribute("editForm", notificationForm);
-        return "redirect:/admin/notification";
+    public NotificationDto handleEdit(@RequestBody NotificationDto request) {
+        return notificationService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addNotification(Model model) {
-        NotificationForm form = new NotificationForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "notification/edit";
+    @ResponseBody
+    public NotificationDto addNotification(Model model) {
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.setNotificationList(notificationRepository.findByStatusOrderByIdentifier(true));
+        notificationDto.setBaseUrl(ADMIN_NOTIFICATION);
+        return notificationDto;
     }
 
-    @GetMapping("/delete")
-    public String deleteNotification(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-
+    @PostMapping("/delete")
+    @ResponseBody
+    public NotificationDto deleteNotification(@RequestBody NotificationDto notificationDto) {
+        for (String id : notificationDto.getRecordId().split(",")) {
             notificationRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/notification";
+        notificationDto.setMessage("Data deleted successfully");
+        notificationDto.setBaseUrl(ADMIN_NOTIFICATION);
+        return notificationDto;
     }
 }

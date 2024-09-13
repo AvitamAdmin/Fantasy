@@ -1,11 +1,17 @@
-package com.avitam.fantasy11.web.controllers.admin.userTeams;
+package com.avitam.fantasy11.web.controllers.admin.userteams;
 
+import com.avitam.fantasy11.api.dto.UserTeamsDto;
+import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.UserTeamsForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/userTeams")
-public class UserTeamsController {
+public class UserTeamsController extends BaseController {
 
     @Autowired
     private MatchesRepository matchesRepository;
@@ -28,15 +34,86 @@ public class UserTeamsController {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private UserTeamsService userTeamsService;
 
+    public static final String ADMIN_USERTEAMS = "/admin/userTeams";
 
-    @GetMapping
-    public String getAllUserTeams(Model model) {
-        model.addAttribute("models", userTeamsRepository.findAll().stream().filter(userTeam -> userTeam.getId() != null).collect(Collectors.toList()));
-        return "userTeams/userTeam";
+    @PostMapping
+    @ResponseBody
+    public UserTeamsDto getAllUserTeams(UserTeamsDto userTeamsDto) {
+
+        Pageable pageable = getPageable(userTeamsDto.getPage(), userTeamsDto.getSizePerPage(), userTeamsDto.getSortDirection(), userTeamsDto.getSortField());
+        UserTeams userTeams = userTeamsDto.getUserTeams();
+        Page<UserTeams> page = isSearchActive(userTeams)!=null? userTeamsRepository.findAll(Example.of(userTeams), pageable) : userTeamsRepository.findAll(pageable);
+        userTeamsDto.setUserTeamsList(page.getContent());
+        userTeamsDto.setTotalPages(page.getTotalPages());
+        userTeamsDto.setTotalRecords(page.getTotalElements());
+        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamsDto;
     }
 
+    @GetMapping("/get")
     @ResponseBody
+    public UserTeamsDto getActiveUserTeams(){
+        UserTeamsDto userTeamsDto = new UserTeamsDto();
+        userTeamsDto.setUserTeamsList(userTeamsRepository.findByStatusOrderByIdentifier(true));
+        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
+
+        return userTeamsDto;
+    }
+
+    @GetMapping("/migrate")
+    public void migrate()
+    {
+        List<UserTeams> userTeams=userTeamsRepository.findAll();
+        for(UserTeams userTeams1:userTeams)
+        {
+            userTeams1.setRecordId(String.valueOf(userTeams1.getId().getTimestamp()));
+            userTeamsRepository.save(userTeams1);
+        }
+    }
+
+    @GetMapping("/edit")
+    @ResponseBody
+    public UserTeamsDto editUserTeams(@RequestBody UserTeamsDto request) {
+
+        UserTeamsDto userTeamsDto = new UserTeamsDto();
+        UserTeams userTeams = userTeamsRepository.findByRecordId(request.getRecordId());
+        userTeamsDto.setUserTeams(userTeams);
+        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamsDto;
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    public UserTeamsDto handleEdit(@RequestBody UserTeamsDto request) {
+        return userTeamsService.handleEdit(request);
+    }
+
+    @GetMapping("/add")
+    @ResponseBody
+    public String addUserTeams() {
+        UserTeamsDto userTeamsDto = new UserTeamsDto();
+        userTeamsDto.setUserTeamsList(userTeamsRepository.findByStatusOrderByIdentifier(true));
+        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
+
+        return "userTeams/edit";
+    }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public UserTeamsDto delete(@RequestBody UserTeamsDto userTeamsDto) {
+        for (String id : userTeamsDto.getRecordId().split(",")) {
+            userTeamsRepository.deleteByRecordId(id);
+        }
+        userTeamsDto.setMessage("Data deleted successfully");
+        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamsDto;
+    }
+}
+
+/* @ResponseBody
     @GetMapping("/getPlayersByMatchId/{matchId}")
     public Map<Integer,List<String>> getMatchDetails(@PathVariable String matchId, Model model){
         Map<Integer, List<String>> userTeamPlayers = new HashMap<>();
@@ -74,92 +151,4 @@ public class UserTeamsController {
         userTeamPlayers.put(2, playersName);
 
         return userTeamPlayers;
-    }
-
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<UserTeams> userTeams=userTeamsRepository.findAll();
-        for(UserTeams userTeams1:userTeams)
-        {
-            userTeams1.setRecordId(String.valueOf(userTeams1.getId().getTimestamp()));
-            userTeamsRepository.save(userTeams1);
-        }
-    }
-
-    @GetMapping("/edit")
-    public String editUserTeams(@RequestParam("id") String id, Model model) {
-
-        Optional<UserTeams> userTeamsOptional = userTeamsRepository.findByRecordId(id);
-        if (userTeamsOptional.isPresent()) {
-
-            UserTeams userTeams = userTeamsOptional.get();
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            UserTeamsForm userTeamsForm=modelMapper.map(userTeams,UserTeamsForm.class);
-            userTeamsForm.setId(String.valueOf(userTeams.getId()));
-
-            model.addAttribute("editForm", userTeamsForm);
-            model.addAttribute("matches",matchesRepository.findAll());
-        }
-
-        return "userTeams/edit";
-    }
-
-    @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")  UserTeamsForm userTeamsForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm",userTeamsForm);
-            return "userTeams/edit";
-        }
-        userTeamsForm.setLastModified(new Date());
-
-        if (userTeamsForm.getId() == null) {
-            userTeamsForm.setCreationTime(new Date());
-            userTeamsForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        UserTeams userTeams = modelMapper.map(userTeamsForm, UserTeams.class);
-
-        Optional<UserTeams> userTeamsOptional=userTeamsRepository.findById(userTeamsForm.getId());
-        if(userTeamsOptional.isPresent()) {
-            userTeams.setId(userTeamsOptional.get().getId());
-        }
-
-        Optional<Matches> matchesOptional=matchesRepository.findById(String.valueOf(userTeamsForm.getMatchId()));
-        if(matchesOptional.isPresent()){
-            userTeams.setMatchId(String.valueOf(matchesOptional.get().getId()));
-        }
-
-        userTeamsRepository.save(userTeams);
-        if(userTeams.getRecordId()==null)
-        {
-            userTeams.setRecordId(String.valueOf(userTeams.getId().getTimestamp()));
-        }
-        userTeamsRepository.save(userTeams);
-        model.addAttribute("editForm", userTeamsForm);
-        return "redirect:/admin/userTeams";
-    }
-
-    @GetMapping("/add")
-    public String addUserTeams( Model model) {
-        UserTeamsForm form = new UserTeamsForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("matches",matchesRepository.findAll());
-
-        return "userTeams/edit";
-    }
-
-    @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-            userTeamsRepository.deleteByRecordId(id);
-        }
-        return "redirect:/admin/userTeams";
-    }
-}
+    }*/
