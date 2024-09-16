@@ -12,9 +12,9 @@ public interface PlayerRepository extends MongoRepository<Player, ObjectId> {
 
     List<Player> findByTeamId(String teamId);
 
-    Optional<Player> findByRecordId(String recordId);
+    Player findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
-
+    Player findByStatusOrderByIdentifier(boolean b);
 }

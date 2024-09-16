@@ -1,149 +1,81 @@
 package com.avitam.fantasy11.web.controllers.admin.player;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.PlayerForm;
-import com.avitam.fantasy11.form.TeamForm;
+import com.avitam.fantasy11.api.dto.PlayerDto;
+import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.model.*;
-import org.bson.types.Binary;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/player")
-public class PlayerController {
+public class PlayerController extends BaseController {
 
     @Autowired
     private PlayerRepository playerRepository;
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private PlayerRoleRepository playerRoleRepository;
-    @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
+    private PlayerService playerService;
+    private static final String ADMIN_PlAYER="/admin/player";
 
-    @GetMapping
-    public String getAll(Model model){
-        List<Player> datas=new ArrayList<>();
-        List<Player> players = playerRepository.findAll();
-        for(Player player:players){
-            if(player.getId()!=null) {
-                byte[] image = player.getPlayerImage().getData();
-                player.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(player);
-            }
-        }
-        model.addAttribute("models", datas);
-        return "player/players";
-    }
+  @PostMapping
+  @ResponseBody
+  public PlayerDto getAllPlayers(PlayerDto playerDto){
+      Pageable pageable=getPageable(playerDto.getPage(),playerDto.getSizePerPage(),playerDto.getSortDirection(),playerDto.getSortField());
+      Player player=playerDto.getPlayer();
+      Page<Player>page=isSearchActive(player)  != null ? playerRepository.findAll(Example.of(player),pageable): playerRepository.findAll(pageable);
+      playerDto.setBaseUrl(ADMIN_PlAYER);
+      playerDto.setTotalPages(page.getTotalPages());
+      playerDto.setTotalRecords(page.getTotalElements());
+      return  playerDto;
+  }
 
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<Player> playerList=playerRepository.findAll();
-        for(Player player:playerList)
-        {
-            player.setRecordId(String.valueOf(player.getId().getTimestamp()));
-            playerRepository.save(player);
-        }
+    @GetMapping("/get")
+    @ResponseBody
+    public PlayerDto getAll(){
+        PlayerDto playerDto=new PlayerDto();
+        playerDto.setPlayer(playerRepository.findByStatusOrderByIdentifier(true));
+        playerDto.setBaseUrl(ADMIN_PlAYER);
+        return playerDto;
     }
 
     @GetMapping("/edit")
-    public String editPlayer(@RequestParam("id")String id, Model model){
+    public PlayerDto editPlayer(@RequestBody PlayerDto request){
+        PlayerDto playerDto=new PlayerDto();
+        playerDto.setPlayer(playerRepository.findByRecordId(request.getRecordId()));
+        playerDto.setBaseUrl(ADMIN_PlAYER);
+        return playerDto;
 
-        Optional<Player> playerOptional = playerRepository.findByRecordId(id);
-        if (playerOptional.isPresent()) {
-            Player player = playerOptional.get();
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            PlayerForm playerForm = modelMapper.map(player, PlayerForm.class);
-            playerForm.setId(String.valueOf(player.getId()));
-
-            byte[] image = player.getPlayerImage().getData();
-            player.setPic(Base64.getEncoder().encodeToString(image));
-            playerForm.setPic(player.getPic());
-
-            model.addAttribute("editForm", playerForm);
-        }
-        model.addAttribute("teams", teamRepository.findAll());
-        model.addAttribute("playerRoles", playerRoleRepository.findAll());
-        return "player/edit";
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")PlayerForm playerForm,String id, Model model, BindingResult result) throws IOException {
 
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", playerForm);
-            return "player/edit";
-        }
+    public PlayerDto handleEdit(@RequestBody PlayerDto request) {
 
-        byte[] fig= playerForm.getPlayerImage().getBytes();
-        Binary binary=new Binary(fig);
-
-            playerForm.setLastModified(new Date());
-        if (playerForm.getId() == null) {
-            playerForm.setCreationTime(new Date());
-            playerForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        Player player = modelMapper.map(playerForm, Player.class);
-        Optional<Player> playerOptional=playerRepository.findById(playerForm.getId());
-        if(playerOptional.isPresent()){
-            player.setId(playerOptional.get().getId());
-        }
-
-        player.setPlayerImage(binary);
-
-        Optional<Team> teamOptional = teamRepository.findById(playerForm.getTeamId());
-        if(teamOptional.isPresent()){
-            player.setTeamId(String.valueOf(teamOptional.get().getId()));
-        }
-
-        Optional<PlayerRole> playerRoleOptional = playerRoleRepository.findById(playerForm.getPlayerRoleId());
-        if(playerRoleOptional.isPresent()){
-            player.setPlayerRoleId(String.valueOf(playerRoleOptional.get().getId()));
-        }
-
-        playerRepository.save(player);
-        if(player.getRecordId()==null)
-        {
-            player.setRecordId(String.valueOf(player.getId().getTimestamp()));
-        }
-        playerRepository.save(player);
-        model.addAttribute("editForm", playerForm);
-
-        return "redirect:/admin/player";
+        return playerService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addPlayer(Model model) {
-        PlayerForm form = new PlayerForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("teams", teamRepository.findAll());
-        model.addAttribute("playerRoles", playerRoleRepository.findAll());
-        return "player/edit";
+    @ResponseBody
+    public PlayerDto addPlayer() {
+        PlayerDto playerDto=new PlayerDto();
+        playerDto.setPlayer(playerRepository.findByStatusOrderByIdentifier(true));
+        playerDto.setBaseUrl(ADMIN_PlAYER);
+        return playerDto;
     }
+
     @GetMapping("/delete")
-    public String deletePlayer(@RequestParam("id") String ids, Model model) {
-       for (String id : ids.split(",")) {
+    @ResponseBody
+    public PlayerDto deletePlayer(@RequestBody PlayerDto playerDto) {
+       for (String id : playerDto.getRecordId().split(",")) {
             playerRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/player";
+       playerDto.setMessage("Data deleted Successfully");
+       playerDto.setBaseUrl(ADMIN_PlAYER);
+        return playerDto;
     }
 }

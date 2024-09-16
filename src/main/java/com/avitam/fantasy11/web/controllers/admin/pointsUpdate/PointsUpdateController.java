@@ -1,122 +1,80 @@
 package com.avitam.fantasy11.web.controllers.admin.pointsUpdate;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.PointsMasterForm;
-import com.avitam.fantasy11.form.PointsUpdateForm;
+import com.avitam.fantasy11.api.dto.PointsUpdateDto;
+import com.avitam.fantasy11.api.service.PointsUpdateService;
 import com.avitam.fantasy11.model.*;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/pointsUpdate")
-public class PointsUpdateController {
+public class PointsUpdateController extends BaseController {
 
     @Autowired
     private PointsUpdateRepository pointsUpdateRepository;
     @Autowired
-    private MatchesRepository matchesRepository;
-    @Autowired
-    private PlayerRepository playerRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
+    private PointsUpdateService pointsUpdateService;
+    private static final String ADMIN_POINTSUPDATE="/admin/pointsUpdate";
 
-    @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("models", pointsUpdateRepository.findAll());
-        return "pointsUpdate/pointsUpdates";
+    @GetMapping("/get")
+    @ResponseBody
+    public PointsUpdateDto getPointsUpdate() {
+        PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();
+        pointsUpdateDto.setPointsUpdate(pointsUpdateRepository.findByStatusOrderByIdentifier(true));
+        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
+        return pointsUpdateDto;
+    }
+
+    @PostMapping
+    @ResponseBody
+    public PointsUpdateDto getAllPointsUpdate(PointsUpdateDto pointsUpdateDto){
+
+        Pageable pageable=getPageable(pointsUpdateDto.getPage(),pointsUpdateDto.getSizePerPage(),pointsUpdateDto.getSortDirection(),pointsUpdateDto.getSortField());
+        PointsUpdate pointsUpdate=pointsUpdateDto.getPointsUpdate();
+        Page<PointsUpdate>page=isSearchActive(pointsUpdate) != null ? pointsUpdateRepository.findAll(Example.of(pointsUpdate),pageable): pointsUpdateRepository.findAll(pageable);
+        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
+        pointsUpdateDto.setTotalPages(page.getTotalPages());
+        pointsUpdateDto.setTotalRecords(page.getTotalElements());
+        return pointsUpdateDto;
     }
 
     @GetMapping("/edit")
-    public String editPointsUpdate(@RequestParam("id") String id, Model model) {
-
-        Optional<PointsUpdate> pointsUpdateOptional = pointsUpdateRepository.findByRecordId(id);
-
-        if (pointsUpdateOptional.isPresent()) {
-            PointsUpdate pointsUpdate = pointsUpdateOptional.get();
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            PointsUpdateForm pointsUpdateForm = modelMapper.map(pointsUpdate, PointsUpdateForm.class);
-            pointsUpdateForm.setId(String.valueOf(pointsUpdate.getId()));
-            model.addAttribute("editForm", pointsUpdateForm);
-        }
-        model.addAttribute("matches",matchesRepository.findAll());
-        model.addAttribute("players",playerRepository.findAll());
-
-        return "pointsUpdate/edit";
+    @ResponseBody
+    public PointsUpdateDto editPointsUpdate(@RequestBody PointsUpdateDto request) {
+        PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();
+        PointsUpdate pointsUpdate = pointsUpdateRepository.findByRecordId(request.getRecordId());
+        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
+        return pointsUpdateDto;
     }
 
-
-
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")  PointsUpdateForm pointsUpdateForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "pointsUpdate/edit";
-        }
-        pointsUpdateForm.setLastModified(new Date());
-
-        if (pointsUpdateForm.getId() == null) {
-            pointsUpdateForm.setCreationTime(new Date());
-            pointsUpdateForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        PointsUpdate pointsUpdate = modelMapper.map(pointsUpdateForm, PointsUpdate.class);
-
-        Optional<PointsUpdate> pointsUpdateOptional=pointsUpdateRepository.findById(pointsUpdateForm.getId());
-        if(pointsUpdateOptional.isPresent()) {
-            pointsUpdate.setId(pointsUpdateOptional.get().getId());
-        }
-
-        Optional<Matches> matchesOptional=matchesRepository.findById(pointsUpdateForm.getMatchId());
-        if(matchesOptional.isPresent()){
-            pointsUpdate.setMatchId(String.valueOf(matchesOptional.get().getId()));
-        }
-        Optional<Player> playerOptional=playerRepository.findById(pointsUpdateForm.getPlayerId());
-        if(playerOptional.isPresent()){
-            pointsUpdate.setPlayerId(String.valueOf(playerOptional.get().getId()));
-        }
-
-        pointsUpdateRepository.save(pointsUpdate);
-        if(pointsUpdate.getRecordId()==null)
-        {
-            pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));
-        }
-        pointsUpdateRepository.save(pointsUpdate);
-        model.addAttribute("editForm", pointsUpdateForm);
-        return "redirect:/admin/pointsUpdate";
+    @ResponseBody
+    public PointsUpdateDto handleEdit(@RequestBody PointsUpdateDto request) {
+         return pointsUpdateService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addPointsUpdate(Model model) {
-        PointsUpdateForm form = new PointsUpdateForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("matches",matchesRepository.findAll());
-        model.addAttribute("players",playerRepository.findAll());
-
-        return "pointsUpdate/edit";
+    @ResponseBody
+    public PointsUpdateDto addPointsUpdate() {
+        PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();
+        pointsUpdateDto.setPointsUpdate(pointsUpdateRepository.findByStatusOrderByIdentifier(true));
+        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
+        return pointsUpdateDto;
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public PointsUpdateDto delete(@RequestBody PointsUpdateDto pointsUpdateDto) {
+        for (String id : pointsUpdateDto.getRecordId().split(",")) {
             pointsUpdateRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/pointsUpdate";
+        pointsUpdateDto.setMessage("Data deleted Successfully");
+        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
+        return pointsUpdateDto;
     }
 }
