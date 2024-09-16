@@ -1,9 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.mainContest;
 
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.model.MainContestRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,7 @@ public class MainContestController extends com.avitam.fantasy11.web.controllers.
 public MainContestDto getAllContest(MainContestDto mainContestDto) {
     Pageable pageable = getPageable(mainContestDto.getPage(),mainContestDto.getSizePerPage(),mainContestDto.getSortDirection(),mainContestDto.getSortField());
     MainContest mainContest=mainContestDto.getMainContest();
-    Page<MainContest> page=isSearchActive(mainContest)!=null?mainContestRepository.findAll(org.springframework.data.domain.Example.of(mainContest),pageable):mainContestRepository.findAll(pageable);
+    Page<MainContest> page=isSearchActive(mainContest)!=null ? mainContestRepository.findAll(org.springframework.data.domain.Example.of(mainContest),pageable):mainContestRepository.findAll(pageable);
     mainContestDto.setMainContestList(page.getContent());
     mainContestDto.setBaseUrl( ADMIN_MAINCONTEST);
     mainContestDto.setTotalPages(page.getTotalPages());

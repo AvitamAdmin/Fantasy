@@ -73,9 +73,9 @@ public class ClosedMatches {
     @GetMapping("/edit")
     public String editMatches(@RequestParam("id") String id, Model model) {
 
-        Optional<Matches> matchesOptional = matchesRepository.findByRecordId(id);
-        if (matchesOptional.isPresent()) {
-            Matches matches = matchesOptional.get();
+        Matches matchesOptional = matchesRepository.findByRecordId(id);
+        if (matchesOptional!=null) {
+            Matches matches = matchesOptional;
 
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             MatchesForm matchesForm = modelMapper.map(matches, MatchesForm.class);
@@ -136,13 +136,13 @@ public class ClosedMatches {
             matches.setTeam2Id(String.valueOf(teamOptional2.get().getId()));
         }
 
-        Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
-        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
-
-        Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
-        if(sportTypeOptional.isPresent()){
-            matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
-        }
+//        Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
+//        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
+//
+//        Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
+//        if(sportTypeOptional.isPresent()){
+//            matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
+//        }
 
         Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
         if(contestOptional.isPresent()){
