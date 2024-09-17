@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,7 @@ public class ContestController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public ContestDto getAllContest( ContestDto contestDto) {
+    public ContestDto getAllContest(@RequestBody ContestDto contestDto) {
         Pageable pageable = getPageable(contestDto.getPage(),contestDto.getSizePerPage(),contestDto.getSortDirection(),contestDto.getSortField());
         Contest contest=contestDto.getContest();
         Page<Contest> page=isSearchActive(contest)!=null?contestRepository.findAll(Example.of(contest),pageable):contestRepository.findAll(pageable);
@@ -37,7 +36,7 @@ public class ContestController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public ContestDto getContest(){
+    public ContestDto getActiveContest(){
         ContestDto contestDto=new ContestDto();
         contestDto.setContestList(contestRepository.findByStatusOrderByIdentifier(true));
         contestDto.setBaseUrl(ADMIN_CONTEST);
@@ -49,6 +48,7 @@ public class ContestController extends BaseController {
     public ContestDto editContest(@RequestBody ContestDto request) {
         ContestDto contestDto = new ContestDto();
         Contest contest = contestRepository.findByRecordId(request.getRecordId());
+        contestDto.setContest(contest);
         contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }

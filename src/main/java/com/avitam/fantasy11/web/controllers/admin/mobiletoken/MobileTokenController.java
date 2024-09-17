@@ -26,7 +26,7 @@ public class MobileTokenController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public MobileTokenDto getAllMobileToken(MobileTokenDto mobileTokenDto) {
+    public MobileTokenDto getAllMobileToken(@RequestBody MobileTokenDto mobileTokenDto) {
         Pageable pageable=getPageable(mobileTokenDto.getPage(),mobileTokenDto.getSizePerPage(),mobileTokenDto.getSortDirection(),mobileTokenDto.getSortField());
         MobileToken mobileToken=mobileTokenDto.getMobileToken();
         Page<MobileToken> page=isSearchActive(mobileToken)!=null ? mobileTokenRepository.findAll(Example.of(mobileToken),pageable):mobileTokenRepository.findAll(pageable);
@@ -38,7 +38,7 @@ public class MobileTokenController extends BaseController {
     }
     @GetMapping("/get")
     @ResponseBody
-    public MobileTokenDto getMobileToken() {
+    public MobileTokenDto getActiveMobileToken() {
         MobileTokenDto mobileTokenDto = new MobileTokenDto();
         mobileTokenDto.setMobileTokenList(mobileTokenRepository.findByStatusOrderByIdentifier(true));
         mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
@@ -51,6 +51,7 @@ public class MobileTokenController extends BaseController {
 
         MobileTokenDto mobileTokenDto=new MobileTokenDto();
         MobileToken mobileToken=mobileTokenRepository.findByRecordId(request.getRecordId());
+        mobileTokenDto.setMobileToken(mobileToken);
         mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }

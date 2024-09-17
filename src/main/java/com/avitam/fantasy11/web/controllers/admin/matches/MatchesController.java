@@ -1,28 +1,18 @@
 package com.avitam.fantasy11.web.controllers.admin.matches;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
+
 import com.avitam.fantasy11.api.dto.MatchesDto;
 import com.avitam.fantasy11.api.service.MatchesService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.MatchesForm;
 import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.apache.catalina.mbeans.BaseCatalinaMBean;
-import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/matches")
@@ -50,7 +40,7 @@ public class MatchesController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public MatchesDto getAllModel(MatchesDto matchesDto) {
+    public MatchesDto getAllMatches(@RequestBody MatchesDto matchesDto) {
         Pageable pageable=getPageable(matchesDto.getPage(),matchesDto.getSizePerPage(),matchesDto.getSortDirection(),matchesDto.getSortField());
         Matches matches=matchesDto.getMatches();
         Page<Matches> page=isSearchActive(matches)!=null ? matchesRepository.findAll(Example.of(matches),pageable) : matchesRepository.findAll(pageable);
@@ -63,7 +53,7 @@ public class MatchesController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public MatchesDto getActiveMatchesList() {
+    public MatchesDto getActiveMatches() {
         MatchesDto matchesDto = new MatchesDto();
         matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
         matchesDto.setBaseUrl(ADMIN_MATCHES);

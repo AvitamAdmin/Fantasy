@@ -1,30 +1,16 @@
 package com.avitam.fantasy11.web.controllers.admin.notification;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.NotificationDto;
-import com.avitam.fantasy11.api.dto.PaginationDto;
 import com.avitam.fantasy11.api.service.NotificationService;
-import com.avitam.fantasy11.api.service.Pagination;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.NotificationForm;
 import com.avitam.fantasy11.model.*;
-//import com.avitam.fantasy11.validation.AddressFormValidator;
-//import com.avitam.fantasy11.validation.NotificationFormValidator;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/notification")
@@ -33,16 +19,7 @@ public class NotificationController extends BaseController {
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
-    private AddressRepository addressRepository;
-    @Autowired
-    private NodeRepository nodeRepository;
-    @Autowired
     private NotificationService notificationService;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
-
     public static final String ADMIN_NOTIFICATION = "/admin/notification";
 
     @PostMapping

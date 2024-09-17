@@ -25,7 +25,7 @@ public class KYCController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public KYCDto getAllModels(KYCDto kycDto) {
+    public KYCDto getAllKYCs(@RequestBody KYCDto kycDto) {
         Pageable pageable= getPageable(kycDto.getPage(),kycDto.getSizePerPage(),kycDto.getSortDirection(),kycDto.getSortField());
         KYC kyc=kycDto.getKyc();
         Page<KYC> page=isSearchActive(kyc)!=null ? kycRepository.findAll(Example.of(kyc),pageable):kycRepository.findAll(pageable);
@@ -37,7 +37,7 @@ public class KYCController extends BaseController {
     }
     @GetMapping("/get")
     @ResponseBody
-    public KYCDto getKYC(){
+    public KYCDto getActiveKYC(){
         KYCDto kycDto=new KYCDto();
         kycDto.setKycList(kycRepository.findByStatusOrderByIdentifier(true));
         kycDto.setBaseUrl(ADMIN_KYC);
@@ -49,6 +49,7 @@ public class KYCController extends BaseController {
     public KYCDto editKyc(@RequestBody KYCDto request) {
         KYCDto kycDto=new KYCDto();
         KYC  kyc = kycRepository.findByRecordId(request.getRecordId());
+        kycDto.setKyc(kyc);
         kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
     }
