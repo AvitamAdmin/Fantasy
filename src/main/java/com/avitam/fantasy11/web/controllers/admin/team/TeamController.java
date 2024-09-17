@@ -37,16 +37,11 @@ public class TeamController extends BaseController {
     private TeamRepository teamRepository;
     @Autowired
     private TeamService teamService;
-    @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
-
     public static final String ADMIN_TEAM = "/admin/team";
 
     @PostMapping
     @ResponseBody
-    public TeamDto getAllAddress(TeamDto teamDto){
+    public TeamDto getAllTeams(@RequestBody TeamDto teamDto){
 
         Pageable pageable=getPageable(teamDto.getPage(),teamDto.getSizePerPage(),teamDto.getSortDirection(),teamDto.getSortField());
         Team team=teamDto.getTeam();

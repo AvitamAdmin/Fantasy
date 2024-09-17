@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/deposit/pendingDeposits")
+@RequestMapping("/admin/pendingDeposits")
 public class PendingDepositController extends BaseController {
 
 
@@ -25,7 +25,7 @@ public class PendingDepositController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public DepositsDto getAllModels(DepositsDto depositsDto) {
+    public DepositsDto getAllPendingDeposit(@RequestBody DepositsDto depositsDto) {
         Pageable pageable=getPageable(depositsDto.getPage(),depositsDto.getSizePerPage(),depositsDto.getSortDirection(),depositsDto.getSortField());
         Deposits deposits=depositsDto.getDeposits();
         Page<Deposits> page=isSearchActive(deposits) !=null ? depositsRepository.findAll(Example.of(deposits),pageable) : depositsRepository.findAll(pageable);
@@ -38,7 +38,7 @@ public class PendingDepositController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public DepositsDto getDeposit(){
+    public DepositsDto getActiveDeposit(){
         DepositsDto depositsDto=new DepositsDto();
         depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_PENDINGDEPOSIT);
@@ -50,6 +50,7 @@ public class PendingDepositController extends BaseController {
     public DepositsDto edit(@RequestBody DepositsDto request) {
         DepositsDto depositsDto=new DepositsDto();
         Deposits deposits=depositsRepository.findByRecordId(request.getRecordId());
+        depositsDto.setDeposits(deposits);
         depositsDto.setBaseUrl(ADMIN_PENDINGDEPOSIT);
         return depositsDto;
     }

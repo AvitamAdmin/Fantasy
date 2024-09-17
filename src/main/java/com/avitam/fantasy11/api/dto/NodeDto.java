@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.api.dto;
 
-import com.avitam.fantasy11.model.PointsUpdate;
+import com.avitam.fantasy11.model.Node;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PointsUpdateDto extends CommonDto{
+public class NodeDto extends CommonDto{
 
-    private PointsUpdate pointsUpdate;
-    private List<PointsUpdate> pointsUpdateList;
+    private Node node;
+    private List<Node> nodeList;
 }

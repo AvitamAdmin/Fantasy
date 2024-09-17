@@ -1,191 +1,85 @@
 package com.avitam.fantasy11.web.controllers.admin.matches;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.MatchesForm;
+import com.avitam.fantasy11.api.dto.MatchesDto;
+import com.avitam.fantasy11.api.service.MatchesService;
 import com.avitam.fantasy11.model.*;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/closedMatches")
-public class ClosedMatches {
+public class ClosedMatches extends BaseController {
 
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private TournamentRepository tournamentRepository;
-    @Autowired
-    private SportTypeRepository sportTypeRepository;
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private MatchTypeRepository matchTypeRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
+    private MatchesService matchesService;
 
-    @GetMapping
-    public String getAllModels(Model model) {
-        List<Matches> matches= matchesRepository.findAll();
-        List<Matches> liveMatches=new ArrayList<>();
-        LocalDateTime currentDateTime=LocalDateTime.now();
-        LocalDateTime currentTime=LocalDateTime.now();
-        LocalDateTime startTime;
-        LocalDateTime endTime;
-        for(Matches match:matches)
-        {
-            startTime=LocalDateTime.parse(match.getStartDateAndTime());
-            endTime=LocalDateTime.parse(match.getEndDateAndTime());
-            if(currentDateTime.isAfter(endTime))
-            {
-                liveMatches.add(match);
-            }
-            if(currentTime.isAfter(endTime))
-            {
-                match.setEvent("Closed");
-            } else if (currentTime.isAfter(startTime)&&currentTime.isBefore(endTime)) {
-                match.setEvent("Live");
-            }
-            else if(currentTime.isBefore(startTime))
-            {
-                match.setEvent("Upcoming");
-            }
-        }
-        model.addAttribute("models", liveMatches);
-        return "matches/closedMatches";
+    private static final String ADMIN_CLOSEDMATCHES="/admin/closedMatches";
+
+    @PostMapping
+    @ResponseBody
+    public MatchesDto getAllModels(@RequestBody MatchesDto matchesDto){
+        Pageable pageable=getPageable(matchesDto.getPage(),matchesDto.getSizePerPage(),matchesDto.getSortDirection(),matchesDto.getSortField());
+        Matches matches=matchesDto.getMatches();
+        Page<Matches> page=isSearchActive(matches)!=null ? matchesRepository.findAll(Example.of(matches),pageable) : matchesRepository.findAll(pageable);
+        matchesDto.setMatchesList(page.getContent());
+        matchesDto.setBaseUrl(ADMIN_CLOSEDMATCHES);
+        matchesDto.setTotalPages(page.getTotalPages());
+        matchesDto.setTotalRecords(page.getTotalElements());
+        return matchesDto;
     }
 
+    @GetMapping("/get")
+    @ResponseBody
+    public MatchesDto getActiveMatches() {
+        MatchesDto matchesDto=new MatchesDto();
+        matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
+        matchesDto.setBaseUrl(ADMIN_CLOSEDMATCHES);
+        return matchesDto;
+    }
 
     @GetMapping("/edit")
-    public String editMatches(@RequestParam("id") String id, Model model) {
+    @ResponseBody
+    public MatchesDto editMatches(@RequestBody MatchesDto request) {
 
-        Matches matchesOptional = matchesRepository.findByRecordId(id);
-        if (matchesOptional!=null) {
-            Matches matches = matchesOptional;
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            MatchesForm matchesForm = modelMapper.map(matches, MatchesForm.class);
-            matchesForm.setId(String.valueOf(matches.getId()));
-
-            model.addAttribute("editForm", matchesForm);
-        }
-        model.addAttribute("teams", teamRepository.findAll());
-        model.addAttribute("tournaments", tournamentRepository.findAll());
-        model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("contests", contestRepository.findAll());
-        model.addAttribute("matchTypes", matchTypeRepository.findAll());
-        return "matches/edit";
+        MatchesDto matchesDto=new MatchesDto();
+        Matches matches= matchesRepository.findByRecordId(request.getRecordId());
+        matchesDto.setMatches(matches);
+        matchesDto.setBaseUrl(ADMIN_CLOSEDMATCHES);
+        return matchesDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") MatchesForm matchesForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "matches/edit";
-        }
-        matchesForm.setLastModified(new Date());
-        if (matchesForm.getId() == null) {
-            matchesForm.setCreationTime(new Date());
-            matchesForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        Matches matches = modelMapper.map(matchesForm, Matches.class);
+    @ResponseBody
+    public MatchesDto handleEdit(@RequestBody MatchesDto request){
 
-
-
-        LocalDateTime currentTime=LocalDateTime.now();
-        LocalDateTime startTime=LocalDateTime.parse(matches.getStartDateAndTime());
-        LocalDateTime endTime=LocalDateTime.parse(matches.getEndDateAndTime());
-
-        if(currentTime.isAfter(endTime))
-        {
-            matches.setEvent("Closed");
-        } else if (currentTime.isAfter(startTime)&&currentTime.isBefore(endTime)) {
-            matches.setEvent("Live");
-        }
-        else if(currentTime.isBefore(startTime))
-        {
-            matches.setEvent("Upcoming");
-        }
-
-        Optional<Matches> matchesOptional = matchesRepository.findById(matchesForm.getId());
-        if(matchesOptional.isPresent()){
-            matches.setId(matchesOptional.get().getId());
-        }
-
-        Optional<Team> teamOptional1 = teamRepository.findById(matchesForm.getTeam1Id());
-        if(teamOptional1.isPresent()){
-            matches.setTeam1Id(String.valueOf(teamOptional1.get().getId()));
-        }
-
-        Optional<Team> teamOptional2 = teamRepository.findById(matchesForm.getTeam2Id());
-        if(teamOptional2.isPresent()){
-            matches.setTeam2Id(String.valueOf(teamOptional2.get().getId()));
-        }
-
-//        Optional<Tournament> tournamentOptional = tournamentRepository.findById(matchesForm.getTournamentId());
-//        if(tournamentOptional.isPresent()) matches.setTournamentId(String.valueOf(tournamentOptional.get().getId()));
-//
-//        Optional<SportType> sportTypeOptional = sportTypeRepository.findById(matchesForm.getSportTypeId());
-//        if(sportTypeOptional.isPresent()){
-//            matches.setSportTypeId(String.valueOf(sportTypeOptional.get().getId()));
-//        }
-
-        Optional<Contest> contestOptional = contestRepository.findById(matchesForm.getContestId());
-        if(contestOptional.isPresent()){
-            matches.setContestId(String.valueOf(contestOptional.get().getId()));
-        }
-
-        Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchesForm.getMatchTypeId());
-        if(matchTypeOptional.isPresent()){
-            matches.setMatchTypeId(String.valueOf(matchTypeOptional.get().getId()));
-        }
-
-        matchesRepository.save(matches);
-        if(matches.getRecordId()==null)
-        {
-            matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
-        }
-        matchesRepository.save(matches);
-        model.addAttribute("editForm", matchesForm);
-        return "redirect:/admin/matches";
+        return matchesService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addMatches(Model model) {
-        MatchesForm form = new MatchesForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setMatchStatus(true);
-        model.addAttribute("editForm", form);
-        model.addAttribute("teams", teamRepository.findAll());
-        model.addAttribute("tournaments", tournamentRepository.findAll());
-        model.addAttribute("sportTypes", sportTypeRepository.findAll());
-        model.addAttribute("contests", contestRepository.findAll());
-        model.addAttribute("matchTypes", matchTypeRepository.findAll());
-        return "matches/edit";
+    @ResponseBody
+    public MatchesDto addMatches() {
+        MatchesDto matchesDto=new MatchesDto();
+        matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
+        matchesDto.setBaseUrl(ADMIN_CLOSEDMATCHES);
+        return matchesDto;
     }
 
     @GetMapping("/delete")
-    public String deleteMatches(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public MatchesDto deleteMatches(@RequestBody MatchesDto matchesDto) {
+        for (String id : matchesDto.getRecordId().split(",")) {
             matchesRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/matches";
+        matchesDto.setMessage("Data delete successfully");
+        matchesDto.setBaseUrl(ADMIN_CLOSEDMATCHES);
+        return matchesDto;
     }
 }
