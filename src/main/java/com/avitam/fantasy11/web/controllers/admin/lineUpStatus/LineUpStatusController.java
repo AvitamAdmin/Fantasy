@@ -50,6 +50,7 @@ public class LineUpStatusController extends BaseController {
     public LineUpStatusDto editLineupStatus(@RequestBody LineUpStatusDto request) {
         LineUpStatusDto lineUpStatusDto = new com.avitam.fantasy11.api.dto.LineUpStatusDto();
         LineUpStatus lineUpStatus = lineUpStatusRepository.findByRecordId(request.getRecordId());
+        lineUpStatusDto.setLineUpStatus(lineUpStatus);
         lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
         return lineUpStatusDto;
     }
@@ -66,7 +67,6 @@ public class LineUpStatusController extends BaseController {
         LineUpStatusDto lineUpStatusDto = new LineUpStatusDto();
         lineUpStatusDto.setLineUpStatusList(lineUpStatusRepository.findByStatusOrderByIdentifier(true));
         lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
-        ;
         return lineUpStatusDto;
     }
 

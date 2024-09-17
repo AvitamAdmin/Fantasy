@@ -49,6 +49,7 @@ public MainContestDto getAllContest(MainContestDto mainContestDto) {
     public MainContestDto editMainContest(@RequestBody MainContestDto request){
        MainContestDto mainContestDto=new MainContestDto();
        MainContest mainContest=mainContestRepository.findByRecordId(request.getRecordId());
+       mainContestDto.setMainContest(mainContest);
        mainContestDto.setBaseUrl(ADMIN_MAINCONTEST);
         return mainContestDto;
     }

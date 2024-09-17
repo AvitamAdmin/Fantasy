@@ -59,13 +59,8 @@ public class RoleController {
             model.addAttribute("message", "Please select a row for edit operation!");
             return "role/edit";
         }
-        Optional<Role> roleOptional = roleRepository.findByRecordId(id);
-        if (roleOptional.isPresent()) {
-            RoleForm roleForm = modelMapper.map(roleOptional.get(), RoleForm.class);
-            roleForm.setId(String.valueOf(roleOptional.get().getId()));
-            model.addAttribute("nodes", nodeRepository.findAll());
-            model.addAttribute("roleForm", roleForm);
-        }
+
+
         return "role/edit";
     }
 
@@ -91,7 +86,7 @@ public class RoleController {
             role.setCreationTime(new Date());
         }
         role.setLastModified(new Date());
-        role.setRoleId(roleForm.getRoleId());
+        role.setRoleId(Integer.parseInt(String.valueOf(roleForm.getRoleId())));
         role.setCreator(principalObject.getUsername());
         roleRepository.save(role);
         if(role.getRecordId()==null)

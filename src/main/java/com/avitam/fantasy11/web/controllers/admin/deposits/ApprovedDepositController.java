@@ -48,6 +48,7 @@ public class ApprovedDepositController extends BaseController {
     public DepositsDto edit(@RequestBody DepositsDto request) {
         DepositsDto depositsDto=new DepositsDto();
         Deposits deposits=depositsRepository.findByRecordId(request.getRecordId());
+        depositsDto.setDeposits(deposits);
         depositsDto.setBaseUrl(ADMIN_APPROVEDDEPOSIT);
         return depositsDto;
     }

@@ -47,6 +47,7 @@ public class DepositsLogController extends BaseController {
     public DepositsDto edit(@RequestBody DepositsDto request) {
         DepositsDto depositsDto=new DepositsDto();
         Deposits deposits=depositsRepository.findByRecordId(request.getRecordId());
+        depositsDto.setDeposits(deposits);
         depositsDto.setBaseUrl(ADMIN_DEPOSIT);
         return depositsDto;
     }

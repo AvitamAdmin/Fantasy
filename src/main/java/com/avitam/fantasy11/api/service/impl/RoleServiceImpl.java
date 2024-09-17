@@ -13,7 +13,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
     @Override
-    public Optional<Role> findByRecordId(String recordId) {
+    public Role findByRecordId(String recordId) {
         return roleRepository.findByRecordId(recordId);
     }
 
@@ -24,7 +24,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Optional<Role> roleOptional=roleRepository.findByRecordId(recordId);
-        roleOptional.ifPresent(role -> roleRepository.save(role));
+        Role roleOptional=roleRepository.findByRecordId(recordId);
+        if(roleOptional!=null)
+        {
+            roleRepository.save(roleOptional);
+        }
+
     }
 }

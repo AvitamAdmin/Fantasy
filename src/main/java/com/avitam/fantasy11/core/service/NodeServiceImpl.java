@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.core.service;
 
+import com.avitam.fantasy11.api.dto.NodeDto;
 import com.avitam.fantasy11.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -48,10 +49,10 @@ public class NodeServiceImpl implements NodeService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User currentUser = userRepository.findByEmail(principalObject.getUsername());
-        int roles = currentUser.getRole();
+        Set<Role> roles = currentUser.getRoles();
         Set<Node> nodes = new HashSet<>();
-        if (currentUser.getRole() == 2) {
-            nodes.addAll(nodeRepository.findByParentNodeId(null));
+        for (Role role : roles) {
+            nodes.addAll(role.getPermissions());
         }
         List<Node> allNodes = new ArrayList<>();
         List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isNotFalse(node.getStatus())).collect(Collectors.toList());
@@ -64,4 +65,5 @@ public class NodeServiceImpl implements NodeService {
         return allNodes;
 
     }
+
 }

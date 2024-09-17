@@ -46,7 +46,6 @@ public class KycServiceImpl implements KycService {
         }
         kycRepository.save(kyc);
         kycDto.setKyc(kyc);
-
         return kycDto;
     }
 

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface RoleService {
 
-    Optional<Role> findByRecordId(String recordId);
+    Role findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 

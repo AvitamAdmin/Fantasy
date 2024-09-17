@@ -49,6 +49,7 @@ public class ContestController extends BaseController {
     public ContestDto editContest(@RequestBody ContestDto request) {
         ContestDto contestDto = new ContestDto();
         Contest contest = contestRepository.findByRecordId(request.getRecordId());
+        contestDto.setContest(contest);
         contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }

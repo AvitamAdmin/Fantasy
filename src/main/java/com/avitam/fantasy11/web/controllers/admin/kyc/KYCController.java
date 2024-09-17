@@ -49,6 +49,7 @@ public class KYCController extends BaseController {
     public KYCDto editKyc(@RequestBody KYCDto request) {
         KYCDto kycDto=new KYCDto();
         KYC  kyc = kycRepository.findByRecordId(request.getRecordId());
+        kycDto.setKyc(kyc);
         kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
     }

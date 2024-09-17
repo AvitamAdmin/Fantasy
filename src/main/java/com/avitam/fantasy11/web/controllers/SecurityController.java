@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.web.controllers;
 
+import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.core.Utility;
 import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
 import com.avitam.fantasy11.form.UserForm;
@@ -155,20 +156,12 @@ public class SecurityController {
     }
 
     @PostMapping("/register")
-    public String processRegister(HttpServletRequest request, @ModelAttribute("userForm") User user, BindingResult bindingResultUser, Model model) {
-        userValidator.validate(user, bindingResultUser);
-        if (bindingResultUser.hasErrors()){
-            model.addAttribute("userForm", new User());
-            model.addAttribute("roles", roleRepository.findAll());
-            model.addAttribute("message", bindingResultUser);
-            return "security/signupForm";
-        }
-        user.setStatus(true);
-        userService.save(user);
-        String appUrl = Utility.getSiteURL(request);
-     //   eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl, "New user Registration", "New user " + user.getEmail() + " as registered, Kindly approve the same by clicking the link below", "hybris.sup@cheil.com", "1"));
-        model.addAttribute("message", "You have signed up successfully! We will notify once account is approved");
-        return "security/signupSuccessForm";
+    @ResponseBody
+    public UserDto processRegister(@RequestBody User user) {
+       UserDto userDto=new UserDto();
+       userService.save(userDto,user);
+        userDto.setMessage("Registration Successful");
+       return userDto;
     }
 
     @GetMapping("/login")
@@ -198,7 +191,7 @@ public class SecurityController {
 
         userForm.setStatus(user.getStatus());
         userForm.setEmail(user.getEmail());
-        userForm.setRole(user.getRole());
+     //   userForm.setRole(user.getRole());
         userForm.setPassword(user.getPassword());
         userForm.setPasswordConfirm(user.getPassword());
         userForm.setId(userForm.getId());

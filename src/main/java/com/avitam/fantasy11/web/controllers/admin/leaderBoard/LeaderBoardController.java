@@ -47,6 +47,7 @@ public class LeaderBoardController extends BaseController {
     public LeaderBoardDto editLeaderBoard(@RequestBody LeaderBoardDto request) {
         LeaderBoardDto leaderBoardDto=new LeaderBoardDto();
         LeaderBoard leaderBoard=leaderBoardRepository.findByRecordId(request.getRecordId());
+        leaderBoardDto.setLeaderBoard(leaderBoard);
         leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardDto;
     }
