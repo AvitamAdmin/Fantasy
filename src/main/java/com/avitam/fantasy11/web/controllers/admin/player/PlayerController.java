@@ -24,10 +24,11 @@ public class PlayerController extends BaseController {
 
   @PostMapping
   @ResponseBody
-  public PlayerDto getAllPlayers(PlayerDto playerDto){
+  public PlayerDto getAllPlayers(@RequestBody PlayerDto playerDto){
       Pageable pageable=getPageable(playerDto.getPage(),playerDto.getSizePerPage(),playerDto.getSortDirection(),playerDto.getSortField());
       Player player=playerDto.getPlayer();
       Page<Player>page=isSearchActive(player)  != null ? playerRepository.findAll(Example.of(player),pageable): playerRepository.findAll(pageable);
+     playerDto.setPlayerList(page.getContent());
       playerDto.setBaseUrl(ADMIN_PlAYER);
       playerDto.setTotalPages(page.getTotalPages());
       playerDto.setTotalRecords(page.getTotalElements());
@@ -36,9 +37,9 @@ public class PlayerController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public PlayerDto getAll(){
+    public PlayerDto getActivePlayers(){
         PlayerDto playerDto=new PlayerDto();
-        playerDto.setPlayer(playerRepository.findByStatusOrderByIdentifier(true));
+        playerDto.setPlayerList(playerRepository.findByStatusOrderByIdentifier(true));
         playerDto.setBaseUrl(ADMIN_PlAYER);
         return playerDto;
     }
@@ -46,14 +47,15 @@ public class PlayerController extends BaseController {
     @GetMapping("/edit")
     public PlayerDto editPlayer(@RequestBody PlayerDto request){
         PlayerDto playerDto=new PlayerDto();
-        playerDto.setPlayer(playerRepository.findByRecordId(request.getRecordId()));
+        Player player= playerRepository.findByRecordId(request.getRecordId());
+        playerDto.setPlayer(player);
         playerDto.setBaseUrl(ADMIN_PlAYER);
         return playerDto;
 
     }
 
     @PostMapping("/edit")
-
+    @ResponseBody
     public PlayerDto handleEdit(@RequestBody PlayerDto request) {
 
         return playerService.handleEdit(request);
@@ -63,7 +65,7 @@ public class PlayerController extends BaseController {
     @ResponseBody
     public PlayerDto addPlayer() {
         PlayerDto playerDto=new PlayerDto();
-        playerDto.setPlayer(playerRepository.findByStatusOrderByIdentifier(true));
+        playerDto.setPlayerList(playerRepository.findByStatusOrderByIdentifier(true));
         playerDto.setBaseUrl(ADMIN_PlAYER);
         return playerDto;
     }

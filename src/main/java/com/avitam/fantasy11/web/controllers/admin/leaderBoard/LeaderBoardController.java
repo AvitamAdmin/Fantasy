@@ -24,7 +24,7 @@ public class LeaderBoardController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public LeaderBoardDto getAllLeaderBoard(LeaderBoardDto leaderBoardDto){
+    public LeaderBoardDto getAllLeaderBoard(@RequestBody LeaderBoardDto leaderBoardDto){
         Pageable pageable=getPageable(leaderBoardDto.getPage(),leaderBoardDto.getSizePerPage(),leaderBoardDto.getSortDirection(),leaderBoardDto.getSortField());
         LeaderBoard leaderBoard=leaderBoardDto.getLeaderBoard();
         Page<LeaderBoard>page=isSearchActive(leaderBoard)!=null ? leaderBoardRepository.findAll(Example.of(leaderBoard),pageable) : leaderBoardRepository.findAll(pageable);
@@ -36,7 +36,7 @@ public class LeaderBoardController extends BaseController {
     }
     @GetMapping("/get")
     @ResponseBody
-    public LeaderBoardDto getLeaderBoard(){
+    public LeaderBoardDto getActiveLeaderBoard(){
         LeaderBoardDto leaderBoardDto=new LeaderBoardDto();
         leaderBoardDto.setLeaderBoardList(leaderBoardRepository.findStatusOrderByIdentifier(true));
         leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
@@ -55,6 +55,7 @@ public class LeaderBoardController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public LeaderBoardDto handleEdit(@RequestBody LeaderBoardDto request) {
+
         return leaderBoardService.handleEdit(request);
     }
 

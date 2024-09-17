@@ -24,7 +24,7 @@ public class TournamentController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public TournamentDto getAllTournament(TournamentDto tournamentDto){
+    public TournamentDto getAllTournament(@RequestBody TournamentDto tournamentDto){
 
         Pageable pageable=getPageable(tournamentDto.getPage(),tournamentDto.getSizePerPage(),tournamentDto.getSortDirection(),tournamentDto.getSortField());
         Tournament tournament=tournamentDto.getTournament();
@@ -37,7 +37,7 @@ public class TournamentController extends BaseController {
     }
     @GetMapping("/get")
     @ResponseBody
-    public TournamentDto getTournament(){
+    public TournamentDto getActiveTournament(){
         TournamentDto tournamentDto = new TournamentDto();
         tournamentDto.setTournamentList(tournamentRepository.findByStatusOrderByIdentifier(true));
         tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
@@ -49,6 +49,7 @@ public class TournamentController extends BaseController {
     public TournamentDto editTournament (@RequestBody TournamentDto request){
            TournamentDto tournamentDto=new TournamentDto();
            Tournament tournament=tournamentRepository.findByRecordId(request.getRecordId());
+           tournamentDto.setTournament(tournament);
            tournamentDto.setBaseUrl(ADMIN_TOURNAMENT);
            return tournamentDto;
     }

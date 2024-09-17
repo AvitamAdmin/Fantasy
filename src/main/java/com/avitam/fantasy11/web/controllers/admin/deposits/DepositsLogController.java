@@ -23,7 +23,7 @@ public class DepositsLogController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public DepositsDto getAllModels(DepositsDto depositsDto) {
+    public DepositsDto getAllDeposits(@RequestBody DepositsDto depositsDto) {
         Pageable pageable=getPageable(depositsDto.getPage(),depositsDto.getSizePerPage(),depositsDto.getSortDirection(),depositsDto.getSortField());
         Deposits deposits=depositsDto.getDeposits();
         Page<Deposits> page=isSearchActive(deposits) !=null ? depositsRepository.findAll(Example.of(deposits),pageable) : depositsRepository.findAll(pageable);
@@ -36,7 +36,7 @@ public class DepositsLogController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public DepositsDto getDeposit(){
+    public DepositsDto getActiveDeposit(){
         DepositsDto depositsDto=new DepositsDto();
         depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_DEPOSIT);

@@ -12,8 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
-public class NodeDto extends  CommonDto {
+public class NodeDto extends CommonDto{
 
     private Node node;
-    private List<Node> nodes;
+    private List<Node> nodeList;
 }

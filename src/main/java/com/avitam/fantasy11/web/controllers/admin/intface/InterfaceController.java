@@ -1,156 +1,87 @@
 package com.avitam.fantasy11.web.controllers.admin.intface;
 
+import com.avitam.fantasy11.api.dto.NodeDto;
+import com.avitam.fantasy11.core.service.NodeService;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.NodeRepository;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.InterfaceForm;
-import com.avitam.fantasy11.validation.InterfaceFormValidator;
-import org.apache.commons.collections.CollectionUtils;
-import org.bson.types.ObjectId;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/interface")
-public class InterfaceController {
+public class InterfaceController extends BaseController {
 
     @Autowired
     private NodeRepository nodeRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
+    private NodeService nodeService;
+    private static final String ADMIN_INTERFACE="/admin/interface";
 
-    @GetMapping
-    public String getAllModels(Model model) {
-        model.addAttribute("models", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() != null).collect(Collectors.toList()));
-        return "interface/interfaces";
+    @PostMapping
+    @ResponseBody
+    public NodeDto getAllNodes(@RequestBody NodeDto nodeDto){
+        Pageable pageable=getPageable(nodeDto.getPage(),nodeDto.getSizePerPage(),nodeDto.getSortDirection(),nodeDto.getSortField());
+        Node node=nodeDto.getNode();
+        Page<Node> page= isSearchActive(node) != null ? nodeRepository.findAll(Example.of(node),pageable): nodeRepository.findAll(pageable);
+        nodeDto.setNodeList(page.getContent());
+        nodeDto.setBaseUrl(ADMIN_INTERFACE);
+        nodeDto.setTotalPages(page.getTotalPages());
+        nodeDto.setTotalRecords(page.getTotalElements());
+        return nodeDto;
+    }
+    @GetMapping("/get")
+    @ResponseBody
+    public NodeDto getActiveInterface() {
+        NodeDto nodeDto=new NodeDto();
+        nodeDto.setNodeList(nodeRepository.findByStatusOrderByIdentifier(true));
+        nodeDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeDto;
     }
 
-
-
     @GetMapping("/edit")
-    public String editInterface(@RequestParam("id") String id, Model model) {
-
-        Optional<Node> interfaceOptional = nodeRepository.findByRecordId(id);
-        if (interfaceOptional.isPresent()) {
-            Node node = interfaceOptional.get();
-            InterfaceForm interfaceForm = modelMapper.map(node, InterfaceForm.class);
-            interfaceForm.setId(String.valueOf(node.getId()));
-            model.addAttribute("editForm", interfaceForm);
-        }
-        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));
-        return "interface/edit";
+    @ResponseBody
+    public NodeDto edit(@RequestBody NodeDto request) {
+        NodeDto nodeDto=new NodeDto();
+        Node node= nodeRepository.findByRecordId(request.getRecordId());
+        nodeDto.setNode(node);
+        nodeDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") InterfaceForm interfaceForm, Model model, BindingResult result) {
-        new InterfaceFormValidator().validate(interfaceForm, result);
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "interface/edit";
-        }
-        interfaceForm.setLastModified(new Date());
-        if (interfaceForm.getId() == null) {
-            interfaceForm.setCreationTime(new Date());
-            interfaceForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        Node node = modelMapper.map(interfaceForm, Node.class);
-        Optional<Node> nodeOptional=nodeRepository.findById(interfaceForm.getId());
-        if(nodeOptional.isPresent()) {
-            node.setId(nodeOptional.get().getId());
-        }
+    @ResponseBody
+    public NodeDto handleEdit(@RequestBody NodeDto request) {
 
-        List<Node> nodeList=nodeRepository.findByParentNodeId(null);
-        for(Node node1: nodeList){
-            if(node1.getId().equals(interfaceForm.getParentNodeId())){
-                node.setParentNodeId(String.valueOf(node1.getId()));
-            }
-        }
-
-        if (node.getDisplayPriority() == null) {
-            node.setDisplayPriority(1000);
-        }
-        nodeRepository.save(node);
-        if(node.getRecordId()==null)
-        {
-            node.setRecordId(String.valueOf(node.getId().getTimestamp()));
-        }
-        nodeRepository.save(node);
-        model.addAttribute("editForm", interfaceForm);
-        return "redirect:/admin/interface";
+        return nodeService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addInterface(Model model) {
-        InterfaceForm form = new InterfaceForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNodeId() == null).collect(Collectors.toList()));
-        return "interface/edit";
+    @ResponseBody
+    public NodeDto addInterface() {
+        NodeDto nodeDto=new NodeDto();
+        nodeDto.setNodeList(nodeRepository.findByStatusOrderByIdentifier(true));
+        nodeDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeDto;
     }
 
     @GetMapping("/delete")
-    public String deleteInterface(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public NodeDto delete(@RequestBody NodeDto nodeDto) {
+        for (String id : nodeDto.getRecordId().split(",")) {
 
             nodeRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/interface";
-    }
-
-    @GetMapping("/edits")
-    @ResponseBody
-    public String editMultiple(@RequestParam("id") String ids, Model model) {
-        List<InterfaceForm> interfaceForms = new ArrayList<>();
-        InterfaceForm interfaceForm = null;
-        for (String id : ids.split(",")) {
-            Optional<Node> interfaceOptional = nodeRepository.findById(id);
-            if (interfaceOptional.isPresent()) {
-                Node node = interfaceOptional.get();
-                interfaceForm = modelMapper.map(node, InterfaceForm.class);
-            }
-            interfaceForms.add(interfaceForm);
-        }
-        model.addAttribute("editForm", new InterfaceForm());
-        model.addAttribute("dataToEdit", interfaceForms);
-        model.addAttribute("nodes", nodeRepository.findAll().stream().filter(node -> node.getParentNode() == null).collect(Collectors.toList()));
-        return "interface/edits";
-    }
-
-    @PostMapping("/edits")
-    public String editMultiplePost(@ModelAttribute("editForm") InterfaceForm interfaceForm, Model model, BindingResult result) {
-        List<InterfaceForm> interfaceFormList = interfaceForm.getInterfaceFormList();
-        if (CollectionUtils.isNotEmpty(interfaceFormList)) {
-            for (InterfaceForm interfaceForm1 : interfaceFormList) {
-                Optional<Node> interfaceOptional = nodeRepository.findById(interfaceForm1.getId());
-                if (interfaceOptional.isPresent()) {
-                    Node node = interfaceOptional.get();
-                    interfaceForm1.setStatus(node.getStatus());
-                    interfaceForm1.setCreator(node.getCreator());
-                    interfaceForm1.setCreationTime(node.getCreationTime());
-                }
-                interfaceForm.setLastModified(new Date());
-                Node node = modelMapper.map(interfaceForm1, Node.class);
-                nodeRepository.save(node);
-            }
-        }
-        model.addAttribute("editForm", interfaceForm);
-        return "redirect:/admin/interface";
+        nodeDto.setMessage("Data deleted successfully");
+        nodeDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeDto;
     }
 
 }

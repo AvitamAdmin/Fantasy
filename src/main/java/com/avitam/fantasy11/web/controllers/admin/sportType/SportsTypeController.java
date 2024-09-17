@@ -26,7 +26,7 @@ public class SportsTypeController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public SportTypeDto getAllSportType(SportTypeDto sportTypeDto){
+    public SportTypeDto getAllSportType(@RequestBody SportTypeDto sportTypeDto){
         Pageable pageable=getPageable(sportTypeDto.getPage(),sportTypeDto.getSizePerPage(),sportTypeDto.getSortDirection(), sportTypeDto.getSortField());
         SportType sportType=sportTypeDto.getSportType();
         Page<SportType> page=isSearchActive(sportType)!=null ? sportTypeRepository.findAll(Example.of(sportType),pageable):sportTypeRepository.findAll(pageable);
@@ -39,7 +39,7 @@ public class SportsTypeController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public SportTypeDto getSportType(){
+    public SportTypeDto getActiveSportType(){
         SportTypeDto sportTypeDto= new SportTypeDto();
         sportTypeDto.setSportTypeList(sportTypeRepository.findByStatusOrderByIdentifier(true));
         sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
@@ -50,6 +50,7 @@ public class SportsTypeController extends BaseController {
     public SportTypeDto editSportType (@RequestBody SportTypeDto request){
         SportTypeDto sportTypeDto=new SportTypeDto();
         SportType sportType=sportTypeRepository.findByRecordId(request.getRecordId());
+        sportTypeDto.setSportType(sportType);
         sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }
@@ -63,7 +64,7 @@ public class SportsTypeController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public SportTypeDto addSportType(Model model) {
+    public SportTypeDto addSportType() {
         SportTypeDto sportTypeDto= new SportTypeDto();
         sportTypeDto.setSportTypeList(sportTypeRepository.findByStatusOrderByIdentifier(true));
         sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
@@ -71,7 +72,7 @@ public class SportsTypeController extends BaseController {
     }
     @GetMapping("/delete")
     @ResponseBody
-    public SportTypeDto delete(@RequestBody SportTypeDto sportTypeDto ) {
+    public SportTypeDto deleteSportType(@RequestBody SportTypeDto sportTypeDto ) {
         for (String id : sportTypeDto.getRecordId().split(",")) {
             sportTypeRepository.deleteByRecordId(id);
         }

@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.core.service;
 
-import com.avitam.fantasy11.api.dto.NodeDto;
 import com.avitam.fantasy11.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -22,6 +21,8 @@ public class NodeServiceImpl implements NodeService {
     private UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private CoreService coreService;
 
     @Override
     public List<Node> getAllNodes() {
@@ -65,5 +66,50 @@ public class NodeServiceImpl implements NodeService {
         return allNodes;
 
     }
+
+    @Override
+    public Node findByRecordId(String recordId) {
+
+        return nodeRepository.findByRecordId(recordId);
+    }
+
+    @Override
+    public void deleteByRecordId(String recordId) {
+
+        nodeRepository.deleteByRecordId(recordId);
+    }
+
+    @Override
+    public NodeDto handleEdit(NodeDto request) {
+        NodeDto nodeDto=new NodeDto();
+        Node node=null;
+        if (request.getRecordId()!=null){
+            Node requestData=request.getNode();
+            node=nodeRepository.findByRecordId(request.getRecordId());
+            modelMapper.map(requestData,node);
+        }else {
+            node=request.getNode();
+            node.setCreator(coreService.getCurrentUser().getUsername());
+            node.setCreationTime(new Date());
+            nodeRepository.save(node);
+        }
+        node.setLastModified(new Date());
+        if (request.getRecordId()==null){
+            node.setRecordId(String.valueOf(node.getId().getTimestamp()));
+        }
+        nodeRepository.save(node);
+        nodeDto.setNode(node);
+        return nodeDto;
+    }
+
+    @Override
+    public void updateByRecordId(String recordId) {
+        Node node=nodeRepository.findByRecordId(recordId);
+        if(node!=null) {
+
+            nodeRepository.save(node);
+        }
+    }
+
 
 }
