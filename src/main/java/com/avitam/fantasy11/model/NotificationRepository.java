@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -12,10 +13,10 @@ public interface NotificationRepository extends MongoRepository<Notification, Ob
 
     Optional<Notification> findById(String id);
 
-    Optional<Notification> findByRecordId(String recordId);
+    Notification findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
 
-
+    List<Notification> findByStatusOrderByIdentifier(Boolean b);
 }

@@ -1,12 +1,18 @@
 package com.avitam.fantasy11.web.controllers.admin.userWinnings;
 
+import com.avitam.fantasy11.api.dto.UserWinningsDto;
+import com.avitam.fantasy11.api.service.UserWinningsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.ContestJoinedForm;
 import com.avitam.fantasy11.form.UserWinningsForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +25,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/userWinnings")
-public class UserWinningsController {
+public class UserWinningsController extends BaseController {
 
     @Autowired
     private UserWinningsRepository userWinningsRepository;
@@ -30,95 +36,74 @@ public class UserWinningsController {
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
+    private UserWinningsService userWinningsService;
+    @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
-    public String getAll(Model model){
-        model.addAttribute("models",userWinningsRepository.findAll());
-        return "userWinnings/userWins";
+    public static final String ADMIN_USERWINNINGS = "/admin/userWinnings";
+
+    @PostMapping
+    @ResponseBody
+    public UserWinningsDto getAll(UserWinningsDto userWinningsDto){
+
+        Pageable pageable = getPageable(userWinningsDto.getPage(), userWinningsDto.getSizePerPage(), userWinningsDto.getSortDirection(), userWinningsDto.getSortField());
+        UserWinnings userWinnings = userWinningsDto.getUserWinnings();
+        Page<UserWinnings> page = isSearchActive(userWinnings)!=null ? userWinningsRepository.findAll(Example.of(userWinnings),pageable) : userWinningsRepository.findAll(pageable);
+        userWinningsDto.setUserWinningsList(page.getContent());
+        userWinningsDto.setTotalPages(page.getTotalPages());
+        userWinningsDto.setTotalRecords(page.getTotalElements());
+        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public UserWinningsDto getActiveUserWinnings(){
+        UserWinningsDto userWinningsDto = new UserWinningsDto();
+        userWinningsDto.setUserWinningsList(userWinningsRepository.findByStatusOrderByIdentifier(true));
+        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsDto;
     }
 
     @GetMapping("/edit")
-    public String editUserWinnings(@RequestParam("id") String id,Model model){
+    @ResponseBody
+    public UserWinningsDto editUserWinnings(@RequestBody UserWinningsDto request){
 
-        Optional<UserWinnings> userWinningsOptional = userWinningsRepository.findByRecordId(id);
-        if (userWinningsOptional.isPresent()) {
-            UserWinnings userWinnings = userWinningsOptional.get();
+        UserWinningsDto userWinningsDto = new UserWinningsDto();
+        UserWinnings userWinnings = userWinningsRepository.findByRecordId(request.getRecordId());
+        userWinningsDto.setUserWinnings(userWinnings);
+        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
 
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            UserWinningsForm userWinningsForm = modelMapper.map(userWinnings, UserWinningsForm.class);
-            userWinningsForm.setId(String.valueOf(userWinnings.getId()));
-
-            model.addAttribute("editForm", userWinningsForm);
-        }
-        model.addAttribute("userTeams",userTeamsRepository.findAll());
-        model.addAttribute("matches",matchesRepository.findAll());
-
-        return "userWinnings/edit";
+        return userWinningsDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") UserWinningsForm userWinningsForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm",userWinningsForm);
-            return "userWinnings/edit";
-        }
+    @ResponseBody
+    public UserWinningsDto handleEdit(@RequestBody UserWinningsDto request) {
 
-        userWinningsForm.setLastModified(new Date());
-
-        if (userWinningsForm.getId() == null) {
-            userWinningsForm.setCreationTime(new Date());
-            userWinningsForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        UserWinnings userWinnings = modelMapper.map(userWinningsForm, UserWinnings.class);
-
-        Optional<UserWinnings>userWinningsOptional=userWinningsRepository.findById(userWinningsForm.getId());
-        if(userWinningsOptional.isPresent()) {
-            userWinnings.setId(userWinningsOptional.get().getId());
-        }
-        
-        Optional<Matches> matchesOptional=matchesRepository.findById(userWinningsForm.getMatchId());
-        if(matchesOptional.isPresent()) {
-            userWinnings.setMatchId(String.valueOf(matchesOptional.get().getId()));
-        }
-
-        Optional<UserTeams> userTeamOptional=userTeamsRepository.findById(userWinningsForm.getUserTeamId());
-        if(userTeamOptional.isPresent()) {
-            userWinnings.setUserTeamId(String.valueOf(userTeamOptional.get().getId()));
-        }
-
-        userWinningsRepository.save(userWinnings);
-        if(userWinnings.getRecordId()==null)
-        {
-            userWinnings.setRecordId(String.valueOf(userWinnings.getId().getTimestamp()));
-        }
-        userWinningsRepository.save(userWinnings);
-        model.addAttribute("editForm", userWinningsForm);
-        return "redirect:/admin/userWinnings";
+        return userWinningsService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addUserWinnings(Model model) {
-        UserWinningsForm form = new UserWinningsForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("userTeams", userTeamsRepository.findAll());
-        model.addAttribute("matches",matchesRepository.findAll());
-        return "userWinnings/edit";
+    @ResponseBody
+    public UserWinningsDto addUserWinnings(Model model) {
+        UserWinningsDto userWinningsDto = new UserWinningsDto();
+        userWinningsDto.setUserWinningsList(userWinningsRepository.findByStatusOrderByIdentifier(true));
+        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
+
+        return userWinningsDto;
     }
 
-    @GetMapping("/delete")
-    public String deleteUserWinnings(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @PostMapping("/delete")
+    @ResponseBody
+    public UserWinningsDto deleteUserWinnings(@RequestBody UserWinningsDto userWinningsDto) {
+        for (String id : userWinningsDto.getRecordId().split(",")) {
             userWinningsRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/userWinnings";
+        userWinningsDto.setMessage("Data deleted successfully");
+        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsDto;
     }
    }

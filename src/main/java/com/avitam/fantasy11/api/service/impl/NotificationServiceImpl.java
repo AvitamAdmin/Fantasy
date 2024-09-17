@@ -1,20 +1,58 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.AddressDto;
+import com.avitam.fantasy11.api.dto.NotificationDto;
 import com.avitam.fantasy11.api.service.NotificationService;
+import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Notification;
 import com.avitam.fantasy11.model.NotificationRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private CoreService coreService;
+
+    public static final String ADMIN_NOTIFICATION = "/admin/notification";
+
     @Override
-    public Optional<Notification> findByRecordId(String recordId) {
+    public Notification findByRecordId(String recordId) {
         return notificationRepository.findByRecordId(recordId);
+    }
+
+    @Override
+    public NotificationDto handleEdit(NotificationDto request) {
+        NotificationDto notificationDto = new NotificationDto();
+        Notification notification = null;
+        if(request.getRecordId()!=null){
+            Notification requestData = request.getNotification();
+            notification = notificationRepository.findByRecordId(request.getRecordId());
+            modelMapper.map(requestData, notification);
+        }
+        else {
+            notification=request.getNotification();
+            notification.setCreator(coreService.getCurrentUser().getUsername());
+            notification.setCreationTime(new Date());
+            notificationRepository.save(notification);
+        }
+        notification.setLastModified(new Date());
+        if(request.getRecordId()==null){
+            notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
+        }
+        notificationRepository.save(notification);
+        notificationDto.setNotification(notification);
+        notificationDto.setBaseUrl(ADMIN_NOTIFICATION);
+        return notificationDto;
     }
 
     @Override
@@ -24,7 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Optional<Notification> notificationOptional=notificationRepository.findByRecordId(recordId);
-        notificationOptional.ifPresent(notification -> notificationRepository.save(notification));
+        Notification notification=notificationRepository.findByRecordId(recordId);
+        //notificationOptional.ifPresent(notification -> notificationRepository.save(notification));
     }
 }

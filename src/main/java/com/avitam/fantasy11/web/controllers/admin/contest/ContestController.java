@@ -18,11 +18,9 @@ public class ContestController extends BaseController {
 
     @Autowired
     private ContestRepository contestRepository;
-
     @Autowired
     private ContestService contestService;
-    @Autowired
-    private ModelMapper modelMapper;
+    private static final String ADMIN_CONTEST="/admin/contest";
 
     @PostMapping
     @ResponseBody
@@ -31,8 +29,18 @@ public class ContestController extends BaseController {
         Contest contest=contestDto.getContest();
         Page<Contest> page=isSearchActive(contest)!=null?contestRepository.findAll(Example.of(contest),pageable):contestRepository.findAll(pageable);
         contestDto.setContestList(page.getContent());
+        contestDto.setBaseUrl(ADMIN_CONTEST);
         contestDto.setTotalPages(page.getTotalPages());
         contestDto.setTotalRecords(page.getTotalElements());
+        return contestDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public ContestDto getContest(){
+        ContestDto contestDto=new ContestDto();
+        contestDto.setContestList(contestRepository.findByStatusOrderByIdentifier(true));
+        contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }
 
@@ -41,6 +49,7 @@ public class ContestController extends BaseController {
     public ContestDto editContest(@RequestBody ContestDto request) {
         ContestDto contestDto = new ContestDto();
         Contest contest = contestRepository.findByRecordId(request.getRecordId());
+        contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }
 
@@ -55,7 +64,8 @@ public class ContestController extends BaseController {
     @ResponseBody
     public ContestDto addContest() {
         ContestDto contestDto = new ContestDto();
-        contestDto.setContestList(contestRepository.findStatusOrderByIdentifier(true));
+        contestDto.setContestList(contestRepository.findByStatusOrderByIdentifier(true));
+        contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }
 
@@ -67,6 +77,7 @@ public class ContestController extends BaseController {
             contestRepository.deleteByRecordId(id);
         }
         contestDto.setMessage("Data deleted Successfully");
+        contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }
 }

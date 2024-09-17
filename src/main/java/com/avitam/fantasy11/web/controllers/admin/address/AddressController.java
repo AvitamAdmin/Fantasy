@@ -1,26 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.address;
 
+import com.avitam.fantasy11.api.dto.AddressDto;
+import com.avitam.fantasy11.api.service.AddressService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.model.*;
-//import com.avitam.fantasy11.validation.AddressFormValidator;
-import com.avitam.fantasy11.validation.AddressFormValidator;
-import com.avitam.fantasy11.validation.InterfaceFormValidator;
-import org.bson.types.ObjectId;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/address")
-public class AddressController {
+public class AddressController extends BaseController {
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
@@ -28,73 +24,67 @@ public class AddressController {
     @Autowired
     private CoreService coreService;
 
-    @GetMapping
-    public String getAllModels(Model model) {
-        model.addAttribute("models", addressRepository.findAll());
-        return "address/addresses";
+    @Autowired
+    private AddressService addressService;
+
+    public static final String ADMIN_ADDRESS = "/admin/address";
+
+    @PostMapping
+    @ResponseBody
+    public AddressDto getAllAddress(AddressDto addressDto){
+
+        Pageable pageable=getPageable(addressDto.getPage(),addressDto.getSizePerPage(),addressDto.getSortDirection(),addressDto.getSortField());
+        Address address=addressDto.getAddress();
+        Page<Address> page=isSearchActive(address)!=null ? addressRepository.findAll(Example.of(address),pageable) : addressRepository.findAll(pageable);
+        addressDto.setAddressList(page.getContent());
+        addressDto.setTotalPages(page.getTotalPages());
+        addressDto.setTotalRecords(page.getTotalElements());
+        addressDto.setBaseUrl(ADMIN_ADDRESS);
+        return addressDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public AddressDto getActiveAddressList() {
+        AddressDto addressDto = new AddressDto();
+        addressDto.setAddressList(addressRepository.findByStatusOrderByIdentifier(true));
+        addressDto.setBaseUrl(ADMIN_ADDRESS);
+        return addressDto;
     }
 
     @GetMapping("/edit")
-    public String editAddress(@RequestParam("id") String id, Model model) {
-        Optional<Address> addressOptional = addressRepository.findByRecordId(id);
-        if (addressOptional.isPresent()) {
-            Address address = addressOptional.get();
-            AddressForm addressForm = modelMapper.map(address, AddressForm.class);
-            addressForm.setId(String.valueOf(address.getId()));
-            model.addAttribute("editForm", addressForm);
-        }
-        return "address/edit";
+    @ResponseBody
+    public AddressDto editAddress(@RequestBody AddressDto request) {
+        AddressDto addressDto = new AddressDto();
+        Address address = addressRepository.findByRecordId(request.getRecordId());
+        addressDto.setAddress(address);
+        addressDto.setBaseUrl(ADMIN_ADDRESS);
+        return addressDto;
     }
 
-
-
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") AddressForm addressForm, Model model, BindingResult result) {
-        new AddressFormValidator().validate(addressForm, result);
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm",addressForm);
-            return "address/edit";
-        }
-        addressForm.setLastModified(new Date());
-        if (addressForm.getId() == null) {
-            addressForm.setCreationTime(new Date());
-            addressForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        Address address = modelMapper.map(addressForm, Address.class);
-
-        Optional<Address> addressOptional = addressRepository.findById(addressForm.getId());
-        if(addressOptional.isPresent()){
-            address.setId(addressOptional.get().getId());
-        }
-
-        addressRepository.save(address);
-        if(address.getRecordId()==null)
-        {
-            address.setRecordId(String.valueOf(address.getId().getTimestamp()));
-        }
-        addressRepository.save(address);
-        model.addAttribute("editForm", addressForm);
-        return "redirect:/admin/address";
+    @ResponseBody
+    public AddressDto handleEdit(@RequestBody AddressDto request) {
+        return addressService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addAddress(Model model) {
-        AddressForm form = new AddressForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        form.setMobileNumber(coreService.getCurrentUser().getMobileNumber());
-        model.addAttribute("editForm", form);
-        return "address/edit";
+    @ResponseBody
+    public AddressDto addAddress() {
+        AddressDto addressDto = new AddressDto();
+        addressDto.setAddressList(addressRepository.findByStatusOrderByIdentifier(true));
+        addressDto.setBaseUrl(ADMIN_ADDRESS);
+        return addressDto;
     }
 
-    @GetMapping("/delete")
-    public String deleteAddress(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-        addressRepository.deleteByRecordId(id);
+    @PostMapping("/delete")
+    @ResponseBody
+    public AddressDto deleteAddress(@RequestBody AddressDto addressDto) {
+        for (String id : addressDto.getRecordId().split(",")) {
+            addressRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/address";
+        addressDto.setMessage("Data deleted successfully");
+        addressDto.setBaseUrl(ADMIN_ADDRESS);
+        return addressDto;
     }
 }

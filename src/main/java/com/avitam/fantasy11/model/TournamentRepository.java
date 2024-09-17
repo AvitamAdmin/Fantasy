@@ -16,5 +16,5 @@ public interface TournamentRepository extends MongoRepository<Tournament, Object
 
     void deleteByRecordId(String recordId);
 
-    List<Tournament> findOrderStatusByIdentifier(boolean b);
+    List<Tournament> findByStatusOrderByIdentifier(boolean b);
 }

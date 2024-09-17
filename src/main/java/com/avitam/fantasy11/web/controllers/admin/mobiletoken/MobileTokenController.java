@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.mobiletoken;
 
 import com.avitam.fantasy11.api.dto.MobileTokenDto;
+import com.avitam.fantasy11.api.dto.TournamentDto;
 import com.avitam.fantasy11.api.service.MobileTokenService;
 import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -20,17 +21,27 @@ public class MobileTokenController extends BaseController {
     private MobileTokenRepository mobileTokenRepository;
     @Autowired
     private MobileTokenService mobileTokenService;
+    private static final String ADMIN_MOBILETOKEN="/admin/mobileToken";
 
 
-    @GetMapping("/get")
+    @PostMapping
     @ResponseBody
-    public MobileTokenDto getAll(MobileTokenDto mobileTokenDto) {
+    public MobileTokenDto getAllMobileToken(MobileTokenDto mobileTokenDto) {
         Pageable pageable=getPageable(mobileTokenDto.getPage(),mobileTokenDto.getSizePerPage(),mobileTokenDto.getSortDirection(),mobileTokenDto.getSortField());
         MobileToken mobileToken=mobileTokenDto.getMobileToken();
         Page<MobileToken> page=isSearchActive(mobileToken)!=null ? mobileTokenRepository.findAll(Example.of(mobileToken),pageable):mobileTokenRepository.findAll(pageable);
         mobileTokenDto.setMobileTokenList(page.getContent());
+        mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         mobileTokenDto.setTotalPages(page.getTotalPages());
         mobileTokenDto.setTotalRecords(page.getTotalElements());
+        return mobileTokenDto;
+    }
+    @GetMapping("/get")
+    @ResponseBody
+    public MobileTokenDto getMobileToken() {
+        MobileTokenDto mobileTokenDto = new MobileTokenDto();
+        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findByStatusOrderByIdentifier(true));
+        mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }
 
@@ -40,7 +51,7 @@ public class MobileTokenController extends BaseController {
 
         MobileTokenDto mobileTokenDto=new MobileTokenDto();
         MobileToken mobileToken=mobileTokenRepository.findByRecordId(request.getRecordId());
-
+        mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }
 
@@ -52,9 +63,10 @@ public class MobileTokenController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public MobileTokenDto addMobileToken(Model model) {
+    public MobileTokenDto addMobileToken() {
         MobileTokenDto mobileTokenDto = new MobileTokenDto();
-        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findStatusOrderByIdentifier(true));
+        mobileTokenDto.setMobileTokenList(mobileTokenRepository.findByStatusOrderByIdentifier(true));
+        mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }
 
@@ -65,6 +77,7 @@ public class MobileTokenController extends BaseController {
             mobileTokenRepository.deleteByRecordId(id);
         }
         mobileTokenDto.setMessage("Data deleted successfully");
+        mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }
 

@@ -4,15 +4,14 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 
 @Repository
 public interface PlayerRoleRepository extends MongoRepository<PlayerRole, ObjectId> {
-    Optional<PlayerRole> findById(String id);
+    PlayerRole findById(String id);
 
-    Optional<PlayerRole> findByRecordId(String recordId);
+    PlayerRole findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
-
+    PlayerRole findByStatusOrderByIdentifier(boolean b);
 }

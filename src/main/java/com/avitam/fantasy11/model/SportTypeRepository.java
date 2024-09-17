@@ -16,5 +16,5 @@ SportTypeRepository extends MongoRepository<SportType, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    List<SportType> findStatusOrderByIdentifier(boolean b);
+    List<SportType> findByStatusOrderByIdentifier(boolean b);
 }

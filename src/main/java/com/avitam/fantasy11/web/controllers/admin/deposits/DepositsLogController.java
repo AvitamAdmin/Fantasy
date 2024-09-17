@@ -1,111 +1,81 @@
 package com.avitam.fantasy11.web.controllers.admin.deposits;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.DepositsForm;
+import com.avitam.fantasy11.api.dto.DepositsDto;
+import com.avitam.fantasy11.api.service.DepositsService;
 import com.avitam.fantasy11.model.*;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
 @Controller
-@RequestMapping("/deposit/depositLog")
-public class DepositsLogController {
-    @Autowired
-    private UserRepository userRepository;
+@RequestMapping("/admin/depositLog")
+public class DepositsLogController extends BaseController {
+
     @Autowired
     private DepositsRepository depositsRepository;
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
+    private DepositsService depositService;
+    private static final String ADMIN_DEPOSIT="/admin/depositLog";
 
-    @GetMapping
-    public String getAllModels(Model model) {
-        model.addAttribute("models", depositsRepository.findAll());
-        return "deposit/depositLog";
+    @PostMapping
+    @ResponseBody
+    public DepositsDto getAllModels(DepositsDto depositsDto) {
+        Pageable pageable=getPageable(depositsDto.getPage(),depositsDto.getSizePerPage(),depositsDto.getSortDirection(),depositsDto.getSortField());
+        Deposits deposits=depositsDto.getDeposits();
+        Page<Deposits> page=isSearchActive(deposits) !=null ? depositsRepository.findAll(Example.of(deposits),pageable) : depositsRepository.findAll(pageable);
+        depositsDto.setDepositsList(page.getContent());
+        depositsDto.setBaseUrl(ADMIN_DEPOSIT);
+        depositsDto.setTotalPages(page.getTotalPages());
+        depositsDto.setTotalRecords(page.getTotalElements());
+        return depositsDto;
     }
 
+    @GetMapping("/get")
+    @ResponseBody
+    public DepositsDto getDeposit(){
+        DepositsDto depositsDto=new DepositsDto();
+        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
+        depositsDto.setBaseUrl(ADMIN_DEPOSIT);
+        return depositsDto;
+    }
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") String id, Model model) {
-
-        Optional<Deposits> depositsLogOptional = depositsRepository.findByRecordId((id));
-        if (depositsLogOptional.isPresent()) {
-            Deposits depositsLog = depositsLogOptional.get();
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            DepositsForm depositsForm = modelMapper.map(depositsLog, DepositsForm.class);
-            depositsForm.setId(String.valueOf(depositsLog.getId()));
-
-            model.addAttribute("editForm", depositsForm);
-        }
-        return "deposit/edit";
+    @ResponseBody
+    public DepositsDto edit(@RequestBody DepositsDto request) {
+        DepositsDto depositsDto=new DepositsDto();
+        Deposits deposits=depositsRepository.findByRecordId(request.getRecordId());
+        depositsDto.setBaseUrl(ADMIN_DEPOSIT);
+        return depositsDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") DepositsForm depositsForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "deposit/edit";
-        }
-        depositsForm.setLastModified(new Date());
-        if (depositsForm.getId() == null) {
-            depositsForm.setCreationTime(new Date());
-            depositsForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        Deposits depositLog = modelMapper.map(depositsForm, Deposits.class);
+    @ResponseBody
+    public  DepositsDto handleEdit(@RequestBody DepositsDto request) {
 
-        Optional<Deposits> depositsLogOptional = depositsRepository.findById(depositsForm.getId());
-        if(depositsLogOptional.isPresent()){
-            depositLog.setId(depositsLogOptional.get().getId());
-        }
-
-        depositsRepository.save(depositLog);
-        if(depositLog.getRecordId()==null){
-            depositLog.setRecordId(String.valueOf(depositLog.getId().getTimestamp()));
-        }
-
-        depositsRepository.save(depositLog);
-        model.addAttribute("editForm", depositsForm);
-        return "redirect:/deposit/depositLog";
+        return depositService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addDepositsLog(Model model) {
-        DepositsForm form = new DepositsForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("users", userRepository.findAll());
-
-        return "deposit/edit";
+    @ResponseBody
+    public DepositsDto add() {
+        DepositsDto depositsDto = new DepositsDto();
+        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
+        depositsDto.setBaseUrl(ADMIN_DEPOSIT);
+        return depositsDto;
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public DepositsDto delete(@RequestBody DepositsDto depositsDto) {
+        for (String id : depositsDto.getRecordId().split(",")) {
             depositsRepository.deleteByRecordId(id);
         }
-        return "redirect:/deposit/depositLog";
-    }
-
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<Deposits> depositsList=depositsRepository.findAll();
-        for(Deposits deposits:depositsList)
-        {
-            deposits.setRecordId(String.valueOf(deposits.getId().getTimestamp()));
-            depositsRepository.save(deposits);
-
-        }
+        depositsDto.setMessage("Data deleted Successfully");
+        depositsDto.setBaseUrl(ADMIN_DEPOSIT);
+        return depositsDto;
     }
 
 }

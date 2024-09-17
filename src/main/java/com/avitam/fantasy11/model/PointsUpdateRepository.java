@@ -10,9 +10,10 @@ import java.util.Optional;
 public interface PointsUpdateRepository extends MongoRepository<PointsUpdate, ObjectId> {
     Optional<PointsUpdate> findById(String id);
 
-    Optional<PointsUpdate> findByRecordId(String recordId);
+    PointsUpdate findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
 
+    PointsUpdate findByStatusOrderByIdentifier(boolean b);
 }

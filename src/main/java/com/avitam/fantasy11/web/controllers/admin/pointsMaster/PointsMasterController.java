@@ -1,11 +1,17 @@
 package com.avitam.fantasy11.web.controllers.admin.pointsMaster;
 
+import com.avitam.fantasy11.api.dto.PointsMasterDto;
+import com.avitam.fantasy11.api.service.PointsMasterService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.PointsMasterForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,93 +24,80 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/pointsMaster")
-public class PointsMasterController {
+public class PointsMasterController extends BaseController {
 
     @Autowired
     private MatchTypeRepository matchTypeRepository;
     @Autowired
     private PointsMasterRepository pointsMasterRepository;
     @Autowired
+    private PointsMasterService pointsMasterService;
+    @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
+    public static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
 
-    @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("models", pointsMasterRepository.findAll());
-        return "pointsMaster/pointsMasters";
+    @PostMapping
+    @ResponseBody
+    public PointsMasterDto getAll(PointsMasterDto pointsMasterDto) {
+
+        Pageable pageable = getPageable(pointsMasterDto.getPage(), pointsMasterDto.getSizePerPage(), pointsMasterDto.getSortDirection(), pointsMasterDto.getSortField());
+        PointsMaster pointsMaster = pointsMasterDto.getPointsMaster();
+        Page<PointsMaster> page = isSearchActive(pointsMaster)!=null ? pointsMasterRepository.findAll(Example.of(pointsMaster), pageable) : pointsMasterRepository.findAll(pageable);
+        pointsMasterDto.setPointsMasterList(page.getContent());
+        pointsMasterDto.setTotalPages(page.getTotalPages());
+        pointsMasterDto.setTotalRecords(page.getTotalElements());
+        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
+        return pointsMasterDto;
     }
 
-
+    @GetMapping("/get")
+    @ResponseBody
+    public PointsMasterDto getActivePointsMaster(){
+        PointsMasterDto pointsMasterDto = new PointsMasterDto();
+        pointsMasterDto.setPointsMasterList(pointsMasterRepository.findByStatusOrderByIdentifier(true));
+        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
+        return pointsMasterDto;
+    }
 
     @GetMapping("/edit")
-    public String editPointsMaster(@RequestParam("id") String id, Model model) {
+    @ResponseBody
+    public PointsMasterDto editPointsMaster(@RequestBody PointsMasterDto request) {
+        PointsMasterDto pointsMasterDto = new PointsMasterDto();
+        PointsMaster pointsMaster = pointsMasterRepository.findByRecordId(request.getRecordId());
+        pointsMasterDto.setPointsMaster(pointsMaster);
+        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
 
-        Optional<PointsMaster> pointsMasterOptional = pointsMasterRepository.findByRecordId(id);
-        if (pointsMasterOptional.isPresent()) {
-            PointsMaster pointsMaster = pointsMasterOptional.get();
-            PointsMasterForm pointsMasterForm = modelMapper.map(pointsMaster, PointsMasterForm.class);
-
-            model.addAttribute("editForm", pointsMasterForm);
-        }
-        model.addAttribute("match",matchTypeRepository.findAll());
-
-        return "pointsMaster/edit";
+        return pointsMasterDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")  PointsMasterForm pointsMasterForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "pointsMaster/edit";
-        }
-            pointsMasterForm.setLastModified(new Date());
+    @ResponseBody
+    public PointsMasterDto handleEdit(@RequestBody PointsMasterDto request) {
 
-        if (pointsMasterForm.getId() == null) {
-            pointsMasterForm.setCreationTime(new Date());
-            pointsMasterForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        PointsMaster pointsMaster = modelMapper.map(pointsMasterForm, PointsMaster.class);
-
-        Optional<PointsMaster> pointsMasterOptional=pointsMasterRepository.findById(pointsMasterForm.getId());
-        if(pointsMasterOptional.isPresent()) {
-            pointsMaster.setId(pointsMasterOptional.get().getId());
-        }
-
-        Optional<MatchType> matchTypeOptional=matchTypeRepository.findById(String.valueOf(pointsMasterForm.getMatchTypeId()));
-        if(matchTypeOptional.isPresent()){
-            pointsMaster.setMatchTypeId(String.valueOf(matchTypeOptional.get().getId()));
-        }
-
-        pointsMasterRepository.save(pointsMaster);
-        if(pointsMaster.getRecordId()==null)
-        {
-            pointsMaster.setRecordId(String.valueOf(pointsMaster.getId().getTimestamp()));
-        }
-        pointsMasterRepository.save(pointsMaster);
-        model.addAttribute("editForm", pointsMasterForm);
-        return "redirect:/admin/pointsMaster";
+        return pointsMasterService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addPointsMaster(Model model) {
-        PointsMasterForm form = new PointsMasterForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("matchTypes",matchTypeRepository.findAll());
+    @ResponseBody
+    public PointsMasterDto addPointsMaster(Model model) {
 
-        return "pointsMaster/edit";
+        PointsMasterDto pointsMasterDto = new PointsMasterDto();
+        pointsMasterDto.setPointsMasterList(pointsMasterRepository.findByStatusOrderByIdentifier(true));
+        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
+
+        return pointsMasterDto;
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public PointsMasterDto delete(@RequestBody PointsMasterDto pointsMasterDto) {
+        for (String id : pointsMasterDto.getRecordId().split(",")) {
             pointsMasterRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/pointsMaster";
+        pointsMasterDto.setMessage("Data deleted successfully");
+        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
+        return pointsMasterDto;
     }
 }

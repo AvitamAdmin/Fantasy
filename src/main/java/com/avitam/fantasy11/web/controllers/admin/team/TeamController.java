@@ -1,13 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.team;
 
+import com.avitam.fantasy11.api.dto.AddressDto;
+import com.avitam.fantasy11.api.dto.TeamDto;
+import com.avitam.fantasy11.api.service.TeamService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.TeamForm;
+import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.TeamRepository;
+import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.math3.analysis.solvers.BaseSecantSolver;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,92 +32,72 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/team")
-public class TeamController {
+public class TeamController extends BaseController {
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    private TeamService teamService;
     @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
-    public String getAll(Model model){
-        List<Team> teams = teamRepository.findAll();
-        List<Team> datas=new ArrayList<>();
-        for(Team team:teams){
-            if(team.getId()!=null) {
-                byte[] image = team.getLogo().getData();
-                team.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(team);
-            }
-        }
-        model.addAttribute("models", datas);
-        return "team/teams";
+    public static final String ADMIN_TEAM = "/admin/team";
+
+    @PostMapping
+    @ResponseBody
+    public TeamDto getAllAddress(TeamDto teamDto){
+
+        Pageable pageable=getPageable(teamDto.getPage(),teamDto.getSizePerPage(),teamDto.getSortDirection(),teamDto.getSortField());
+        Team team=teamDto.getTeam();
+        Page<Team> page=isSearchActive(team)!=null ? teamRepository.findAll(Example.of(team),pageable) : teamRepository.findAll(pageable);
+        teamDto.setTeamList(page.getContent());
+        teamDto.setTotalPages(page.getTotalPages());
+        teamDto.setTotalRecords(page.getTotalElements());
+        teamDto.setBaseUrl(ADMIN_TEAM);
+        return teamDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public TeamDto getActiveTeamList() {
+        TeamDto teamDto = new TeamDto();
+        teamDto.setTeamList(teamRepository.findByStatusOrderByIdentifier(true));
+        teamDto.setBaseUrl(ADMIN_TEAM);
+        return teamDto;
     }
     @GetMapping("/edit")
-    public String editTeam (@RequestParam("id")String id, Model model){
-
-        Optional<Team> teamOptional = teamRepository.findByRecordId(id);
-        if (teamOptional.isPresent()) {
-            Team team = teamOptional.get();
-            TeamForm teamForm = modelMapper.map(team, TeamForm.class);
-            teamForm.setId(String.valueOf(team.getId()));
-            model.addAttribute("editForm", teamForm);
-        }
-        return "team/edit";
+    @ResponseBody
+    public TeamDto editTeam(@RequestBody AddressDto request) {
+        TeamDto teamDto = new TeamDto();
+        Team team = teamRepository.findByRecordId(request.getRecordId());
+        teamDto.setTeam(team);
+        teamDto.setBaseUrl(ADMIN_TEAM);
+        return teamDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")TeamForm teamForm,String id, Model model, BindingResult result) throws IOException {
-
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", teamForm);
-            return "team/edit";
-        }
-
-        byte[] fig= teamForm.getLogo().getBytes();
-        Binary binary=new Binary(fig);
-
-        teamForm.setLastModified(new Date());
-        if (teamForm.getId() == null) {
-            teamForm.setCreationTime(new Date());
-            teamForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        Team team = modelMapper.map(teamForm, Team.class);
-        Optional<Team> teamOptional=teamRepository.findById(teamForm.getId());
-        if(teamOptional.isPresent()){
-            team.setId(teamOptional.get().getId());
-        }
-         team.setLogo(binary);
-        teamRepository.save(team);
-        if(team.getRecordId()==null)
-        {
-            team.setRecordId(String.valueOf(team.getId().getTimestamp()));
-        }
-        teamRepository.save(team);
-        model.addAttribute("editForm", teamForm);
-
-        return "redirect:/admin/team";
+    @ResponseBody
+    public TeamDto handleEdit(@RequestBody TeamDto request) {
+        return teamService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addTeam(Model model) {
-        TeamForm form = new TeamForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "team/edit";
+    @ResponseBody
+    public TeamDto addTeam(Model model) {
+        TeamDto teamDto = new TeamDto();
+        teamDto.setTeamList(teamRepository.findByStatusOrderByIdentifier(true));
+        teamDto.setBaseUrl(ADMIN_TEAM);
+        return teamDto;
     }
-    @GetMapping("/delete")
-    public String deleteTeam(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-
+    @PostMapping("/delete")
+    @ResponseBody
+    public TeamDto deleteTeam(@RequestBody TeamDto teamDto) {
+        for (String id : teamDto.getRecordId().split(",")) {
             teamRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/team";
+        teamDto.setMessage("Data deleted successfully");
+        teamDto.setBaseUrl(ADMIN_TEAM);
+        return teamDto;
     }
 }

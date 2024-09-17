@@ -1,31 +1,66 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.PlayerDto;
 import com.avitam.fantasy11.api.service.PlayerService;
+import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.PlayerRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.Date;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
     private PlayerRepository playerRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private CoreService coreService;
+
     @Override
-    public Optional<Player> findByRecordId(String recordId) {
+    public Player findByRecordId(String recordId) {
+
         return playerRepository.findByRecordId(recordId);
     }
 
     @Override
+    public PlayerDto handleEdit(PlayerDto request) {
+        PlayerDto playerDto=new PlayerDto();
+        Player player=null;
+        if (request.getRecordId()!=null){
+            Player requestData=request.getPlayer();
+            player=playerRepository.findByRecordId(request.getRecordId());
+            modelMapper.map(requestData,player);
+        }else {
+            player=request.getPlayer();
+            player.setCreator(coreService.getCurrentUser().getUsername());
+            player.setCreationTime(new Date());
+            playerRepository.save(player);
+        }
+        player.setLastModified(new Date());
+        if (request.getRecordId()==null){
+            player.setRecordId(String.valueOf(player.getId().getTimestamp()));
+        }
+        playerRepository.save(player);
+        playerDto.setPlayer(player);
+        return playerDto;
+    }
+
+    @Override
     public void deleteByRecordId(String recordId) {
+
         playerRepository.deleteByRecordId(recordId);
     }
 
     @Override
     public void updateByRecordId(String recordId) {
-        Optional<Player> playerOptional=playerRepository.findByRecordId(recordId);
-        playerOptional.ifPresent(player -> playerRepository.save(player));
+        Player player=playerRepository.findByRecordId(recordId);
+        if(player!=null){
+            playerRepository.save(player);
+        }
     }
 }

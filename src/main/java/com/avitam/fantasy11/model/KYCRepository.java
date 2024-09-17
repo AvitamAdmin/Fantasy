@@ -16,5 +16,5 @@ public interface KYCRepository extends MongoRepository<KYC, ObjectId> {
 
     void deleteByRecordId(String recordId);
 
-    List<KYC> findStatusOrderByIdentifier(boolean b);
+    List<KYC> findByStatusOrderByIdentifier(boolean b);
 }
