@@ -21,25 +21,26 @@ public class PointsUpdateController extends BaseController {
     private PointsUpdateService pointsUpdateService;
     private static final String ADMIN_POINTSUPDATE="/admin/pointsUpdate";
 
-    @GetMapping("/get")
-    @ResponseBody
-    public PointsUpdateDto getPointsUpdate() {
-        PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();
-        pointsUpdateDto.setPointsUpdate(pointsUpdateRepository.findByStatusOrderByIdentifier(true));
-        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
-        return pointsUpdateDto;
-    }
-
     @PostMapping
     @ResponseBody
-    public PointsUpdateDto getAllPointsUpdate(PointsUpdateDto pointsUpdateDto){
+    public PointsUpdateDto getAllPointsUpdate(@RequestBody PointsUpdateDto pointsUpdateDto){
 
         Pageable pageable=getPageable(pointsUpdateDto.getPage(),pointsUpdateDto.getSizePerPage(),pointsUpdateDto.getSortDirection(),pointsUpdateDto.getSortField());
         PointsUpdate pointsUpdate=pointsUpdateDto.getPointsUpdate();
         Page<PointsUpdate>page=isSearchActive(pointsUpdate) != null ? pointsUpdateRepository.findAll(Example.of(pointsUpdate),pageable): pointsUpdateRepository.findAll(pageable);
+       pointsUpdateDto.setPointsUpdateList(page.getContent());
         pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
         pointsUpdateDto.setTotalPages(page.getTotalPages());
         pointsUpdateDto.setTotalRecords(page.getTotalElements());
+        return pointsUpdateDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public PointsUpdateDto getActivePointsUpdate() {
+        PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();
+        pointsUpdateDto.setPointsUpdateList(pointsUpdateRepository.findByStatusOrderByIdentifier(true));
+        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateDto;
     }
 
@@ -48,6 +49,7 @@ public class PointsUpdateController extends BaseController {
     public PointsUpdateDto editPointsUpdate(@RequestBody PointsUpdateDto request) {
         PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();
         PointsUpdate pointsUpdate = pointsUpdateRepository.findByRecordId(request.getRecordId());
+        pointsUpdateDto.setPointsUpdate(pointsUpdate);
         pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateDto;
     }
@@ -62,7 +64,7 @@ public class PointsUpdateController extends BaseController {
     @ResponseBody
     public PointsUpdateDto addPointsUpdate() {
         PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();
-        pointsUpdateDto.setPointsUpdate(pointsUpdateRepository.findByStatusOrderByIdentifier(true));
+        pointsUpdateDto.setPointsUpdateList(pointsUpdateRepository.findByStatusOrderByIdentifier(true));
         pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateDto;
     }

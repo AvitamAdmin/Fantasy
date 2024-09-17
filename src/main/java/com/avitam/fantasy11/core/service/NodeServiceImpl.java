@@ -21,6 +21,8 @@ public class NodeServiceImpl implements NodeService {
     private UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private CoreService coreService;
 
     @Override
     public List<Node> getAllNodes() {
@@ -48,10 +50,10 @@ public class NodeServiceImpl implements NodeService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User currentUser = userRepository.findByEmail(principalObject.getUsername());
-        int roles = currentUser.getRole();
+        Set<Role> roles = currentUser.getRoles();
         Set<Node> nodes = new HashSet<>();
-        if (currentUser.getRole() == 2) {
-            nodes.addAll(nodeRepository.findByParentNodeId(null));
+        for (Role role : roles) {
+            nodes.addAll(role.getPermissions());
         }
         List<Node> allNodes = new ArrayList<>();
         List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isNotFalse(node.getStatus())).collect(Collectors.toList());
@@ -64,4 +66,50 @@ public class NodeServiceImpl implements NodeService {
         return allNodes;
 
     }
+
+    @Override
+    public Node findByRecordId(String recordId) {
+
+        return nodeRepository.findByRecordId(recordId);
+    }
+
+    @Override
+    public void deleteByRecordId(String recordId) {
+
+        nodeRepository.deleteByRecordId(recordId);
+    }
+
+    @Override
+    public NodeDto handleEdit(NodeDto request) {
+        NodeDto nodeDto=new NodeDto();
+        Node node=null;
+        if (request.getRecordId()!=null){
+            Node requestData=request.getNode();
+            node=nodeRepository.findByRecordId(request.getRecordId());
+            modelMapper.map(requestData,node);
+        }else {
+            node=request.getNode();
+            node.setCreator(coreService.getCurrentUser().getUsername());
+            node.setCreationTime(new Date());
+            nodeRepository.save(node);
+        }
+        node.setLastModified(new Date());
+        if (request.getRecordId()==null){
+            node.setRecordId(String.valueOf(node.getId().getTimestamp()));
+        }
+        nodeRepository.save(node);
+        nodeDto.setNode(node);
+        return nodeDto;
+    }
+
+    @Override
+    public void updateByRecordId(String recordId) {
+        Node node=nodeRepository.findByRecordId(recordId);
+        if(node!=null) {
+
+            nodeRepository.save(node);
+        }
+    }
+
+
 }

@@ -49,6 +49,7 @@ public class ContestJoinedController extends BaseController {
     public ContestJoinedDto edit(@RequestBody ContestJoinedDto request) {
         ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
         ContestJoined contestJoined=contestJoinedRepository.findByRecordId(request.getRecordId());
+        contestJoinedDto.setContestJoined(contestJoined);
         contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/deposit/approvedDeposits")
+@RequestMapping("/admin/approvedDeposits")
 public class ApprovedDepositController extends BaseController {
 
     @Autowired
@@ -24,7 +24,7 @@ public class ApprovedDepositController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public DepositsDto getAllModels(DepositsDto depositsDto) {
+    public DepositsDto getAllModels(@RequestBody DepositsDto depositsDto) {
         Pageable pageable=getPageable(depositsDto.getPage(),depositsDto.getSizePerPage(),depositsDto.getSortDirection(),depositsDto.getSortField());
         Deposits deposits=depositsDto.getDeposits();
         Page<Deposits> page=isSearchActive(deposits) !=null ? depositsRepository.findAll(Example.of(deposits),pageable) : depositsRepository.findAll(pageable);
@@ -37,7 +37,7 @@ public class ApprovedDepositController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public DepositsDto getDeposit(){
+    public DepositsDto getActiveDeposit(){
         DepositsDto depositsDto=new DepositsDto();
         depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_APPROVEDDEPOSIT);
@@ -45,9 +45,10 @@ public class ApprovedDepositController extends BaseController {
     }
     @GetMapping("/edit")
     @ResponseBody
-    public DepositsDto edit(@RequestBody DepositsDto request) {
+    public DepositsDto editDeposits(@RequestBody DepositsDto request) {
         DepositsDto depositsDto=new DepositsDto();
         Deposits deposits=depositsRepository.findByRecordId(request.getRecordId());
+        depositsDto.setDeposits(deposits);
         depositsDto.setBaseUrl(ADMIN_APPROVEDDEPOSIT);
         return depositsDto;
     }
@@ -61,7 +62,7 @@ public class ApprovedDepositController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public DepositsDto add() {
+    public DepositsDto addDeposit() {
         DepositsDto depositsDto = new DepositsDto();
         depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
         depositsDto.setBaseUrl(ADMIN_APPROVEDDEPOSIT);
@@ -70,7 +71,7 @@ public class ApprovedDepositController extends BaseController {
 
     @GetMapping("/delete")
     @ResponseBody
-    public DepositsDto delete(@RequestBody DepositsDto depositsDto) {
+    public DepositsDto deleteDeposit(@RequestBody DepositsDto depositsDto) {
         for (String id : depositsDto.getRecordId().split(",")) {
             depositsRepository.deleteByRecordId(id);
         }

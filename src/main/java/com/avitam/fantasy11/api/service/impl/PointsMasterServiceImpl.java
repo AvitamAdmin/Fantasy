@@ -35,8 +35,10 @@ public class PointsMasterServiceImpl implements PointsMasterService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        PointsMaster pointsMasterOptional=pointsMasterRepository.findByRecordId(recordId);
-        //pointsMasterOptional.ifPresent(pointsMaster -> pointsMasterRepository.save(pointsMaster));
+        PointsMaster pointsMaster=pointsMasterRepository.findByRecordId(recordId);
+        if(pointsMaster!=null) {
+            pointsMasterRepository.save(pointsMaster);
+        }
     }
 
     @Override

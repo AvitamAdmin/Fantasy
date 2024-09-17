@@ -1,105 +1,84 @@
 package com.avitam.fantasy11.web.controllers.admin.matchType;
 
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.MatchTypeForm;
-import com.avitam.fantasy11.form.TeamForm;
-import com.avitam.fantasy11.form.TournamentForm;
+import com.avitam.fantasy11.api.dto.MatchTypeDto;
+import com.avitam.fantasy11.api.service.MatchTypeService;
 import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.model.MatchTypeRepository;
-import com.avitam.fantasy11.model.SportType;
-import com.avitam.fantasy11.model.Tournament;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin/matchType")
-public class MatchTypeController {
+public class MatchTypeController extends BaseController {
 
     @Autowired
     private MatchTypeRepository matchTypeRepository;
     @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
+    private MatchTypeService matchTypeService;
 
-    @GetMapping
-    public String getAll(Model model){
-        List<MatchType> matchTypes = matchTypeRepository.findAll();
-        model.addAttribute("models", matchTypes);
-        return "matchType/matchTypes";
+    private static final String ADMIN_MATCHTYPE="/admin/matchType";
+
+    @PostMapping
+    @ResponseBody
+    public MatchTypeDto getAllMatchTypes(@RequestBody MatchTypeDto matchTypeDto){
+        Pageable pageable=getPageable(matchTypeDto.getPage(),matchTypeDto.getSizePerPage(),matchTypeDto.getSortDirection(),matchTypeDto.getSortField());
+        MatchType matchType=matchTypeDto.getMatchType();
+        Page<MatchType> page=isSearchActive(matchType) !=null ? matchTypeRepository.findAll(Example.of(matchType),pageable) : matchTypeRepository.findAll(pageable);
+        matchTypeDto.setMatchTypeList(page.getContent());
+        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
+        matchTypeDto.setTotalPages(page.getTotalPages());
+        matchTypeDto.setTotalRecords(page.getTotalElements());
+        return matchTypeDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public MatchTypeDto getActiveMatchType (){
+        MatchTypeDto matchTypeDto=new MatchTypeDto();
+        matchTypeDto.setMatchTypeList(matchTypeRepository.findByStatusOrderByIdentifier(true));
+        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeDto;
     }
 
     @GetMapping("/edit")
-    public String edit (@RequestParam("id") String id, Model model){
+    @ResponseBody
+    public MatchTypeDto edit (@RequestBody MatchTypeDto request){
 
-        Optional<MatchType> matchTypeOptional = matchTypeRepository.findByRecordId(id);
-        if (matchTypeOptional.isPresent()) {
-            MatchType matchType= matchTypeOptional.get();
-            MatchTypeForm matchTypeForm= modelMapper.map(matchType, MatchTypeForm.class);
-            matchTypeForm.setId(String.valueOf(matchType.getId()));
-            model.addAttribute("editForm", matchTypeForm);
-        }
-        return "matchType/edit";
+        MatchTypeDto matchTypeDto=new MatchTypeDto();
+        MatchType matchType=matchTypeRepository.findByRecordId(request.getRecordId());
+        matchTypeDto.setMatchType(matchType);
+        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")MatchTypeForm matchTypeForm, Model model, BindingResult result) throws IOException {
+    @ResponseBody
+    public MatchTypeDto handleEdit(@RequestBody MatchTypeDto request) {
 
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", matchTypeForm);
-            return "matchType/edit";
-        }
-
-            matchTypeForm.setLastModified(new Date());
-        if (matchTypeForm.getId() == null) {
-            matchTypeForm.setCreationTime(new Date());
-            matchTypeForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        MatchType matchType = modelMapper.map(matchTypeForm, MatchType.class);
-        if(matchTypeForm.getId()!=null) {
-            Optional<MatchType> matchTypeOptional = matchTypeRepository.findById(matchTypeForm.getId());
-            if (matchTypeOptional.isPresent()) {
-                matchType.setId(matchTypeOptional.get().getId());
-            }
-        }
-        matchTypeRepository.save(matchType);
-        if(matchType.getRecordId()==null)
-        {
-            matchType.setRecordId(String.valueOf(matchType.getId().getTimestamp()));
-        }
-        matchTypeRepository.save(matchType);
-        model.addAttribute("editForm", matchTypeForm);
-
-        return "redirect:/admin/matchType";
+        return matchTypeService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String add(Model model) {
-        MatchTypeForm form = new MatchTypeForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "matchType/edit";
+    @ResponseBody
+    public MatchTypeDto add() {
+        MatchTypeDto matchTypeDto=new MatchTypeDto();
+        matchTypeDto.setMatchTypeList(matchTypeRepository.findByStatusOrderByIdentifier(true));
+        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeDto;
     }
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public MatchTypeDto delete(@RequestBody MatchTypeDto matchTypeDto) {
+        for (String id : matchTypeDto.getRecordId().split(",")) {
             matchTypeRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/matchType";
+        matchTypeDto.setMessage("Data delete successfully");
+        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeDto;
     }
 }

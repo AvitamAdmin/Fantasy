@@ -11,7 +11,7 @@ public interface RoleRepository extends MongoRepository<Role, ObjectId> {
 
     Optional<Role> findById(String id);
 
-    Optional<Role> findByRecordId(String recordId);
+    Role findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 

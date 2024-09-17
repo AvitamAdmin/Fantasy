@@ -15,5 +15,5 @@ import java.util.List;
 public class PointsUpdateDto extends CommonDto{
 
     private PointsUpdate pointsUpdate;
-    private List<PointsUpdate> pointsUpdates;
+    private List<PointsUpdate> pointsUpdateList;
 }
