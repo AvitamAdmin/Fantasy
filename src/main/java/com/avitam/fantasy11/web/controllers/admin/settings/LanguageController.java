@@ -1,14 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
+import com.avitam.fantasy11.api.dto.AddressDto;
+import com.avitam.fantasy11.api.dto.LanguageDto;
+import com.avitam.fantasy11.api.service.LanguageService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.LanguageForm;
 import com.avitam.fantasy11.form.NotificationForm;
+import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.model.LanguageRepository;
 import com.avitam.fantasy11.model.Notification;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +28,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/language")
-public class LanguageController {
+public class LanguageController extends BaseController {
 
     @Autowired
     private LanguageRepository languageRepository;
@@ -29,70 +37,68 @@ public class LanguageController {
     @Autowired
     private CoreService coreService;
 
-    @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("models", languageRepository.findAll());
-        return "language/languages";
+    @Autowired
+    private LanguageService languageService;
+
+    public static final String ADMIN_LANGUAGE = "/admin/language";
+
+    @PostMapping
+    @ResponseBody
+    public LanguageDto getAll(@RequestBody LanguageDto languageDto) {
+        Pageable pageable=getPageable(languageDto.getPage(),languageDto.getSizePerPage(),languageDto.getSortDirection(),languageDto.getSortField());
+        Language language=languageDto.getLanguage();
+        Page<Language> page=isSearchActive(language)!=null ? languageRepository.findAll(Example.of(language),pageable) : languageRepository.findAll(pageable);
+        languageDto.setLanguageList(page.getContent());
+        languageDto.setTotalPages(page.getTotalPages());
+        languageDto.setTotalRecords(page.getTotalElements());
+        languageDto.setBaseUrl(ADMIN_LANGUAGE);
+        return languageDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public LanguageDto getActiveLanguageList() {
+        LanguageDto languageDto = new LanguageDto();
+        languageDto.setLanguageList(languageRepository.findByStatusOrderByIdentifier(true));
+        languageDto.setBaseUrl(ADMIN_LANGUAGE);
+        return languageDto;
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") String id, Model model) {
-
-        Optional<Language> languageOptional = languageRepository.findByRecordId(id);
-        if (languageOptional.isPresent()) {
-            Language language =languageOptional.get();
-            LanguageForm languageForm = modelMapper.map(language, LanguageForm.class);
-            languageForm.setId(String.valueOf(language.getId()));
-            model.addAttribute("editForm", languageForm);
-        }
-        return "language/edit";
+    @ResponseBody
+    public LanguageDto edit(@RequestBody LanguageDto request) {
+        LanguageDto languageDto = new LanguageDto();
+        Language language = languageRepository.findByRecordId(request.getRecordId());
+        languageDto.setLanguage(language);
+        languageDto.setBaseUrl(ADMIN_LANGUAGE);
+        return languageDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") LanguageForm languageForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "language/edit";
-        }
-        languageForm.setLastModified(new Date());
-        if (languageForm.getId() == null) {
-            languageForm.setCreationTime(new Date());
-            languageForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        Language language = modelMapper.map(languageForm, Language.class);
+    @ResponseBody
+    public LanguageDto handleEdit(@RequestBody LanguageDto request) {
 
-        Optional<Language> languageOptional = languageRepository.findById(languageForm.getId());
-        if(languageOptional.isPresent()){
-            language.setId(languageOptional.get().getId());
-        }
-
-        languageRepository.save(language);
-        if(language.getRecordId()==null)
-        {
-            language.setRecordId(String.valueOf(language.getId().getTimestamp()));
-        }
-        languageRepository.save(language);
-        model.addAttribute("editForm", languageForm);
-        return "redirect:/admin/language";
+        return languageService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String add(Model model) {
-        LanguageForm form = new LanguageForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "language/edit";
+    @ResponseBody
+    public LanguageDto add() {
+        LanguageDto languageDto = new LanguageDto();
+        languageDto.setLanguageList(languageRepository.findByStatusOrderByIdentifier(true));
+        languageDto.setBaseUrl(ADMIN_LANGUAGE);
+        return languageDto;
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public LanguageDto delete(@RequestBody LanguageDto languageDto) {
+        for (String id : languageDto.getRecordId().split(",")) {
 
             languageRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/language";
+        languageDto.setMessage("Data deleted successfully!!");
+        languageDto.setBaseUrl(ADMIN_LANGUAGE);
+        return languageDto;
     }
 }

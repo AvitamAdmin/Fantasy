@@ -1,12 +1,19 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
+import com.avitam.fantasy11.api.dto.LanguageDto;
+import com.avitam.fantasy11.api.dto.SportAPIDto;
+import com.avitam.fantasy11.api.service.SportAPIService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.LanguageForm;
 import com.avitam.fantasy11.form.SportsApiForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +25,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/sportsApi")
-public class SportAPIController {
+public class SportAPIController extends BaseController {
 
     @Autowired
     private SportsApiRepository sportsApiRepository;
@@ -27,71 +34,69 @@ public class SportAPIController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private SportAPIService sportAPIService;
 
-    @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("models", sportsApiRepository.findAll());
-        return "sportsApi/apis";
+    public static final String ADMIN_SPORTAPI = "/admin/sportsApi";
+
+
+    @PostMapping
+    @ResponseBody
+    public SportAPIDto getAll(@RequestBody SportAPIDto sportAPIDto) {
+        Pageable pageable=getPageable(sportAPIDto.getPage(),sportAPIDto.getSizePerPage(),sportAPIDto.getSortDirection(),sportAPIDto.getSortField());
+        SportsApi sportsApi =sportAPIDto.getSportAPI();
+        Page<SportsApi> page=isSearchActive(sportsApi)!=null ? sportsApiRepository.findAll(Example.of(sportsApi),pageable) : sportsApiRepository.findAll(pageable);
+        sportAPIDto.setSportsApiList(page.getContent());
+        sportAPIDto.setTotalPages(page.getTotalPages());
+        sportAPIDto.setTotalRecords(page.getTotalElements());
+        sportAPIDto.setBaseUrl(ADMIN_SPORTAPI);
+        return sportAPIDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public SportAPIDto getActiveSportAPIList() {
+       SportAPIDto sportAPIDto = new SportAPIDto();
+        sportAPIDto.setSportsApiList(sportsApiRepository.findByStatusOrderByIdentifier(true));
+        sportAPIDto.setBaseUrl(ADMIN_SPORTAPI);
+        return sportAPIDto;
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") String id, Model model) {
-
-        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findByRecordId(id);
-        if (sportsApiOptional.isPresent()) {
-            SportsApi sportsApi =sportsApiOptional.get();
-
-            SportsApiForm sportsApiForm = modelMapper.map(sportsApi, SportsApiForm.class);
-            sportsApiForm.setId(String.valueOf(sportsApi.getId()));
-            model.addAttribute("editForm", sportsApiForm);
-        }
-        return "sportsApi/edit";
+    @ResponseBody
+    public SportAPIDto edit(@RequestBody SportAPIDto request) {
+        SportAPIDto sportAPIDto = new SportAPIDto();
+        SportsApi sportsApi = sportsApiRepository.findByRecordId(request.getRecordId());
+        sportAPIDto.setSportAPI(sportsApi);
+        sportAPIDto.setBaseUrl(ADMIN_SPORTAPI);
+        return sportAPIDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") SportsApiForm sportsApiForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "sportsApi/edit";
-        }
-        sportsApiForm.setLastModified(new Date());
-        if (sportsApiForm.getId() == null) {
-            sportsApiForm.setCreationTime(new Date());
-            sportsApiForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        SportsApi sportsApi = modelMapper.map(sportsApiForm, SportsApi.class);
+    @ResponseBody
+    public SportAPIDto handleEdit(@RequestBody SportAPIDto request) {
 
-        Optional<SportsApi> sportsApiOptional = sportsApiRepository.findById(sportsApiForm.getId());
-        if(sportsApiOptional.isPresent()){
-            sportsApi.setId(sportsApiOptional.get().getId());
-        }
-        sportsApiRepository.save(sportsApi);
-
-        if(sportsApi.getRecordId()==null){
-            sportsApi.setRecordId(String.valueOf(sportsApi.getId().getTimestamp()));
-        }
-        sportsApiRepository.save(sportsApi);
-        model.addAttribute("editForm", sportsApiForm);
-        return "redirect:/admin/sportsApi";
+        return sportAPIService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String add(Model model) {
-        SportsApiForm form = new SportsApiForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "sportsApi/edit";
+    @ResponseBody
+    public SportAPIDto add() {
+        SportAPIDto sportAPIDto = new SportAPIDto();
+        sportAPIDto.setSportsApiList(sportsApiRepository.findByStatusOrderByIdentifier(true));
+        sportAPIDto.setBaseUrl(ADMIN_SPORTAPI);
+        return sportAPIDto;
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public SportAPIDto delete(@RequestBody SportAPIDto sportAPIDto) {
+        for (String id : sportAPIDto.getRecordId().split(",")) {
 
             sportsApiRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/sportsApi";
+        sportAPIDto.setMessage("Data deleted successfully!!");
+        sportAPIDto.setBaseUrl(ADMIN_SPORTAPI);
+        return sportAPIDto;
     }
 }
