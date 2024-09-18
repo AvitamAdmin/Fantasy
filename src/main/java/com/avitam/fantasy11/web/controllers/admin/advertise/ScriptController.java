@@ -1,15 +1,20 @@
 package com.avitam.fantasy11.web.controllers.admin.advertise;
 
+import com.avitam.fantasy11.api.dto.DepositsDto;
+import com.avitam.fantasy11.api.dto.ScriptDto;
+import com.avitam.fantasy11.api.service.ScriptService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.form.ScriptForm;
-import com.avitam.fantasy11.model.Address;
-import com.avitam.fantasy11.model.Script;
-import com.avitam.fantasy11.model.ScriptRepository;
+import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.validation.AddressFormValidator;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,8 +24,8 @@ import java.util.Date;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/advertise/script")
-public class ScriptController {
+@RequestMapping("/admin/script")
+public class ScriptController extends BaseController {
 
     @Autowired
     private ScriptRepository scriptRepository;
@@ -28,63 +33,70 @@ public class ScriptController {
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ScriptService scriptService;
 
-    @GetMapping
-    public String getAllScripts(Model model){
-        model.addAttribute("models",scriptRepository.findAll());
-        return "advertise/scripts";
+    public static final String ADMIN_SCRIPT = "/admin/script";
+
+    @PostMapping
+    @ResponseBody
+    public ScriptDto getAllScripts(@RequestBody ScriptDto scriptDto){
+        Pageable pageable=getPageable(scriptDto.getPage(),scriptDto.getSizePerPage(),scriptDto.getSortDirection(),scriptDto.getSortField());
+        Script script=scriptDto.getScript();
+        Page<Script> page=isSearchActive(script) !=null ? scriptRepository.findAll(Example.of(script),pageable) : scriptRepository.findAll(pageable);
+        scriptDto.setScripts(page.getContent());
+        scriptDto.setBaseUrl(ADMIN_SCRIPT);
+        scriptDto.setTotalPages(page.getTotalPages());
+        scriptDto.setTotalRecords(page.getTotalElements());
+        return scriptDto;
     }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public ScriptDto getActiveScript(){
+        ScriptDto scriptDto=new ScriptDto();
+        scriptDto.setScripts(scriptRepository.findByStatusOrderByIdentifier(true));
+        scriptDto.setBaseUrl(ADMIN_SCRIPT);
+        return scriptDto;
+    }
+
+
     @GetMapping("/edit")
-    public String editAddress(@RequestParam("id") ObjectId id, Model model) {
-        Optional<Script> scriptOptional = scriptRepository.findById(id);
-        if (scriptOptional.isPresent()) {
-            Script script = scriptOptional.get();
-            ScriptForm scriptForm = modelMapper.map(script, ScriptForm.class);
-            scriptForm.setId(String.valueOf(script.getId()));
-            model.addAttribute("editForm", scriptForm);
-        }
-        return "advertise/scriptEdit";
+    @ResponseBody
+    public ScriptDto edit (@RequestBody ScriptDto request) {
+        ScriptDto scriptDto = new ScriptDto();
+        scriptDto.setBaseUrl(ADMIN_SCRIPT);
+        Script script = scriptRepository.findByRecordId(request.getRecordId());
+        scriptDto.setScript(script);
+        return scriptDto;
     }
+
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm") ScriptForm scriptForm, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm",scriptForm);
-            return "advertise/scriptEdit";
-        }
-        scriptForm.setLastModified(new Date());
-        if (scriptForm.getId() == null) {
-            scriptForm.setCreationTime(new Date());
-            scriptForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-        Script script = modelMapper.map(scriptForm, Script.class);
-
-        Optional<Script> scriptOptional = scriptRepository.findById(scriptForm.getId());
-        if(scriptOptional.isPresent()){
-            script.setId(scriptOptional.get().getId());
-        }
-        scriptRepository.save(script);
-        model.addAttribute("editForm", scriptForm);
-        return "redirect:/advertise/script";
+    @ResponseBody
+    public  ScriptDto handleEdit(@RequestBody ScriptDto request) {
+        return scriptService.handleEdit(request);
     }
 
+
+
     @GetMapping("/add")
-    public String addScript(Model model) {
-        ScriptForm form = new ScriptForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "advertise/scriptEdit";
+    @ResponseBody
+    public ScriptDto addScript(@RequestBody ScriptDto request) {
+        ScriptDto scriptDto = new ScriptDto();
+        scriptDto.setBaseUrl(ADMIN_SCRIPT);
+        scriptDto.setScripts(scriptRepository.findByStatusOrderByIdentifier(true));
+        return scriptDto;
     }
 
     @GetMapping("/delete")
-    public String deleteScript(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @ResponseBody
+    public ScriptDto deleteScript(@RequestBody ScriptDto scriptDto) {
+        for (String id : scriptDto.getRecordId().split(",")) {
             scriptRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/advertise/script";
+        scriptDto.setMessage("Data deleted Successfully");
+        scriptDto.setBaseUrl(ADMIN_SCRIPT);
+        return scriptDto;
     }
 }

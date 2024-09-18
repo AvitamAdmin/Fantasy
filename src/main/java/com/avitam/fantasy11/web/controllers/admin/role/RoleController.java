@@ -1,14 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.role;
 
+import com.avitam.fantasy11.api.dto.RoleDto;
+import com.avitam.fantasy11.api.service.RoleService;
 import com.avitam.fantasy11.form.RoleForm;
 import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.Script;
 import com.avitam.fantasy11.validation.RoleFormValidator;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
+import org.checkerframework.checker.units.qual.A;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -22,7 +30,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/role")
-public class RoleController {
+public class RoleController extends BaseController {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -34,11 +42,31 @@ public class RoleController {
     @Autowired
     private CoreService coreService;
 
-    @GetMapping
-    public String getRoles(Model model) {
-        List<Role> roles = roleRepository.findAll();
-        model.addAttribute("roles", roles);
-        return "role/roles";
+    @Autowired
+    private RoleService roleService;
+
+
+    public static final String ADMIN_ROLE = "/admin/role";
+    @PostMapping
+    @ResponseBody
+    public RoleDto getRoles(@RequestBody RoleDto roleDto) {
+        Pageable pageable=getPageable(roleDto.getPage(),roleDto.getSizePerPage(),roleDto.getSortDirection(),roleDto.getSortField());
+        Role role=roleDto.getRole();
+        Page<Role> page=isSearchActive(role) !=null ? roleRepository.findAll(Example.of(role),pageable) : roleRepository.findAll(pageable);
+        roleDto.setRoles(page.getContent());
+        roleDto.setBaseUrl(ADMIN_ROLE);
+        roleDto.setTotalPages(page.getTotalPages());
+        roleDto.setTotalRecords(page.getTotalElements());
+        return roleDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public RoleDto roleDto(){
+        RoleDto roleDto=new RoleDto();
+        roleDto.setRoles(roleRepository.findByStatusOrderByIdentifier(true));
+        roleDto.setBaseUrl(ADMIN_ROLE);
+        return roleDto;
     }
 
     @GetMapping("/migrate")
@@ -54,72 +82,47 @@ public class RoleController {
     }
 
     @GetMapping("/edit")
-    public String editRole(@RequestParam("id") String id, Model model) {
-        if (id == null) {
-            model.addAttribute("message", "Please select a row for edit operation!");
-            return "role/edit";
-        }
-        Optional<Role> roleOptional = roleRepository.findByRecordId(id);
-        if (roleOptional.isPresent()) {
-            RoleForm roleForm = modelMapper.map(roleOptional.get(), RoleForm.class);
-            roleForm.setId(String.valueOf(roleOptional.get().getId()));
-            model.addAttribute("nodes", nodeRepository.findAll());
-            model.addAttribute("roleForm", roleForm);
-        }
-        return "role/edit";
+    @ResponseBody
+    public RoleDto edit (@RequestBody RoleDto request) {
+        RoleDto roleDto = new RoleDto();
+        roleDto.setBaseUrl(ADMIN_ROLE);
+        Role role = roleRepository.findByRecordId(request.getRecordId());
+        roleDto.setRole(role);
+        return roleDto;
     }
+
+
+
+
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("roleForm") RoleForm roleForm, Model model, BindingResult result) {
-        new RoleFormValidator().validate(roleForm, result);
-        model.addAttribute("nodes", nodeRepository.findAll());
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            return "role/edit";
-        }
-        Role role = modelMapper.map(roleForm,Role.class);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        if (roleForm.getId() != null) {
-            Optional<Role> optionalRole = roleRepository.findById(roleForm.getId());
-            if (optionalRole.isPresent()) {
-                role = optionalRole.get();
-                role.setName(roleForm.getName());
-                role.setPermissions(roleForm.getPermissions());
-            }
-        } else {
-            role.setCreationTime(new Date());
-        }
-        role.setLastModified(new Date());
-        role.setRoleId(Integer.parseInt(roleForm.getRoleId()));
-        role.setCreator(principalObject.getUsername());
-        roleRepository.save(role);
-        if(role.getRecordId()==null)
-        {
-            role.setRecordId(String.valueOf(role.getId().getTimestamp()));
-        }
-        roleRepository.save(role);
-        model.addAttribute("message", "Role was updated successfully!");
-        return "redirect:/admin/role";
+    @ResponseBody
+    public  RoleDto handleEdit(@RequestBody RoleDto request) {
+        return roleService.handleEdit(request);
     }
+
+
+
 
     @GetMapping("/add")
-    public String addRole(Model model) {
-        RoleForm form = new RoleForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("nodes", nodeRepository.findAll());
-        model.addAttribute("roleForm", form);
-        return "role/edit";
+    @ResponseBody
+    public RoleDto addScript(@RequestBody RoleDto request) {
+        RoleDto roleDto = new RoleDto();
+        roleDto.setBaseUrl(ADMIN_ROLE);
+        roleDto.setRoles(roleRepository.findByStatusOrderByIdentifier(true));
+        return roleDto;
     }
 
+
     @GetMapping("/delete")
-    public String deleteRole(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-            roleRepository.deleteByRecordId(id);
+    @ResponseBody
+    public RoleDto deleteScript(@RequestBody RoleDto roleDto) {
+        for (String id : roleDto.getRecordId().split(",")) {
+            roleRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/role";
+        roleDto.setMessage("Data deleted Successfully");
+        roleDto.setBaseUrl(ADMIN_ROLE);
+        return roleDto;
     }
 }
+
