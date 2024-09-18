@@ -4,14 +4,17 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 @Repository
 public interface ExtensionRepository extends MongoRepository<Extension, ObjectId> {
-    Optional<Extension> findById(String id);
+    Extension findById(String id);
 
-    Optional<Extension> findByRecordId(String recordId);
+    Extension findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
+
+    List<Extension> findByStatusOrderByIdentifier(Boolean b);
 
 
 }

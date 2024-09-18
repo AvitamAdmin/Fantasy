@@ -22,6 +22,10 @@ public class LineUpStatusImpl implements LineUpStatusService {
     @Autowired
     private CoreService coreService;
 
+    private static final String ADMIN_LINEUP_STATUS ="/admin/lineupStatus";
+
+
+
     @Override
     public LineUpStatus findByRecordId(String recordId) {
         return lineUpStatusRepository.findByRecordId(recordId);
@@ -47,6 +51,7 @@ public class LineUpStatusImpl implements LineUpStatusService {
         }
         lineUpStatusRepository.save(lineUpStatus);
         lineUpStatusDto.setLineUpStatus(lineUpStatus);
+        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
         return lineUpStatusDto;
     }
 

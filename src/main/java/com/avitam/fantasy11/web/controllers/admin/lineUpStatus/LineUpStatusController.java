@@ -24,14 +24,14 @@ public class LineUpStatusController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public LineUpStatusDto getAll(LineUpStatusDto lineUpStatusDto) {
+    public LineUpStatusDto getAll(@RequestBody LineUpStatusDto lineUpStatusDto) {
         Pageable pageable = getPageable(lineUpStatusDto.getPage(), lineUpStatusDto.getSizePerPage(), lineUpStatusDto.getSortDirection(), lineUpStatusDto.getSortField());
         LineUpStatus lineUpStatus = lineUpStatusDto.getLineUpStatus();
         Page<LineUpStatus> page = isSearchActive(lineUpStatus) != null ? lineUpStatusRepository.findAll(org.springframework.data.domain.Example.of(lineUpStatus), pageable) : lineUpStatusRepository.findAll(pageable);
         lineUpStatusDto.setLineUpStatusList(page.getContent());
-        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
         lineUpStatusDto.setTotalPages(page.getTotalPages());
         lineUpStatusDto.setTotalRecords(page.getTotalElements());
+        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
         return lineUpStatusDto;
     }
 

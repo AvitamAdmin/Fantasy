@@ -5,10 +5,12 @@ import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.model.MainContestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import  org.modelmapper.ModelMapper;
+import org.modelmapper.ModelMapper;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.api.dto.MainContestDto;
+
 import java.util.Date;
+
 @Service
 public class MainContestServiceImpl implements MainContestService {
 
@@ -20,6 +22,8 @@ public class MainContestServiceImpl implements MainContestService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    private static final String ADMIN_MAINCONTEST = "/admin/mainContest";
 
     @Override
     public MainContest findByRecordId(String recordId) {
@@ -41,11 +45,12 @@ public class MainContestServiceImpl implements MainContestService {
             mainContestRepository.save(mainContest);
         }
         mainContest.setLastModified(new Date());
-        if (request.getRecordId()==null){
+        if (request.getRecordId() == null) {
             mainContest.setRecordId(String.valueOf(mainContest.getId().getTimestamp()));
         }
         mainContestRepository.save(mainContest);
         mainContestDto.setMainContest(mainContest);
+        mainContestDto.setBaseUrl(ADMIN_MAINCONTEST);
         return mainContestDto;
     }
 
@@ -58,11 +63,10 @@ public class MainContestServiceImpl implements MainContestService {
     public void updateByRecordId(String recordId) {
         MainContest mainContest = mainContestRepository.findByRecordId(recordId);
         if (mainContest != null) {
-             mainContestRepository.save(mainContest);
+            mainContestRepository.save(mainContest);
         }
     }
 
 
-
-    }
+}
 

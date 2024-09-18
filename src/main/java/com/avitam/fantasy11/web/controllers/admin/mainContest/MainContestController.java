@@ -23,7 +23,7 @@ public class MainContestController extends com.avitam.fantasy11.web.controllers.
 
 @PostMapping
 @ResponseBody
-public MainContestDto getAllContest(MainContestDto mainContestDto) {
+public MainContestDto getAllContest(@RequestBody MainContestDto mainContestDto) {
     Pageable pageable = getPageable(mainContestDto.getPage(),mainContestDto.getSizePerPage(),mainContestDto.getSortDirection(),mainContestDto.getSortField());
     MainContest mainContest=mainContestDto.getMainContest();
     Page<MainContest> page=isSearchActive(mainContest)!=null ? mainContestRepository.findAll(org.springframework.data.domain.Example.of(mainContest),pageable):mainContestRepository.findAll(pageable);

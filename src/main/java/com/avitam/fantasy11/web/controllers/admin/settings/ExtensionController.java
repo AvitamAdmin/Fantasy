@@ -1,114 +1,99 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
+import com.avitam.fantasy11.api.dto.ExtensionDto;
+import com.avitam.fantasy11.api.service.ExtensionService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.ExtensionForm;
-import com.avitam.fantasy11.form.PlayerForm;
-import com.avitam.fantasy11.model.*;
-import org.bson.types.Binary;
-import org.bson.types.ObjectId;
+import com.avitam.fantasy11.model.Extension;
+import com.avitam.fantasy11.model.ExtensionRepository;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/admin/extension")
-public class ExtensionController {
+public class ExtensionController extends BaseController {
 
     @Autowired
     private ExtensionRepository extensionRepository;
+
     @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
-    @GetMapping
-    public String getAll(Model model){
-        List<Extension> datas=new ArrayList<>();
-        List<Extension> extensions = extensionRepository.findAll();
-        for(Extension extension:extensions){
-            if(extension.getId()!=null) {
-                byte[] image = extension.getImage().getData();
-                extension.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(extension);
-            }
-        }
-        model.addAttribute("models", datas);
-        return "extension/extensions";
+    @Autowired
+    private ExtensionService extensionService;
+
+    private static final String ADMIN_EXTENSION = "/admin/extension";
+
+    @PostMapping
+    @ResponseBody
+    public ExtensionDto getAllExtension(@RequestBody ExtensionDto extensionDto) {
+        Pageable pageable = getPageable(extensionDto.getPage(), extensionDto.getSizePerPage(), extensionDto.getSortDirection(), extensionDto.getSortField());
+        Extension extension = extensionDto.getExtension();
+        Page<Extension> page = isSearchActive(extension) != null ? extensionRepository.findAll(Example.of(extension), pageable) : extensionRepository.findAll(pageable);
+        extensionDto.setExtensionList(page.getContent());
+        extensionDto.setTotalPages(page.getTotalPages());
+        extensionDto.setTotalRecords(page.getTotalElements());
+        extensionDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionDto;
+
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public ExtensionDto getExtension() {
+        ExtensionDto extensionDto = new ExtensionDto();
+        extensionDto.setExtensionList(extensionRepository.findByStatusOrderByIdentifier(true));
+        extensionDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionDto;
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id")String id, Model model){
-
-        Optional<Extension> extensionOptional = extensionRepository.findByRecordId(id);
-        if (extensionOptional.isPresent()) {
-            Extension extension = extensionOptional.get();
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            ExtensionForm extensionForm = modelMapper.map(extension, ExtensionForm.class);
-            extensionForm.setId(String.valueOf(extension.getId()));
-            model.addAttribute("editForm", extensionForm);
-        }
-        return "extension/edit";
+    @ResponseBody
+    public ExtensionDto editExtension(@RequestBody ExtensionDto request) {
+        ExtensionDto extensionDto = new ExtensionDto();
+        Extension extension = extensionRepository.findByRecordId(request.getRecordId());
+        extensionDto.setExtension(extension);
+        extensionDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")ExtensionForm extensionForm,String id, Model model, BindingResult result) throws IOException {
+    @ResponseBody
+    public ExtensionDto handleEdit(@RequestBody ExtensionDto request) {
 
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", extensionForm);
-            return "extension/edit";
-        }
-
-        byte[] fig= extensionForm.getImage().getBytes();
-        Binary binary=new Binary(fig);
-
-        extensionForm.setLastModified(new Date());
-        if (extensionForm.getId() == null) {
-            extensionForm.setCreationTime(new Date());
-            extensionForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        Extension extension = modelMapper.map(extensionForm, Extension.class);
-        Optional<Extension> extensionOptional=extensionRepository.findById(extensionForm.getId());
-        if(extensionOptional.isPresent()){
-            extension.setId(extensionOptional.get().getId());
-        }
-        extension.setImage(binary);
-
-        extensionRepository.save(extension);
-        if(extension.getRecordId()==null)
-        {
-            extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
-        }
-        extensionRepository.save(extension);
-        model.addAttribute("editForm", extensionForm);
-
-        return "redirect:/admin/extension";
+        return extensionService.handleEdit(request);
     }
+
 
     @GetMapping("/add")
-    public String add(Model model) {
-        ExtensionForm form = new ExtensionForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "extension/edit";
+    @ResponseBody
+    public ExtensionDto addExtension() {
+        ExtensionDto extensionDto = new ExtensionDto();
+        extensionDto.setExtensionList(extensionRepository.findByStatusOrderByIdentifier(true));
+        extensionDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionDto;
     }
-    @GetMapping("/delete")
-    public String delete(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public ExtensionDto deleteExtension(@RequestBody ExtensionDto extensionDto) {
+
+        for (String id : extensionDto.getRecordId().split(",")) {
             extensionRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/extension";
+        extensionDto.setMessage("Data deleted Successfully");
+        extensionDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionDto;
     }
 }
-
