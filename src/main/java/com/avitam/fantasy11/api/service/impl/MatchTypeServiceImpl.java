@@ -21,6 +21,8 @@ public class MatchTypeServiceImpl implements MatchTypeService {
     @Autowired
     private CoreService coreService;
 
+    private static final String ADMIN_MATCHTYPE="/admin/matchType";
+
     @Override
     public MatchType findByRecordId(String recordId) {
 
@@ -47,6 +49,7 @@ public class MatchTypeServiceImpl implements MatchTypeService {
         }
         matchTypeRepository.save(matchType);
         matchTypeDto.setMatchType(matchType);
+        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
         return matchTypeDto;
     }
 

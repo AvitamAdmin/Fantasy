@@ -10,7 +10,6 @@ public interface NodeService {
 
     List<Node> getNodesForRoles();
 
-
     Node findByRecordId(String recordId) ;
 
     void deleteByRecordId(String recordId) ;

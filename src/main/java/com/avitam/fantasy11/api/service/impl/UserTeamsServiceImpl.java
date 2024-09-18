@@ -5,13 +5,11 @@ import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.model.UserTeamsRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class UserTeamsServiceImpl implements UserTeamsService {
@@ -22,7 +20,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
-    public static final String ADMIN_ADDRESS = "/admin/address";
+    public static final String ADMIN_USERTEAM = "/admin/userTeam";
 
     @Override
     public UserTeams findByRecordId(String recordId) {
@@ -36,8 +34,10 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        UserTeams userTeamsOptional=userTeamsRepository.findByRecordId(recordId);
-        //userTeamsOptional.ifPresent(userTeams -> userTeamsRepository.save(userTeams));
+        UserTeams userTeams=userTeamsRepository.findByRecordId(recordId);
+        if(userTeams != null){
+            userTeamsRepository.save(userTeams);
+        }
     }
 
     @Override
@@ -62,7 +62,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
         }
         userTeamsRepository.save(userTeams);
         userTeamsDto.setUserTeams(userTeams);
-        userTeamsDto.setBaseUrl(ADMIN_ADDRESS);
+        userTeamsDto.setBaseUrl(ADMIN_USERTEAM);
         return userTeamsDto;
     }
 

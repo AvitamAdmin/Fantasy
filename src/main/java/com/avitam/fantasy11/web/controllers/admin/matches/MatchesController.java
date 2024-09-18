@@ -73,7 +73,8 @@ public class MatchesController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public MatchesDto handleEdit(@RequestBody MatchesDto request) {
-        return matchesService.handleEdit(request);
+        int flag=1;
+        return matchesService.handleEdit(request,flag);
     }
 
     @GetMapping("/add")

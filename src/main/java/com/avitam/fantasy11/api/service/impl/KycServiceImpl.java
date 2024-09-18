@@ -21,8 +21,11 @@ public class KycServiceImpl implements KycService {
     @Autowired
     private KYCRepository kycRepository;
 
+    private static final String ADMIN_KYC="/admin/kyc";
+
     @Override
     public KYC findByRecordId(String recordId) {
+
         return kycRepository.findByRecordId(recordId);
     }
 
@@ -46,6 +49,7 @@ public class KycServiceImpl implements KycService {
         }
         kycRepository.save(kyc);
         kycDto.setKyc(kyc);
+        kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
     }
 

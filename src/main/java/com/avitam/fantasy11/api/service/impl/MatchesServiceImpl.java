@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.MatchesDto;
 import com.avitam.fantasy11.api.service.MatchesService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Matches;
 import com.avitam.fantasy11.model.MatchesRepository;
 import org.modelmapper.ModelMapper;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class MatchesServiceImpl implements MatchesService {
@@ -24,6 +21,11 @@ public class MatchesServiceImpl implements MatchesService {
     @Autowired
     private CoreService coreService;
     public static final String ADMIN_MATCHES = "/admin/matches";
+    public static final String ADMIN_CLOSEDMATCHES = "/admin/closedMatches";
+    public static final String ADMIN_LIVEMATCHES = "/admin/liveMatches";
+    public static final String ADMIN_UPCOMINGMATCHES = "/admin/upcomingMatches";
+
+
     @Override
     public Matches findByRecordId(String recordId) {
         return matchesRepository.findByRecordId(recordId);
@@ -41,7 +43,7 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public MatchesDto handleEdit(MatchesDto request) {
+    public MatchesDto handleEdit(MatchesDto request,int flag) {
         MatchesDto matchesDto = new MatchesDto();
         Matches matches = null;
         if(request.getRecordId()!=null){
@@ -61,7 +63,15 @@ public class MatchesServiceImpl implements MatchesService {
         }
         matchesRepository.save(matches);
         matchesDto.setMatches(matches);
-        matchesDto.setBaseUrl(ADMIN_MATCHES);
+        if(flag==1) {
+            matchesDto.setBaseUrl(ADMIN_MATCHES);
+        }if(flag==2){
+            matchesDto.setBaseUrl(ADMIN_CLOSEDMATCHES);
+        }if(flag==3){
+            matchesDto.setBaseUrl(ADMIN_LIVEMATCHES);
+        }else{
+            matchesDto.setBaseUrl(ADMIN_UPCOMINGMATCHES);
+        }
         return matchesDto;
 
     }

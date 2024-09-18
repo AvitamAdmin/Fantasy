@@ -21,6 +21,8 @@ public class MobileTokenServiceImpl implements MobileTokenService {
     @Autowired
     private CoreService coreService;
 
+    private static final String ADMIN_MOBILETOKEN="/admin/mobileToken";
+
     @Override
     public MobileToken findByRecordId(String recordId) {
 
@@ -53,6 +55,7 @@ public class MobileTokenServiceImpl implements MobileTokenService {
         }
         mobileTokenRepository.save(mobileToken);
         mobileTokenDto.setMobileToken(mobileToken);
+        mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }
 

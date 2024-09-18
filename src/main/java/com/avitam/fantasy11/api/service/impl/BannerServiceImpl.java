@@ -19,6 +19,7 @@ public class BannerServiceImpl implements BannerService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    public static final String ADMIN_BANNER = "/admin/banner";
 
 
     @Override
@@ -54,6 +55,7 @@ public class BannerServiceImpl implements BannerService {
         }
         bannerRepository.save(banner);
         bannerDto.setBanner(banner);
+        bannerDto.setBaseUrl(ADMIN_BANNER);
         return bannerDto;
     }
 

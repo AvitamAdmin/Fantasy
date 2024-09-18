@@ -21,6 +21,8 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
     @Autowired
     private CoreService coreService;
 
+    private static final String ADMIN_POINTSUPDATE="/admin/pointsUpdate";
+
     @Override
     public PointsUpdate findByRecordId(String recordId) {
         return pointsUpdateRepository.findByRecordId(recordId);
@@ -52,6 +54,7 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
         }
         pointsUpdateRepository.save(pointsUpdate);
         pointsUpdateDto.setPointsUpdate(pointsUpdate);
+        pointsUpdateDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateDto;
     }
 

@@ -20,6 +20,8 @@ public class ContestServiceImpl implements ContestService {
     @Autowired
     private CoreService coreService;
 
+    private static final String ADMIN_CONTEST="/admin/contest";
+
     @Override
     public Contest findByRecordId(String recordId) {
 
@@ -46,6 +48,7 @@ public class ContestServiceImpl implements ContestService {
         }
         contestRepository.save(contest);
         contestDto.setContest(contest);
+        contestDto.setBaseUrl(ADMIN_CONTEST);
         return contestDto;
     }
 

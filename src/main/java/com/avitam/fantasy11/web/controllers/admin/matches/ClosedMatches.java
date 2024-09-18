@@ -59,8 +59,8 @@ public class ClosedMatches extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public MatchesDto handleEdit(@RequestBody MatchesDto request){
-
-        return matchesService.handleEdit(request);
+        int flag=2;
+        return matchesService.handleEdit(request,flag);
     }
 
     @GetMapping("/add")

@@ -20,6 +20,8 @@ public class TournamentServiceImpl implements TournamentService {
     private CoreService coreService;
     @Autowired
     private TournamentRepository tournamentRepository;
+
+    private static final String ADMIN_TOURNAMENT="/admin/tournament";
     @Override
     public Tournament findByRecordId(String recordId) {
 

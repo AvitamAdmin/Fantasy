@@ -21,6 +21,8 @@ public class PlayerServiceImpl implements PlayerService {
     @Autowired
     private CoreService coreService;
 
+    private static final String ADMIN_PLAYER="/admin/player";
+
     @Override
     public Player findByRecordId(String recordId) {
 
@@ -47,6 +49,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
         playerRepository.save(player);
         playerDto.setPlayer(player);
+        playerDto.setBaseUrl(ADMIN_PLAYER);
         return playerDto;
     }
 

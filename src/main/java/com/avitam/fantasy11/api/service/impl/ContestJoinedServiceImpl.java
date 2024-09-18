@@ -21,8 +21,11 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private static final String ADMIN_CONTESTJOINED="/admin/contestJoined";
+
     @Override
     public ContestJoined findByRecordId(String recordId) {
+
         return contestJoinedRepository.findByRecordId(recordId);
     }
 
@@ -47,6 +50,7 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
         }
         contestJoinedRepository.save(contestJoined);
         contestJoinedDto.setContestJoined(contestJoined);
+        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
         return contestJoinedDto;
     }
 

@@ -22,6 +22,8 @@ public class SportTypeServiceImpl implements SportTypeService {
    @Autowired
    private CoreService coreService;
 
+   private static final String ADMIN_SPORTTYPE="/admin/sportType";
+
    @Override
     public SportType findByRecordId(String recordId) {
 
@@ -48,7 +50,7 @@ public class SportTypeServiceImpl implements SportTypeService {
         }
         sportTypeRepository.save(sportType);
         sportTypeDto.setSportType(sportType);
-
+        sportTypeDto.setBaseUrl(ADMIN_SPORTTYPE);
         return sportTypeDto;
     }
 

@@ -21,6 +21,8 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
     @Autowired
     private CoreService coreService;
 
+    private static final String ADMIN_PLAYERROLE="/admin/playerRole";
+
     @Override
     public PlayerRole findByRecordId(String recordId) {
         return playerRoleRepository.findByRecordId(recordId);
@@ -46,6 +48,7 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
         }
         playerRoleRepository.save(playerRole);
         playerRoleDto.setPlayerRole(playerRole);
+        playerRoleDto.setBaseUrl(ADMIN_PLAYERROLE);
         return playerRoleDto;
     }
 
