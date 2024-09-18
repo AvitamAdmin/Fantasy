@@ -58,8 +58,8 @@ public class PendingDepositController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public  DepositsDto handleEdit(@RequestBody DepositsDto request) {
-
-        return depositService.handleEdit(request);
+int flag=3;
+        return depositService.handleEdit(request,flag);
     }
 
     @GetMapping("/add")

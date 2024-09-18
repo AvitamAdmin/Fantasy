@@ -54,9 +54,9 @@ public class DepositsLogController extends BaseController {
 
     @PostMapping("/edit")
     @ResponseBody
-    public  DepositsDto handleEdit(@RequestBody DepositsDto request) {
-
-        return depositService.handleEdit(request);
+    public DepositsDto handleEdit(@RequestBody DepositsDto request) {
+        int flag = 2;
+        return depositService.handleEdit(request, flag);
     }
 
     @GetMapping("/add")

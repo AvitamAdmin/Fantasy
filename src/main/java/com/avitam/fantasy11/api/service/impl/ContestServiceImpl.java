@@ -28,20 +28,20 @@ public class ContestServiceImpl implements ContestService {
 
     @Override
     public ContestDto handleEdit(ContestDto request) {
-        ContestDto contestDto=new ContestDto();
-        Contest contest=null;
-        if (request.getRecordId()!=null){
-            Contest requestData=request.getContest();
-            contest=contestRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData,contest);
-        }else {
-            contest=request.getContest();
+        ContestDto contestDto = new ContestDto();
+        Contest contest = null;
+        if (request.getRecordId() != null) {
+            Contest requestData = request.getContest();
+            contest = contestRepository.findByRecordId(request.getRecordId());
+            modelMapper.map(requestData, contest);
+        } else {
+            contest = request.getContest();
             contest.setCreator(coreService.getCurrentUser().getUsername());
             contest.setCreationTime(new Date());
             contestRepository.save(contest);
         }
         contest.setLastModified(new Date());
-        if (request.getRecordId()==null){
+        if (request.getRecordId() == null) {
             contest.setRecordId(String.valueOf(contest.getId().getTimestamp()));
         }
         contestRepository.save(contest);
@@ -57,11 +57,11 @@ public class ContestServiceImpl implements ContestService {
 
     @Override
     public void updateByRecordId(String recordId) {
-       Contest contest=contestRepository.findByRecordId(recordId);
-       if(contest!=null) {
+        Contest contest = contestRepository.findByRecordId(recordId);
+        if (contest != null) {
 
-           contestRepository.save(contest);
-       }
+            contestRepository.save(contest);
+        }
     }
 
 }
