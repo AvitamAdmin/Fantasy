@@ -44,7 +44,7 @@ public class TournamentController extends BaseController {
         return tournamentDto;
 
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public TournamentDto editTournament (@RequestBody TournamentDto request){
            TournamentDto tournamentDto=new TournamentDto();

@@ -46,7 +46,7 @@ public class PlayerRoleController extends BaseController {
         return playerRoleDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public PlayerRoleDto editPlayerRole(@RequestBody PlayerDto request) {
         PlayerRoleDto playerRoleDto=new PlayerRoleDto();

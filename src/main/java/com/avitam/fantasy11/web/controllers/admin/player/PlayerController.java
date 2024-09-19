@@ -44,7 +44,7 @@ public class PlayerController extends BaseController {
         return playerDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     public PlayerDto editPlayer(@RequestBody PlayerDto request){
         PlayerDto playerDto=new PlayerDto();
         Player player= playerRepository.findByRecordId(request.getRecordId());

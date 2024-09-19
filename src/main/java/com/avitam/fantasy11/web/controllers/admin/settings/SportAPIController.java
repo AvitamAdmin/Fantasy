@@ -1,27 +1,15 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
-import com.avitam.fantasy11.api.dto.LanguageDto;
 import com.avitam.fantasy11.api.dto.SportAPIDto;
 import com.avitam.fantasy11.api.service.SportAPIService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.LanguageForm;
-import com.avitam.fantasy11.form.SportsApiForm;
 import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/sportsApi")
@@ -29,11 +17,6 @@ public class SportAPIController extends BaseController {
 
     @Autowired
     private SportsApiRepository sportsApiRepository;
-    @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
-
     @Autowired
     private SportAPIService sportAPIService;
 
@@ -62,7 +45,7 @@ public class SportAPIController extends BaseController {
         return sportAPIDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public SportAPIDto edit(@RequestBody SportAPIDto request) {
         SportAPIDto sportAPIDto = new SportAPIDto();

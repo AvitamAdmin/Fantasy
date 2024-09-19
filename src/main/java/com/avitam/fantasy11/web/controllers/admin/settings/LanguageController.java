@@ -25,11 +25,6 @@ public class LanguageController extends BaseController {
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
-
-    @Autowired
     private LanguageService languageService;
 
     public static final String ADMIN_LANGUAGE = "/admin/language";
@@ -56,7 +51,7 @@ public class LanguageController extends BaseController {
         return languageDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public LanguageDto edit(@RequestBody LanguageDto request) {
         LanguageDto languageDto = new LanguageDto();

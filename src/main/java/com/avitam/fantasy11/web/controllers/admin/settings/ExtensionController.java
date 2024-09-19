@@ -2,11 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.api.dto.ExtensionDto;
 import com.avitam.fantasy11.api.service.ExtensionService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Extension;
 import com.avitam.fantasy11.model.ExtensionRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -24,11 +22,6 @@ public class ExtensionController extends BaseController {
 
     @Autowired
     private ExtensionRepository extensionRepository;
-
-    @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
     @Autowired
     private ExtensionService extensionService;
 
@@ -57,7 +50,7 @@ public class ExtensionController extends BaseController {
         return extensionDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public ExtensionDto editExtension(@RequestBody ExtensionDto request) {
         ExtensionDto extensionDto = new ExtensionDto();

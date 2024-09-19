@@ -68,7 +68,7 @@ public class PendingWithdrawalController extends BaseController {
     }
 
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public PendingWithdrawalDto editPendingWithdrawal (@RequestBody PendingWithdrawalDto request){
 

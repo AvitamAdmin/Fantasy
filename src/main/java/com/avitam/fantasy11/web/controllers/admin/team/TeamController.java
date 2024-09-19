@@ -61,7 +61,7 @@ public class TeamController extends BaseController {
         teamDto.setBaseUrl(ADMIN_TEAM);
         return teamDto;
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public TeamDto editTeam(@RequestBody AddressDto request) {
         TeamDto teamDto = new TeamDto();
