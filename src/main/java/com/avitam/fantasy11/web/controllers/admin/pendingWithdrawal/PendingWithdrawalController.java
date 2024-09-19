@@ -1,14 +1,21 @@
 package com.avitam.fantasy11.web.controllers.admin.pendingWithdrawal;
 
+import com.avitam.fantasy11.api.dto.PendingWithdrawalDto;
+import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
+import com.avitam.fantasy11.api.service.PendingWithdrawalService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.PendingWithdrawalForm;
 import com.avitam.fantasy11.form.WithdrawalDetailsForm;
 import com.avitam.fantasy11.form.WithdrawalMethodsForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,7 +28,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/admin/pendingWithdrawal")
-public class PendingWithdrawalController {
+public class PendingWithdrawalController extends BaseController {
 
     @Autowired
     private PendingWithdrawalRepository pendingWithdrawalRepository;
@@ -29,90 +36,71 @@ public class PendingWithdrawalController {
     WithdrawalMethodsRepository withdrawalMethodsRepository;
     @Autowired
     UserWinningsRepository userWinningsRepository;
-
+    @Autowired
+    private PendingWithdrawalService pendingWithdrawalService;
     @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
-    public String getAll(Model model){
-       /* List<WithdrawalMethods> withdrawalMethods = withdrawalMethodsRepository.findAll();
-        List<WithdrawalMethods> datas=new ArrayList<>();
-        for(WithdrawalMethods withdrawalMethod:withdrawalMethods){
-            if(withdrawalMethod.getId()!=null) {
-                byte[] image = withdrawalMethod.getLogo().getData();
-                withdrawalMethod.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(withdrawalMethod);
-            }
-        }
-        model.addAttribute("models", datas);*/
-        model.addAttribute("models", pendingWithdrawalRepository.findAll());
-        return "pendingWithdrawal/pendingWithdrawals";
+    public static final String ADMIN_PENDINGWITHDRAWAL = "/admin/pendingWithdrawal";
+
+    @PostMapping
+    @ResponseBody
+    public PendingWithdrawalDto getAll(@RequestBody PendingWithdrawalDto pendingWithdrawalDto){
+        Pageable pageable = getPageable(pendingWithdrawalDto.getPage(), pendingWithdrawalDto.getSizePerPage(), pendingWithdrawalDto.getSortDirection(), pendingWithdrawalDto.getSortField());
+        PendingWithdrawal pendingWithdrawal = pendingWithdrawalDto.getPendingWithdrawal();
+        Page<PendingWithdrawal> page = isSearchActive(pendingWithdrawal)!=null ? pendingWithdrawalRepository.findAll(Example.of(pendingWithdrawal), pageable) : pendingWithdrawalRepository.findAll(pageable);
+        pendingWithdrawalDto.setPendingWithdrawalList(page.getContent());
+        pendingWithdrawalDto.setTotalPages(page.getTotalPages());
+        pendingWithdrawalDto.setTotalRecords(page.getTotalElements());
+        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public PendingWithdrawalDto getActivePendingWithdrawal(){
+        PendingWithdrawalDto pendingWithdrawalDto = new PendingWithdrawalDto();
+        pendingWithdrawalDto.setPendingWithdrawalList(pendingWithdrawalRepository.findByStatusOrderByIdentifier(true));
+        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalDto;
     }
 
 
     @GetMapping("/edit")
-    public String editPendingWithdrawal (@RequestParam("id")ObjectId id, Model model){
+    @ResponseBody
+    public PendingWithdrawalDto editPendingWithdrawal (@RequestBody PendingWithdrawalDto request){
 
-        Optional<PendingWithdrawal> pendingWithdrawalOptional = pendingWithdrawalRepository.findById(id);
-        if (pendingWithdrawalOptional.isPresent()) {
-            PendingWithdrawal pendingWithdrawal = pendingWithdrawalOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            PendingWithdrawalForm pendingWithdrawalForm = modelMapper.map(pendingWithdrawal, PendingWithdrawalForm.class);
-            pendingWithdrawalForm.setId(String.valueOf(pendingWithdrawal.getId()));
-            model.addAttribute("editForm", pendingWithdrawalForm);
-            model.addAttribute("WithdrawalMethods", withdrawalMethodsRepository.findAll());
-        }
-        return "pendingWithdrawal/edit";
+        PendingWithdrawalDto pendingWithdrawalDto = new PendingWithdrawalDto();
+        pendingWithdrawalDto.setPendingWithdrawal(pendingWithdrawalRepository.findByRecordId(request.getRecordId()));
+        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")PendingWithdrawalForm pendingWithdrawalForm,String id, Model model, BindingResult result) throws IOException {
-
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", pendingWithdrawalForm);
-            return "pendingWithdrawal/edit";
-        }
-
-        pendingWithdrawalForm.setLastModified(new Date());
-        if (pendingWithdrawalForm.getId() == null) {
-            pendingWithdrawalForm.setCreationTime(new Date());
-            pendingWithdrawalForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        PendingWithdrawal pendingWithdrawal = modelMapper.map(pendingWithdrawalForm, PendingWithdrawal.class);
-
-        Optional<PendingWithdrawal> pendingWithdrawalOptional=pendingWithdrawalRepository.findById(pendingWithdrawalForm.getId());
-        if(pendingWithdrawalOptional.isPresent()){
-            pendingWithdrawal.setId(pendingWithdrawalOptional.get().getId());
-        }
-
-        pendingWithdrawalRepository.save(pendingWithdrawal);
-        model.addAttribute("editForm", pendingWithdrawalForm);
-
-        return "redirect:/admin/pendingWithdrawal";
+    @ResponseBody
+    public PendingWithdrawalDto handleEdit(@RequestBody PendingWithdrawalDto request)  {
+        return pendingWithdrawalService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addPendingWithdrawal(Model model) {
-        PendingWithdrawalForm form = new PendingWithdrawalForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setName(coreService.getCurrentUser().getName());
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        model.addAttribute("WithdrawalMethods", withdrawalMethodsRepository.findAll());
-        model.addAttribute("Userwinnings", userWinningsRepository.findAll());
-        return "pendingWithdrawal/edit";
+    @ResponseBody
+    public PendingWithdrawalDto addPendingWithdrawal() {
+
+        PendingWithdrawalDto pendingWithdrawalDto = new PendingWithdrawalDto();
+        pendingWithdrawalDto.setPendingWithdrawalList(pendingWithdrawalRepository.findByStatusOrderByIdentifier(true));
+        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalDto;
     }
-    @GetMapping("/delete")
-    public String deletePendingWithdrawal(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-            pendingWithdrawalRepository.deleteById(new ObjectId(id));
+    @PostMapping("/delete")
+    @ResponseBody
+    public PendingWithdrawalDto deletePendingWithdrawal(@RequestBody PendingWithdrawalDto pendingWithdrawalDto) {
+        for (String id : pendingWithdrawalDto.getRecordId().split(",")) {
+            withdrawalMethodsRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/pendingWithdrawal";
+        pendingWithdrawalDto.setMessage("Data deleted successfully");
+        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalDto;
     }
 }

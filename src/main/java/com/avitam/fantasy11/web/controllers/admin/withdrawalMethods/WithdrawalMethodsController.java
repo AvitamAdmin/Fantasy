@@ -1,16 +1,20 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalMethods;
 
+import com.avitam.fantasy11.api.dto.GatewaysManualDto;
+import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
+import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.GatewaysAutomaticForm;
 import com.avitam.fantasy11.form.WithdrawalMethodsForm;
-import com.avitam.fantasy11.model.GatewaysAutomatic;
-import com.avitam.fantasy11.model.GatewaysAutomaticRepository;
-import com.avitam.fantasy11.model.WithdrawalMethods;
-import com.avitam.fantasy11.model.WithdrawalMethodsRepository;
+import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,88 +25,72 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/admin/withdrawalMethods")
-public class WithdrawalMethodsController {
+public class WithdrawalMethodsController extends BaseController {
     @Autowired
     private WithdrawalMethodsRepository withdrawalMethodsRepository;
+    @Autowired
+    private WithdrawalMethodsService withdrawalMethodsService;
     @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
-    public String getAll(Model model){
-        List<WithdrawalMethods> withdrawalMethods = withdrawalMethodsRepository.findAll();
-        List<WithdrawalMethods> datas=new ArrayList<>();
-        for(WithdrawalMethods withdrawalMethod:withdrawalMethods){
-            if(withdrawalMethod.getId()!=null) {
-                byte[] image = withdrawalMethod.getLogo().getData();
-                withdrawalMethod.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(withdrawalMethod);
-            }
-        }
-        model.addAttribute("models", datas);
-        return "withdrawalMethods/withdrawalMethodss";
+    public static final String ADMIN_WITHDRAWALMETHODS = "/admin/withdrawalMethods";
+
+    @PostMapping
+    @ResponseBody
+    public WithdrawalMethodsDto getAll(@RequestBody WithdrawalMethodsDto withdrawalMethodsDto){
+        Pageable pageable = getPageable(withdrawalMethodsDto.getPage(), withdrawalMethodsDto.getSizePerPage(), withdrawalMethodsDto.getSortDirection(), withdrawalMethodsDto.getSortField());
+        WithdrawalMethods withdrawalMethods = withdrawalMethodsDto.getWithdrawalMethods();
+        Page<WithdrawalMethods> page = isSearchActive(withdrawalMethods)!=null ? withdrawalMethodsRepository.findAll(Example.of(withdrawalMethods), pageable) : withdrawalMethodsRepository.findAll(pageable);
+        withdrawalMethodsDto.setWithdrawalMethodsList(page.getContent());
+        withdrawalMethodsDto.setTotalPages(page.getTotalPages());
+        withdrawalMethodsDto.setTotalRecords(page.getTotalElements());
+        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public WithdrawalMethodsDto getActiveWithdrawalMethods(){
+        WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
+        withdrawalMethodsDto.setWithdrawalMethodsList(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true));
+        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsDto;
     }
     @GetMapping("/edit")
-    public String editGatewaysAutomatic (@RequestParam("id")ObjectId id, Model model){
+    @ResponseBody
+    public WithdrawalMethodsDto editWithdrawalMethods (@RequestBody WithdrawalMethodsDto request){
 
-        Optional<WithdrawalMethods> withdrawalMethodsOptional = withdrawalMethodsRepository.findById(id);
-        if (withdrawalMethodsOptional.isPresent()) {
-            WithdrawalMethods withdrawalMethods = withdrawalMethodsOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            WithdrawalMethodsForm withdrawalMethodsForm = modelMapper.map(withdrawalMethods, WithdrawalMethodsForm.class);
-            withdrawalMethodsForm.setId(String.valueOf(withdrawalMethods.getId()));
-            model.addAttribute("editForm", withdrawalMethodsForm);
-        }
-        return "withdrawalMethods/edit";
+        WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
+        withdrawalMethodsDto.setWithdrawalMethods(withdrawalMethodsRepository.findByRecordId(request.getRecordId()));
+        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")WithdrawalMethodsForm withdrawalMethodsForm,String id, Model model, BindingResult result) throws IOException {
-
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", withdrawalMethodsForm);
-            return "withdrawalMethods/edit";
-        }
-
-        byte[] fig= withdrawalMethodsForm.getLogo().getBytes();
-        Binary binary=new Binary(fig);
-
-        withdrawalMethodsForm.setLastModified(new Date());
-        if (withdrawalMethodsForm.getId() == null) {
-            withdrawalMethodsForm.setCreationTime(new Date());
-            withdrawalMethodsForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        WithdrawalMethods withdrawalMethods = modelMapper.map(withdrawalMethodsForm, WithdrawalMethods.class);
-
-        Optional<WithdrawalMethods> withdrawalMethodsOptional=withdrawalMethodsRepository.findById(withdrawalMethodsForm.getId());
-        if(withdrawalMethodsOptional.isPresent()){
-            withdrawalMethods.setId(withdrawalMethodsOptional.get().getId());
-        }
-        withdrawalMethods.setLogo(binary);
-        withdrawalMethodsRepository.save(withdrawalMethods);
-        model.addAttribute("editForm", withdrawalMethodsForm);
-
-        return "redirect:/admin/withdrawalMethods";
+    @ResponseBody
+    public WithdrawalMethodsDto handleEdit(@RequestBody WithdrawalMethodsDto request)  {
+        return withdrawalMethodsService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addGatewaysAutomatic(Model model) {
-        WithdrawalMethodsForm form = new WithdrawalMethodsForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "withdrawalMethods/edit";
+    @ResponseBody
+    public WithdrawalMethodsDto addWithdrawalMethods() {
+
+        WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
+        withdrawalMethodsDto.setWithdrawalMethodsList(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true));
+        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsDto;
     }
-    @GetMapping("/delete")
-    public String deleteGatewaysAutomatic(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
+    @PostMapping("/delete")
+    @ResponseBody
+    public WithdrawalMethodsDto deleteWithdrawalMethods(@RequestBody WithdrawalMethodsDto withdrawalMethodsDto) {
+        for (String id : withdrawalMethodsDto.getRecordId().split(",")) {
             withdrawalMethodsRepository.deleteById(new ObjectId(id));
         }
-        return "redirect:/admin/withdrawalMethods";
+        withdrawalMethodsDto.setMessage("Data deleted successfully");
+        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsDto;
     }
 }

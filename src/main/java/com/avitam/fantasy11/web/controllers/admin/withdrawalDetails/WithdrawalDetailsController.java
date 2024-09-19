@@ -94,7 +94,5 @@ public class WithdrawalDetailsController {
             model.addAttribute("withdrawalDetails", withdrawalDetailsForm);
 
             return "redirect:/admin/pendingWithdrawal";
-
-
     }
 }
