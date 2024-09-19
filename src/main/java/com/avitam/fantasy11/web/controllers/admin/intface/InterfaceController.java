@@ -46,7 +46,7 @@ public class InterfaceController extends BaseController {
         return nodeDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public NodeDto edit(@RequestBody NodeDto request) {
         NodeDto nodeDto=new NodeDto();

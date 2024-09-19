@@ -1,27 +1,18 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
-import com.avitam.fantasy11.api.dto.LanguageDto;
 import com.avitam.fantasy11.api.dto.SEODto;
 import com.avitam.fantasy11.api.service.SEOService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.SEOForm;
-import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.model.SEORepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.bson.types.Binary;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.*;
 
 @Controller
 @RequestMapping("/admin/seo")
@@ -29,11 +20,6 @@ public class SEOController extends BaseController {
 
     @Autowired
      private SEORepository seoRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
-
     @Autowired
     private SEOService seoService;
 
@@ -61,7 +47,7 @@ public class SEOController extends BaseController {
         return seoDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
         public SEODto edit(@RequestBody SEODto request){
         SEODto seoDto = new SEODto();

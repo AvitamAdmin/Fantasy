@@ -43,7 +43,7 @@ public class ApprovedDepositController extends BaseController {
         depositsDto.setBaseUrl(ADMIN_APPROVEDDEPOSIT);
         return depositsDto;
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public DepositsDto editDeposits(@RequestBody DepositsDto request) {
         DepositsDto depositsDto=new DepositsDto();

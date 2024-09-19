@@ -43,7 +43,7 @@ public class GatewaysAutomaticController {
         model.addAttribute("models", datas);
         return "gatewaysAutomatic/gatewaysAutomatics";
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     public String editGatewaysAutomatic (@RequestParam("id")ObjectId id, Model model){
 
         Optional<GatewaysAutomatic> gatewaysAutomaticOptional = gatewaysAutomaticRepository.findById(id);

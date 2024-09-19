@@ -43,7 +43,7 @@ public class GatewaysManualController {
         model.addAttribute("models", datas);
         return "gatewaysManual/gatewaysManuals";
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     public String editGatewaysManual (@RequestParam("id")ObjectId id, Model model){
 
         Optional<GatewaysManual> gatewaysManualOptional = gatewaysManualRepository.findById(id);

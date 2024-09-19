@@ -62,7 +62,7 @@ public class MatchScoreController extends BaseController {
         return matchScoreDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public MatchScoreDto edit (@RequestBody MatchScoreDto request) {
         MatchScoreDto matchScoreDto = new MatchScoreDto();

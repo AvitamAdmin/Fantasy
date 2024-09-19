@@ -42,7 +42,7 @@ public class DepositsLogController extends BaseController {
         depositsDto.setBaseUrl(ADMIN_DEPOSIT);
         return depositsDto;
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public DepositsDto edit(@RequestBody DepositsDto request) {
         DepositsDto depositsDto=new DepositsDto();

@@ -44,7 +44,7 @@ public MainContestDto getAllContest(@RequestBody MainContestDto mainContestDto) 
     }
 
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public MainContestDto editMainContest(@RequestBody MainContestDto request){
        MainContestDto mainContestDto=new MainContestDto();

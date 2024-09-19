@@ -44,7 +44,7 @@ public class PointsUpdateController extends BaseController {
         return pointsUpdateDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public PointsUpdateDto editPointsUpdate(@RequestBody PointsUpdateDto request) {
         PointsUpdateDto pointsUpdateDto=new PointsUpdateDto();

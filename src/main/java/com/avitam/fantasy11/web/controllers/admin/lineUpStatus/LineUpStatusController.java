@@ -45,7 +45,7 @@ public class LineUpStatusController extends BaseController {
     }
 
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public LineUpStatusDto editLineupStatus(@RequestBody LineUpStatusDto request) {
         LineUpStatusDto lineUpStatusDto = new com.avitam.fantasy11.api.dto.LineUpStatusDto();

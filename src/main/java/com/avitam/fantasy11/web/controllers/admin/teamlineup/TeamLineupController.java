@@ -3,23 +3,15 @@ package com.avitam.fantasy11.web.controllers.admin.teamlineup;
 import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.TeamLineUpForm;
 import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/teamLineup")
@@ -62,7 +54,7 @@ public class TeamLineupController extends BaseController {
         return teamLineUpDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public TeamLineUpDto editTeamLineup (@RequestBody TeamLineUpDto request){
 

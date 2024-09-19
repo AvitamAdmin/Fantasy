@@ -45,7 +45,7 @@ public class SportsTypeController extends BaseController {
         sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public SportTypeDto editSportType (@RequestBody SportTypeDto request){
         SportTypeDto sportTypeDto=new SportTypeDto();

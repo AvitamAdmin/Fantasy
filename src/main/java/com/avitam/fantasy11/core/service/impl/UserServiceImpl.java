@@ -4,14 +4,10 @@ import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.*;
-import jxl.write.Number;
-import jxl.write.NumberFormat;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

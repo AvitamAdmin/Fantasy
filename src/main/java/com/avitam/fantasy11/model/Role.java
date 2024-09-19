@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class Role extends BaseEntity {
-
-    private int roleId;
+     private int ids;
+    private String roleId;
     private Set<Node> permissions;
 }

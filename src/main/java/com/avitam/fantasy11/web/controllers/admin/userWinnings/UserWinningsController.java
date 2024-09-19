@@ -67,7 +67,7 @@ public class UserWinningsController extends BaseController {
         return userWinningsDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public UserWinningsDto editUserWinnings(@RequestBody UserWinningsDto request){
 

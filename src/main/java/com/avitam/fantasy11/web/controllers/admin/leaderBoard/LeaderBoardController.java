@@ -42,7 +42,7 @@ public class LeaderBoardController extends BaseController {
         leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardDto;
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public LeaderBoardDto editLeaderBoard(@RequestBody LeaderBoardDto request) {
         LeaderBoardDto leaderBoardDto=new LeaderBoardDto();

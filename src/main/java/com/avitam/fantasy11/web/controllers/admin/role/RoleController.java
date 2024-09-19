@@ -2,31 +2,21 @@ package com.avitam.fantasy11.web.controllers.admin.role;
 
 import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.service.RoleService;
-import com.avitam.fantasy11.form.RoleForm;
 import com.avitam.fantasy11.model.NodeRepository;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Script;
-import com.avitam.fantasy11.validation.RoleFormValidator;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
-import org.checkerframework.checker.units.qual.A;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/role")
@@ -81,7 +71,7 @@ public class RoleController extends BaseController {
         }
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public RoleDto edit (@RequestBody RoleDto request) {
         RoleDto roleDto = new RoleDto();
@@ -91,17 +81,12 @@ public class RoleController extends BaseController {
         return roleDto;
     }
 
-
-
-
-
     @PostMapping("/edit")
     @ResponseBody
     public  RoleDto handleEdit(@RequestBody RoleDto request) {
+
         return roleService.handleEdit(request);
     }
-
-
 
 
     @GetMapping("/add")

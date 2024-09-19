@@ -74,7 +74,7 @@ public class UserTeamsController extends BaseController {
         }
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public UserTeamsDto editUserTeams(@RequestBody UserTeamsDto request) {
 

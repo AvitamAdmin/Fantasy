@@ -45,7 +45,7 @@ public class PendingDepositController extends BaseController {
         return depositsDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public DepositsDto edit(@RequestBody DepositsDto request) {
         DepositsDto depositsDto=new DepositsDto();
