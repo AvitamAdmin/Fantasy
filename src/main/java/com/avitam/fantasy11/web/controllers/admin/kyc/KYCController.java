@@ -44,7 +44,7 @@ public class KYCController extends BaseController {
         return kycDto;
 
     }
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public KYCDto editKyc(@RequestBody KYCDto request) {
         KYCDto kycDto=new KYCDto();

@@ -60,7 +60,7 @@ public class MatchesController extends BaseController {
         return matchesDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public MatchesDto editMatches(@RequestBody MatchesDto request) {
         MatchesDto matchesDto = new MatchesDto();

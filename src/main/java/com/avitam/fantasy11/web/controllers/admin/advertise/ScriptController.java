@@ -61,7 +61,7 @@ public class ScriptController extends BaseController {
     }
 
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public ScriptDto edit (@RequestBody ScriptDto request) {
         ScriptDto scriptDto = new ScriptDto();

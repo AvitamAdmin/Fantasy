@@ -52,7 +52,7 @@ public class AddressController extends BaseController {
         return addressDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public AddressDto editAddress(@RequestBody AddressDto request) {
         AddressDto addressDto = new AddressDto();

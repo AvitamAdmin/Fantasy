@@ -43,7 +43,7 @@ public class AdvertiseController extends BaseController {
         return bannerDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public BannerDto edit(@RequestBody BannerDto request) {
         BannerDto bannerDto=new BannerDto();

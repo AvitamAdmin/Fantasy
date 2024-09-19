@@ -45,7 +45,7 @@ public class NotificationController extends BaseController {
         return notificationDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public NotificationDto editNotification(@RequestBody NotificationDto request) {
         NotificationDto notificationDto = new NotificationDto();

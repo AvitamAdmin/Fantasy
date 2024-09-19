@@ -45,7 +45,7 @@ public class ClosedMatchesController extends BaseController {
         return matchesDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public MatchesDto editMatches(@RequestBody MatchesDto request) {
 

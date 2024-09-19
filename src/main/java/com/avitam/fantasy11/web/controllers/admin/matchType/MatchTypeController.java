@@ -45,7 +45,7 @@ public class MatchTypeController extends BaseController {
         return matchTypeDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public MatchTypeDto edit (@RequestBody MatchTypeDto request){
 

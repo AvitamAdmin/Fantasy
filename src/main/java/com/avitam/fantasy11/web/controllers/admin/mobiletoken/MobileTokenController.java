@@ -44,8 +44,7 @@ public class MobileTokenController extends BaseController {
         mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
         return mobileTokenDto;
     }
-
-    @GetMapping("/edit")
+    @PostMapping("/getedit")  @GetMapping("/edit")
     @ResponseBody
     public MobileTokenDto editMobileToken(@RequestBody MobileTokenDto request) {
 

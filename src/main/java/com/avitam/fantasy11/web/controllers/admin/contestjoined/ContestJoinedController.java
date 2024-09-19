@@ -44,7 +44,7 @@ public class ContestJoinedController extends BaseController {
         return contestJoinedDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public ContestJoinedDto edit(@RequestBody ContestJoinedDto request) {
         ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
