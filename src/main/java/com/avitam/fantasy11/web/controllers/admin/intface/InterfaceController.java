@@ -32,9 +32,9 @@ public class InterfaceController extends BaseController {
         Node node=nodeDto.getNode();
         Page<Node> page= isSearchActive(node) != null ? nodeRepository.findAll(Example.of(node),pageable): nodeRepository.findAll(pageable);
         nodeDto.setNodeList(page.getContent());
-        nodeDto.setBaseUrl(ADMIN_INTERFACE);
         nodeDto.setTotalPages(page.getTotalPages());
         nodeDto.setTotalRecords(page.getTotalElements());
+        nodeDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeDto;
     }
     @GetMapping("/get")

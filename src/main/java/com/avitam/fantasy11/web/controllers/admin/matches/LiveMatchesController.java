@@ -16,23 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/liveMatches")
-public class LiveMatches extends BaseController {
+public class LiveMatchesController extends BaseController {
     @Autowired
     private MatchesRepository matchesRepository;
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private TournamentRepository tournamentRepository;
-    @Autowired
-    private SportTypeRepository sportTypeRepository;
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private MatchTypeRepository matchTypeRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private MatchesService matchesService;
 
@@ -74,8 +60,8 @@ public class LiveMatches extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public MatchesDto handleEdit(@RequestBody MatchesDto request){
-
-        return matchesService.handleEdit(request);
+          int flag=3;
+        return matchesService.handleEdit(request,flag);
     }
 
     @GetMapping("/add")
