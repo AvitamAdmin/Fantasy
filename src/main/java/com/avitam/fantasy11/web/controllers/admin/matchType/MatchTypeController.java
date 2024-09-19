@@ -30,9 +30,9 @@ public class MatchTypeController extends BaseController {
         MatchType matchType=matchTypeDto.getMatchType();
         Page<MatchType> page=isSearchActive(matchType) !=null ? matchTypeRepository.findAll(Example.of(matchType),pageable) : matchTypeRepository.findAll(pageable);
         matchTypeDto.setMatchTypeList(page.getContent());
-        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
         matchTypeDto.setTotalPages(page.getTotalPages());
         matchTypeDto.setTotalRecords(page.getTotalElements());
+        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
         return matchTypeDto;
     }
 

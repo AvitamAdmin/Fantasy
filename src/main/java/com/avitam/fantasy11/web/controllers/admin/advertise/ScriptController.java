@@ -65,9 +65,9 @@ public class ScriptController extends BaseController {
     @ResponseBody
     public ScriptDto edit (@RequestBody ScriptDto request) {
         ScriptDto scriptDto = new ScriptDto();
-        scriptDto.setBaseUrl(ADMIN_SCRIPT);
         Script script = scriptRepository.findByRecordId(request.getRecordId());
         scriptDto.setScript(script);
+        scriptDto.setBaseUrl(ADMIN_SCRIPT);
         return scriptDto;
     }
 
@@ -84,8 +84,8 @@ public class ScriptController extends BaseController {
     @ResponseBody
     public ScriptDto addScript(@RequestBody ScriptDto request) {
         ScriptDto scriptDto = new ScriptDto();
-        scriptDto.setBaseUrl(ADMIN_SCRIPT);
         scriptDto.setScripts(scriptRepository.findByStatusOrderByIdentifier(true));
+        scriptDto.setBaseUrl(ADMIN_SCRIPT);
         return scriptDto;
     }
 
@@ -93,7 +93,7 @@ public class ScriptController extends BaseController {
     @ResponseBody
     public ScriptDto deleteScript(@RequestBody ScriptDto scriptDto) {
         for (String id : scriptDto.getRecordId().split(",")) {
-            scriptRepository.deleteById(new ObjectId(id));
+            scriptRepository.deleteByRecordId(id);
         }
         scriptDto.setMessage("Data deleted Successfully");
         scriptDto.setBaseUrl(ADMIN_SCRIPT);

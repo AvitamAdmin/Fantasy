@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/closedMatches")
-public class ClosedMatches extends BaseController {
+public class ClosedMatchesController extends BaseController {
 
     @Autowired
     private MatchesRepository matchesRepository;

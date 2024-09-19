@@ -48,9 +48,9 @@ public class UpcomingMatchesController extends BaseController {
         Matches matches=matchesDto.getMatches();
         Page<Matches> page=isSearchActive(matches)!=null ? matchesRepository.findAll(Example.of(matches),pageable) : matchesRepository.findAll(pageable);
         matchesDto.setMatchesList(page.getContent());
-        matchesDto.setBaseUrl(ADMIN_UPCOMINGMATCHES);
         matchesDto.setTotalPages(page.getTotalPages());
         matchesDto.setTotalRecords(page.getTotalElements());
+        matchesDto.setBaseUrl(ADMIN_UPCOMINGMATCHES);
         return matchesDto;
     }
 
@@ -77,8 +77,8 @@ public class UpcomingMatchesController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public MatchesDto handleEdit(@RequestBody MatchesDto request){
-
-        return matchesService.handleEdit(request);
+        int flag=4;
+        return matchesService.handleEdit(request,flag);
     }
 
     @GetMapping("/add")
