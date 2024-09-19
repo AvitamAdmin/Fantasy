@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.web.controllers;
 
+import com.avitam.fantasy11.tokenGeneration.JwtFilter;
 import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,11 +17,13 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,15 +34,24 @@ public class WebSecurityConfig {
     @Qualifier("userDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.cors().and().csrf().disable()
-                .authorizeHttpRequests((requests) -> requests
-                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests((requests) -> {
+                    try{
+                    requests
+                                    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                                    .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm").permitAll()
+                                    .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                        }catch (Exception e){
+                        throw  new RuntimeException();
+                    }
+                }
+
                 )
                 .rememberMe((rememberMe) -> rememberMe
                         .key("rem-me-key") // Key used for encoding the token
@@ -52,6 +64,7 @@ public class WebSecurityConfig {
                         .loginProcessingUrl("/login")
                 )
                 .logout((logout) -> logout.permitAll());
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

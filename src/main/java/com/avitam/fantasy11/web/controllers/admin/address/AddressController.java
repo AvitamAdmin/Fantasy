@@ -31,7 +31,7 @@ public class AddressController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public AddressDto getAllAddress(AddressDto addressDto){
+    public AddressDto getAllAddress(@RequestBody AddressDto addressDto){
 
         Pageable pageable=getPageable(addressDto.getPage(),addressDto.getSizePerPage(),addressDto.getSortDirection(),addressDto.getSortField());
         Address address=addressDto.getAddress();
@@ -52,7 +52,7 @@ public class AddressController extends BaseController {
         return addressDto;
     }
 
-    @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public AddressDto editAddress(@RequestBody AddressDto request) {
         AddressDto addressDto = new AddressDto();

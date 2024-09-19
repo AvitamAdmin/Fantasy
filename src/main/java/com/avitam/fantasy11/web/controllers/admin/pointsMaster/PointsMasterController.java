@@ -24,7 +24,7 @@ public class PointsMasterController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public PointsMasterDto getAllPointsMaster(@RequestBody PointsMasterDto pointsMasterDto){
+    public PointsMasterDto getAll(@RequestBody PointsMasterDto pointsMasterDto) {
 
         Pageable pageable=getPageable(pointsMasterDto.getPage(),pointsMasterDto.getSizePerPage(),pointsMasterDto.getSortDirection(),pointsMasterDto.getSortField());
         PointsMaster pointsUpdate=pointsMasterDto.getPointsMaster();

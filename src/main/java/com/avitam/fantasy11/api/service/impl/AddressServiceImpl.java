@@ -42,7 +42,8 @@ public class AddressServiceImpl implements AddressService {
         if(request.getRecordId()!=null){
             Address requestData = request.getAddress();
             address = addressRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, address);
+            modelMapper.map(requestData,address);
+            addressRepository.save(address);
         }
         else {
             address=request.getAddress();
