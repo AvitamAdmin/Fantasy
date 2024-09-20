@@ -71,7 +71,7 @@ public class SportAPIController extends BaseController {
         return sportAPIDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public SportAPIDto delete(@RequestBody SportAPIDto sportAPIDto) {
         for (String id : sportAPIDto.getRecordId().split(",")) {

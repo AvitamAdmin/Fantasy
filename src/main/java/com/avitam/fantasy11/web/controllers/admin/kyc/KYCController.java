@@ -70,7 +70,7 @@ public class KYCController extends BaseController {
         return kycDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public KYCDto deleteKyc(@RequestBody KYCDto kycDto) {
 

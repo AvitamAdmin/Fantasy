@@ -70,7 +70,7 @@ public class SportsTypeController extends BaseController {
         sportTypeDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeDto;
     }
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public SportTypeDto deleteSportType(@RequestBody SportTypeDto sportTypeDto ) {
         for (String id : sportTypeDto.getRecordId().split(",")) {

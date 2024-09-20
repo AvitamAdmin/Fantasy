@@ -68,7 +68,7 @@ public class AdvertiseController extends BaseController {
         return bannerDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public BannerDto delete(@RequestBody BannerDto bannerDto) {
         for (String id : bannerDto.getRecordId().split(",")) {

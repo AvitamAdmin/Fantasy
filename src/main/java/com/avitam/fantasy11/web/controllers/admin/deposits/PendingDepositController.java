@@ -71,7 +71,7 @@ int flag=3;
         return depositsDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public DepositsDto delete(@RequestBody DepositsDto depositsDto) {
         for (String id : depositsDto.getRecordId().split(",")) {

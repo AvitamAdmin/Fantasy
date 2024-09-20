@@ -70,7 +70,7 @@ public class TournamentController extends BaseController {
         return tournamentDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public TournamentDto delete (@RequestBody TournamentDto tournamentDto) {
         for (String id : tournamentDto.getRecordId().split(",")) {

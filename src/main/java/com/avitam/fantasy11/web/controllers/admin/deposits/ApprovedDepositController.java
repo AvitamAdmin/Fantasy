@@ -69,7 +69,7 @@ public class ApprovedDepositController extends BaseController {
         return depositsDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public DepositsDto deleteDeposit(@RequestBody DepositsDto depositsDto) {
         for (String id : depositsDto.getRecordId().split(",")) {

@@ -99,7 +99,7 @@ public class RoleController extends BaseController {
     }
 
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public RoleDto deleteScript(@RequestBody RoleDto roleDto) {
         for (String id : roleDto.getRecordId().split(",")) {

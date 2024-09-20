@@ -70,7 +70,7 @@ public class ContestJoinedController extends BaseController {
         return contestJoinedDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public ContestJoinedDto delete(@RequestBody ContestJoinedDto contestJoinedDto) {
         for (String id : contestJoinedDto.getRecordId().split(",")) {

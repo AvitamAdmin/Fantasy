@@ -71,7 +71,7 @@ public class PlayerRoleController extends BaseController {
         return playerRoleDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public PlayerRoleDto delete(@RequestBody PlayerRoleDto playerRoleDto) {
         for (String id : playerRoleDto.getRecordId().split(",")) {

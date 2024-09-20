@@ -70,7 +70,7 @@ public class PlayerController extends BaseController {
         return playerDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public PlayerDto deletePlayer(@RequestBody PlayerDto playerDto) {
        for (String id : playerDto.getRecordId().split(",")) {

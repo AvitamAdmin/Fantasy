@@ -72,7 +72,7 @@ public class InterfaceController extends BaseController {
         return nodeDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public NodeDto delete(@RequestBody NodeDto nodeDto) {
         for (String id : nodeDto.getRecordId().split(",")) {

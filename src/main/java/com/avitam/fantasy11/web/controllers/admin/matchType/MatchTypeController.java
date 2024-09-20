@@ -71,7 +71,7 @@ public class MatchTypeController extends BaseController {
         matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
         return matchTypeDto;
     }
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public MatchTypeDto delete(@RequestBody MatchTypeDto matchTypeDto) {
         for (String id : matchTypeDto.getRecordId().split(",")) {

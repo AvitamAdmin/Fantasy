@@ -89,7 +89,7 @@ public class ScriptController extends BaseController {
         return scriptDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public ScriptDto deleteScript(@RequestBody ScriptDto scriptDto) {
         for (String id : scriptDto.getRecordId().split(",")) {

@@ -72,7 +72,7 @@ public class SEOController extends BaseController {
         seoDto.setBaseUrl(ADMIN_SEO);
         return seoDto;
     }
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public SEODto delete(@RequestBody SEODto seoDto) {
         for (String id : seoDto.getRecordId().split(",")) {

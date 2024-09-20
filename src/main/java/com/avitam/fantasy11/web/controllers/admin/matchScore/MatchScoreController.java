@@ -72,14 +72,11 @@ public class MatchScoreController extends BaseController {
         return matchScoreDto;
     }
 
-
     @PostMapping("/edit")
     @ResponseBody
     public  MatchScoreDto handleEdit(@RequestBody MatchScoreDto request) {
         return matchScoreService.handleEdit(request);
     }
-
-
 
     @GetMapping("/add")
     @ResponseBody
@@ -90,7 +87,7 @@ public class MatchScoreController extends BaseController {
         return matchScoreDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public MatchScoreDto deleteScript(@RequestBody MatchScoreDto matchScoreDto) {
         for (String id : matchScoreDto.getRecordId().split(",")) {

@@ -69,7 +69,7 @@ public class PointsUpdateController extends BaseController {
         return pointsUpdateDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public PointsUpdateDto delete(@RequestBody PointsUpdateDto pointsUpdateDto) {
         for (String id : pointsUpdateDto.getRecordId().split(",")) {

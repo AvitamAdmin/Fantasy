@@ -68,7 +68,7 @@ public class LeaderBoardController extends BaseController {
         return leaderBoardDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public LeaderBoardDto deleteLeaderBoard(@RequestBody LeaderBoardDto leaderBoardDto) {
         for (String id : leaderBoardDto.getRecordId().split(",")) {

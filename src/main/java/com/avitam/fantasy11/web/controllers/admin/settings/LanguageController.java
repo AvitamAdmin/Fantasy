@@ -77,7 +77,7 @@ public class LanguageController extends BaseController {
         return languageDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public LanguageDto delete(@RequestBody LanguageDto languageDto) {
         for (String id : languageDto.getRecordId().split(",")) {

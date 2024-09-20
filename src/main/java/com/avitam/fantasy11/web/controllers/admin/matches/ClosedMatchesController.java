@@ -72,7 +72,7 @@ public class ClosedMatchesController extends BaseController {
         return matchesDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public MatchesDto deleteMatches(@RequestBody MatchesDto matchesDto) {
         for (String id : matchesDto.getRecordId().split(",")) {
