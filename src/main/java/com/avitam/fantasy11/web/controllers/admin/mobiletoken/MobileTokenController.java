@@ -70,7 +70,7 @@ public class MobileTokenController extends BaseController {
         return mobileTokenDto;
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public MobileTokenDto deleteMobileToken(@RequestBody MobileTokenDto mobileTokenDto) {
         for (String id : mobileTokenDto.getRecordId().split(",")) {

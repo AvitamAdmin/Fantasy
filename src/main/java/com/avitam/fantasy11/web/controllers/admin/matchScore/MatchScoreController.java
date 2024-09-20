@@ -72,11 +72,14 @@ public class MatchScoreController extends BaseController {
         return matchScoreDto;
     }
 
+
     @PostMapping("/edit")
     @ResponseBody
     public  MatchScoreDto handleEdit(@RequestBody MatchScoreDto request) {
         return matchScoreService.handleEdit(request);
     }
+
+
 
     @GetMapping("/add")
     @ResponseBody
@@ -91,7 +94,7 @@ public class MatchScoreController extends BaseController {
     @ResponseBody
     public MatchScoreDto deleteScript(@RequestBody MatchScoreDto matchScoreDto) {
         for (String id : matchScoreDto.getRecordId().split(",")) {
-            matchScoreRepository.deleteById(new ObjectId(id));
+            matchScoreRepository.deleteByRecordId(id);
         }
         matchScoreDto.setMessage("Data deleted Successfully");
         matchScoreDto.setBaseUrl(ADMIN_MATCHSCORE);
