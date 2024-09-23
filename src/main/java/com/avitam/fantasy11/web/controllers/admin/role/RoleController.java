@@ -25,13 +25,6 @@ public class RoleController extends BaseController {
     private RoleRepository roleRepository;
     @Autowired
     private NodeRepository nodeRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private CoreService coreService;
-
     @Autowired
     private RoleService roleService;
 
@@ -39,7 +32,7 @@ public class RoleController extends BaseController {
     public static final String ADMIN_ROLE = "/admin/role";
     @PostMapping
     @ResponseBody
-    public RoleDto getRoles(@RequestBody RoleDto roleDto) {
+    public RoleDto getAllRoles(@RequestBody RoleDto roleDto) {
         Pageable pageable=getPageable(roleDto.getPage(),roleDto.getSizePerPage(),roleDto.getSortDirection(),roleDto.getSortField());
         Role role=roleDto.getRole();
         Page<Role> page=isSearchActive(role) !=null ? roleRepository.findAll(Example.of(role),pageable) : roleRepository.findAll(pageable);
@@ -52,7 +45,7 @@ public class RoleController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public RoleDto roleDto(){
+    public RoleDto getActiveRole(){
         RoleDto roleDto=new RoleDto();
         roleDto.setRoles(roleRepository.findByStatusOrderByIdentifier(true));
         roleDto.setBaseUrl(ADMIN_ROLE);
@@ -91,19 +84,19 @@ public class RoleController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public RoleDto addScript(@RequestBody RoleDto request) {
+    public RoleDto add() {
         RoleDto roleDto = new RoleDto();
-        roleDto.setBaseUrl(ADMIN_ROLE);
         roleDto.setRoles(roleRepository.findByStatusOrderByIdentifier(true));
+        roleDto.setBaseUrl(ADMIN_ROLE);
         return roleDto;
     }
 
 
     @PostMapping("/delete")
     @ResponseBody
-    public RoleDto deleteScript(@RequestBody RoleDto roleDto) {
+    public RoleDto delete(@RequestBody RoleDto roleDto) {
         for (String id : roleDto.getRecordId().split(",")) {
-            roleRepository.deleteById(new ObjectId(id));
+            roleRepository.deleteByRecordId(id);
         }
         roleDto.setMessage("Data deleted Successfully");
         roleDto.setBaseUrl(ADMIN_ROLE);

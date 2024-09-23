@@ -25,7 +25,7 @@ public class ContestJoinedController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public ContestJoinedDto getAllContestJoined(ContestJoinedDto contestJoinedDto) {
+    public ContestJoinedDto getAllContestJoined(@RequestBody ContestJoinedDto contestJoinedDto) {
         Pageable pageable=getPageable(contestJoinedDto.getPage(),contestJoinedDto.getSizePerPage(),contestJoinedDto.getSortDirection(),contestJoinedDto.getSortField());
         ContestJoined contestJoined=contestJoinedDto.getContestJoined();
         Page<ContestJoined> page=isSearchActive(contestJoined) !=null ? contestJoinedRepository.findAll(Example.of(contestJoined),pageable) :contestJoinedRepository.findAll(pageable);

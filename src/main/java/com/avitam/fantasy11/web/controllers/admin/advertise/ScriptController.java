@@ -30,10 +30,6 @@ public class ScriptController extends BaseController {
     @Autowired
     private ScriptRepository scriptRepository;
     @Autowired
-    private CoreService coreService;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
     private ScriptService scriptService;
 
     public static final String ADMIN_SCRIPT = "/admin/script";
@@ -75,6 +71,7 @@ public class ScriptController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public  ScriptDto handleEdit(@RequestBody ScriptDto request) {
+
         return scriptService.handleEdit(request);
     }
 
@@ -82,7 +79,7 @@ public class ScriptController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public ScriptDto addScript(@RequestBody ScriptDto request) {
+    public ScriptDto addScript() {
         ScriptDto scriptDto = new ScriptDto();
         scriptDto.setScripts(scriptRepository.findByStatusOrderByIdentifier(true));
         scriptDto.setBaseUrl(ADMIN_SCRIPT);
