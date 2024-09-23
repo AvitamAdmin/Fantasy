@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.userteams;
 
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
+import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.UserTeamsForm;
@@ -93,12 +94,12 @@ public class UserTeamsController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public String addUserTeams() {
+    public UserTeamsDto addUserTeams() {
         UserTeamsDto userTeamsDto = new UserTeamsDto();
         userTeamsDto.setUserTeamsList(userTeamsRepository.findByStatusOrderByIdentifier(true));
         userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
 
-        return "userTeams/edit";
+        return userTeamsDto;
     }
 
     @PostMapping("/delete")

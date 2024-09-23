@@ -88,7 +88,7 @@ public class UserWinningsController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public UserWinningsDto addUserWinnings(Model model) {
+    public UserWinningsDto addUserWinnings() {
         UserWinningsDto userWinningsDto = new UserWinningsDto();
         userWinningsDto.setUserWinningsList(userWinningsRepository.findByStatusOrderByIdentifier(true));
         userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
