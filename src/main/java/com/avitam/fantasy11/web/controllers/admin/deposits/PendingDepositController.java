@@ -40,7 +40,7 @@ public class PendingDepositController extends BaseController {
     @ResponseBody
     public DepositsDto getActiveDeposit(){
         DepositsDto depositsDto=new DepositsDto();
-        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
+        depositsDto.setDepositsList(depositsRepository.findByStatusAndDepositStatusOrderByIdentifier(true,"Pending"));
         depositsDto.setBaseUrl(ADMIN_PENDINGDEPOSIT);
         return depositsDto;
     }
@@ -66,7 +66,7 @@ int flag=3;
     @ResponseBody
     public DepositsDto add() {
         DepositsDto depositsDto = new DepositsDto();
-        depositsDto.setDepositsList(depositsRepository.findByStatusOrderByIdentifier(true));
+        depositsDto.setDepositsList(depositsRepository.findByStatusAndDepositStatusOrderByIdentifier(true,"Pending"));
         depositsDto.setBaseUrl(ADMIN_PENDINGDEPOSIT);
         return depositsDto;
     }

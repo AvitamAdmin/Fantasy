@@ -16,5 +16,7 @@ public interface DepositsRepository extends MongoRepository<Deposits, ObjectId> 
 
     void deleteByRecordId(String recordId);
 
+    List<Deposits> findByStatusAndDepositStatusOrderByIdentifier(boolean b,String depositStatus);
+
     List<Deposits> findByStatusOrderByIdentifier(boolean b);
 }

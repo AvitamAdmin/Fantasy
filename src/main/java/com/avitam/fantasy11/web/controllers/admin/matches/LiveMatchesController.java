@@ -41,7 +41,7 @@ public class LiveMatchesController extends BaseController {
     @ResponseBody
     public MatchesDto getActiveMatches() {
         MatchesDto matchesDto=new MatchesDto();
-        matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
+        matchesDto.setMatchesList(matchesRepository.findByStatusAndEventOrderByIdentifier(true,"Live"));
         matchesDto.setBaseUrl(ADMIN_LIVEMATCHES);
         return matchesDto;
     }
@@ -68,7 +68,7 @@ public class LiveMatchesController extends BaseController {
     @ResponseBody
     public MatchesDto addMatches() {
         MatchesDto matchesDto=new MatchesDto();
-        matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
+        matchesDto.setMatchesList(matchesRepository.findByStatusAndEventOrderByIdentifier(true,"Live"));
         matchesDto.setBaseUrl(ADMIN_LIVEMATCHES);
         return matchesDto;
     }

@@ -58,7 +58,7 @@ public class UpcomingMatchesController extends BaseController {
     @ResponseBody
     public MatchesDto getActiveMatches() {
         MatchesDto matchesDto=new MatchesDto();
-        matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
+        matchesDto.setMatchesList(matchesRepository.findByStatusAndEventOrderByIdentifier(true,"Upcoming"));
         matchesDto.setBaseUrl(ADMIN_UPCOMINGMATCHES);
         return matchesDto;
     }
@@ -85,7 +85,7 @@ public class UpcomingMatchesController extends BaseController {
     @ResponseBody
     public MatchesDto addMatches() {
         MatchesDto matchesDto=new MatchesDto();
-        matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
+        matchesDto.setMatchesList(matchesRepository.findByStatusAndEventOrderByIdentifier(true,"Upcoming"));
         matchesDto.setBaseUrl(ADMIN_UPCOMINGMATCHES);
         return matchesDto;
     }

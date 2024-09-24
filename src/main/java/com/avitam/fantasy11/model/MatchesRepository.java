@@ -19,4 +19,6 @@ public interface MatchesRepository extends MongoRepository<Matches, ObjectId> {
     void deleteByRecordId(String recordId);
 
     List<Matches> findByStatusOrderByIdentifier(boolean b);
+
+    List<Matches> findByStatusAndEventOrderByIdentifier(boolean b, String event);
 }

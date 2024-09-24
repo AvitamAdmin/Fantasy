@@ -38,8 +38,10 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Matches matchesOptional=matchesRepository.findByRecordId(recordId);
-        //matchesOptional.ifPresent(matches -> matchesRepository.save(matches));
+        Matches matches=matchesRepository.findByRecordId(recordId);
+        if(matches !=null){
+            matchesRepository.save(matches);
+        }
     }
 
     @Override
