@@ -1,5 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.gatewaysManual;
 
+import com.avitam.fantasy11.api.dto.GatewaysAutomaticDto;
+import com.avitam.fantasy11.api.dto.GatewaysManualDto;
+import com.avitam.fantasy11.api.service.GatewaysManualService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.GatewaysAutomaticForm;
 import com.avitam.fantasy11.form.GatewaysManualForm;
@@ -7,10 +10,14 @@ import com.avitam.fantasy11.model.GatewaysAutomatic;
 import com.avitam.fantasy11.model.GatewaysAutomaticRepository;
 import com.avitam.fantasy11.model.GatewaysManual;
 import com.avitam.fantasy11.model.GatewaysManualRepository;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,88 +28,72 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/admin/gatewaysManual")
-public class GatewaysManualController {
+public class GatewaysManualController extends BaseController {
     @Autowired
     private GatewaysManualRepository gatewaysManualRepository;
+    @Autowired
+    private GatewaysManualService gatewaysManualService;
     @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
-    public String getAll(Model model){
-        List<GatewaysManual> gatewaysManuals = gatewaysManualRepository.findAll();
-        List<GatewaysManual> datas=new ArrayList<>();
-        for(GatewaysManual gatewaysManual:gatewaysManuals){
-            if(gatewaysManual.getId()!=null) {
-                byte[] image = gatewaysManual.getLogo().getData();
-                gatewaysManual.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(gatewaysManual);
-            }
-        }
-        model.addAttribute("models", datas);
-        return "gatewaysManual/gatewaysManuals";
+    public static final String ADMIN_GATEWAYSMANUAL = "/admin/gatewaysManual";
+
+    @PostMapping
+    @ResponseBody
+    public GatewaysManualDto getAll(@RequestBody GatewaysManualDto gatewaysManualDto){
+        Pageable pageable = getPageable(gatewaysManualDto.getPage(), gatewaysManualDto.getSizePerPage(), gatewaysManualDto.getSortDirection(), gatewaysManualDto.getSortField());
+        GatewaysManual gatewaysManual = gatewaysManualDto.getGatewaysManual();
+        Page<GatewaysManual> page = isSearchActive(gatewaysManual)!=null ? gatewaysManualRepository.findAll(Example.of(gatewaysManual), pageable) : gatewaysManualRepository.findAll(pageable);
+        gatewaysManualDto.setGatewaysManualList(page.getContent());
+        gatewaysManualDto.setTotalPages(page.getTotalPages());
+        gatewaysManualDto.setTotalRecords(page.getTotalElements());
+        gatewaysManualDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
+        return gatewaysManualDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public GatewaysManualDto getActiveGatewaysManual(){
+        GatewaysManualDto gatewaysManualDto = new GatewaysManualDto();
+        gatewaysManualDto.setGatewaysManualList(gatewaysManualRepository.findByStatusOrderByIdentifier(true));
+        gatewaysManualDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
+        return gatewaysManualDto;
     }
     @PostMapping("/getedit")
-    public String editGatewaysManual (@RequestParam("id")ObjectId id, Model model){
+    @ResponseBody
+    public GatewaysManualDto editGatewaysManual (@RequestBody GatewaysManualDto request){
 
-        Optional<GatewaysManual> gatewaysManualOptional = gatewaysManualRepository.findById(id);
-        if (gatewaysManualOptional.isPresent()) {
-            GatewaysManual gatewaysManual = gatewaysManualOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            GatewaysManualForm gatewaysManualForm = modelMapper.map(gatewaysManual, GatewaysManualForm.class);
-            gatewaysManualForm.setId(String.valueOf(gatewaysManual.getId()));
-            model.addAttribute("editForm", gatewaysManualForm);
-        }
-        return "gatewaysManual/edit";
+        GatewaysManualDto gatewaysManualDto = new GatewaysManualDto();
+        gatewaysManualDto.setGatewaysManual(gatewaysManualRepository.findByRecordId(request.getRecordId()));
+        gatewaysManualDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
+        return gatewaysManualDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")GatewaysManualForm gatewaysManualForm,String id, Model model, BindingResult result) throws IOException {
-
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", gatewaysManualForm);
-            return "gatewaysManual/edit";
-        }
-
-        byte[] fig= gatewaysManualForm.getLogo().getBytes();
-        Binary binary=new Binary(fig);
-
-        gatewaysManualForm.setLastModified(new Date());
-        if (gatewaysManualForm.getId() == null) {
-            gatewaysManualForm.setCreationTime(new Date());
-            gatewaysManualForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        GatewaysManual gatewaysManual = modelMapper.map(gatewaysManualForm, GatewaysManual.class);
-
-        Optional<GatewaysManual> gatewaysManualOptional=gatewaysManualRepository.findById(gatewaysManualForm.getId());
-        if(gatewaysManualOptional.isPresent()){
-            gatewaysManual.setId(gatewaysManualOptional.get().getId());
-        }
-        gatewaysManual.setLogo(binary);
-        gatewaysManualRepository.save(gatewaysManual);
-        model.addAttribute("editForm", gatewaysManualForm);
-
-        return "redirect:/admin/gatewaysManual";
+    @ResponseBody
+    public GatewaysManualDto handleEdit(@RequestBody GatewaysManualDto request)  {
+        return gatewaysManualService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addGatewaysManual(Model model) {
-        GatewaysManualForm form = new GatewaysManualForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "gatewaysManual/edit";
+    @ResponseBody
+    public GatewaysManualDto addGatewaysManual() {
+
+        GatewaysManualDto gatewaysManualDto = new GatewaysManualDto();
+        gatewaysManualDto.setGatewaysManualList(gatewaysManualRepository.findByStatusOrderByIdentifier(true));
+        gatewaysManualDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
+        return gatewaysManualDto;
     }
-    @GetMapping("/delete")
-    public String deleteGatewaysAutomatic(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-            gatewaysManualRepository.deleteById(new ObjectId(id));
+    @PostMapping("/delete")
+    @ResponseBody
+    public GatewaysManualDto deleteGatewaysManual(@RequestBody GatewaysManualDto gatewaysManualDto) {
+        for (String id : gatewaysManualDto.getRecordId().split(",")) {
+            gatewaysManualRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/gatewaysManual";
+        gatewaysManualDto.setMessage("Data deleted successfully");
+        gatewaysManualDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
+        return gatewaysManualDto;
     }
 }

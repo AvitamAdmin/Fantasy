@@ -1,16 +1,20 @@
 package com.avitam.fantasy11.web.controllers.admin.gatewaysAutomatic;
 
+import com.avitam.fantasy11.api.dto.GatewaysAutomaticDto;
+import com.avitam.fantasy11.api.dto.GatewaysManualDto;
+import com.avitam.fantasy11.api.service.GatewaysAutomaticService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.GatewaysAutomaticForm;
 import com.avitam.fantasy11.form.TeamForm;
-import com.avitam.fantasy11.model.GatewaysAutomatic;
-import com.avitam.fantasy11.model.GatewaysAutomaticRepository;
-import com.avitam.fantasy11.model.Team;
-import com.avitam.fantasy11.model.TeamRepository;
+import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,88 +25,71 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/admin/gatewaysAutomatic")
-public class GatewaysAutomaticController {
+public class GatewaysAutomaticController extends BaseController {
     @Autowired
     private GatewaysAutomaticRepository gatewaysAutomaticRepository;
     @Autowired
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private GatewaysAutomaticService gatewaysAutomaticService;
+    public static final String ADMIN_GATEWAYSAUTOMATIC = "/admin/gatewaysAutomatic";
 
-    @GetMapping
-    public String getAll(Model model){
-        List<GatewaysAutomatic> gatewaysAutomatics = gatewaysAutomaticRepository.findAll();
-        List<GatewaysAutomatic> datas=new ArrayList<>();
-        for(GatewaysAutomatic gatewaysAutomatic:gatewaysAutomatics){
-            if(gatewaysAutomatic.getId()!=null) {
-                byte[] image = gatewaysAutomatic.getLogo().getData();
-                gatewaysAutomatic.setPic(Base64.getEncoder().encodeToString(image));
-                datas.add(gatewaysAutomatic);
-            }
-        }
-        model.addAttribute("models", datas);
-        return "gatewaysAutomatic/gatewaysAutomatics";
+    @PostMapping
+    @ResponseBody
+    public GatewaysAutomaticDto getAll(@RequestBody GatewaysAutomaticDto gatewaysAutomaticDto){
+        Pageable pageable = getPageable(gatewaysAutomaticDto.getPage(), gatewaysAutomaticDto.getSizePerPage(), gatewaysAutomaticDto.getSortDirection(), gatewaysAutomaticDto.getSortField());
+        GatewaysAutomatic gatewaysAutomatic = gatewaysAutomaticDto.getGatewaysAutomatic();
+        Page<GatewaysAutomatic> page = isSearchActive(gatewaysAutomatic)!=null ? gatewaysAutomaticRepository.findAll(Example.of(gatewaysAutomatic), pageable) : gatewaysAutomaticRepository.findAll(pageable);
+        gatewaysAutomaticDto.setGatewaysAutomaticList(page.getContent());
+        gatewaysAutomaticDto.setTotalPages(page.getTotalPages());
+        gatewaysAutomaticDto.setTotalRecords(page.getTotalElements());
+        gatewaysAutomaticDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
+        return gatewaysAutomaticDto;
+    }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public GatewaysAutomaticDto getActiveGatewaysAutomatic(){
+        GatewaysAutomaticDto gatewaysAutomaticDto = new GatewaysAutomaticDto();
+        gatewaysAutomaticDto.setGatewaysAutomaticList(gatewaysAutomaticRepository.findByStatusOrderByIdentifier(true));
+        gatewaysAutomaticDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
+        return gatewaysAutomaticDto;
     }
     @PostMapping("/getedit")
-    public String editGatewaysAutomatic (@RequestParam("id")ObjectId id, Model model){
+    @ResponseBody
+    public GatewaysAutomaticDto editGatewaysAutomatic (@RequestBody GatewaysAutomaticDto request){
 
-        Optional<GatewaysAutomatic> gatewaysAutomaticOptional = gatewaysAutomaticRepository.findById(id);
-        if (gatewaysAutomaticOptional.isPresent()) {
-            GatewaysAutomatic gatewaysAutomatic = gatewaysAutomaticOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            GatewaysAutomaticForm gatewaysAutomaticForm = modelMapper.map(gatewaysAutomatic, GatewaysAutomaticForm.class);
-            gatewaysAutomaticForm.setId(String.valueOf(gatewaysAutomatic.getId()));
-            model.addAttribute("editForm", gatewaysAutomaticForm);
-        }
-        return "gatewaysAutomatic/edit";
+        GatewaysAutomaticDto gatewaysAutomaticDto = new GatewaysAutomaticDto();
+        gatewaysAutomaticDto.setGatewaysAutomatic(gatewaysAutomaticRepository.findByRecordId(request.getRecordId()));
+        gatewaysAutomaticDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
+        return gatewaysAutomaticDto;
     }
 
     @PostMapping("/edit")
-    public String handleEdit(@ModelAttribute("editForm")GatewaysAutomaticForm gatewaysAutomaticForm,String id, Model model, BindingResult result) throws IOException {
-
-        if (result.hasErrors()) {
-            model.addAttribute("message", result);
-            model.addAttribute("editForm", gatewaysAutomaticForm);
-            return "gatewaysAutomatic/edit";
-        }
-
-        byte[] fig= gatewaysAutomaticForm.getLogo().getBytes();
-        Binary binary=new Binary(fig);
-
-        gatewaysAutomaticForm.setLastModified(new Date());
-        if (gatewaysAutomaticForm.getId() == null) {
-            gatewaysAutomaticForm.setCreationTime(new Date());
-            gatewaysAutomaticForm.setCreator(coreService.getCurrentUser().getEmail());
-        }
-
-        GatewaysAutomatic gatewaysAutomatic = modelMapper.map(gatewaysAutomaticForm, GatewaysAutomatic.class);
-
-        Optional<GatewaysAutomatic> gatewaysAutomaticOptional=gatewaysAutomaticRepository.findById(gatewaysAutomaticForm.getId());
-        if(gatewaysAutomaticOptional.isPresent()){
-            gatewaysAutomatic.setId(gatewaysAutomaticOptional.get().getId());
-        }
-        gatewaysAutomatic.setLogo(binary);
-        gatewaysAutomaticRepository.save(gatewaysAutomatic);
-        model.addAttribute("editForm", gatewaysAutomaticForm);
-
-        return "redirect:/admin/gatewaysAutomatic";
+    @ResponseBody
+    public GatewaysAutomaticDto handleEdit(@RequestBody GatewaysAutomaticDto request)  {
+        return gatewaysAutomaticService.handleEdit(request);
     }
 
     @GetMapping("/add")
-    public String addGatewaysAutomatic(Model model) {
-        GatewaysAutomaticForm form = new GatewaysAutomaticForm();
-        form.setCreationTime(new Date());
-        form.setLastModified(new Date());
-        form.setStatus(true);
-        form.setCreator(coreService.getCurrentUser().getEmail());
-        model.addAttribute("editForm", form);
-        return "gatewaysAutomatic/edit";
+    @ResponseBody
+    public GatewaysAutomaticDto addGatewaysAutomatic() {
+
+        GatewaysAutomaticDto gatewaysAutomaticDto = new GatewaysAutomaticDto();
+        gatewaysAutomaticDto.setGatewaysAutomaticList(gatewaysAutomaticRepository.findByStatusOrderByIdentifier(true));
+        gatewaysAutomaticDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
+        return gatewaysAutomaticDto;
     }
-    @GetMapping("/delete")
-    public String deleteGatewaysAutomatic(@RequestParam("id") String ids, Model model) {
-        for (String id : ids.split(",")) {
-            gatewaysAutomaticRepository.deleteById(new ObjectId(id));
+    @PostMapping("/delete")
+    @ResponseBody
+    public GatewaysAutomaticDto deleteGatewaysAutomatic(@RequestBody GatewaysAutomaticDto gatewaysAutomaticDto) {
+        for (String id : gatewaysAutomaticDto.getRecordId().split(",")) {
+            gatewaysAutomaticRepository.deleteByRecordId(id);
         }
-        return "redirect:/admin/gatewaysAutomatic";
+        gatewaysAutomaticDto.setMessage("Data deleted successfully");
+        gatewaysAutomaticDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
+        return gatewaysAutomaticDto;
     }
 }

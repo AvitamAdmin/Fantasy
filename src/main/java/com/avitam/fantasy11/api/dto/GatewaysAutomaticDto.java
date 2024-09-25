@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.api.dto;
 
+import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.GatewaysAutomatic;
-import com.avitam.fantasy11.model.GatewaysManual;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,8 +13,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
-public class GatewaysManualDto extends CommonDto{
+public class GatewaysAutomaticDto extends CommonDto{
 
-    private GatewaysManual gatewaysManual;
-    private List<GatewaysManual> gatewaysManualList;
+    private GatewaysAutomatic gatewaysAutomatic;
+    private List<GatewaysAutomatic> gatewaysAutomaticList;
 }

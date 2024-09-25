@@ -77,7 +77,7 @@ public class WithdrawalMethodsController extends BaseController {
     @ResponseBody
     public WithdrawalMethodsDto deleteWithdrawalMethods(@RequestBody WithdrawalMethodsDto withdrawalMethodsDto) {
         for (String id : withdrawalMethodsDto.getRecordId().split(",")) {
-            withdrawalMethodsRepository.deleteById(new ObjectId(id));
+            withdrawalMethodsRepository.deleteByRecordId(id);
         }
         withdrawalMethodsDto.setMessage("Data deleted successfully");
         withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
