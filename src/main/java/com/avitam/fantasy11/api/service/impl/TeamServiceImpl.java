@@ -7,10 +7,12 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.TeamRepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -36,8 +38,10 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Team teamOptional=teamRepository.findByRecordId(recordId);
-        //teamOptional.ifPresent(team -> teamRepository.save(team));
+        Team team=teamRepository.findByRecordId(recordId);
+        if(team !=null) {
+            teamRepository.save(team);
+        }
     }
 
     @Override
@@ -50,10 +54,19 @@ public class TeamServiceImpl implements TeamService {
             modelMapper.map(requestData, team);
         }
         else {
-            team=request.getTeam();
+            team = request.getTeam();
             team.setCreator(coreService.getCurrentUser().getUsername());
             team.setCreationTime(new Date());
             teamRepository.save(team);
+            if (request.getLogo() != null && !request.getLogo().isEmpty()) {
+                try {
+                    team.setLogo(new Binary(request.getLogo().getBytes()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    teamDto.setMessage("Error processing image file");
+                    return teamDto;
+                }
+            }
         }
         team.setLastModified(new Date());
         if(request.getRecordId()==null){

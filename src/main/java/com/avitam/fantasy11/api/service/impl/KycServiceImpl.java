@@ -5,10 +5,12 @@ import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.model.KYCRepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -42,6 +44,15 @@ public class KycServiceImpl implements KycService {
             kyc.setCreator(coreService.getCurrentUser().getUsername());
             kyc.setCreationTime(new Date());
             kycRepository.save(kyc);
+            if(request.getPanImage()!=null && !request.getPanImage().isEmpty()){
+                try{
+                    kyc.setPanImage(new Binary(request.getPanImage().getBytes()));
+                }catch(IOException e){
+                    e.printStackTrace();
+                    kycDto.setMessage("Error processing image file");
+                    return kycDto;
+                }
+            }
         }
         kyc.setLastModified(new Date());
         if (request.getRecordId()==null){
