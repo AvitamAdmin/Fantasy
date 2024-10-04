@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.*;
@@ -54,9 +55,9 @@ public class KYCController extends BaseController {
         return kycDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value="/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public KYCDto handleEdit(@RequestBody KYCDto request) {
+    public KYCDto handleEdit(@ModelAttribute KYCDto request) {
 
         return kycService.handleEdit(request);
     }

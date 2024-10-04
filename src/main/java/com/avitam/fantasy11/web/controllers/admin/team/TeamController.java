@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,9 +72,10 @@ public class TeamController extends BaseController {
         return teamDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value="/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public TeamDto handleEdit(@RequestBody TeamDto request) {
+    public TeamDto handleEdit(@ModelAttribute TeamDto request) {
+
         return teamService.handleEdit(request);
     }
 
