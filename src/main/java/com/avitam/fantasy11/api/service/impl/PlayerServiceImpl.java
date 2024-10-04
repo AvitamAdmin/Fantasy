@@ -5,10 +5,12 @@ import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.PlayerRepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -41,7 +43,17 @@ public class PlayerServiceImpl implements PlayerService {
             player=request.getPlayer();
             player.setCreator(coreService.getCurrentUser().getUsername());
             player.setCreationTime(new Date());
+
             playerRepository.save(player);
+        }
+        if(request.getPlayerImage()!=null && !request.getPlayerImage().isEmpty()) {
+            try {
+                player.setPlayerImage(new Binary(request.getPlayerImage().getBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                playerDto.setMessage("Error processing image file");
+                return playerDto;
+            }
         }
         player.setLastModified(new Date());
         if (request.getRecordId()==null){

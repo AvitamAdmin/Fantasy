@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @Getter
@@ -15,4 +16,5 @@ public class PlayerDto extends CommonDto{
 
     private Player player;
     private List<Player> playerList;
+    private MultipartFile playerImage;
 }

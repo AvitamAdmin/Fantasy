@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/admin/address")
@@ -81,6 +83,8 @@ public class AddressController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public AddressDto deleteAddress(@RequestBody AddressDto addressDto) {
+        List<Address> addresses=addressDto.getAddressList();
+
         for (String id : addressDto.getRecordId().split(",")) {
             addressRepository.deleteByRecordId(id);
         }
