@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -45,9 +46,10 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public MatchesDto handleEdit(MatchesDto request,int flag) {
+    public MatchesDto handleEdit(MatchesDto request) {
         MatchesDto matchesDto = new MatchesDto();
         Matches matches = null;
+
         if(request.getRecordId()!=null){
             Matches requestData = request.getMatches();
             matches = matchesRepository.findByRecordId(request.getRecordId());
@@ -57,6 +59,7 @@ public class MatchesServiceImpl implements MatchesService {
             matches=request.getMatches();
             matches.setCreator(coreService.getCurrentUser().getUsername());
             matches.setCreationTime(new Date());
+            eventStatus(matches,request);
             matchesRepository.save(matches);
         }
         matches.setLastModified(new Date());
@@ -65,16 +68,26 @@ public class MatchesServiceImpl implements MatchesService {
         }
         matchesRepository.save(matches);
         matchesDto.setMatches(matches);
-        if(flag==1) {
-            matchesDto.setBaseUrl(ADMIN_MATCHES);
-        }if(flag==2){
-            matchesDto.setBaseUrl(ADMIN_CLOSEDMATCHES);
-        }if(flag==3){
-            matchesDto.setBaseUrl(ADMIN_LIVEMATCHES);
-        }else{
-            matchesDto.setBaseUrl(ADMIN_UPCOMINGMATCHES);
-        }
         return matchesDto;
 
+    }
+
+    public void eventStatus(Matches matches,MatchesDto request)
+    {
+        LocalDateTime startDateAndTime=LocalDateTime.parse(request.getMatches().getStartDateAndTime());
+        LocalDateTime endDateAndTime=LocalDateTime.parse(request.getMatches().getEndDateAndTime());
+        LocalDateTime currentDateAndTime=LocalDateTime.now();
+
+        if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isAfter(currentDateAndTime)){
+            matches.setEventStatus("Live");
+        }
+        else if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isBefore(currentDateAndTime))
+        {
+            matches.setEventStatus("Closed");
+        }
+        else if(startDateAndTime.isAfter(currentDateAndTime))
+        {
+            matches.setEventStatus("Upcoming");
+        }
     }
 }

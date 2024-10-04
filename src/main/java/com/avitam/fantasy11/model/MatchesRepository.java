@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface MatchesRepository extends MongoRepository<Matches, ObjectId> {
     Optional<Matches> findById(String id);
 
-    List<Matches> findByEvent(String live);
+  //  List<Matches> findByEvent(String live);
 
     Matches findByRecordId(String recordId);
 
@@ -20,5 +20,7 @@ public interface MatchesRepository extends MongoRepository<Matches, ObjectId> {
 
     List<Matches> findByStatusOrderByIdentifier(boolean b);
 
-    List<Matches> findByStatusAndEventOrderByIdentifier(boolean b, String event);
+    List<Matches> findByEventStatus(String eventStatus);
+
+  //  List<Matches> findByStatusAndEventOrderByIdentifier(boolean b, String event);
 }

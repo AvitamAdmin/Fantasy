@@ -60,6 +60,28 @@ public class MatchesController extends BaseController {
         return matchesDto;
     }
 
+    @PostMapping("/getMatchStatus")
+    @ResponseBody
+    public MatchesDto getUpcomingMatches(@RequestBody MatchesDto request)
+    {
+        MatchesDto matchesDto=new MatchesDto();
+        String eventStatus=request.getMatches().getEventStatus();
+        if(eventStatus.equals("Upcoming"))
+        {
+            matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
+        }
+        else if(eventStatus.equals("Live"))
+        {
+            matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
+        }
+        else if(eventStatus.equals("Closed"))
+        {
+            matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
+        }
+        matchesDto.setBaseUrl(ADMIN_MATCHES);
+        return matchesDto;
+    }
+
     @PostMapping("/getedit")
     @ResponseBody
     public MatchesDto editMatches(@RequestBody MatchesDto request) {
@@ -73,8 +95,7 @@ public class MatchesController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public MatchesDto handleEdit(@RequestBody MatchesDto request) {
-        int flag=1;
-        return matchesService.handleEdit(request,flag);
+        return matchesService.handleEdit(request);
     }
 
     @GetMapping("/add")

@@ -14,5 +14,5 @@ public interface MatchesService {
 
     public void updateByRecordId(String recordId);
 
-    MatchesDto handleEdit(MatchesDto request, int flag);
+    MatchesDto handleEdit(MatchesDto request);
 }

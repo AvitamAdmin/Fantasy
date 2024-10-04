@@ -18,7 +18,7 @@ public class Matches extends BaseEntity{
     private String dateAndTime;
     private String startDateAndTime;
     private String endDateAndTime;
-    private String event;
+    private String eventStatus;
     private boolean matchStatus;
     private String tournamentId;
     private String sportTypeId;
