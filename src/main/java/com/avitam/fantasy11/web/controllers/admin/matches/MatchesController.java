@@ -66,15 +66,15 @@ public class MatchesController extends BaseController {
     {
         MatchesDto matchesDto=new MatchesDto();
         String eventStatus=request.getMatches().getEventStatus();
-        if(eventStatus.equals("Upcoming"))
+        if(eventStatus.equalsIgnoreCase("Upcoming"))
         {
             matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
         }
-        else if(eventStatus.equals("Live"))
+        else if(eventStatus.equalsIgnoreCase("Live"))
         {
             matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
         }
-        else if(eventStatus.equals("Closed"))
+        else if(eventStatus.equalsIgnoreCase("Closed"))
         {
             matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
         }
