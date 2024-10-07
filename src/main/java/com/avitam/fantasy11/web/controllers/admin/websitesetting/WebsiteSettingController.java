@@ -56,9 +56,9 @@ public class WebsiteSettingController {
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
 
-        Optional<WebsiteSetting> websiteSettingOptional = websiteSettingRepository.findByRecordId(id);
-        if (websiteSettingOptional.isPresent()) {
-            WebsiteSetting websitesetting = websiteSettingOptional.get();
+        WebsiteSetting websiteSettingOptional = websiteSettingRepository.findByRecordId(id);
+        if (websiteSettingOptional!=null) {
+            WebsiteSetting websitesetting = websiteSettingOptional;
             WebsiteSettingForm websiteSettingForm = modelMapper.map(websitesetting, WebsiteSettingForm.class);
             websiteSettingForm.setId(String.valueOf(websitesetting.getId()));
             model.addAttribute("editForm", websiteSettingForm);

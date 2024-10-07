@@ -11,7 +11,7 @@ public interface WebsiteSettingRepository extends MongoRepository<WebsiteSetting
 
     Optional<WebsiteSetting> findById(String id);
 
-    Optional<WebsiteSetting> findByRecordId(String recordId);
+    WebsiteSetting findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
 
