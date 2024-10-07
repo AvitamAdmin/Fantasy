@@ -10,7 +10,7 @@ public interface DepositsService {
 
     void deleteByRecordId(String recordId);
 
-    DepositsDto handleEdit(DepositsDto request,int flag);
+    DepositsDto handleEdit(DepositsDto request);
 
     void updateByRecordId(String recordId);
 

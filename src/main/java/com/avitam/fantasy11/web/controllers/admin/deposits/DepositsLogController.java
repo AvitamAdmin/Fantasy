@@ -34,6 +34,29 @@ public class DepositsLogController extends BaseController {
         return depositsDto;
     }
 
+    @PostMapping("/getDepositStatus")
+    @ResponseBody
+    public DepositsDto getDepositsStatus(@RequestBody DepositsDto request)
+    {
+        DepositsDto depositsDto=new DepositsDto();
+        String depositStatus=request.getDeposits().getDepositStatus();
+        if(depositStatus.equals("Approved"))
+        {
+            depositsDto.setDepositsList(depositsRepository.findByDepositStatus(depositStatus));
+        }
+        else if(depositStatus.equals("Pending"))
+        {
+            depositsDto.setDepositsList(depositsRepository.findByDepositStatus(depositStatus));
+        }
+        else if(depositStatus.equals("Rejected"))
+        {
+            depositsDto.setDepositsList(depositsRepository.findByDepositStatus(depositStatus));
+        }
+        depositsDto.setBaseUrl(ADMIN_DEPOSIT);
+
+        return depositsDto;
+    }
+
     @GetMapping("/get")
     @ResponseBody
     public DepositsDto getActiveDeposit(){
@@ -55,8 +78,7 @@ public class DepositsLogController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public DepositsDto handleEdit(@RequestBody DepositsDto request) {
-        int flag = 2;
-        return depositService.handleEdit(request, flag);
+        return depositService.handleEdit(request);
     }
 
     @GetMapping("/add")
