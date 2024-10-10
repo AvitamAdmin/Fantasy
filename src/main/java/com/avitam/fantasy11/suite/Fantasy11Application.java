@@ -37,7 +37,7 @@ public class Fantasy11Application {
 	}
 
 	@Bean
-	public ResourceBundleMessageSource messageSource() {
+	public  ResourceBundleMessageSource messageSource() {
 		var source = new ResourceBundleMessageSource();
 		source.setBasename("message");
 		source.setDefaultEncoding("UTF-8");

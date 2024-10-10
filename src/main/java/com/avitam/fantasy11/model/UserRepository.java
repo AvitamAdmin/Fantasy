@@ -21,4 +21,5 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
     void deleteByRecordId(String recordId);
 
 
+    User findByMobileNumber(String mobileNumber);
 }
