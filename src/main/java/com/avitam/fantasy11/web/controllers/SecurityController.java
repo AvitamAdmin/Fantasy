@@ -157,11 +157,10 @@ public class SecurityController {
 
     @PostMapping("/register")
     @ResponseBody
-    public UserDto processRegister(@RequestBody User user) {
-       UserDto userDto=new UserDto();
-       userService.save(userDto,user);
-        userDto.setMessage("Registration Successful");
-       return userDto;
+    public UserDto processRegister(@RequestBody UserDto request) {
+       userService.save(request);
+       request.setMessage("Registration Successful!!");
+       return request;
     }
 
     @GetMapping("/login")

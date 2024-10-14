@@ -14,5 +14,5 @@ import java.util.List;
 @ToString
 public class UserDto extends CommonDto{
     private User user;
-    private List<User> users;
+    private List<User> usersList;
 }

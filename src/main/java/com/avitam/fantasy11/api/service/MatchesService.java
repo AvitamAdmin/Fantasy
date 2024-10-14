@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.MatchesDto;
 import com.avitam.fantasy11.model.Matches;
 
-import java.util.Optional;
 
 public interface MatchesService {
 

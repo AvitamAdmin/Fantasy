@@ -1,33 +1,29 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.form.UserForm;
+import com.avitam.fantasy11.api.dto.AddressDto;
+import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.model.UserRepository;
 import com.avitam.fantasy11.validation.UserFormValidator;
 import com.avitam.fantasy11.validation.UserValidator;
-import org.apache.commons.lang3.StringUtils;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+@RestController
+@RequestMapping("/admin/user")
+public class AdminController extends BaseController{
 
-@Controller
-@RequestMapping("/admin")
-public class AdminController {
-
+    public static final String ADMIN_USER="/admin/user";
+    Logger logger= LoggerFactory.getLogger(AdminController.class);
     @Autowired
     UserFormValidator userFormValidator;
     @Autowired
@@ -35,105 +31,74 @@ public class AdminController {
     @Autowired
     private CoreService coreService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @GetMapping("/user")
-    public String getAllUsers(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        model.addAttribute("userList", userRepository.findAll());
-        return "admin/usersContent";
+    @PostMapping("")
+    @ResponseBody
+    public UserDto getAllUsers(@RequestBody UserDto userDto) {
+        Pageable pageable = getPageable(userDto.getPage(), userDto.getSizePerPage(), userDto.getSortDirection(), userDto.getSortField());
+        User user = userDto.getUser();
+        Page<User> page = isSearchActive(user) != null ? userRepository.findAll(Example.of(user), pageable) : userRepository.findAll(pageable);
+        userDto.setUsersList(page.getContent());
+        userDto.setTotalPages(page.getTotalPages());
+        userDto.setTotalRecords(page.getTotalElements());
+        userDto.setBaseUrl(ADMIN_USER);
+        return userDto;
     }
 
-    @GetMapping("/user/edit")
-    public String editUser(@RequestParam("id") ObjectId id, Model model) {
-        UserForm userForm = new UserForm();
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            userForm = modelMapper.map(user, UserForm.class);
-            userForm.setPasswordConfirm(null);
-            userForm.setPassword(null);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User currentUser = userRepository.findByUsername(principalObject.getUsername());
-            model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
-            model.addAttribute("roles", roleRepository.findAll());
-            model.addAttribute("editForm", userForm);
+    @GetMapping("/get")
+    @ResponseBody
+    public UserDto getActiveUserList() {
+        UserDto userDto = new UserDto();
+        userDto.setUsersList(userRepository.findByStatusOrderByIdentifier(true));
+        userDto.setBaseUrl(ADMIN_USER);
+        return userDto;
+    }
 
+    @PostMapping("/getedit")
+    @ResponseBody
+    public UserDto editUser(@RequestBody UserDto request) {
+        UserDto userDto = new UserDto();
+        User user = userRepository.findByRecordId(userDto.getRecordId());
+        userDto.setUser(user);
+        userDto.setBaseUrl(ADMIN_USER);
+        return userDto;
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    public UserDto save(@RequestBody UserDto request) {
+
+        userService.save(request);
+        return request;
+    }
+
+    @GetMapping("/add")
+    @ResponseBody
+    public UserDto addUser() {
+        UserDto userDto=new UserDto();
+        userDto.setUsersList(userRepository.findByStatusOrderByIdentifier(true));
+        userDto.setBaseUrl(ADMIN_USER);
+        return userDto;
+    }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public UserDto deleteUser(@RequestBody UserDto userDto) {
+
+        for (String id : userDto.getRecordId().split(",")) {
+            userRepository.deleteByRecordId(id);
         }
-        return "admin/usersEditContent";
+        userDto.setBaseUrl(ADMIN_USER);
+        userDto.setMessage("Data Deleted Successfully");
+        return userDto;
     }
 
-    @PostMapping("/user/edit")
-    public String handleEdit(@ModelAttribute("editForm") UserForm userForm, Model model, BindingResult result, RedirectAttributes redirectAttributes) {
 
-        User user = null;
-        model.addAttribute("roles", roleRepository.findAll());
-
-
-        if (userForm.getId()== null) {
-            user = new User();
-            user = modelMapper.map(userForm, User.class);
-            userValidator.validate(user, result);
-            if (result.hasErrors()) {
-                model.addAttribute("editForm", userForm);
-                return "admin/usersEditContent";
-            }
-        } else {
-            userFormValidator.validate(userForm, result);
-            user = userRepository.findById(userForm.getId());
-            user.setUsername(userForm.getEmail());
-        }
-        if (result.hasErrors()) {
-            model.addAttribute("editForm", userForm);
-            return "admin/usersEditContent";
-        }
-        if (StringUtils.isNotEmpty(userForm.getPassword())) {
-            user.setPassword(bCryptPasswordEncoder.encode(userForm.getPassword()));
-            user.setPasswordConfirm(bCryptPasswordEncoder.encode(userForm.getPasswordConfirm()));
-        }
-        user.setStatus(true);
-        userRepository.save(user);
-        redirectAttributes.addAttribute("id", user.getId());
-        return "redirect:/admin/user";
-    }
-
-    @GetMapping("/user/add")
-    public String addUser(@ModelAttribute UserForm userForm, Model model, BindingResult result, RedirectAttributes redirectAttributes) {
-        model.addAttribute("roles", roleRepository.findAll());
-
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByUsername(principalObject.getUsername());
-        model.addAttribute("isAdmin", currentUser.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
-
-        userForm.setCreationTime(new Date());
-        userForm.setLastModified(new Date());
-        userForm.setStatus(true);
-        userForm.setCreator(coreService.getCurrentUser().getUsername());
-        model.addAttribute("editForm", userForm);
-        return "admin/usersEditContent";
-    }
-
-    @GetMapping("/user/delete")
-    public String deleteUser(@RequestParam("id") String ids, RedirectAttributes redirectAttributes) {
-        for (String id : ids.split(",")) {
-            userRepository.deleteById(new ObjectId(id));
-        }
-        redirectAttributes.addAttribute("userList", userRepository.findAll());
-        return "redirect:/admin/user";
-    }
-
-    public String updateUsers(@ModelAttribute("usersForm") List<User> users, BindingResult bindingResultUser) {
-        userRepository.saveAll(users);
-        return "redirect:/admin/user";
-    }
 }

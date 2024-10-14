@@ -1,11 +1,10 @@
 package com.avitam.fantasy11.core.service.impl;
 
-import com.avitam.fantasy11.model.Role;
+
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

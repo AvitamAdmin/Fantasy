@@ -6,6 +6,7 @@ import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,8 @@ public class UserServiceImpl implements UserService {
     public static final String TOKEN_INVALID = "invalidToken";
     public static final String TOKEN_EXPIRED = "expired";
     public static final String TOKEN_VALID = "valid";
+
+    public static final String ADMIN_USER="/admin/user";
 
     @Autowired
     private UserRepository userRepository;
@@ -34,38 +37,37 @@ public class UserServiceImpl implements UserService {
     private CoreService coreService;
 
     @Override
-    public void save(UserDto userDto, User requestUser) {
+    public void save( UserDto request) {
         User user=null;
-        if(requestUser.getStatus()!=null)
+        if(request.getRecordId()!=null)
         {
-            user = userRepository.findByRecordId(requestUser.getRecordId());
-            modelMapper.map(requestUser, user);
+            user = userRepository.findByRecordId(request.getRecordId());
+            modelMapper.map(request, user);
         }
         else {
-            user = requestUser;
-          //  user.setCreator(requestUser.getUsername());
+            user = request.getUser();
+            //user.setCreator(user.getEmail());
             user.setCreationTime(new Date());
-            user.setStatus(true);
+            userRepository.save(user);
+            }
             user.setLastModified(new Date());
-
-        }
-        if (StringUtils.isNotEmpty(user.getPassword())) {
+        if(StringUtils.isNotEmpty(user.getPassword()))
+        {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             user.setPasswordConfirm(bCryptPasswordEncoder.encode(user.getPasswordConfirm()));
         }
-        Set<Role> roles = requestUser.getRoles();
-        Set<Role> rolesList = new HashSet<>();
-        for (Role role : roles) {
-            rolesList.add(roleRepository.findByRecordId(role.getRecordId()));
-        }
-        user.setRoles(rolesList);
-
-        userRepository.save(user);
-        if (user.getRecordId() == null) {
-            user.setRecordId(String.valueOf(user.getId().getTimestamp()));
             userRepository.save(user);
-        }
-        userDto.setUser(user);
+            if (request.getRecordId() == null) {
+                user.setRecordId(String.valueOf(user.getId().getTimestamp()));
+            }
+            userRepository.save(user);
+            request.setUser(user);
+            request.setBaseUrl(ADMIN_USER);
+    }
+
+    @Override
+    public User findByUserName(String userName) {
+        return userRepository.findByUsername(userName);
     }
 
     @Override
@@ -77,6 +79,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createVerificationToken(User user, String token) {
         VerificationToken myToken = new VerificationToken();
+        myToken.setToken(token);
+        myToken.setUser(user);
         tokenRepository.save(myToken);
     }
 
@@ -147,6 +151,11 @@ public class UserServiceImpl implements UserService {
     public User getByResetPasswordToken(String token) {
 
         return userRepository.findByResetPasswordToken(token);
+    }
+
+    @Override
+    public boolean updateOtp(String token, String email) {
+        return false;
     }
 
 

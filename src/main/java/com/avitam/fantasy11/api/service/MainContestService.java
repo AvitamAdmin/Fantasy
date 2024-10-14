@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.model.MainContest;
-
 import com.avitam.fantasy11.api.dto.MainContestDto;
 
 public interface MainContestService {

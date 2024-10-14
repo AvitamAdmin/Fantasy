@@ -6,7 +6,12 @@ import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.model.VerificationToken;
 
 public interface UserService {
-    void save(UserDto userDto, User user);
+
+
+    void save(UserDto request);
+
+
+    User findByUserName(String userName);
 
     User findByEmail(String email);
 
@@ -22,9 +27,13 @@ public interface UserService {
 
     boolean isAdminRole();
 
+
     boolean updateResetPasswordToken(String token, String email);
 
     User getByResetPasswordToken(String token);
 
+    boolean updateOtp(String token, String email);
+
     void updatePassword(User user, String password);
+
 }
