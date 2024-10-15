@@ -3,16 +3,9 @@ package com.avitam.fantasy11.web.controllers.admin.team;
 import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.service.TeamService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.TeamForm;
-import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.apache.commons.math3.analysis.solvers.BaseSecantSolver;
-import org.bson.types.Binary;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -20,16 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.awt.*;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/team")

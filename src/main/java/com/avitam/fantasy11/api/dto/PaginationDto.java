@@ -1,11 +1,11 @@
 package com.avitam.fantasy11.api.dto;
 
 
-import org.springframework.data.domain.Sort;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.domain.Sort;
 
 @Getter
 @Setter

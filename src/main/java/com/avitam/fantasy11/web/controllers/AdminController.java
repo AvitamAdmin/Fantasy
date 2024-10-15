@@ -1,14 +1,11 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.UserDto;
-import com.avitam.fantasy11.core.service.UserService;
-import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.repository.UserRepository;
-import com.avitam.fantasy11.validation.UserFormValidator;
-import com.avitam.fantasy11.validation.UserValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +21,6 @@ public class AdminController extends BaseController{
 
     public static final String ADMIN_USER="/admin/user";
     Logger logger= LoggerFactory.getLogger(AdminController.class);
-    @Autowired
-    UserFormValidator userFormValidator;
-    @Autowired
-    private UserValidator userValidator;
     @Autowired
     private CoreService coreService;
     @Autowired

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter

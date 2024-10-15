@@ -1,9 +1,7 @@
 package com.avitam.fantasy11.model;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;

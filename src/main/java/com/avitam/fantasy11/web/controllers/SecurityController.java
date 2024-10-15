@@ -2,33 +2,23 @@ package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.core.Utility;
-import com.avitam.fantasy11.core.event.OnRegistrationCompleteEvent;
-import com.avitam.fantasy11.form.UserForm;
-import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.core.service.SecurityService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.mail.service.EMail;
 import com.avitam.fantasy11.mail.service.MailService;
 import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.repository.UserRepository;
-import com.avitam.fantasy11.validation.UserValidator;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -38,8 +28,6 @@ public class SecurityController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserValidator userValidator;
 
     @Autowired
     private SecurityService securityService;
@@ -180,25 +168,5 @@ public class SecurityController {
         return "login";
     }
 
-
-    @GetMapping("/profile")
-    public String profile(Model model) {
-        UserForm userForm = new UserForm();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User user = userRepository.findByEmail(principalObject.getUsername());
-
-        userForm.setStatus(user.getStatus());
-        userForm.setEmail(user.getEmail());
-     //   userForm.setRole(user.getRole());
-        userForm.setPassword(user.getPassword());
-        userForm.setPasswordConfirm(user.getPassword());
-        userForm.setId(userForm.getId());
-        model.addAttribute("roles", roleRepository.findAll());
-        model.addAttribute("editForm", userForm);
-        model.addAttribute("isAdmin", user.getRoles().stream().filter(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN")).findAny().isPresent());
-
-        return "admin/usersEditContent";
-    }
 
 }

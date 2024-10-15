@@ -2,16 +2,16 @@ package com.avitam.fantasy11.web.controllers.admin.notification;
 
 import com.avitam.fantasy11.api.dto.NotificationDto;
 import com.avitam.fantasy11.api.service.NotificationService;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.Notification;
 import com.avitam.fantasy11.repository.NotificationRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Pageable;
 
 @Controller
 @RequestMapping("/admin/notification")

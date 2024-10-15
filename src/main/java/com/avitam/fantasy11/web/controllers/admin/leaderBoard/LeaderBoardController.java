@@ -2,7 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.leaderBoard;
 
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.service.LeaderBoardService;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.repository.LeaderBoardRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.web.bind.annotation.*;
 
 @Controller

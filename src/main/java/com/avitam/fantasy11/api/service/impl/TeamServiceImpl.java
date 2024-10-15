@@ -1,11 +1,9 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.TeamRepository;
@@ -15,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class TeamServiceImpl implements TeamService {

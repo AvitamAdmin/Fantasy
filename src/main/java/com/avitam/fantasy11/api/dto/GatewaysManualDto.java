@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.api.dto;
 
-import com.avitam.fantasy11.model.GatewaysAutomatic;
 import com.avitam.fantasy11.model.GatewaysManual;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

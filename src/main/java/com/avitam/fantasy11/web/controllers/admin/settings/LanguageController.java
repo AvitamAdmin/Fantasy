@@ -2,21 +2,15 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.api.dto.LanguageDto;
 import com.avitam.fantasy11.api.service.LanguageService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.repository.LanguageRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/language")

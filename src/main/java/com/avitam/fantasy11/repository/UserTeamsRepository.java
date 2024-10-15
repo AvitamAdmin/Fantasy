@@ -3,8 +3,6 @@ package com.avitam.fantasy11.repository;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 

@@ -1,28 +1,16 @@
 package com.avitam.fantasy11.web.controllers.admin.advertise;
 
-import com.avitam.fantasy11.api.dto.DepositsDto;
 import com.avitam.fantasy11.api.dto.ScriptDto;
 import com.avitam.fantasy11.api.service.ScriptService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.AddressForm;
-import com.avitam.fantasy11.form.ScriptForm;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.Script;
 import com.avitam.fantasy11.repository.ScriptRepository;
-import com.avitam.fantasy11.validation.AddressFormValidator;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/script")

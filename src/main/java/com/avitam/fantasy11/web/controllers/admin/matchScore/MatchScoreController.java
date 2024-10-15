@@ -1,31 +1,19 @@
 package com.avitam.fantasy11.web.controllers.admin.matchScore;
 
 import com.avitam.fantasy11.api.dto.MatchScoreDto;
-
 import com.avitam.fantasy11.api.service.MatchScoreService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.MatchScoreForm;
-import com.avitam.fantasy11.form.TournamentForm;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.repository.MatchScoreRepository;
 import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/matchScore")

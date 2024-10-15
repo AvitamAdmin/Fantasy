@@ -1,8 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.GatewaysAutomaticDto;
 import com.avitam.fantasy11.api.dto.GatewaysManualDto;
-import com.avitam.fantasy11.model.GatewaysAutomatic;
 import com.avitam.fantasy11.model.GatewaysManual;
 
 public interface GatewaysManualService {

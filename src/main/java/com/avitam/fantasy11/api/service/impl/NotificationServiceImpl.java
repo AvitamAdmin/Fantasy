@@ -1,20 +1,15 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.NotificationDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.NotificationService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Notification;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.NotificationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {

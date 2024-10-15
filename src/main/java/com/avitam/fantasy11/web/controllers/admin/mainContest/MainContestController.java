@@ -1,14 +1,14 @@
 package com.avitam.fantasy11.web.controllers.admin.mainContest;
 
+import com.avitam.fantasy11.api.dto.MainContestDto;
+import com.avitam.fantasy11.api.service.MainContestService;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.repository.MainContestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Pageable;
-import  com.avitam.fantasy11.api.dto.MainContestDto;
-import  org.springframework.data.domain.Page;
-import  com.avitam.fantasy11.api.service.MainContestService;
 
 @Controller
 @RequestMapping("/admin/mainContest")

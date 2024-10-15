@@ -1,28 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.userteams;
 
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
-import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.UserTeamsForm;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/userTeams")

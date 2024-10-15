@@ -2,7 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.advertise;
 
 import com.avitam.fantasy11.api.dto.BannerDto;
 import com.avitam.fantasy11.api.service.BannerService;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.Banner;
 import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;

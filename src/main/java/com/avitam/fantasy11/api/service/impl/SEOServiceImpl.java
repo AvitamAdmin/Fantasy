@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.SEODto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SEOService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.SEORepository;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
 
 @Service
 public class SEOServiceImpl implements SEOService {

@@ -1,20 +1,15 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.MatchScoreDto;
-import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MatchScoreService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MatchScoreRepository;
-import com.avitam.fantasy11.model.Role;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class MatchScoreServiceImpl implements MatchScoreService {

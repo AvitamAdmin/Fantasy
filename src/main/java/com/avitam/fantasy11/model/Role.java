@@ -1,8 +1,5 @@
 package com.avitam.fantasy11.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

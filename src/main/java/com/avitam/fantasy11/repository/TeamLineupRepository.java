@@ -1,10 +1,7 @@
 package com.avitam.fantasy11.repository;
 
-import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -1,21 +1,15 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
-import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
-import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WithdrawalDetailsRepository;
-import com.avitam.fantasy11.model.WithdrawalMethods;
-import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class WithdrawalServiceDetailsImpl implements WithdrawalDetailsService {

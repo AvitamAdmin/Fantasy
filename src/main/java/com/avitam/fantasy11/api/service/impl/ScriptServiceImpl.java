@@ -1,18 +1,16 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.MatchScoreDto;
 import com.avitam.fantasy11.api.dto.ScriptDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ScriptService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.Role;
+import com.avitam.fantasy11.model.Script;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.ScriptRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 @Service
 public class ScriptServiceImpl implements ScriptService {
 

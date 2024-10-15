@@ -1,11 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalDetails;
 
-import com.avitam.fantasy11.api.dto.PendingWithdrawalDto;
 import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.form.WithdrawalDetailsForm;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.repository.PendingWithdrawalRepository;
 import com.avitam.fantasy11.repository.WithdrawalDetailsRepository;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
@@ -16,13 +14,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 @Controller
 @RequestMapping("/admin/withdrawalDetails")

@@ -2,7 +2,6 @@ package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.KYCDto;
 import com.avitam.fantasy11.model.KYC;
-import org.springframework.stereotype.Service;
 
 
 public interface KycService {

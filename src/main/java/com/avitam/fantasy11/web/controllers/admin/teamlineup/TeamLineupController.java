@@ -3,7 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.teamlineup;
 import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.repository.TeamLineupRepository;
 import com.avitam.fantasy11.repository.TeamRepository;

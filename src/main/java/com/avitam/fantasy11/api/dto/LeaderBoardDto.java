@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.api.dto;
 
 import com.avitam.fantasy11.model.LeaderBoard;
-import com.avitam.fantasy11.model.Tournament;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

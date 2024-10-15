@@ -4,16 +4,12 @@ import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.TeamLineupRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class TeamLineUpServiceImpl implements TeamLineUpService {

@@ -3,19 +3,22 @@ package com.avitam.fantasy11.core.service.impl;
 import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.core.service.UserService;
-import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.model.Role;
+import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.model.VerificationToken;
 import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.repository.VerificationTokenRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
