@@ -7,9 +7,9 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.GatewaysAutomaticForm;
 import com.avitam.fantasy11.form.GatewaysManualForm;
 import com.avitam.fantasy11.model.GatewaysAutomatic;
-import com.avitam.fantasy11.model.GatewaysAutomaticRepository;
+import com.avitam.fantasy11.repository.GatewaysAutomaticRepository;
 import com.avitam.fantasy11.model.GatewaysManual;
-import com.avitam.fantasy11.model.GatewaysManualRepository;
+import com.avitam.fantasy11.repository.GatewaysManualRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,9 +72,9 @@ public class GatewaysManualController extends BaseController {
         return gatewaysManualDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public GatewaysManualDto handleEdit(@RequestBody GatewaysManualDto request)  {
+    public GatewaysManualDto handleEdit(@ModelAttribute GatewaysManualDto request)  {
         return gatewaysManualService.handleEdit(request);
     }
 

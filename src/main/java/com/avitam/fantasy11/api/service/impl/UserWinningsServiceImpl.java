@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.UserWinningsDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.UserWinningsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.UserWinnings;
-import com.avitam.fantasy11.model.UserWinningsRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.UserWinningsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class UserWinningsServiceImpl implements UserWinningsService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
     public static final String ADMIN_USERWINNINGS = "/admin/userWinnings";
     @Override
     public UserWinnings findByRecordId(String recordId) {
@@ -34,7 +38,10 @@ public class UserWinningsServiceImpl implements UserWinningsService {
     @Override
     public void updateByRecordId(String recordId) {
         UserWinnings userWinningsOptional=userWinningsRepository.findByRecordId(recordId);
-        //userWinningsOptional.ifPresent(userWinnings -> userWinningsRepository.save(userWinnings));
+        if(userWinningsOptional!=null)
+        {
+            userWinningsRepository.save(userWinningsOptional);
+        }
     }
 
     @Override
@@ -48,12 +55,16 @@ public class UserWinningsServiceImpl implements UserWinningsService {
             modelMapper.map(requestData, userWinnings);
         }
         else{
+            if(baseService.validateIdentifier(EntityConstants.USER_WINNINGS,request.getUserWinnings().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             userWinnings = request.getUserWinnings();
-            userWinnings.setCreator(coreService.getCurrentUser().getUsername());
-            userWinnings.setCreationTime(new Date());
-            userWinningsRepository.save(userWinnings);
         }
-        userWinnings.setLastModified(new Date());
+        baseService.populateCommonData(userWinnings);
+        userWinningsRepository.save(userWinnings);
         if(request.getRecordId()==null){
             userWinnings.setRecordId(String.valueOf(userWinnings.getId().getTimestamp()));
         }

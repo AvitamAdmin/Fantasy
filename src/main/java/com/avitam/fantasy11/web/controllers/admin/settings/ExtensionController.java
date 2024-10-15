@@ -3,18 +3,15 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 import com.avitam.fantasy11.api.dto.ExtensionDto;
 import com.avitam.fantasy11.api.service.ExtensionService;
 import com.avitam.fantasy11.model.Extension;
-import com.avitam.fantasy11.model.ExtensionRepository;
+import com.avitam.fantasy11.repository.ExtensionRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/extension")
@@ -60,13 +57,11 @@ public class ExtensionController extends BaseController {
         return extensionDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public ExtensionDto handleEdit(@RequestBody ExtensionDto request) {
-
+    public ExtensionDto handleEdit(@ModelAttribute ExtensionDto request) {
         return extensionService.handleEdit(request);
     }
-
 
     @GetMapping("/add")
     @ResponseBody

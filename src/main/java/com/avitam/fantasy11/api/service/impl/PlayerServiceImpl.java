@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.PlayerDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Player;
-import com.avitam.fantasy11.model.PlayerRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.PlayerRepository;
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class PlayerServiceImpl implements PlayerService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_PLAYER="/admin/player";
 
@@ -40,11 +44,13 @@ public class PlayerServiceImpl implements PlayerService {
             player=playerRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,player);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.PLAYER,request.getPlayer().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             player=request.getPlayer();
-            player.setCreator(coreService.getCurrentUser().getUsername());
-            player.setCreationTime(new Date());
-
-            playerRepository.save(player);
         }
         if(request.getPlayerImage()!=null && !request.getPlayerImage().isEmpty()) {
             try {
@@ -55,7 +61,8 @@ public class PlayerServiceImpl implements PlayerService {
                 return playerDto;
             }
         }
-        player.setLastModified(new Date());
+        baseService.populateCommonData(player);
+        playerRepository.save(player);
         if (request.getRecordId()==null){
             player.setRecordId(String.valueOf(player.getId().getTimestamp()));
         }

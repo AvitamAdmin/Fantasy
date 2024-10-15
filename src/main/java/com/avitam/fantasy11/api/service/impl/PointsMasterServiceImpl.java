@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.PointsMasterDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PointsMasterService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.PointsMaster;
-import com.avitam.fantasy11.model.PointsMasterRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.PointsMasterRepository;
 import org.checkerframework.checker.units.qual.A;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class PointsMasterServiceImpl implements PointsMasterService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     public static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
     @Override
@@ -51,12 +55,16 @@ public class PointsMasterServiceImpl implements PointsMasterService {
             modelMapper.map(requestData, pointsMaster);
         }
         else{
+            if(baseService.validateIdentifier(EntityConstants.POINTS_MASTER,request.getPointsMaster().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             pointsMaster = request.getPointsMaster();
-            pointsMaster.setCreator(coreService.getCurrentUser().getUsername());
-            pointsMaster.setCreationTime(new Date());
-            pointsMasterRepository.save(pointsMaster);
         }
-        pointsMaster.setLastModified(new Date());
+        baseService.populateCommonData(pointsMaster);
+        pointsMasterRepository.save(pointsMaster);
         if(request.getRecordId()==null){
             pointsMaster.setRecordId(String.valueOf(pointsMaster.getId().getTimestamp()));
         }

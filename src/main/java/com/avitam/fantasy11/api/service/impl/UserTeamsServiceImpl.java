@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.UserTeams;
-import com.avitam.fantasy11.model.UserTeamsRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.UserTeamsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class UserTeamsServiceImpl implements UserTeamsService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
     public static final String ADMIN_USERTEAM = "/admin/userTeam";
 
     @Override
@@ -51,12 +55,16 @@ public class UserTeamsServiceImpl implements UserTeamsService {
             modelMapper.map(requestData, userTeams);
         }
         else{
+            if(baseService.validateIdentifier(EntityConstants.USER_TEAMS,request.getUserTeams().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             userTeams=request.getUserTeams();
-            userTeams.setCreator(coreService.getCurrentUser().getUsername());
-            userTeams.setCreationTime(new Date());
-            userTeamsRepository.save(userTeams);
         }
-        userTeams.setLastModified(new Date());
+        baseService.populateCommonData(userTeams);
+        userTeamsRepository.save(userTeams);
         if(request.getRecordId()==null){
             userTeams.setRecordId(String.valueOf(userTeams.getId().getTimestamp()));
         }

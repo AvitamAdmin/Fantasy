@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.pointsUpdate;
 import com.avitam.fantasy11.api.dto.PointsUpdateDto;
 import com.avitam.fantasy11.api.service.PointsUpdateService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.PointsUpdateRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

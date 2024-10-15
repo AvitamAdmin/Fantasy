@@ -15,5 +15,6 @@ import lombok.ToString;
         private String message;
         private int  totalPages;
         private long totalRecords;
+        private boolean success = true;
     }
 

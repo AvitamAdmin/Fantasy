@@ -2,17 +2,21 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.GatewaysAutomaticDto;
 import com.avitam.fantasy11.api.dto.GatewaysManualDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.GatewaysAutomaticService;
 import com.avitam.fantasy11.api.service.GatewaysManualService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.GatewaysAutomatic;
-import com.avitam.fantasy11.model.GatewaysAutomaticRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.GatewaysAutomaticRepository;
 import com.avitam.fantasy11.model.GatewaysManual;
-import com.avitam.fantasy11.model.GatewaysManualRepository;
+import com.avitam.fantasy11.repository.GatewaysManualRepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -24,6 +28,8 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     public static final String ADMIN_GATEWAYSMANUAL = "/admin/gatewaysManual";
 
@@ -47,12 +53,25 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
             modelMapper.map(requestData, gatewaysManual);
         }
         else {
+            if(baseService.validateIdentifier(EntityConstants.GATEWAYS_MANUAL,request.getGatewaysManual().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             gatewaysManual=request.getGatewaysManual();
-            gatewaysManual.setCreator(coreService.getCurrentUser().getUsername());
-            gatewaysManual.setCreationTime(new Date());
-            gatewaysManualRepository.save(gatewaysManual);
         }
-        gatewaysManual.setLastModified(new Date());
+        if(request.getLogo()!=null && !request.getLogo().isEmpty()) {
+            try {
+                gatewaysManual.setLogo(new Binary(request.getLogo().getBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                gatewaysManualDto.setMessage("Error processing image file");
+                return gatewaysManualDto;
+            }
+        }
+        baseService.populateCommonData(gatewaysManual);
+        gatewaysManualRepository.save(gatewaysManual);
         if(request.getRecordId()==null){
             gatewaysManual.setRecordId(String.valueOf(gatewaysManual.getId().getTimestamp()));
         }

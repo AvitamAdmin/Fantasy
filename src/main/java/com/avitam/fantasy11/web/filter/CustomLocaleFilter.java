@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.web.filter;
 
-import com.avitam.fantasy11.model.UserRepository;
+import com.avitam.fantasy11.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;

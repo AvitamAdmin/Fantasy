@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.notification;
 import com.avitam.fantasy11.api.dto.NotificationDto;
 import com.avitam.fantasy11.api.service.NotificationService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.NotificationRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -57,6 +58,7 @@ public class NotificationController extends BaseController {
     }
 
     @PostMapping("/edit")
+    @ResponseBody
     public NotificationDto handleEdit(@RequestBody NotificationDto request) {
         return notificationService.handleEdit(request);
     }

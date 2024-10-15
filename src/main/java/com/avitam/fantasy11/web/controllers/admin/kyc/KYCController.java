@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.kyc;
 import com.avitam.fantasy11.api.dto.KYCDto;
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.KYCRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

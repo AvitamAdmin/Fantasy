@@ -3,7 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.pointsMaster;
 import com.avitam.fantasy11.api.dto.PointsMasterDto;
 import com.avitam.fantasy11.api.service.PointsMasterService;
 import com.avitam.fantasy11.model.PointsMaster;
-import com.avitam.fantasy11.model.PointsMasterRepository;
+import com.avitam.fantasy11.repository.PointsMasterRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

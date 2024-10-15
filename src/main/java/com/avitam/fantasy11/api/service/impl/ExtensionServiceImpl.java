@@ -1,14 +1,18 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.ExtensionDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ExtensionService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Extension;
-import com.avitam.fantasy11.model.ExtensionRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.ExtensionRepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -20,6 +24,8 @@ public class ExtensionServiceImpl implements ExtensionService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_EXTENSION = "/admin/extension";
 
@@ -37,12 +43,25 @@ public class ExtensionServiceImpl implements ExtensionService {
             extension = extensionRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData, extension);
         } else {
+            if(baseService.validateIdentifier(EntityConstants.EXTENSION,request.getExtension().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             extension = request.getExtension();
-            extension.setCreator(coreService.getCurrentUser().getUsername());
-            extension.setCreationTime(new Date());
-            extensionRepository.save(extension);
         }
-        extension.setLastModified(new Date());
+        if(request.getImage()!=null && !request.getImage().isEmpty()) {
+            try {
+                extension.setImage(new Binary(request.getImage().getBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                extensionDto.setMessage("Error processing image file");
+                return extensionDto;
+            }
+        }
+        baseService.populateCommonData(extension);
+        extensionRepository.save(extension);
         if (request.getRecordId() == null) {
             extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
         }

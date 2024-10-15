@@ -1,11 +1,13 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.TeamLineUpDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.model.TeamLineup;
-import com.avitam.fantasy11.model.TeamLineupRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.TeamLineupRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
     public static final String ADMIN_TEAMLINEUP = "/admin/teamLineup";
 
     @Override
@@ -50,12 +54,16 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
             modelMapper.map(requestData, teamLineup);
         }
         else{
+            if(baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP,request.getTeamLineup().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             teamLineup = request.getTeamLineup();
-            teamLineup.setCreator(coreService.getCurrentUser().getUsername());
-            teamLineup.setCreationTime(new Date());
-            teamLineupRepository.save(teamLineup);
         }
-        teamLineup.setLastModified(new Date());
+        baseService.populateCommonData(teamLineup);
+        teamLineupRepository.save(teamLineup);
         if(request.getRecordId()==null){
             teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
         }

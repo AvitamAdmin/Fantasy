@@ -22,7 +22,7 @@ public class BaseEntity {
     private Date creationTime;
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date lastModified;
-    private String modifier;
+    private String modifiedBy;
     private String pic;
     private String identifier;
 }

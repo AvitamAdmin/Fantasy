@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.PointsUpdateDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PointsUpdateService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.PointsUpdate;
-import com.avitam.fantasy11.model.PointsUpdateRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.PointsUpdateRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_POINTSUPDATE="/admin/pointsUpdate";
 
@@ -43,12 +47,16 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
             pointsUpdate=pointsUpdateRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,pointsUpdate);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.POINTS_UPDATE,request.getPointsUpdate().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             pointsUpdate=request.getPointsUpdate();
-            pointsUpdate.setCreator(coreService.getCurrentUser().getUsername());
-            pointsUpdate.setCreationTime(new Date());
-            pointsUpdateRepository.save(pointsUpdate);
         }
-        pointsUpdate.setLastModified(new Date());
+        baseService.populateCommonData(pointsUpdate);
+        pointsUpdateRepository.save(pointsUpdate);
         if (request.getRecordId()==null){
             pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));
         }

@@ -2,9 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.role;
 
 import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.service.RoleService;
-import com.avitam.fantasy11.model.NodeRepository;
+import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.model.Role;
-import com.avitam.fantasy11.model.RoleRepository;
+import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;

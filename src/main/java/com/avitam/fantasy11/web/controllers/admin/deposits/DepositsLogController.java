@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.deposits;
 import com.avitam.fantasy11.api.dto.DepositsDto;
 import com.avitam.fantasy11.api.service.DepositsService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.DepositsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

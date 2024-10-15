@@ -17,7 +17,7 @@ public class VerificationToken  {
 
     private int id;
     private String userId;
-    private int token;
+    private String token;
     private int status;
     public User user;
     private Date ExpiryDate;

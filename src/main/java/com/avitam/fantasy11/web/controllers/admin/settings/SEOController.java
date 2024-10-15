@@ -3,12 +3,13 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 import com.avitam.fantasy11.api.dto.SEODto;
 import com.avitam.fantasy11.api.service.SEOService;
 import com.avitam.fantasy11.model.SEO;
-import com.avitam.fantasy11.model.SEORepository;
+import com.avitam.fantasy11.repository.SEORepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,9 +58,9 @@ public class SEOController extends BaseController {
         return seoDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public SEODto handleEdit(@RequestBody SEODto request) throws IOException {
+    public SEODto handleEdit(@ModelAttribute SEODto request) throws IOException {
 
         return seoService.handleEdit(request);
     }

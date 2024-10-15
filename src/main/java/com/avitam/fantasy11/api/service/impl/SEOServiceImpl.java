@@ -1,15 +1,19 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.SEODto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SEOService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.model.SEO;
-import com.avitam.fantasy11.model.SEORepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.SEORepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -25,6 +29,9 @@ public class SEOServiceImpl implements SEOService {
 
     @Autowired
     private CoreService coreService;
+
+    @Autowired
+    private BaseService baseService;
 
     @Override
     public SEO findByRecordId(String recordId) {
@@ -56,12 +63,25 @@ public class SEOServiceImpl implements SEOService {
             modelMapper.map(requestData, seo);
         }
         else {
+            if(baseService.validateIdentifier(EntityConstants.SEO,request.getSeo().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             seo=request.getSeo();
-            seo.setCreator(coreService.getCurrentUser().getUsername());
-            seo.setCreationTime(new Date());
-            seoRepository.save(seo);
         }
-        seo.setLastModified(new Date());
+        if(request.getImage()!=null && !request.getImage().isEmpty()) {
+            try {
+                seo.setImage(new Binary(request.getImage().getBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                seoDto.setMessage("Error processing image file");
+                return seoDto;
+            }
+        }
+        baseService.populateCommonData(seo);
+        seoRepository.save(seo);
         if(request.getRecordId()==null){
             seo.setRecordId(String.valueOf(seo.getId().getTimestamp()));
         }

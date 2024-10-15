@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MainContestService;
 import com.avitam.fantasy11.model.MainContest;
-import com.avitam.fantasy11.model.MainContestRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.MainContestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
@@ -23,6 +25,9 @@ public class MainContestServiceImpl implements MainContestService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private BaseService baseService;
+
     private static final String ADMIN_MAINCONTEST = "/admin/mainContest";
 
     @Override
@@ -39,12 +44,16 @@ public class MainContestServiceImpl implements MainContestService {
             mainContest = mainContestRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData, mainContest);
         } else {
+            if(baseService.validateIdentifier(EntityConstants.MAINCONTEST,request.getMainContest().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             mainContest = request.getMainContest();
-            mainContest.setCreator(coreService.getCurrentUser().getUsername());
-            mainContest.setCreationTime(new Date());
-            mainContestRepository.save(mainContest);
         }
-        mainContest.setLastModified(new Date());
+        baseService.populateCommonData(mainContest);
+        mainContestRepository.save(mainContest);
         if (request.getRecordId() == null) {
             mainContest.setRecordId(String.valueOf(mainContest.getId().getTimestamp()));
         }

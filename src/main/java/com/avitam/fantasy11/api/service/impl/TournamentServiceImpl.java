@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.TournamentDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TournamentService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Tournament;
-import com.avitam.fantasy11.model.TournamentRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.TournamentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +22,12 @@ public class TournamentServiceImpl implements TournamentService {
     private CoreService coreService;
     @Autowired
     private TournamentRepository tournamentRepository;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_TOURNAMENT="/admin/tournament";
     @Override
     public Tournament findByRecordId(String recordId) {
-
         return tournamentRepository.findByRecordId(recordId);
     }
 
@@ -37,12 +40,16 @@ public class TournamentServiceImpl implements TournamentService {
             tournament=tournamentRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,tournament);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.TOURNAMENT,request.getTournament().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             tournament=request.getTournament();
-            tournament.setCreator(coreService.getCurrentUser().getUsername());
-            tournament.setCreationTime(new Date());
-            tournamentRepository.save(tournament);
         }
-        tournament.setLastModified(new Date());
+        baseService.populateCommonData(tournament);
+        tournamentRepository.save(tournament);
         if (request.getRecordId()==null){
             tournament.setRecordId(String.valueOf(tournament.getId().getTimestamp()));
         }

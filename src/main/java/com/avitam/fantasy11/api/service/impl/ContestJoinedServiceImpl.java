@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.ContestJoinedDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ContestJoinedService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.ContestJoined;
-import com.avitam.fantasy11.model.ContestJoinedRepository;
+import com.avitam.fantasy11.repository.ContestJoinedRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
     private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_CONTESTJOINED="/admin/contestJoined";
 
@@ -39,12 +43,16 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
             contestJoined=contestJoinedRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,contestJoined);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.CONTEST_JOINED,request.getContestJoined().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             contestJoined=request.getContestJoined();
-            contestJoined.setCreator(coreService.getCurrentUser().getUsername());
-            contestJoined.setCreationTime(new Date());
-            contestJoinedRepository.save(contestJoined);
         }
-        contestJoined.setLastModified(new Date());
+        baseService.populateCommonData(contestJoined);
+        contestJoinedRepository.save(contestJoined);
         if (request.getRecordId()==null){
             contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
         }

@@ -2,7 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.websitesetting;
 
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.WebsiteSetting;
-import com.avitam.fantasy11.model.WebsiteSettingRepository;
+import com.avitam.fantasy11.repository.WebsiteSettingRepository;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.WebsiteSettingForm;
 import org.apache.commons.lang3.StringUtils;

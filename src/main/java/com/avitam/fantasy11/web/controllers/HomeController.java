@@ -1,9 +1,9 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.model.NodeRepository;
-import com.avitam.fantasy11.model.UserRepository;
+import com.avitam.fantasy11.repository.NodeRepository;
+import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.model.WebsiteSetting;
-import com.avitam.fantasy11.model.WebsiteSettingRepository;
+import com.avitam.fantasy11.repository.WebsiteSettingRepository;
 import com.avitam.fantasy11.core.service.NodeService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.mail.service.MailService;

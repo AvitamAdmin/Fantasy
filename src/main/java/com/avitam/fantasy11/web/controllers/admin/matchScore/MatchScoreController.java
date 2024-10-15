@@ -7,6 +7,8 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.MatchScoreForm;
 import com.avitam.fantasy11.form.TournamentForm;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.MatchScoreRepository;
+import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;

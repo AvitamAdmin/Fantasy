@@ -3,7 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.intface;
 import com.avitam.fantasy11.api.dto.NodeDto;
 import com.avitam.fantasy11.core.service.NodeService;
 import com.avitam.fantasy11.model.Node;
-import com.avitam.fantasy11.model.NodeRepository;
+import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

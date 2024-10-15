@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.MatchTypeDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MatchTypeService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MatchType;
-import com.avitam.fantasy11.model.MatchTypeRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.MatchTypeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class MatchTypeServiceImpl implements MatchTypeService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_MATCHTYPE="/admin/matchType";
 
@@ -38,12 +42,16 @@ public class MatchTypeServiceImpl implements MatchTypeService {
             matchType=matchTypeRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,matchType);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.MATCH_TYPE,request.getMatchType().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             matchType=request.getMatchType();
-            matchType.setCreator(coreService.getCurrentUser().getUsername());
-            matchType.setCreationTime(new Date());
-            matchTypeRepository.save(matchType);
         }
-        matchType.setLastModified(new Date());
+        baseService.populateCommonData(matchType);
+        matchTypeRepository.save(matchType);
         if (request.getRecordId()==null){
             matchType.setRecordId(String.valueOf(matchType.getId().getTimestamp()));
         }

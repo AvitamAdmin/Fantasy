@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public class SEODto extends CommonDto {
     private SEO seo;
 
     private List<SEO> seoList;
+
+    private MultipartFile image;
 }

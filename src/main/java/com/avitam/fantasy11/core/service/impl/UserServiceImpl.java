@@ -4,6 +4,9 @@ import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.RoleRepository;
+import com.avitam.fantasy11.repository.UserRepository;
+import com.avitam.fantasy11.repository.VerificationTokenRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,7 +23,6 @@ public class UserServiceImpl implements UserService {
     public static final String TOKEN_INVALID = "invalidToken";
     public static final String TOKEN_EXPIRED = "expired";
     public static final String TOKEN_VALID = "valid";
-
     public static final String ADMIN_USER="/admin/user";
 
     @Autowired
@@ -46,7 +48,6 @@ public class UserServiceImpl implements UserService {
         }
         else {
             user = request.getUser();
-            //user.setCreator(user.getEmail());
             user.setCreationTime(new Date());
             userRepository.save(user);
             }

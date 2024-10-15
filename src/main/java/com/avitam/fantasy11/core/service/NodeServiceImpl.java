@@ -1,7 +1,11 @@
 package com.avitam.fantasy11.core.service;
 
 import com.avitam.fantasy11.api.dto.NodeDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.NodeRepository;
+import com.avitam.fantasy11.repository.UserRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.modelmapper.ModelMapper;
@@ -24,6 +28,8 @@ public class NodeServiceImpl implements NodeService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     @Override
     public List<Node> getAllNodes() {
@@ -89,12 +95,16 @@ public class NodeServiceImpl implements NodeService {
             node=nodeRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,node);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.NODE,request.getNode().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             node=request.getNode();
-            node.setCreator(coreService.getCurrentUser().getUsername());
-            node.setCreationTime(new Date());
-            nodeRepository.save(node);
         }
-        node.setLastModified(new Date());
+       baseService.populateCommonData(node);
+        nodeRepository.save(node);
         if (request.getRecordId()==null){
             node.setRecordId(String.valueOf(node.getId().getTimestamp()));
         }

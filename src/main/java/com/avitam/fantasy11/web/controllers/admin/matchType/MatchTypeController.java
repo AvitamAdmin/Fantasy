@@ -3,7 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.matchType;
 import com.avitam.fantasy11.api.dto.MatchTypeDto;
 import com.avitam.fantasy11.api.service.MatchTypeService;
 import com.avitam.fantasy11.model.MatchType;
-import com.avitam.fantasy11.model.MatchTypeRepository;
+import com.avitam.fantasy11.repository.MatchTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

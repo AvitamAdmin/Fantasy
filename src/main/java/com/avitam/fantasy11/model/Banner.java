@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @Document("Banner")
 public class Banner extends BaseEntity{
-
     private String url;
     private String size;
     private Binary image;

@@ -3,19 +3,16 @@ package com.avitam.fantasy11.web.controllers.admin.withdrawalMethods;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
 import com.avitam.fantasy11.model.WithdrawalMethods;
-import com.avitam.fantasy11.model.WithdrawalMethodsRepository;
+import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/withdrawalMethods")
@@ -58,9 +55,9 @@ public class WithdrawalMethodsController extends BaseController {
         return withdrawalMethodsDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public WithdrawalMethodsDto handleEdit(@RequestBody WithdrawalMethodsDto request)  {
+    public WithdrawalMethodsDto handleEdit(@ModelAttribute WithdrawalMethodsDto request)  {
         return withdrawalMethodsService.handleEdit(request);
     }
 

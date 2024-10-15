@@ -3,11 +3,13 @@ package com.avitam.fantasy11.web.controllers.admin.advertise;
 import com.avitam.fantasy11.api.dto.BannerDto;
 import com.avitam.fantasy11.api.service.BannerService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,9 +55,9 @@ public class AdvertiseController extends BaseController {
         return bannerDto;
     }
 
-    @PostMapping("/edit")
-    public BannerDto handleEdit(@RequestBody BannerDto request) {
-
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public BannerDto handleEdit(@ModelAttribute BannerDto request) {
         return bannerService.handleEdit(request);
     }
 

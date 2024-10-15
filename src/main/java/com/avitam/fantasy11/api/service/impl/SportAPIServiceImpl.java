@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.SportAPIDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SportAPIService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.SportsApi;
-import com.avitam.fantasy11.model.SportsApiRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.SportsApiRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class SportAPIServiceImpl implements SportAPIService {
 
     @Autowired
     private CoreService coreService;
+
+    @Autowired
+    private BaseService baseService;
 
     public static final String ADMIN_SPORTAPI = "/admin/sportsApi";
 
@@ -50,12 +55,16 @@ public class SportAPIServiceImpl implements SportAPIService {
             modelMapper.map(requestData, sportsApi);
         }
         else {
+            if(baseService.validateIdentifier(EntityConstants.SPORTAPI,request.getSportAPI().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             sportsApi=request.getSportAPI();
-            sportsApi.setCreator(coreService.getCurrentUser().getUsername());
-            sportsApi.setCreationTime(new Date());
-            sportsApiRepository.save(sportsApi);
         }
-        sportsApi.setLastModified(new Date());
+        baseService.populateCommonData(sportsApi);
+        sportsApiRepository.save(sportsApi);
         if(request.getRecordId()==null){
             sportsApi.setRecordId(String.valueOf(sportsApi.getId().getTimestamp()));
         }

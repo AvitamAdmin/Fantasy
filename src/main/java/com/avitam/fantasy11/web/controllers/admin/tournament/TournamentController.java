@@ -3,7 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.tournament;
 import com.avitam.fantasy11.api.dto.TournamentDto;
 import com.avitam.fantasy11.api.service.TournamentService;
 import com.avitam.fantasy11.model.Tournament;
-import com.avitam.fantasy11.model.TournamentRepository;
+import com.avitam.fantasy11.repository.TournamentRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

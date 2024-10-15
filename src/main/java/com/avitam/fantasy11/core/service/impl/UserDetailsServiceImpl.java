@@ -2,7 +2,7 @@ package com.avitam.fantasy11.core.service.impl;
 
 
 import com.avitam.fantasy11.model.User;
-import com.avitam.fantasy11.model.UserRepository;
+import com.avitam.fantasy11.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

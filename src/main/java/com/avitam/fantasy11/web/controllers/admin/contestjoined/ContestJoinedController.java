@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.contestjoined;
 import com.avitam.fantasy11.api.dto.ContestJoinedDto;
 import com.avitam.fantasy11.api.service.ContestJoinedService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.ContestJoinedRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

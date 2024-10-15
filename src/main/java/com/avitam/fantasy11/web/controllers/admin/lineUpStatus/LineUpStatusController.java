@@ -3,7 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.lineUpStatus;
 import com.avitam.fantasy11.api.dto.LineUpStatusDto;
 import com.avitam.fantasy11.api.service.LineUpStatusService;
 import com.avitam.fantasy11.model.LineUpStatus;
-import com.avitam.fantasy11.model.LineUpStatusRepository;
+import com.avitam.fantasy11.repository.LineUpStatusRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -2,11 +2,13 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Team;
-import com.avitam.fantasy11.model.TeamRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.TeamRepository;
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class TeamServiceImpl implements TeamService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     public static final String ADMIN_TEAM = "/admin/team";
     @Override
@@ -54,21 +58,25 @@ public class TeamServiceImpl implements TeamService {
             modelMapper.map(requestData, team);
         }
         else {
+            if(baseService.validateIdentifier(EntityConstants.TEAM,request.getTeam().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             team = request.getTeam();
-            team.setCreator(coreService.getCurrentUser().getUsername());
-            team.setCreationTime(new Date());
-            teamRepository.save(team);
-            if (request.getLogo() != null && !request.getLogo().isEmpty()) {
-                try {
-                    team.setLogo(new Binary(request.getLogo().getBytes()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    teamDto.setMessage("Error processing image file");
-                    return teamDto;
-                }
+        }
+        if (request.getLogo() != null && !request.getLogo().isEmpty()) {
+            try {
+                team.setLogo(new Binary(request.getLogo().getBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                teamDto.setMessage("Error processing image file");
+                return teamDto;
             }
         }
-        team.setLastModified(new Date());
+        baseService.populateCommonData(team);
+        teamRepository.save(team);
         if(request.getRecordId()==null){
             team.setRecordId(String.valueOf(team.getId().getTimestamp()));
         }

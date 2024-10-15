@@ -5,7 +5,7 @@ import com.avitam.fantasy11.form.AddressForm;
 import com.avitam.fantasy11.form.GeneralForm;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.General;
-import com.avitam.fantasy11.model.GeneralRepository;
+import com.avitam.fantasy11.repository.GeneralRepository;
 import com.avitam.fantasy11.validation.AddressFormValidator;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;

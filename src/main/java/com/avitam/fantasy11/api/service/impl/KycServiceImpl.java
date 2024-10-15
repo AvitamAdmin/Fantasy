@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.KYCDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.KYC;
-import com.avitam.fantasy11.model.KYCRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.KYCRepository;
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class KycServiceImpl implements KycService {
     private CoreService coreService;
     @Autowired
     private KYCRepository kycRepository;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_KYC="/admin/kyc";
 
@@ -40,10 +44,13 @@ public class KycServiceImpl implements KycService {
             kyc=kycRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,kyc);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.KYC,request.getKyc().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             kyc=request.getKyc();
-            kyc.setCreator(coreService.getCurrentUser().getUsername());
-            kyc.setCreationTime(new Date());
-            kycRepository.save(kyc);
             if(request.getPanImage()!=null && !request.getPanImage().isEmpty()){
                 try{
                     kyc.setPanImage(new Binary(request.getPanImage().getBytes()));
@@ -54,7 +61,8 @@ public class KycServiceImpl implements KycService {
                 }
             }
         }
-        kyc.setLastModified(new Date());
+        baseService.populateCommonData(kyc);
+        kycRepository.save(kyc);
         if (request.getRecordId()==null){
             kyc.setRecordId(String.valueOf(kyc.getId().getTimestamp()));
         }

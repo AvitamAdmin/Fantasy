@@ -16,10 +16,11 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 
 @SpringBootApplication
-@EnableMongoRepositories("com.avitam.fantasy11.model")
+@EnableMongoRepositories("com.avitam.fantasy11.repository")
 @ComponentScan(
 		{
 				"com.avitam.fantasy11.tokenGeneration",
+				"com.avitam.fantasy11.repository",
 				"com.avitam.fantasy11.api",
 				"com.avitam.fantasy11.web.controllers",
 				"com.avitam.fantasy11.core",
@@ -27,7 +28,7 @@ import java.util.Locale;
 				"com.avitam.fantasy11.validation",
 				"com.avitam.fantasy11.mail",
 				"com.avitam.fantasy11.listener",
-				"com.avitam.fantasy11.model",
+				"com.avitam.fantasy11.model"
 		}
 )
 public class Fantasy11Application {

@@ -3,7 +3,7 @@ package com.avitam.fantasy11.api.service.impl;
 import com.avitam.fantasy11.api.dto.WebsiteSettingDto;
 import com.avitam.fantasy11.api.service.WebsiteSettingService;
 import com.avitam.fantasy11.model.WebsiteSetting;
-import com.avitam.fantasy11.model.WebsiteSettingRepository;
+import com.avitam.fantasy11.repository.WebsiteSettingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class WebsiteSettingServiceImpl implements WebsiteSettingService {

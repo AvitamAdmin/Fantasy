@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.mainContest;
 
 import com.avitam.fantasy11.model.MainContest;
-import com.avitam.fantasy11.model.MainContestRepository;
+import com.avitam.fantasy11.repository.MainContestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

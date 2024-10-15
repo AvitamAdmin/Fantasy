@@ -4,7 +4,7 @@ import com.avitam.fantasy11.api.dto.LanguageDto;
 import com.avitam.fantasy11.api.service.LanguageService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Language;
-import com.avitam.fantasy11.model.LanguageRepository;
+import com.avitam.fantasy11.repository.LanguageRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

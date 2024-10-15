@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public class WithdrawalMethodsDto extends CommonDto{
 
     private WithdrawalMethods withdrawalMethods;
     private List<WithdrawalMethods> WithdrawalMethodsList;
+    private MultipartFile logo;
 }

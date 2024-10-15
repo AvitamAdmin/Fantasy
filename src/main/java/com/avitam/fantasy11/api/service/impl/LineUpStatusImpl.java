@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.LineUpStatusService;
 import com.avitam.fantasy11.model.LineUpStatus;
-import com.avitam.fantasy11.model.LineUpStatusRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.LineUpStatusRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class LineUpStatusImpl implements LineUpStatusService {
 
     private static final String ADMIN_LINEUP_STATUS ="/admin/lineupStatus";
 
+    @Autowired
+    private BaseService baseService;
 
 
     @Override
@@ -40,12 +44,16 @@ public class LineUpStatusImpl implements LineUpStatusService {
             lineUpStatus = lineUpStatusRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData, lineUpStatus);
         } else {
+            if(baseService.validateIdentifier(EntityConstants.LINEUPSTATUS,request.getLineUpStatus().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             lineUpStatus = request.getLineUpStatus();
-            lineUpStatus.setCreator(coreService.getCurrentUser().getUsername());
-            lineUpStatus.setCreationTime(new java.util.Date());
-            lineUpStatusRepository.save(lineUpStatus);
         }
-        lineUpStatus.setLastModified(new java.util.Date());
+        baseService.populateCommonData(lineUpStatus);
+        lineUpStatusRepository.save(lineUpStatus);
         if (request.getRecordId() == null) {
             lineUpStatus.setRecordId(String.valueOf(lineUpStatus.getId().getTimestamp()));
         }

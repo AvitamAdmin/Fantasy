@@ -2,13 +2,15 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.WithdrawalDetails;
-import com.avitam.fantasy11.model.WithdrawalDetailsRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.WithdrawalDetailsRepository;
 import com.avitam.fantasy11.model.WithdrawalMethods;
-import com.avitam.fantasy11.model.WithdrawalMethodsRepository;
+import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class WithdrawalServiceDetailsImpl implements WithdrawalDetailsService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     public static final String ADMIN_WITHDRAWALDETAILS = "/admin/withdrawalDetails";
 
@@ -47,12 +51,16 @@ public class WithdrawalServiceDetailsImpl implements WithdrawalDetailsService {
             modelMapper.map(requestData, withdrawalDetails);
         }
         else {
+            if(baseService.validateIdentifier(EntityConstants.WITHDRAWAL_DETAILS,request.getWithdrawalDetails().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             withdrawalDetails=request.getWithdrawalDetails();
-            withdrawalDetails.setCreator(coreService.getCurrentUser().getUsername());
-            withdrawalDetails.setCreationTime(new Date());
-            withdrawalDetailsRepository.save(withdrawalDetails);
         }
-        withdrawalDetails.setLastModified(new Date());
+        baseService.populateCommonData(withdrawalDetails);
+        withdrawalDetailsRepository.save(withdrawalDetails);
         if(request.getRecordId()==null){
             withdrawalDetails.setRecordId(String.valueOf(withdrawalDetails.getId().getTimestamp()));
         }

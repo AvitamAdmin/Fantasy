@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.PlayerRoleDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PlayerRoleService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.PlayerRole;
-import com.avitam.fantasy11.model.PlayerRoleRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.PlayerRoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_PLAYERROLE="/admin/playerRole";
 
@@ -37,12 +41,16 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
             playerRole=playerRoleRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,playerRole);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.PLAYER_ROLE,request.getPlayerRole().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             playerRole=request.getPlayerRole();
-            playerRole.setCreator(coreService.getCurrentUser().getUsername());
-            playerRole.setCreationTime(new Date());
-            playerRoleRepository.save(playerRole);
         }
-        playerRole.setLastModified(new Date());
+        baseService.populateCommonData(playerRole);
+        playerRoleRepository.save(playerRole);
         if (request.getRecordId()==null){
             playerRole.setRecordId(String.valueOf(playerRole.getId().getTimestamp()));
         }

@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.MobileTokenDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MobileTokenService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MobileToken;
-import com.avitam.fantasy11.model.MobileTokenRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.MobileTokenRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class MobileTokenServiceImpl implements MobileTokenService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     private static final String ADMIN_MOBILETOKEN="/admin/mobileToken";
 
@@ -44,12 +48,16 @@ public class MobileTokenServiceImpl implements MobileTokenService {
             mobileToken=mobileTokenRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,mobileToken);
         }else{
+            if(baseService.validateIdentifier(EntityConstants.MOBILE_TOKEN,request.getMobileToken().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             mobileToken=request.getMobileToken();
-            mobileToken.setCreator(coreService.getCurrentUser().getName());
-            mobileToken.setCreationTime(new Date());
-            mobileTokenRepository.save(mobileToken);
         }
-        mobileToken.setLastModified(new Date());
+       baseService.populateCommonData(mobileToken);
+        mobileTokenRepository.save(mobileToken);
         if (request.getRecordId()==null){
             mobileToken.setRecordId(String.valueOf(mobileToken.getId().getTimestamp()));
         }

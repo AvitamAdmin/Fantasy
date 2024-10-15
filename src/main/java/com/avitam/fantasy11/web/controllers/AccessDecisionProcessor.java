@@ -3,7 +3,7 @@ package com.avitam.fantasy11.web.controllers;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.User;
-import com.avitam.fantasy11.model.UserRepository;
+import com.avitam.fantasy11.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;

@@ -2,11 +2,13 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.NotificationDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.NotificationService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Notification;
-import com.avitam.fantasy11.model.NotificationRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.NotificationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class NotificationServiceImpl implements NotificationService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BaseService baseService;
 
     public static final String ADMIN_NOTIFICATION = "/admin/notification";
 
@@ -40,12 +44,16 @@ public class NotificationServiceImpl implements NotificationService {
             modelMapper.map(requestData, notification);
         }
         else {
+            if(baseService.validateIdentifier(EntityConstants.ADDRESS,request.getNotification().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             notification=request.getNotification();
-            notification.setCreator(coreService.getCurrentUser().getUsername());
-            notification.setCreationTime(new Date());
-            notificationRepository.save(notification);
         }
-        notification.setLastModified(new Date());
+        baseService.populateCommonData(notification);
+        notificationRepository.save(notification);
         if(request.getRecordId()==null){
             notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
         }

@@ -4,12 +4,13 @@ import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.dto.SportTypeDto;
 import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.model.SportType;
-import com.avitam.fantasy11.model.SportTypeRepository;
+import com.avitam.fantasy11.repository.SportTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -55,9 +56,9 @@ public class SportsTypeController extends BaseController {
         return sportTypeDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public SportTypeDto handleEdit(@RequestBody SportTypeDto request){
+    public SportTypeDto handleEdit(@ModelAttribute SportTypeDto request){
 
         return sportTypeService.handleEdit(request);
     }

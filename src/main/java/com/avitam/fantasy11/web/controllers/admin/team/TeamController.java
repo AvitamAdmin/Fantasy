@@ -7,7 +7,7 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.form.TeamForm;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Team;
-import com.avitam.fantasy11.model.TeamRepository;
+import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.math3.analysis.solvers.BaseSecantSolver;
 import org.bson.types.Binary;

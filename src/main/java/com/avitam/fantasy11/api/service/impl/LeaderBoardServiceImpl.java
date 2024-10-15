@@ -1,10 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
+import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.LeaderBoardService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.LeaderBoard;
-import com.avitam.fantasy11.model.LeaderBoardRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.LeaderBoardRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,8 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     private ModelMapper modelMapper;
     @Autowired
     private CoreService coreService;
-
+    @Autowired
+    private BaseService baseService;
 
     @Override
     public LeaderBoard findByRecordId(String recordId) {
@@ -42,12 +45,16 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
             leaderBoard=leaderBoardRepository.findByRecordId(request.getRecordId());
             modelMapper.map(requestData,leaderBoard);
         }else {
+            if(baseService.validateIdentifier(EntityConstants.LEADER_BOARD,request.getLeaderBoard().getIdentifier())!=null)
+            {
+                request.setSuccess(false);
+                request.setMessage("Identifier already present");
+                return request;
+            }
             leaderBoard=request.getLeaderBoard();
-            leaderBoard.setCreator(coreService.getCurrentUser().getUsername());
-            leaderBoard.setCreationTime(new Date());
-            leaderBoardRepository.save(leaderBoard);
         }
-        leaderBoard.setLastModified(new Date());
+        baseService.populateCommonData(leaderBoard);
+        leaderBoardRepository.save(leaderBoard);
         if (request.getRecordId()==null){
             leaderBoard.setRecordId(String.valueOf(leaderBoard.getId().getTimestamp()));
         }

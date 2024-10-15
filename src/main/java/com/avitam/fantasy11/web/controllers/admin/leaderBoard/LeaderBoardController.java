@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.leaderBoard;
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.service.LeaderBoardService;
 import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.LeaderBoardRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
