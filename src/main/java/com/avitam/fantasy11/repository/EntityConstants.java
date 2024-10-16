@@ -37,4 +37,5 @@ public interface EntityConstants {
     String WITHDRAWAL_DETAILS = "WithdrawalDetails";
     String NODE = "Node";
     String LEADER_BOARD = "LeaderBoard";
+    String NOTIFICATION = "Notification";
 }
