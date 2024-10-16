@@ -66,6 +66,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void updateByRecordId(String recordId) {
         Notification notification=notificationRepository.findByRecordId(recordId);
-        //notificationOptional.ifPresent(notification -> notificationRepository.save(notification));
+        if(notification!=null)
+        {
+            notificationRepository.save(notification);
+        }
     }
 }
