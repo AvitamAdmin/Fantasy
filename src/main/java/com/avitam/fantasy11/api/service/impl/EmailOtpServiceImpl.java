@@ -45,6 +45,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
         User existingUser=userRepository.findByEmail(email);
 
         if(existingUser==null){
+            userDto.setSuccess(false);
             userDto.setMessage("user not found");
             return userDto;
         }
