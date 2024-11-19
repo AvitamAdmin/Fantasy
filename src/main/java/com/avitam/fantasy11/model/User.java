@@ -30,5 +30,7 @@ public class User extends BaseEntity{
     private Set<Role>roles;
     private String passwordConfirm;
     private String ResetPasswordToken;
+    private String emailOTP;
+    private String mobileOTP;
 
 }
