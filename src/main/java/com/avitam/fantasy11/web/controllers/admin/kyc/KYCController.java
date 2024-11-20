@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
-@Controller
+@RestController
 @RequestMapping("/admin/kyc")
 public class KYCController extends BaseController {
 
@@ -25,7 +25,6 @@ public class KYCController extends BaseController {
     private static final String ADMIN_KYC="/admin/kyc";
 
     @PostMapping
-    @ResponseBody
     public KYCDto getAllKYCs(@RequestBody KYCDto kycDto) {
         Pageable pageable= getPageable(kycDto.getPage(),kycDto.getSizePerPage(),kycDto.getSortDirection(),kycDto.getSortField());
         KYC kyc=kycDto.getKyc();
@@ -43,7 +42,6 @@ public class KYCController extends BaseController {
         kycDto.setKycList(kycRepository.findByStatusOrderByIdentifier(true));
         kycDto.setBaseUrl(ADMIN_KYC);
         return kycDto;
-
     }
     @PostMapping("/getedit")
     @ResponseBody
@@ -58,7 +56,6 @@ public class KYCController extends BaseController {
     @PostMapping(value="/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public KYCDto handleEdit(@ModelAttribute KYCDto request) {
-
         return kycService.handleEdit(request);
     }
 
