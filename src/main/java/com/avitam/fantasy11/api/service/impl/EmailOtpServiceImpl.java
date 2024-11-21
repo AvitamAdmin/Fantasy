@@ -133,6 +133,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                 // Save the email in the database if not present
                 User newUser = new User();
                 newUser.setEmail(email);
+                newUser.setStatus(true);
                 userRepository.save(newUser);
             }
 
