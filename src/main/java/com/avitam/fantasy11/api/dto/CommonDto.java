@@ -17,5 +17,8 @@ import lombok.ToString;
         private long totalRecords;
         private boolean success = true;
         private  String token;
+        private String email;
+        private String otp;
+        private String mobileNumber;
     }
 

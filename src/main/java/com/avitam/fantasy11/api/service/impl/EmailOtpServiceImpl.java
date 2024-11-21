@@ -63,6 +63,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
         otpExpirationMap.put(email, LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES));
 
         sendEmail(email, otp);
+        userDto.setOtp(otp);
         userDto.setMessage("Otp sent successfully");
         return userDto;
     }
@@ -139,19 +140,4 @@ public class EmailOtpServiceImpl implements EmailOTPService {
         return userDto;
     }
 
-    @Scheduled(fixedRate = 60000) // Runs every 60 seconds
-    public void clearExpiredOtps() {
-        LocalDateTime now = LocalDateTime.now();
-
-        otpExpirationMap.forEach((email, expirationTime) -> {
-            if (now.isAfter(expirationTime)) {
-                otpExpirationMap.remove(email);
-                User user = userRepository.findByEmail(email);
-                if (user != null) {
-                    user.setEmailOTP(null);
-                    userRepository.save(user);
-                }
-            }
-        });
-    }
 }
