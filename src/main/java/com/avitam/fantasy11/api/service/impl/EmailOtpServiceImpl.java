@@ -128,6 +128,14 @@ public class EmailOtpServiceImpl implements EmailOTPService {
             otpMap.remove(email);
             otpExpirationMap.remove(email);
 
+            User existingUser = userRepository.findByEmail(email);
+            if (existingUser == null) {
+                // Save the email in the database if not present
+                User newUser = new User();
+                newUser.setEmail(email);
+                userRepository.save(newUser);
+            }
+
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             userDto.setToken(jwtUtility.generateToken(userDetails));
             userDto.setSuccess(true);
