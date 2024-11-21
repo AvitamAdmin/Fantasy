@@ -41,6 +41,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    private final ConcurrentHashMap<String, String> otpMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
 
     private static final int OTP_LENGTH = 6;
@@ -49,25 +50,20 @@ public class EmailOtpServiceImpl implements EmailOTPService {
     @Override
     public UserDto sendOtp(UserDto userDto) throws MessagingException {
 
-        User user = userDto.getUser();
-        String email=user.getEmail();
-        User existingUser=userRepository.findByEmail(email);
+        String email = userDto.getEmail();
 
-        if(existingUser==null){
+        if (email == null || email.isEmpty()) {
             userDto.setSuccess(false);
-            userDto.setMessage("user not found");
+            userDto.setMessage("Email is required.");
             return userDto;
         }
 
         String otp = generateOtp();
-        existingUser.setEmailOTP(otp);
-        userRepository.save(existingUser);
-
+        otpMap.put(email, otp);
         otpExpirationMap.put(email, LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES));
 
         sendEmail(email, otp);
         userDto.setMessage("Otp sent successfully");
-        userDto.setUser(existingUser);
         return userDto;
     }
 
@@ -112,34 +108,34 @@ public class EmailOtpServiceImpl implements EmailOTPService {
 
     @Override
     public UserDto validateOtp(UserDto userDto) {
-        User user = userDto.getUser();
-        String email = user.getEmail();
-        String otp = user.getEmailOTP();
+        String email = userDto.getEmail();
+        String otp = userDto.getOtp();
 
-        User existingUser = userRepository.findByEmail(email);
-        if (existingUser == null || existingUser.getEmailOTP() == null) {
-            userDto.setMessage("Invalid email or OTP.");
+        if (email == null || otp == null || email.isEmpty() || otp.isEmpty()) {
+            userDto.setSuccess(false);
+            userDto.setMessage("Email and OTP are required.");
             return userDto;
         }
 
-        boolean isOtpValid = existingUser.getEmailOTP().equals(otp) &&
+        boolean isOtpValid = otpMap.containsKey(email) &&
+                otpMap.get(email).equals(otp) &&
                 otpExpirationMap.containsKey(email) &&
                 LocalDateTime.now().isBefore(otpExpirationMap.get(email));
 
         if (isOtpValid) {
-            // Clear OTP after successful validation
-            existingUser.setEmailOTP(null);
-            userRepository.save(existingUser);
+            // Remove OTP after successful validation
+            otpMap.remove(email);
             otpExpirationMap.remove(email);
+
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             userDto.setToken(jwtUtility.generateToken(userDetails));
-            userDto.setMessage("OTP validation successful.");
+            userDto.setSuccess(true);
+            userDto.setMessage("OTP validated successfully.");
         } else {
             userDto.setSuccess(false);
             userDto.setMessage("OTP is invalid or has expired.");
         }
 
-        userDto.setUser(existingUser);
         return userDto;
     }
 

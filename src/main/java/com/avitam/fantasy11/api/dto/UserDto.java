@@ -15,4 +15,6 @@ import java.util.List;
 public class UserDto extends CommonDto{
     private User user;
     private List<User> usersList;
+    private String email;
+    private String otp;
 }
