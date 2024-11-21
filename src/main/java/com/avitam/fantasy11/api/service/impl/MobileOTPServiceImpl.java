@@ -102,6 +102,14 @@ public class MobileOTPServiceImpl implements MobileOTPService {
             // Clear OTP after successful validation
             otpMap.remove(mobileNumber);
             otpExpirationMap.remove(mobileNumber);
+            User existingUser = userRepository.findByMobileNumber(mobileNumber);
+            if (existingUser == null) {
+                // Save the email in the database if not present
+                User newUser = new User();
+                newUser.setMobileNumber(mobileNumber);
+                newUser.setStatus(true);
+                userRepository.save(newUser);
+            }
             UserDetails userDetails = userDetailsService.loadUserByUsername(mobileNumber);
             userDto.setToken(jwtUtility.generateToken(userDetails));
             userDto.setSuccess(true);
