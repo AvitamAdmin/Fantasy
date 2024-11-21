@@ -11,7 +11,6 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -146,6 +145,32 @@ public class EmailOtpServiceImpl implements EmailOTPService {
             userDto.setMessage("OTP is invalid or has expired.");
         }
 
+        return userDto;
+    }
+
+    public UserDto saveUsername(UserDto userDto) {
+        String email = userDto.getEmail();
+        String username = userDto.getUserName();
+
+        if (email == null || email.isEmpty() || username == null || username.isEmpty()) {
+            userDto.setSuccess(false);
+            userDto.setMessage("Email and Username are required.");
+            return userDto;
+        }
+
+        User existingUser = userRepository.findByEmail(email);
+        if (existingUser == null) {
+            userDto.setSuccess(false);
+            userDto.setMessage("User not found. Please validate OTP first.");
+            return userDto;
+        }
+
+        existingUser.setUsername(username);
+        userRepository.save(existingUser);
+
+        userDto.setUser(existingUser);
+        userDto.setSuccess(true);
+        userDto.setMessage("Username saved successfully.");
         return userDto;
     }
 

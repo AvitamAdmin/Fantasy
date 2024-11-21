@@ -26,4 +26,9 @@ public class MobileOTPController {
 
         return mobileOTPService.validateOtp(userDto);
     }
+
+    @PostMapping("/save-username")
+    public UserDto saveUsername(@RequestBody  UserDto userDto){
+        return mobileOTPService.saveUsername(userDto);
+    }
 }

@@ -121,4 +121,32 @@ public class MobileOTPServiceImpl implements MobileOTPService {
 
         return userDto;
     }
+
+    @Override
+    public UserDto saveUsername(UserDto userDto){
+        String mobileNumber = userDto.getMobileNumber();
+        String username = userDto.getUserName();
+
+        if (mobileNumber == null || mobileNumber.isEmpty() || username == null || username.isEmpty()) {
+            userDto.setSuccess(false);
+            userDto.setMessage("Mobile number and Username are required.");
+            return userDto;
+        }
+
+        User existingUser = userRepository.findByMobileNumber(mobileNumber);
+        if (existingUser == null) {
+            userDto.setSuccess(false);
+            userDto.setMessage("User not found. Please validate OTP first.");
+            return userDto;
+        }
+
+        existingUser.setUsername(username);
+        userRepository.save(existingUser);
+
+        userDto.setUser(existingUser);
+        userDto.setSuccess(true);
+        userDto.setMessage("Username saved successfully.");
+        return userDto;
+    }
+
 }

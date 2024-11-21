@@ -20,5 +20,6 @@ import lombok.ToString;
         private String email;
         private String otp;
         private String mobileNumber;
+        private String userName;
     }
 

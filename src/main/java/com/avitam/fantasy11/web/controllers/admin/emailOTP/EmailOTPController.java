@@ -29,4 +29,9 @@ public class EmailOTPController {
     public UserDto validateOtp(@RequestBody UserDto userDto) {
         return emailOTPService.validateOtp(userDto);
     }
+
+    @PostMapping("/save-username")
+    public UserDto saveUsername(@RequestBody UserDto userDto) {
+        return emailOTPService.saveUsername(userDto);
+    }
 }
