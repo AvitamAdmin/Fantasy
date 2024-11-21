@@ -4,6 +4,7 @@ import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.UserRepository;
+import com.avitam.fantasy11.tokenGeneration.JWTUtility;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +34,12 @@ public class EmailOtpServiceImpl implements EmailOTPService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private JWTUtility jwtUtility;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
 
@@ -122,7 +131,8 @@ public class EmailOtpServiceImpl implements EmailOTPService {
             existingUser.setEmailOTP(null);
             userRepository.save(existingUser);
             otpExpirationMap.remove(email);
-
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            userDto.setToken(jwtUtility.generateToken(userDetails));
             userDto.setMessage("OTP validation successful.");
         } else {
             userDto.setSuccess(false);
