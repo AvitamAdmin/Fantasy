@@ -4,13 +4,15 @@ import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.UserRepository;
+import com.avitam.fantasy11.tokenGeneration.JWTUtility;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,13 @@ public class EmailOtpServiceImpl implements EmailOTPService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private JWTUtility jwtUtility;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    private final ConcurrentHashMap<String, String> otpMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
 
     private static final int OTP_LENGTH = 6;
@@ -40,25 +49,21 @@ public class EmailOtpServiceImpl implements EmailOTPService {
     @Override
     public UserDto sendOtp(UserDto userDto) throws MessagingException {
 
-        User user = userDto.getUser();
-        String email=user.getEmail();
-        User existingUser=userRepository.findByEmail(email);
+        String email = userDto.getEmail();
 
-        if(existingUser==null){
+        if (email == null || email.isEmpty()) {
             userDto.setSuccess(false);
-            userDto.setMessage("user not found");
+            userDto.setMessage("Email is required.");
             return userDto;
         }
 
         String otp = generateOtp();
-        existingUser.setEmailOTP(otp);
-        userRepository.save(existingUser);
-
+        otpMap.put(email, otp);
         otpExpirationMap.put(email, LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES));
 
         sendEmail(email, otp);
+        userDto.setOtp(otp);
         userDto.setMessage("Otp sent successfully");
-        userDto.setUser(existingUser);
         return userDto;
     }
 
@@ -103,49 +108,70 @@ public class EmailOtpServiceImpl implements EmailOTPService {
 
     @Override
     public UserDto validateOtp(UserDto userDto) {
-        User user = userDto.getUser();
-        String email = user.getEmail();
-        String otp = user.getEmailOTP();
+        String email = userDto.getEmail();
+        String otp = userDto.getOtp();
 
-        User existingUser = userRepository.findByEmail(email);
-        if (existingUser == null || existingUser.getEmailOTP() == null) {
-            userDto.setMessage("Invalid email or OTP.");
+        if (email == null || otp == null || email.isEmpty() || otp.isEmpty()) {
+            userDto.setSuccess(false);
+            userDto.setMessage("Email and OTP are required.");
             return userDto;
         }
 
-        boolean isOtpValid = existingUser.getEmailOTP().equals(otp) &&
+        boolean isOtpValid = otpMap.containsKey(email) &&
+                otpMap.get(email).equals(otp) &&
                 otpExpirationMap.containsKey(email) &&
                 LocalDateTime.now().isBefore(otpExpirationMap.get(email));
 
         if (isOtpValid) {
-            // Clear OTP after successful validation
-            existingUser.setEmailOTP(null);
-            userRepository.save(existingUser);
+            // Remove OTP after successful validation
+            otpMap.remove(email);
             otpExpirationMap.remove(email);
 
-            userDto.setMessage("OTP validation successful.");
+            User existingUser = userRepository.findByEmail(email);
+            if (existingUser == null) {
+                // Save the email in the database if not present
+                User newUser = new User();
+                newUser.setEmail(email);
+                newUser.setStatus(true);
+                userRepository.save(newUser);
+            }
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            userDto.setToken(jwtUtility.generateToken(userDetails));
+            userDto.setSuccess(true);
+            userDto.setMessage("OTP validated successfully.");
         } else {
             userDto.setSuccess(false);
             userDto.setMessage("OTP is invalid or has expired.");
         }
 
-        userDto.setUser(existingUser);
         return userDto;
     }
 
-    @Scheduled(fixedRate = 60000) // Runs every 60 seconds
-    public void clearExpiredOtps() {
-        LocalDateTime now = LocalDateTime.now();
+    public UserDto saveUsername(UserDto userDto) {
+        String email = userDto.getEmail();
+        String username = userDto.getUserName();
 
-        otpExpirationMap.forEach((email, expirationTime) -> {
-            if (now.isAfter(expirationTime)) {
-                otpExpirationMap.remove(email);
-                User user = userRepository.findByEmail(email);
-                if (user != null) {
-                    user.setEmailOTP(null);
-                    userRepository.save(user);
-                }
-            }
-        });
+        if (email == null || email.isEmpty() || username == null || username.isEmpty()) {
+            userDto.setSuccess(false);
+            userDto.setMessage("Email and Username are required.");
+            return userDto;
+        }
+
+        User existingUser = userRepository.findByEmail(email);
+        if (existingUser == null) {
+            userDto.setSuccess(false);
+            userDto.setMessage("User not found. Please validate OTP first.");
+            return userDto;
+        }
+
+        existingUser.setUsername(username);
+        userRepository.save(existingUser);
+
+        userDto.setUser(existingUser);
+        userDto.setSuccess(true);
+        userDto.setMessage("Username saved successfully.");
+        return userDto;
     }
+
 }

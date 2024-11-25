@@ -8,4 +8,6 @@ public interface EmailOTPService {
     public UserDto sendOtp(UserDto userDto) throws MessagingException;
 
     public UserDto validateOtp(UserDto userDto);
+
+    public UserDto saveUsername(UserDto userDto);
 }
