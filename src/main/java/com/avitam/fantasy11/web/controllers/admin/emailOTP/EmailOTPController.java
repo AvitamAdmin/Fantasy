@@ -4,6 +4,7 @@ import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
 import com.avitam.fantasy11.model.User;
 import jakarta.mail.MessagingException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/email")
 public class EmailOTPController {
 
+    @Autowired
+    private ModelMapper modelMapper;
     @Autowired
     private EmailOTPService emailOTPService;
 
@@ -30,8 +33,10 @@ public class EmailOTPController {
         return emailOTPService.validateOtp(userDto);
     }
 
-    @PostMapping("/save-username")
-    public UserDto saveUsername(@RequestBody UserDto userDto) {
+    @PostMapping("/saveUserName")
+    public UserDto saveUsername(@RequestBody User user) {
+        UserDto userDto = modelMapper.map(user, UserDto.class);
         return emailOTPService.saveUsername(userDto);
     }
+
 }

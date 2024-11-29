@@ -22,6 +22,7 @@ public class Matches extends BaseEntity{
     private boolean matchStatus;
     private String tournamentId;
     private String sportTypeId;
+    private String event;
     private String parentMainContestId;
     private String matchTypeId;
 }

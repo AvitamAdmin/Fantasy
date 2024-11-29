@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.MatchesDto;
+import com.avitam.fantasy11.api.dto.MatchesWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MatchesService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MatchesServiceImpl implements MatchesService {
@@ -49,51 +52,51 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public MatchesDto handleEdit(MatchesDto request) {
-        MatchesDto matchesDto = new MatchesDto();
-        Matches matches = null;
-        if(request.getRecordId()!=null){
-            Matches requestData = request.getMatches();
-            matches = matchesRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, matches);
+    public MatchesWsDto handleEdit(MatchesWsDto request) {
+        MatchesWsDto matcheswsDto = new MatchesWsDto();
+        Matches matches =new Matches();
+        List<MatchesDto> matchesDto = request.getMatchesDtoList();
+        List<Matches> matchesList = new ArrayList<>();
+        for(MatchesDto matchesDtos : matchesDto){
+           if(matchesDtos.getRecordId() != null){
+               matches = matchesRepository.findByRecordId(matchesDtos.getRecordId());
+               modelMapper.map(matchesDtos, matches);
+               matchesRepository.save(matches);
+           }else{
+               matches= modelMapper.map(matchesDtos, Matches.class);
+               matchesRepository.save(matches);
+           }
+           if(request.getRecordId()== null){
+               matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
+           }
+           matchesRepository.save(matches);
+            matchesList.add(matches);
+            request.setBaseUrl(ADMIN_MATCHES);
+
         }
-        else {
-            if(baseService.validateIdentifier(EntityConstants.MATCHES,request.getMatches().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
-            }
-            matches=request.getMatches();
-            eventStatus(matches,request);
-        }
-        baseService.populateCommonData(matches);
-        matchesRepository.save(matches);
-        if(request.getRecordId()==null){
-            matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
-        }
-        matchesRepository.save(matches);
-        matchesDto.setMatches(matches);
-        return matchesDto;
+        request.setMatchesDtoList(modelMapper.map(matchesList, List.class));
+        return request;
+
+
 
     }
 
-    public void eventStatus(Matches matches,MatchesDto request)
-    {
-        LocalDateTime startDateAndTime=LocalDateTime.parse(request.getMatches().getStartDateAndTime());
-        LocalDateTime endDateAndTime=LocalDateTime.parse(request.getMatches().getEndDateAndTime());
-        LocalDateTime currentDateAndTime=LocalDateTime.now();
-
-        if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isAfter(currentDateAndTime)){
-            matches.setEventStatus("Live");
-        }
-        else if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isBefore(currentDateAndTime))
-        {
-            matches.setEventStatus("Closed");
-        }
-        else if(startDateAndTime.isAfter(currentDateAndTime))
-        {
-            matches.setEventStatus("Upcoming");
-        }
+//    public void eventStatus(Matches matches,MatchesDto request)
+//    {
+//        LocalDateTime startDateAndTime=LocalDateTime.parse(request.getMatches().getStartDateAndTime());
+//        LocalDateTime endDateAndTime=LocalDateTime.parse(request.getMatches().getEndDateAndTime());
+//        LocalDateTime currentDateAndTime=LocalDateTime.now();
+//
+//        if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isAfter(currentDateAndTime)){
+//            matches.setEventStatus("Live");
+//        }
+//        else if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isBefore(currentDateAndTime))
+//        {
+//            matches.setEventStatus("Closed");
+//        }
+//        else if(startDateAndTime.isAfter(currentDateAndTime))
+//        {
+//            matches.setEventStatus("Upcoming");
+//        }
     }
-}
+
