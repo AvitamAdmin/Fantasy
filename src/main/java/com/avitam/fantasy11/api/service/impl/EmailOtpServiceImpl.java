@@ -150,7 +150,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
 
     public UserDto saveUsername(UserDto userDto) {
         String email = userDto.getEmail();
-        String username = userDto.getUserName();
+        String username = userDto.getUsername();
 
         if (email == null || email.isEmpty() || username == null || username.isEmpty()) {
             userDto.setSuccess(false);

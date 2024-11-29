@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.MatchesDto;
+import com.avitam.fantasy11.api.dto.MatchesWsDto;
 import com.avitam.fantasy11.model.Matches;
 
 
@@ -12,5 +13,5 @@ public interface MatchesService {
 
     public void updateByRecordId(String recordId);
 
-    MatchesDto handleEdit(MatchesDto request);
+    MatchesWsDto handleEdit(MatchesWsDto request);
 }

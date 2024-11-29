@@ -125,7 +125,7 @@ public class MobileOTPServiceImpl implements MobileOTPService {
     @Override
     public UserDto saveUsername(UserDto userDto){
         String mobileNumber = userDto.getMobileNumber();
-        String username = userDto.getUserName();
+        String username = userDto.getUsername();
 
         if (mobileNumber == null || mobileNumber.isEmpty() || username == null || username.isEmpty()) {
             userDto.setSuccess(false);
