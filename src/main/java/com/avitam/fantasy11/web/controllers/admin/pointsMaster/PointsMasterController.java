@@ -1,16 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.pointsMaster;
 
 import com.avitam.fantasy11.api.dto.PointsMasterDto;
+import com.avitam.fantasy11.api.dto.PointsMasterWsDto;
 import com.avitam.fantasy11.api.service.PointsMasterService;
 import com.avitam.fantasy11.model.PointsMaster;
 import com.avitam.fantasy11.repository.PointsMasterRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import jakarta.validation.constraints.Email;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/pointsMaster")
@@ -20,67 +26,72 @@ public class PointsMasterController extends BaseController {
     private PointsMasterRepository pointsMasterRepository;
     @Autowired
     private PointsMasterService pointsMasterService;
-    private static final String ADMIN_POINTSMASTER="/admin/pointsMaster";
+    @Autowired
+    private ModelMapper modelMapper;
+    private static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
 
     @PostMapping
     @ResponseBody
-    public PointsMasterDto getAll(@RequestBody PointsMasterDto pointsMasterDto) {
+    public PointsMasterWsDto getAll(@RequestBody PointsMasterWsDto pointsMasterWsDto) {
 
-        Pageable pageable=getPageable(pointsMasterDto.getPage(),pointsMasterDto.getSizePerPage(),pointsMasterDto.getSortDirection(),pointsMasterDto.getSortField());
-        PointsMaster pointsUpdate=pointsMasterDto.getPointsMaster();
-        Page<PointsMaster> page=isSearchActive(pointsUpdate) != null ? pointsMasterRepository.findAll(Example.of(pointsUpdate),pageable): pointsMasterRepository.findAll(pageable);
-        pointsMasterDto.setPointsMasterList(page.getContent());
-        pointsMasterDto.setTotalPages(page.getTotalPages());
-        pointsMasterDto.setTotalRecords(page.getTotalElements());
-        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
-        return pointsMasterDto;
+        Pageable pageable = getPageable(pointsMasterWsDto.getPage(), pointsMasterWsDto.getSizePerPage(), pointsMasterWsDto.getSortDirection(), pointsMasterWsDto.getSortField());
+        PointsMasterDto pointsMasterDto = CollectionUtils.isNotEmpty(pointsMasterWsDto.getPointsMasterDtos()) ? pointsMasterWsDto.getPointsMasterDtos().get(0) : new PointsMasterDto();
+        PointsMaster pointsUpdate = modelMapper.map(pointsMasterDto, PointsMaster.class);
+        Page<PointsMaster> page = isSearchActive(pointsUpdate) != null ? pointsMasterRepository.findAll(Example.of(pointsUpdate), pageable) : pointsMasterRepository.findAll(pageable);
+        pointsMasterWsDto.setPointsMasterDtos(modelMapper.map(page.getContent(), List.class));
+        pointsMasterWsDto.setTotalPages(page.getTotalPages());
+        pointsMasterWsDto.setTotalRecords(page.getTotalElements());
+        pointsMasterWsDto.setBaseUrl(ADMIN_POINTSMASTER);
+        return pointsMasterWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public PointsMasterDto getActivePointsMaster() {
-        PointsMasterDto pointsMasterDto=new PointsMasterDto();
-        pointsMasterDto.setPointsMasterList(pointsMasterRepository.findByStatusOrderByIdentifier(true));
-        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
-        return pointsMasterDto;
+    public PointsMasterWsDto getActivePointsMaster() {
+        PointsMasterWsDto pointsMasterWsDto = new PointsMasterWsDto();
+        pointsMasterWsDto.setBaseUrl(ADMIN_POINTSMASTER);
+        pointsMasterWsDto.setPointsMasterDtos(modelMapper.map(pointsMasterRepository.findByStatusOrderByIdentifier(true), List.class));
+        return pointsMasterWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public PointsMasterDto editPointsMaster(@RequestBody PointsMasterDto request) {
-        PointsMasterDto pointsMasterDto=new PointsMasterDto();
-        PointsMaster pointsMaster = pointsMasterRepository.findByRecordId(request.getRecordId());
-        pointsMasterDto.setPointsMaster(pointsMaster);
-        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
-        return pointsMasterDto;
+    public PointsMasterWsDto editPointsMaster(@RequestBody PointsMasterWsDto request) {
+        PointsMasterWsDto pointsMasterWsDto = new PointsMasterWsDto();
+        pointsMasterWsDto.setBaseUrl(ADMIN_POINTSMASTER);
+        PointsMaster pointsMaster = pointsMasterRepository.findByRecordId(request.getPointsMasterDtos().get(0).getRecordId());
+        if (pointsMaster != null) {
+            pointsMasterWsDto.setPointsMasterDtos(List.of(modelMapper.map(pointsMaster, PointsMasterDto.class)));
+        }
+        return pointsMasterWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public PointsMasterDto handleEdit(@RequestBody PointsMasterDto request) {
+    public PointsMasterWsDto handleEdit(@RequestBody PointsMasterWsDto request) {
         return pointsMasterService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public PointsMasterDto addPointsMaster() {
-        PointsMasterDto pointsMasterDto=new PointsMasterDto();
-        pointsMasterDto.setPointsMasterList(pointsMasterRepository.findByStatusOrderByIdentifier(true));
-        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
-        return pointsMasterDto;
+    public PointsMasterWsDto addPointsMaster() {
+        PointsMasterWsDto pointsMasterWsDto = new PointsMasterWsDto();
+        pointsMasterWsDto.setPointsMasterDtos(modelMapper.map(pointsMasterRepository.findByStatusOrderByIdentifier(true), List.class));
+        pointsMasterWsDto.setBaseUrl(ADMIN_POINTSMASTER);
+        return pointsMasterWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public PointsMasterDto delete(@RequestBody PointsMasterDto pointsMasterDto) {
-        for (String id : pointsMasterDto.getRecordId().split(",")) {
-            pointsMasterRepository.deleteByRecordId(id);
+    public PointsMasterWsDto delete(@RequestBody PointsMasterWsDto pointsMasterWsDto) {
+        for (PointsMasterDto pointsMasterDto : pointsMasterWsDto.getPointsMasterDtos()) {
+            pointsMasterRepository.deleteByRecordId(pointsMasterDto.getRecordId());
         }
-        pointsMasterDto.setMessage("Data deleted Successfully");
-        pointsMasterDto.setBaseUrl(ADMIN_POINTSMASTER);
-        return pointsMasterDto;
+        pointsMasterWsDto.setMessage("Data deleted Successfully");
+        pointsMasterWsDto.setBaseUrl(ADMIN_POINTSMASTER);
+        pointsMasterWsDto.setRedirectUrl("/admin/pointsMaster");
+        return pointsMasterWsDto;
     }
-
 
 
 }

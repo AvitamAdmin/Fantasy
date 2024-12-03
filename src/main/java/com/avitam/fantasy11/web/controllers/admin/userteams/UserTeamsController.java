@@ -2,11 +2,8 @@ package com.avitam.fantasy11.web.controllers.admin.userteams;
 
 import com.avitam.fantasy11.api.dto.UserTeamWsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
-import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.UserTeams;
-import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
@@ -35,8 +32,6 @@ public class UserTeamsController extends BaseController {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private UserTeamsService userTeamsService;
 
     public static final String ADMIN_USERTEAMS = "/admin/userTeams";
@@ -47,7 +42,7 @@ public class UserTeamsController extends BaseController {
 
         Pageable pageable = getPageable(userTeamWsDto.getPage(), userTeamWsDto.getSizePerPage(), userTeamWsDto.getSortDirection(), userTeamWsDto.getSortField());
         UserTeamsDto userTeamsDto= CollectionUtils.isNotEmpty(userTeamWsDto.getUserTeamsDtoList())?userTeamWsDto.getUserTeamsDtoList() .get(0) : new UserTeamsDto() ;
-        UserTeams userTeams = modelMapper.map(userTeamWsDto, UserTeams.class);
+        UserTeams userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
         Page<UserTeams> page = isSearchActive(userTeams)!=null? userTeamsRepository.findAll(Example.of(userTeams), pageable) : userTeamsRepository.findAll(pageable);
         userTeamWsDto.setUserTeamsDtoList(modelMapper.map(page.getContent(),List.class));
         userTeamWsDto.setTotalPages(page.getTotalPages());

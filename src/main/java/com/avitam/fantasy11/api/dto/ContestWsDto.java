@@ -11,5 +11,5 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ContestWsDto extends CommonWsDto{
-    private List<ContestDto> contestList;
+    private List<ContestDto> contestDtos;
 }

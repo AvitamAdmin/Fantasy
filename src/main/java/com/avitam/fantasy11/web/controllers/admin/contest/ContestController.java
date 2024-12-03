@@ -33,10 +33,10 @@ public class ContestController extends BaseController {
     @ResponseBody
     public ContestWsDto getAllContest(@RequestBody ContestWsDto contestwsDto) {
         Pageable pageable = getPageable(contestwsDto.getPage(), contestwsDto.getSizePerPage(), contestwsDto.getSortDirection(), contestwsDto.getSortField());
-        ContestDto contestDto = CollectionUtils.isNotEmpty(contestwsDto.getContestList()) ? contestwsDto.getContestList().get(0) : new ContestDto();
+        ContestDto contestDto = CollectionUtils.isNotEmpty(contestwsDto.getContestDtos()) ? contestwsDto.getContestDtos().get(0) : new ContestDto();
         Contest contest = modelMapper.map(contestDto, Contest.class);
         Page<Contest> page = isSearchActive(contest) != null ? contestRepository.findAll(Example.of(contest), pageable) : contestRepository.findAll(pageable);
-        contestwsDto.setContestList(modelMapper.map(page.getContent(), List.class));
+        contestwsDto.setContestDtos(modelMapper.map(page.getContent(), List.class));
         contestwsDto.setTotalPages(page.getTotalPages());
         contestwsDto.setTotalRecords(page.getTotalElements());
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
@@ -48,7 +48,7 @@ public class ContestController extends BaseController {
     public ContestWsDto getActiveContest(){
         ContestWsDto contestwsDto=new ContestWsDto();
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
-        contestwsDto.setContestList(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true),List.class));
+        contestwsDto.setContestDtos(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true),List.class));
         return contestwsDto;
     }
 
@@ -57,9 +57,9 @@ public class ContestController extends BaseController {
     public ContestWsDto editContest(@RequestBody ContestWsDto request) {
         ContestWsDto contestwsDto = new ContestWsDto();
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
-        Contest contest = contestRepository.findByRecordId(request.getContestList().get(0).getRecordId());
+        Contest contest = contestRepository.findByRecordId(request.getContestDtos().get(0).getRecordId());
         if( contest != null){
-            contestwsDto.setContestList(List.of(modelMapper.map(contest, ContestDto.class)));
+            contestwsDto.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
         }
         return contestwsDto;
     }
@@ -75,14 +75,14 @@ public class ContestController extends BaseController {
     @ResponseBody
     public ContestWsDto addContest() {
         ContestWsDto contestwsDto = new ContestWsDto();
-        contestwsDto.setContestList(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true), List.class));
+        contestwsDto.setContestDtos(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true), List.class));
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
         return contestwsDto;
     }
     @PostMapping("/delete")
     @ResponseBody
     public ContestWsDto deleteContest(@RequestBody ContestWsDto contestwsDto) {
-        for(ContestDto contestDto : contestwsDto.getContestList()){
+        for(ContestDto contestDto : contestwsDto.getContestDtos()){
             contestRepository.deleteByRecordId(contestDto.getRecordId());
         }
         contestwsDto.setMessage("Data deleted Successfully");

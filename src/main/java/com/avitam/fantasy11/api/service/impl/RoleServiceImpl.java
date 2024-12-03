@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.RoleDto;
+import com.avitam.fantasy11.api.dto.RoleWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.RoleService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -11,6 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class RoleServiceImpl implements RoleService {
     @Autowired
@@ -18,11 +22,10 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
 
     public static final String ADMIN_ROLE = "/admin/role";
+
     @Override
     public Role findByRecordId(String recordId) {
         return roleRepository.findByRecordId(recordId);
@@ -35,43 +38,45 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Role roleOptional=roleRepository.findByRecordId(recordId);
-        if(roleOptional!=null)
-        {
+        Role roleOptional = roleRepository.findByRecordId(recordId);
+        if (roleOptional != null) {
             roleRepository.save(roleOptional);
         }
 
     }
 
     @Override
-    public RoleDto handleEdit(RoleDto request) {
-        {
-            RoleDto roleDto = new RoleDto();
-            Role role=null;
-            if (request.getRecordId()!=null) {
-                Role requestData=request.getRole();
-                role=roleRepository.findByRecordId(request.getRecordId());
-                modelMapper.map(requestData,role);
-            }else {
-                if(baseService.validateIdentifier(EntityConstants.ROLE,request.getRole().getIdentifier())!=null)
-                {
+    public RoleWsDto handleEdit(RoleWsDto request) {
+
+        List<RoleDto> roleDtos = request.getRoleDtoList();
+        List<Role> roles = new ArrayList<>();
+        Role role = null;
+        for (RoleDto roleDto : roleDtos) {
+            if (roleDto.getRecordId() != null) {
+                Role requestData = modelMapper.map(roleDto, Role.class);
+                role = roleRepository.findByRecordId(request.getRecordId());
+                modelMapper.map(requestData, role);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.ROLE, role.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
-                role=request.getRole();
+                role = modelMapper.map(roleDto, Role.class);
             }
             baseService.populateCommonData(role);
             roleRepository.save(role);
-            if (request.getRecordId()==null){
+            if (request.getRecordId() == null) {
                 role.setRecordId(String.valueOf(role.getId().getTimestamp()));
             }
             roleRepository.save(role);
-            roleDto.setRole(role);
+            roles.add(role);
             roleDto.setBaseUrl(ADMIN_ROLE);
-            return roleDto;
         }
+        request.setRoleDtoList(modelMapper.map(roles, List.class));
+        return request;
+
 
     }
-    }
+}
 

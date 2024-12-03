@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.RoleDto;
+import com.avitam.fantasy11.api.dto.RoleWsDto;
 import com.avitam.fantasy11.model.Role;
 
 public interface RoleService {
@@ -11,5 +12,5 @@ public interface RoleService {
 
     void updateByRecordId(String recordId);
 
-    RoleDto handleEdit(RoleDto request);
+    RoleWsDto handleEdit(RoleWsDto request);
 }

@@ -15,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class SportTypeDto extends CommonDto{
-
-//    private SportType sportType;
-//    private List<SportType> sportTypeList;
-    private MultipartFile logo;
+    private Binary logo;
+    private MultipartFile image;
 }

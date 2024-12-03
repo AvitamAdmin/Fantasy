@@ -1,19 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.team;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
+import com.avitam.fantasy11.api.dto.TeamWsDto;
 import com.avitam.fantasy11.api.service.TeamService;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/team")
@@ -22,63 +25,68 @@ public class TeamController extends BaseController {
     private TeamRepository teamRepository;
     @Autowired
     private TeamService teamService;
+    @Autowired
+    private ModelMapper modelMapper;
     public static final String ADMIN_TEAM = "/admin/team";
 
     @PostMapping
     @ResponseBody
-    public TeamDto getAllTeams(@RequestBody TeamDto teamDto){
+    public TeamWsDto getAllTeams(@RequestBody TeamWsDto teamWsDto){
 
-        Pageable pageable=getPageable(teamDto.getPage(),teamDto.getSizePerPage(),teamDto.getSortDirection(),teamDto.getSortField());
-        Team team=teamDto.getTeam();
+        Pageable pageable=getPageable(teamWsDto.getPage(),teamWsDto.getSizePerPage(),teamWsDto.getSortDirection(),teamWsDto.getSortField());
+        TeamDto teamDto= CollectionUtils.isNotEmpty(teamWsDto.getTeamDtoList()) ? teamWsDto.getTeamDtoList().get(0) : new TeamDto();
+        Team team=modelMapper.map(teamDto,Team.class);
         Page<Team> page=isSearchActive(team)!=null ? teamRepository.findAll(Example.of(team),pageable) : teamRepository.findAll(pageable);
-        teamDto.setTeamList(page.getContent());
-        teamDto.setTotalPages(page.getTotalPages());
-        teamDto.setTotalRecords(page.getTotalElements());
-        teamDto.setBaseUrl(ADMIN_TEAM);
-        return teamDto;
+        teamWsDto.setTeamDtoList(modelMapper.map(page.getContent(), List.class));
+        teamWsDto.setTotalPages(page.getTotalPages());
+        teamWsDto.setTotalRecords(page.getTotalElements());
+        teamWsDto.setBaseUrl(ADMIN_TEAM);
+        return teamWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public TeamDto getActiveTeamList() {
-        TeamDto teamDto = new TeamDto();
-        teamDto.setTeamList(teamRepository.findByStatusOrderByIdentifier(true));
-        teamDto.setBaseUrl(ADMIN_TEAM);
-        return teamDto;
+    public TeamWsDto getActiveTeamList() {
+        TeamWsDto teamWsDto = new TeamWsDto();
+        teamWsDto.setTeamDtoList(modelMapper.map(teamRepository.findByStatusOrderByIdentifier(true),List.class));
+        teamWsDto.setBaseUrl(ADMIN_TEAM);
+        return teamWsDto;
     }
     @PostMapping("/getedit")
     @ResponseBody
-    public TeamDto editTeam(@RequestBody AddressDto request) {
-        TeamDto teamDto = new TeamDto();
+    public TeamWsDto editTeam(@RequestBody TeamWsDto request) {
+        TeamWsDto teamWsDto = new TeamWsDto();
         Team team = teamRepository.findByRecordId(request.getRecordId());
-        teamDto.setTeam(team);
-        teamDto.setBaseUrl(ADMIN_TEAM);
-        return teamDto;
+        if(team!=null){
+            teamWsDto.setTeamDtoList(List.of(modelMapper.map(team,TeamDto.class)));
+        }
+        teamWsDto.setBaseUrl(ADMIN_TEAM);
+        return teamWsDto;
     }
 
     @PostMapping(value="/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public TeamDto handleEdit(@ModelAttribute TeamDto request) {
+    public TeamWsDto handleEdit(@ModelAttribute TeamWsDto request) {
 
         return teamService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public TeamDto addTeam(Model model) {
-        TeamDto teamDto = new TeamDto();
-        teamDto.setTeamList(teamRepository.findByStatusOrderByIdentifier(true));
-        teamDto.setBaseUrl(ADMIN_TEAM);
-        return teamDto;
+    public TeamWsDto addTeam() {
+        TeamWsDto teamWsDto = new TeamWsDto();
+        teamWsDto.setTeamDtoList(modelMapper.map(teamRepository.findByStatusOrderByIdentifier(true),List.class));
+        teamWsDto.setBaseUrl(ADMIN_TEAM);
+        return teamWsDto;
     }
     @PostMapping("/delete")
     @ResponseBody
-    public TeamDto deleteTeam(@RequestBody TeamDto teamDto) {
-        for (String id : teamDto.getRecordId().split(",")) {
-            teamRepository.deleteByRecordId(id);
+    public TeamWsDto deleteTeam(@RequestBody TeamWsDto teamWsDto) {
+        for (TeamDto teamDto : teamWsDto.getTeamDtoList()) {
+            teamRepository.deleteByRecordId(teamDto.getRecordId());
         }
-        teamDto.setMessage("Data deleted successfully");
-        teamDto.setBaseUrl(ADMIN_TEAM);
-        return teamDto;
+        teamWsDto.setMessage("Data deleted successfully");
+        teamWsDto.setBaseUrl(ADMIN_TEAM);
+        return teamWsDto;
     }
 }

@@ -21,5 +21,6 @@ public class CommonWsDto extends PaginationDto{
     private String otp;
     private String mobileNumber;
     private String userName;
+    private String redirectUrl;
 }
 

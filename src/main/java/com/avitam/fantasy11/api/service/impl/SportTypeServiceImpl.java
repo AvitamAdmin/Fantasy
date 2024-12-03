@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.SportTypeDto;
+import com.avitam.fantasy11.api.dto.SportTypeWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SportTypeServiceImpl implements SportTypeService {
@@ -34,40 +37,44 @@ public class SportTypeServiceImpl implements SportTypeService {
     }
 
     @Override
-    public SportTypeDto handleEdit(SportTypeDto request) {
-        SportTypeDto sportTypeDto = new SportTypeDto();
+    public SportTypeWsDto handleEdit(SportTypeWsDto request) {
+        List<SportTypeDto> sportTypeDtos = request.getSportTypeDtoList();
+        List<SportType> sportTypeList = new ArrayList<>();
         SportType sportType = null;
-        if (request.getRecordId() != null) {
-            SportType requestData = request.getSportType();
-            sportType = sportTypeRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, sportType);
-        } else {
-            if (baseService.validateIdentifier(EntityConstants.SPORT_TYPE, request.getSportType().getIdentifier()) != null) {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
-            }
-            sportType = request.getSportType();
+        for (SportTypeDto sportTypeDto : sportTypeDtos) {
+            if (request.getRecordId() != null) {
+                SportType requestData = modelMapper.map(sportTypeDto, SportType.class);
+                sportType = sportTypeRepository.findByRecordId(request.getRecordId());
+                modelMapper.map(requestData, sportType);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.SPORT_TYPE, sportType.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    request.setMessage("Identifier already present");
+                    return request;
+                }
+                sportType = modelMapper.map(sportTypeDto, SportType.class);
 
-        }
-        if (request.getLogo() != null && !request.getLogo().isEmpty()) {
-            try {
-                sportType.setLogo(new Binary(request.getLogo().getBytes()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                sportTypeDto.setMessage("Error processing image file");
-                return sportTypeDto;
             }
+            if (sportTypeDto.getLogo() != null && !sportTypeDto.getImage().isEmpty()) {
+                try {
+                    sportType.setLogo(new Binary(sportTypeDto.getImage().getBytes()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    request.setMessage("Error processing image file");
+                    return request;
+                }
+            }
+            baseService.populateCommonData(sportType);
+            sportTypeRepository.save(sportType);
+            if (request.getRecordId() == null) {
+                sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
+            }
+            sportTypeRepository.save(sportType);
+            sportTypeList.add(sportType);
+            request.setBaseUrl(ADMIN_SPORTTYPE);
         }
-        baseService.populateCommonData(sportType);
-        sportTypeRepository.save(sportType);
-        if (request.getRecordId() == null) {
-            sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
-        }
-        sportTypeRepository.save(sportType);
-        sportTypeDto.setSportType(sportType);
-        sportTypeDto.setBaseUrl(ADMIN_SPORTTYPE);
-        return sportTypeDto;
+        request.setSportTypeDtoList(modelMapper.map(sportTypeList, List.class));
+        return request;
     }
 
     @Override

@@ -14,6 +14,33 @@ import java.util.List;
 @ToString
 public class PointsUpdateDto extends CommonDto{
 
-    private PointsUpdate pointsUpdate;
-    private List<PointsUpdate> pointsUpdateList;
+    private String matchId;
+
+    private String playerId;
+
+    private float battingPoints;
+
+    private float bowlingPoints;
+
+    private float fieldingPoints;
+
+    private float totalPoints;
+
+    private float economyPoints;
+
+    private float maidenPoints;
+
+    private float boundaryPoints;
+
+    private float strikeRatePoints;
+
+    private float centuryPoints;
+
+    private float batsmanScore;
+
+    private float bowlerWickets;
+
+    private float catches;
+
+    private float starting11;
 }

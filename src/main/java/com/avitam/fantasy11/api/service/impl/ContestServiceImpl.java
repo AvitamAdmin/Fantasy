@@ -41,7 +41,7 @@ public class ContestServiceImpl implements ContestService {
     public ContestWsDto handleEdit(ContestWsDto request) {
         ContestWsDto contestWsDto = new ContestWsDto();
         Contest contestData = null;
-        List<ContestDto> contestDtos = request.getContestList();
+        List<ContestDto> contestDtos = request.getContestDtos();
         List<Contest> contestList = new ArrayList<>();
         ContestDto contestDto = new ContestDto();
         for (ContestDto contestDto1 : contestDtos) {
@@ -56,10 +56,10 @@ public class ContestServiceImpl implements ContestService {
                     return request;
                 }
 
-                contestData = modelMapper.map(contestDto, Contest.class);
+                contestData = modelMapper.map(contestDto1, Contest.class);
             }
-            baseService.populateCommonData(contestData);
-            contestData.setCreator(coreService.getCurrentUser().getCreator());
+            //baseService.populateCommonData(contestData);
+            //contestData.setCreator(coreService.getCurrentUser().getCreator());
             contestRepository.save(contestData);
 
             contestData.setLastModified(new Date());
@@ -71,10 +71,8 @@ public class ContestServiceImpl implements ContestService {
             contestWsDto.setMessage("Contest was updated successfully");
             contestWsDto.setBaseUrl(ADMIN_CONTEST);
         }
-        contestWsDto.setContestList(modelMapper.map(contestList, List.class));
+        contestWsDto.setContestDtos(modelMapper.map(contestList, List.class));
         return contestWsDto;
-
-
     }
 
     @Override

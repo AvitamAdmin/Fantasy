@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.bson.types.Binary;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @ToString
 public class TeamDto extends CommonDto{
 
-    private Team team;
-    private List<Team> teamList;
-    private MultipartFile logo;
+    private String shortName;
+    private Binary logo;
+    private MultipartFile image;
 }

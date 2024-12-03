@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.TeamLineUpDto;
+import com.avitam.fantasy11.api.dto.TeamLineUpWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -11,6 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TeamLineUpServiceImpl implements TeamLineUpService {
 
@@ -18,8 +22,6 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
     private TeamLineupRepository teamLineupRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
     public static final String ADMIN_TEAMLINEUP = "/admin/teamLineup";
@@ -36,36 +38,41 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        TeamLineup teamLineupOptional=teamLineupRepository.findByRecordId(recordId);
-        //teamLineupOptional.ifPresent(teamLineup -> teamLineupRepository.save(teamLineup));
+        TeamLineup teamLineup = teamLineupRepository.findByRecordId(recordId);
+        if (teamLineup != null) {
+            teamLineupRepository.save(teamLineup);
+        }
     }
 
     @Override
-    public TeamLineUpDto handleEdit(TeamLineUpDto request) {
-        TeamLineUpDto teamLineUpDto = new TeamLineUpDto();
+    public TeamLineUpWsDto handleEdit(TeamLineUpWsDto request) {
+        List<TeamLineUpDto> teamLineUpDtos = request.getTeamLineUpDtoList();
+        List<TeamLineup> teamLineupList = new ArrayList<>();
         TeamLineup teamLineup = null;
-        if(request.getRecordId()!=null){
-            TeamLineup requestData = request.getTeamLineup();
-            teamLineup = teamLineupRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, teamLineup);
-        }
-        else{
-            if(baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP,request.getTeamLineup().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        for (TeamLineUpDto teamLineUpDto1 : teamLineUpDtos) {
+            if (request.getRecordId() != null) {
+                TeamLineup requestData = modelMapper.map(teamLineUpDto1, TeamLineup.class);
+                teamLineup = teamLineupRepository.findByRecordId(request.getRecordId());
+                modelMapper.map(requestData, teamLineup);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineup.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    request.setMessage("Identifier already present");
+                    return request;
+                }
+                teamLineup = modelMapper.map(teamLineUpDto1, TeamLineup.class);
             }
-            teamLineup = request.getTeamLineup();
+            baseService.populateCommonData(teamLineup);
+            teamLineupRepository.save(teamLineup);
+            if (request.getRecordId() == null) {
+                teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
+            }
+            teamLineupRepository.save(teamLineup);
+            teamLineupList.add(teamLineup);
+            request.setMessage("Data added Successfully");
+            request.setBaseUrl(ADMIN_TEAMLINEUP);
         }
-        baseService.populateCommonData(teamLineup);
-        teamLineupRepository.save(teamLineup);
-        if(request.getRecordId()==null){
-            teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
-        }
-        teamLineupRepository.save(teamLineup);
-        teamLineUpDto.setTeamLineup(teamLineup);
-        teamLineUpDto.setBaseUrl(ADMIN_TEAMLINEUP);
-        return teamLineUpDto;
+        request.setTeamLineUpDtoList(modelMapper.map(teamLineupList, List.class));
+        return request;
     }
 }

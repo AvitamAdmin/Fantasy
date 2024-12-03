@@ -11,5 +11,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class PointsMasterWsDto extends CommonWsDto{
-    private List<PointsMasterDto> pointsMasterDtoList;
+
+    private List<PointsMasterDto> pointsMasterDtos;
 }
