@@ -1,15 +1,23 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.LineUpStatusDto;
+import com.avitam.fantasy11.api.dto.LineUpStatusWsDto;
 import com.avitam.fantasy11.api.dto.MainContestDto;
+import com.avitam.fantasy11.api.dto.MainContestWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MainContestService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.LineUpStatus;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MainContestRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class MainContestServiceImpl implements MainContestService {
@@ -34,32 +42,41 @@ public class MainContestServiceImpl implements MainContestService {
     }
 
     @Override
-    public MainContestDto handleEdit(MainContestDto request) {
+    public MainContestWsDto handleEdit(MainContestWsDto request) {
+        MainContestWsDto mainContestWsDto = new MainContestWsDto();
+        MainContest mainContestData = null;
+        List<MainContestDto> mainContestDtos = request.getMainContestDtoList();
+        List<MainContest> mainContestList = new ArrayList<>();
         MainContestDto mainContestDto = new MainContestDto();
-        MainContest mainContest = null;
-        if (request.getRecordId() != null) {
-            MainContest requestData = request.getMainContest();
-            mainContest = mainContestRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, mainContest);
-        } else {
-            if(baseService.validateIdentifier(EntityConstants.MAINCONTEST,request.getMainContest().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        for (MainContestDto mainContestDto1 : mainContestDtos) {
+            if (mainContestDto1.getRecordId() != null) {
+                mainContestData = mainContestRepository.findByRecordId(mainContestDto1.getRecordId());
+                modelMapper.map(mainContestDto1, mainContestData);
+                mainContestRepository.save(mainContestData);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.KYC, mainContestDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    //request.setMessage("Identifier already present");
+                    return request;
+                }
+
+                mainContestData = modelMapper.map(mainContestDto, MainContest.class);
             }
-            mainContest = request.getMainContest();
+            mainContestRepository.save(mainContestData);
+            mainContestData.setLastModified(new Date());
+            if (mainContestData.getRecordId() == null) {
+                mainContestData.setRecordId(String.valueOf(mainContestData.getId().getTimestamp()));
+            }
+            mainContestRepository.save(mainContestData);
+            mainContestList.add(mainContestData);
+            mainContestWsDto.setMessage("Main Contest was updated successfully");
+            mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
+
         }
-        baseService.populateCommonData(mainContest);
-        mainContestRepository.save(mainContest);
-        if (request.getRecordId() == null) {
-            mainContest.setRecordId(String.valueOf(mainContest.getId().getTimestamp()));
-        }
-        mainContestRepository.save(mainContest);
-        mainContestDto.setMainContest(mainContest);
-        mainContestDto.setBaseUrl(ADMIN_MAINCONTEST);
-        return mainContestDto;
+        mainContestWsDto.setMainContestDtoList(modelMapper.map(mainContestList, List.class));
+        return mainContestWsDto;
     }
+
 
     @Override
     public void deleteByRecordId(String recordId) {

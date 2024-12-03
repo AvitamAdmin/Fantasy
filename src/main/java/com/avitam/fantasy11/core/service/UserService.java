@@ -36,4 +36,6 @@ public interface UserService {
 
     void updatePassword(User user, String password);
 
+
+    UserDto generateOtpForUser(String email);
 }

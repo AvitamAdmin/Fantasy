@@ -14,6 +14,13 @@ import java.util.List;
 @ToString
 public class LeaderBoardDto extends CommonDto{
 
-    private LeaderBoard leaderBoard;
-    private List<LeaderBoard> leaderBoardList;
+    private String userId;
+
+    private String tournamentId;
+
+    private int matchesPlayed;
+
+    private int rank;
+
+    private  double bonusAmount;
 }

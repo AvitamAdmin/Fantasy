@@ -14,6 +14,11 @@ import java.util.List;
 @ToString
 public class TeamLineUpDto extends CommonDto{
 
-    private TeamLineup teamLineup;
-    private List<TeamLineup> teamLineupList;
+//    private TeamLineup teamLineup;
+//    private List<TeamLineup> teamLineupList;
+    private String teamId;
+
+    private String playerId;
+
+    private int lineupStatus;
 }

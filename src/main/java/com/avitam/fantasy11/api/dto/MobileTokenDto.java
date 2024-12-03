@@ -15,5 +15,16 @@ import java.util.List;
 public class MobileTokenDto extends CommonDto{
 
     private MobileToken mobileToken;
+
+    private String otp;
+
     private List<MobileToken> mobileTokenList;
+
+    private String userName;
+
+
+
+
+
+
 }

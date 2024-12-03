@@ -10,6 +10,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class WithdrawalDetailsWsDto extends WithdrawalDetailsDto{
+public class WithdrawalDetailsWsDto extends CommonWsDto{
+
     private List<WithdrawalDetailsDto> withdrawalDetailsDtoList;
 }

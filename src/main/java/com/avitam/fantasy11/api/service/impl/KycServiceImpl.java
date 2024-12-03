@@ -1,18 +1,22 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.KYCDto;
+import com.avitam.fantasy11.api.dto.KYCWsDto;
+import com.avitam.fantasy11.api.dto.MatchTypeDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.KYC;
+import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.KYCRepository;
-import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class KycServiceImpl implements KycService {
@@ -34,41 +38,79 @@ public class KycServiceImpl implements KycService {
         return kycRepository.findByRecordId(recordId);
     }
 
+//    @Override
+//    public KYCDto handleEdit(KYCDto request) {
+//        KYCDto kycDto=new KYCDto();
+//        KYC kyc=null;
+//        if (request.getRecordId()!=null){
+//            KYC requestData= request.getKyc();
+//            kyc=kycRepository.findByRecordId(request.getRecordId());
+//            modelMapper.map(requestData,kyc);
+//        }else {
+//            if(baseService.validateIdentifier(EntityConstants.KYC,request.getKyc().getIdentifier())!=null)
+//            {
+//                request.setSuccess(false);
+//                request.setMessage("Identifier already present");
+//                return request;
+//            }
+//            kyc=request.getKyc();
+//            if(request.getPanImage()!=null && !request.getPanImage().isEmpty()){
+//                try{
+//                    kyc.setPanImage(new Binary(request.getPanImage().getBytes()));
+//                }catch(IOException e){
+//                    e.printStackTrace();
+//                    kycDto.setMessage("Error processing image file");
+//                    return kycDto;
+//                }
+//            }
+//        }
+//        baseService.populateCommonData(kyc);
+//        kycRepository.save(kyc);
+//        if (request.getRecordId()==null){
+//            kyc.setRecordId(String.valueOf(kyc.getId().getTimestamp()));
+//        }
+//        kycRepository.save(kyc);
+//        kycDto.setKyc(kyc);
+//        kycDto.setBaseUrl(ADMIN_KYC);
+//        return kycDto;
+//    }
+
+
     @Override
-    public KYCDto handleEdit(KYCDto request) {
-        KYCDto kycDto=new KYCDto();
-        KYC kyc=null;
-        if (request.getRecordId()!=null){
-            KYC requestData= request.getKyc();
-            kyc=kycRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData,kyc);
-        }else {
-            if(baseService.validateIdentifier(EntityConstants.KYC,request.getKyc().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
-            }
-            kyc=request.getKyc();
-            if(request.getPanImage()!=null && !request.getPanImage().isEmpty()){
-                try{
-                    kyc.setPanImage(new Binary(request.getPanImage().getBytes()));
-                }catch(IOException e){
-                    e.printStackTrace();
-                    kycDto.setMessage("Error processing image file");
-                    return kycDto;
+    public KYCWsDto handleEdit(KYCWsDto request) {
+        KYCWsDto kycWsDto = new KYCWsDto();
+        KYC kycData = null;
+        List<KYCDto> kycDtos = request.getKycDtoList();
+        List<KYC> kycList = new ArrayList<>();
+        KYCDto kycDto = new KYCDto();
+        for (KYCDto kycDto1 : kycDtos) {
+            if (kycDto1.getRecordId() != null) {
+                kycData = kycRepository.findByRecordId(kycDto1.getRecordId());
+                modelMapper.map(kycDto1, kycData);
+               kycRepository.save(kycData);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.KYC, kycDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    //request.setMessage("Identifier already present");
+                    return request;
                 }
+
+                kycData = modelMapper.map(kycDto, KYC.class);
             }
+//            baseService.populateCommonData(kycData);
+//            kycData.setCreator(coreService.getCurrentUser().getCreator());
+            kycRepository.save(kycData);
+            kycData.setLastModified(new Date());
+            if (kycData.getRecordId() == null) {
+                kycData.setRecordId(String.valueOf(kycData.getId().getTimestamp()));
+            }
+            kycRepository.save(kycData);
+            kycList.add(kycData);
+            kycWsDto.setMessage("MatchType was updated successfully");
+            kycWsDto.setBaseUrl(ADMIN_KYC);
         }
-        baseService.populateCommonData(kyc);
-        kycRepository.save(kyc);
-        if (request.getRecordId()==null){
-            kyc.setRecordId(String.valueOf(kyc.getId().getTimestamp()));
-        }
-        kycRepository.save(kyc);
-        kycDto.setKyc(kyc);
-        kycDto.setBaseUrl(ADMIN_KYC);
-        return kycDto;
+        kycWsDto.setKycDtoList(modelMapper.map(kycList, List.class));
+        return kycWsDto;
     }
 
     @Override
@@ -76,6 +118,12 @@ public class KycServiceImpl implements KycService {
 
         kycRepository.deleteByRecordId(recordId);
     }
+
+    @Override
+    public KYCDto handleEdit(KYCDto request) {
+        return null;
+    }
+
 
     @Override
     public void updateByRecordId(String recordId) {

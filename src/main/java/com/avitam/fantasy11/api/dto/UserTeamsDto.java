@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,6 +15,11 @@ import java.util.List;
 @ToString
 public class UserTeamsDto extends CommonDto{
 
-    private UserTeams userTeams;
-    private List<UserTeams> userTeamsList;
+//    private UserTeams userTeams;
+//    private List<UserTeams> userTeamsList;
+
+    private String userId;
+    private String matchId;
+    private Set<String> players;
+    private String teamName;
 }

@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
+import com.avitam.fantasy11.api.dto.LeaderBoardWsDto;
 import com.avitam.fantasy11.model.LeaderBoard;
 
 
@@ -9,7 +10,7 @@ public interface LeaderBoardService {
 
         void deleteByRecordId(String recordId);
 
-        LeaderBoardDto handleEdit(LeaderBoardDto request);
+        LeaderBoardWsDto handleEdit(LeaderBoardWsDto request);
 
        void updateByRecordId(String recordId);
 

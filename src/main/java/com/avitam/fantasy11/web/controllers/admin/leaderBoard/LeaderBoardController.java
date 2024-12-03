@@ -1,16 +1,23 @@
 package com.avitam.fantasy11.web.controllers.admin.leaderBoard;
 
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
+import com.avitam.fantasy11.api.dto.LeaderBoardWsDto;
+import com.avitam.fantasy11.api.dto.MatchScoreDto;
 import com.avitam.fantasy11.api.service.LeaderBoardService;
 import com.avitam.fantasy11.model.LeaderBoard;
+import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.repository.LeaderBoardRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/leaderBoard")
@@ -20,62 +27,67 @@ public class LeaderBoardController extends BaseController {
     private LeaderBoardRepository leaderBoardRepository;
     @Autowired
     private LeaderBoardService leaderBoardService;
+    @Autowired
+    ModelMapper modelMapper;
+
+
     private static final String ADMIN_LEADERBOARD="/admin/leaderBoard";
 
     @PostMapping
     @ResponseBody
-    public LeaderBoardDto getAllLeaderBoard(@RequestBody LeaderBoardDto leaderBoardDto){
-        Pageable pageable=getPageable(leaderBoardDto.getPage(),leaderBoardDto.getSizePerPage(),leaderBoardDto.getSortDirection(),leaderBoardDto.getSortField());
-        LeaderBoard leaderBoard=leaderBoardDto.getLeaderBoard();
+    public LeaderBoardWsDto getAllLeaderBoard(@RequestBody LeaderBoardWsDto leaderBoardWsDto){
+        Pageable pageable=getPageable(leaderBoardWsDto.getPage(),leaderBoardWsDto.getSizePerPage(),leaderBoardWsDto.getSortDirection(),leaderBoardWsDto.getSortField());
+        LeaderBoardDto leaderBoardDto= CollectionUtils.isNotEmpty(leaderBoardWsDto.getLeaderBoardDtoList())?leaderBoardWsDto.getLeaderBoardDtoList().get(0) : new LeaderBoardDto() ;
+        LeaderBoard leaderBoard = modelMapper.map(leaderBoardDto, LeaderBoard.class);
         Page<LeaderBoard>page=isSearchActive(leaderBoard)!=null ? leaderBoardRepository.findAll(Example.of(leaderBoard),pageable) : leaderBoardRepository.findAll(pageable);
-        leaderBoardDto.setLeaderBoardList(page.getContent());
-        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
-        leaderBoardDto.setTotalPages(page.getTotalPages());
-        leaderBoardDto.setTotalRecords(page.getTotalElements());
-        return leaderBoardDto;
+        leaderBoardWsDto.setLeaderBoardDtoList(modelMapper.map(page.getContent(), List.class));
+        leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
+        leaderBoardWsDto.setTotalPages(page.getTotalPages());
+        leaderBoardWsDto.setTotalRecords(page.getTotalElements());
+        return leaderBoardWsDto;
     }
     @GetMapping("/get")
     @ResponseBody
-    public LeaderBoardDto getActiveLeaderBoard(){
-        LeaderBoardDto leaderBoardDto=new LeaderBoardDto();
-        leaderBoardDto.setLeaderBoardList(leaderBoardRepository.findStatusOrderByIdentifier(true));
-        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
-        return leaderBoardDto;
+    public LeaderBoardWsDto getActiveLeaderBoard(){
+        LeaderBoardWsDto leaderBoardWsDto=new LeaderBoardWsDto();
+        leaderBoardWsDto.setLeaderBoardDtoList(modelMapper.map(leaderBoardRepository.findStatusOrderByIdentifier(true),List.class));
+        leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
+        return leaderBoardWsDto;
     }
     @PostMapping("/getedit")
     @ResponseBody
-    public LeaderBoardDto editLeaderBoard(@RequestBody LeaderBoardDto request) {
-        LeaderBoardDto leaderBoardDto=new LeaderBoardDto();
+    public LeaderBoardWsDto editLeaderBoard(@RequestBody LeaderBoardWsDto request) {
+        LeaderBoardWsDto leaderBoardWsDto=new LeaderBoardWsDto();
         LeaderBoard leaderBoard=leaderBoardRepository.findByRecordId(request.getRecordId());
-        leaderBoardDto.setLeaderBoard(leaderBoard);
-        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
-        return leaderBoardDto;
+        leaderBoardWsDto.setLeaderBoardDtoList((List<LeaderBoardDto>) leaderBoard);
+        leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
+        return leaderBoardWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public LeaderBoardDto handleEdit(@RequestBody LeaderBoardDto request) {
+    public LeaderBoardWsDto handleEdit(@RequestBody LeaderBoardWsDto request) {
 
         return leaderBoardService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public LeaderBoardDto addLeaderBoard() {
-        LeaderBoardDto leaderBoardDto = new LeaderBoardDto();
-        leaderBoardDto.setLeaderBoardList(leaderBoardRepository.findStatusOrderByIdentifier(true));
-        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
-        return leaderBoardDto;
+    public LeaderBoardWsDto addLeaderBoard() {
+        LeaderBoardWsDto leaderBoardWsDto = new LeaderBoardWsDto();
+        leaderBoardWsDto.setLeaderBoardDtoList(modelMapper.map(leaderBoardRepository.findStatusOrderByIdentifier(true),List.class));
+        leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
+        return leaderBoardWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public LeaderBoardDto deleteLeaderBoard(@RequestBody LeaderBoardDto leaderBoardDto) {
-        for (String id : leaderBoardDto.getRecordId().split(",")) {
+    public LeaderBoardWsDto deleteLeaderBoard(@RequestBody LeaderBoardWsDto leaderBoardWsDto) {
+        for (String id : leaderBoardWsDto.getRecordId().split(",")) {
               leaderBoardRepository.deleteByRecordId(id);
         }
-        leaderBoardDto.setMessage("Data deleted Successfully");
-        leaderBoardDto.setBaseUrl(ADMIN_LEADERBOARD);
-        return leaderBoardDto;
+        leaderBoardWsDto.setMessage("Data deleted Successfully");
+        leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
+        return leaderBoardWsDto;
     }
 }

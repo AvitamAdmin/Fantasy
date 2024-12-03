@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.bson.types.Binary;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @ToString
 public class SportTypeDto extends CommonDto{
 
-    private SportType sportType;
-    private List<SportType> sportTypeList;
+//    private SportType sportType;
+//    private List<SportType> sportTypeList;
     private MultipartFile logo;
 }

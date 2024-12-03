@@ -1,15 +1,22 @@
 package com.avitam.fantasy11.web.controllers.admin.lineUpStatus;
 
+import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.dto.LineUpStatusDto;
+import com.avitam.fantasy11.api.dto.LineUpStatusWsDto;
 import com.avitam.fantasy11.api.service.LineUpStatusService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.LineUpStatus;
 import com.avitam.fantasy11.repository.LineUpStatusRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/lineupStatus")
@@ -21,64 +28,68 @@ public class LineUpStatusController extends BaseController {
 
     @Autowired
     LineUpStatusService lineUpStatusService;
+    @Autowired
+    ModelMapper modelMapper;
 
     @PostMapping
     @ResponseBody
-    public LineUpStatusDto getAll(@RequestBody LineUpStatusDto lineUpStatusDto) {
-        Pageable pageable = getPageable(lineUpStatusDto.getPage(), lineUpStatusDto.getSizePerPage(), lineUpStatusDto.getSortDirection(), lineUpStatusDto.getSortField());
-        LineUpStatus lineUpStatus = lineUpStatusDto.getLineUpStatus();
+    public LineUpStatusWsDto getAll(@RequestBody LineUpStatusWsDto lineUpStatusWsDto) {
+        Pageable pageable = getPageable(lineUpStatusWsDto.getPage(), lineUpStatusWsDto.getSizePerPage(), lineUpStatusWsDto.getSortDirection(), lineUpStatusWsDto.getSortField());
+        LineUpStatusDto lineUpStatusDto= CollectionUtils.isNotEmpty(lineUpStatusWsDto.getLineUpStatusDtoList())?lineUpStatusWsDto.getLineUpStatusDtoList() .get(0) : new LineUpStatusDto() ;
+        LineUpStatus lineUpStatus = modelMapper.map(lineUpStatusDto, LineUpStatus.class);
         Page<LineUpStatus> page = isSearchActive(lineUpStatus) != null ? lineUpStatusRepository.findAll(org.springframework.data.domain.Example.of(lineUpStatus), pageable) : lineUpStatusRepository.findAll(pageable);
+        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(page.getContent(), List.class));
         lineUpStatusDto.setLineUpStatusList(page.getContent());
-        lineUpStatusDto.setTotalPages(page.getTotalPages());
-        lineUpStatusDto.setTotalRecords(page.getTotalElements());
-        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
-        return lineUpStatusDto;
+        lineUpStatusWsDto.setTotalPages(page.getTotalPages());
+        lineUpStatusWsDto.setTotalRecords(page.getTotalElements());
+        lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
+        return lineUpStatusWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public LineUpStatusDto getLineUpStatus() {
-        LineUpStatusDto lineUpStatusDto = new LineUpStatusDto();
-        lineUpStatusDto.setLineUpStatusList(lineUpStatusRepository.findByStatusOrderByIdentifier(true));
-        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
-        return lineUpStatusDto;
+    public LineUpStatusWsDto getLineUpStatus() {
+        LineUpStatusWsDto lineUpStatusWsDto = new LineUpStatusWsDto();
+        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(lineUpStatusRepository.findByStatusOrderByIdentifier(true),List.class));
+        lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
+        return lineUpStatusWsDto;
     }
 
 
     @PostMapping("/getedit")
     @ResponseBody
-    public LineUpStatusDto editLineupStatus(@RequestBody LineUpStatusDto request) {
-        LineUpStatusDto lineUpStatusDto = new LineUpStatusDto();
+    public LineUpStatusWsDto editLineupStatus(@RequestBody LineUpStatusWsDto request) {
+        LineUpStatusWsDto lineUpStatusWsDto = new LineUpStatusWsDto();
         LineUpStatus lineUpStatus = lineUpStatusRepository.findByRecordId(request.getRecordId());
-        lineUpStatusDto.setLineUpStatus(lineUpStatus);
-        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
-        return lineUpStatusDto;
+        lineUpStatusWsDto.setLineUpStatusDtoList((List<LineUpStatusDto>) lineUpStatus);
+        lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
+        return lineUpStatusWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public LineUpStatusDto handleEdit(@RequestBody LineUpStatusDto request) {
+    public LineUpStatusWsDto handleEdit(@RequestBody LineUpStatusWsDto request) {
         return lineUpStatusService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public LineUpStatusDto addLineUpStatus() {
-        LineUpStatusDto lineUpStatusDto = new LineUpStatusDto();
-        lineUpStatusDto.setLineUpStatusList(lineUpStatusRepository.findByStatusOrderByIdentifier(true));
-        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
-        return lineUpStatusDto;
+    public LineUpStatusWsDto addLineUpStatus() {
+        LineUpStatusWsDto lineUpStatusWsDto = new LineUpStatusWsDto();
+        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(lineUpStatusRepository.findByStatusOrderByIdentifier(true),List.class));
+        lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
+        return lineUpStatusWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public LineUpStatusDto deleteLineupStatus(@RequestBody LineUpStatusDto lineUpStatusDto) {
-        for (String id : lineUpStatusDto.getRecordId().split(",")) {
+    public LineUpStatusWsDto deleteLineupStatus(@RequestBody LineUpStatusWsDto lineUpStatusWSDto) {
+        for (String id : lineUpStatusWSDto.getRecordId().split(",")) {
             lineUpStatusRepository.deleteByRecordId(id);
         }
-        lineUpStatusDto.setMessage("Data deleted Successfully");
-        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
-        return lineUpStatusDto;
+        lineUpStatusWSDto.setMessage("Data deleted Successfully");
+        lineUpStatusWSDto.setBaseUrl(ADMIN_LINEUP_STATUS);
+        return lineUpStatusWSDto;
 
     }
 }

@@ -1,9 +1,13 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
+import com.avitam.fantasy11.api.dto.WithdrawalDetailsWsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
+import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
@@ -13,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
@@ -38,43 +45,45 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
         withdrawalMethodsRepository.deleteByRecordId(recordId);
     }
 
+
     @Override
-    public WithdrawalMethodsDto handleEdit(WithdrawalMethodsDto request) {
+    public WithdrawalMethodsWsDto handleEdit(WithdrawalMethodsWsDto request) {
+        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
+        WithdrawalMethods withdrawalMethodsData = null;
+        List<WithdrawalMethodsDto> withdrawalMethodsDtos = request.getWithdrawalMethodsDtoList();
+        List<WithdrawalMethods> withdrawalMethodsList = new ArrayList<>();
         WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
-        WithdrawalMethods withdrawalMethods = null;
-        if(request.getRecordId()!=null){
-            WithdrawalMethods requestData = request.getWithdrawalMethods();
-            withdrawalMethods = withdrawalMethodsRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, withdrawalMethods);
-        }
-        else {
-            if(baseService.validateIdentifier(EntityConstants.WITHDRAWAL_METHODS,request.getWithdrawalMethods().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        for (WithdrawalMethodsDto withdrawalMethodsDto1 : withdrawalMethodsDtos) {
+            if (withdrawalMethodsDto1.getRecordId() != null) {
+                withdrawalMethodsData = withdrawalMethodsRepository.findByRecordId(withdrawalMethodsDto1.getRecordId());
+                modelMapper.map(withdrawalMethodsDto1, withdrawalMethodsData);
+                withdrawalMethodsRepository.save(withdrawalMethodsData);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.KYC, withdrawalMethodsDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    request.setMessage("already present");
+                    return request;
+                }
+
+                withdrawalMethodsData = modelMapper.map( withdrawalMethodsDto,  WithdrawalMethods.class);
             }
-            withdrawalMethods=request.getWithdrawalMethods();
-        }
-        if(request.getLogo()!=null && !request.getLogo().isEmpty()) {
-            try {
-                withdrawalMethods.setLogo(new Binary(request.getLogo().getBytes()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                withdrawalMethodsDto.setMessage("Error processing image file");
-                return withdrawalMethodsDto;
+            withdrawalMethodsRepository.save(withdrawalMethodsData);
+            withdrawalMethodsData.setLastModified(new Date());
+            if (withdrawalMethodsData.getRecordId() == null) {
+                withdrawalMethodsData.setRecordId(String.valueOf(withdrawalMethodsData.getId().getTimestamp()));
             }
+            withdrawalMethodsRepository.save(withdrawalMethodsData);
+            withdrawalMethodsList.add(withdrawalMethodsData);
+            withdrawalMethodsWsDto.setMessage("Withdrawal Details was updated successfully");
+            withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+
         }
-        baseService.populateCommonData(withdrawalMethods);
-        withdrawalMethodsRepository.save(withdrawalMethods);
-        if(request.getRecordId()==null){
-            withdrawalMethods.setRecordId(String.valueOf(withdrawalMethods.getId().getTimestamp()));
-        }
-        withdrawalMethodsRepository.save(withdrawalMethods);
-        withdrawalMethodsDto.setWithdrawalMethods(withdrawalMethods);
-        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsDto;
+        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsList, List.class));
+        return withdrawalMethodsWsDto;
     }
+
+
+
 
     @Override
     public void updateByRecordId(String recordId) {

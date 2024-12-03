@@ -10,7 +10,7 @@ public interface AddressService {
 
     void deleteByRecordId(String recordId) ;
 
-    AddressWsDto handleEdit(AddressWsDto addressWsDto);
+    AddressWsDto handleEdit(AddressWsDto request);
 
     void updateByRecordId(String recordId);
 }

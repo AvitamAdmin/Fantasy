@@ -33,4 +33,5 @@ public class MatchesDto extends CommonDto{
     private List<String> matchTypeDtos;
     private List<String> sportTypeDtos;
     private List<String> tournamentDtos;
+
 }

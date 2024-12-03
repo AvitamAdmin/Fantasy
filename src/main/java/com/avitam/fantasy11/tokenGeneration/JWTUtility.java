@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 @Component
@@ -64,5 +65,16 @@ public class JWTUtility implements Serializable {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public static String generateOtp(int length) {
+        String numbers = "0123456789";
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            otp.append(numbers.charAt(random.nextInt(numbers.length())));
+        }
+        return otp.toString();
     }
 }
