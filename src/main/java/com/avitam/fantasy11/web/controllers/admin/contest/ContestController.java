@@ -1,16 +1,21 @@
 package com.avitam.fantasy11.web.controllers.admin.contest;
 
 import com.avitam.fantasy11.api.dto.ContestDto;
+import com.avitam.fantasy11.api.dto.ContestWsDto;
 import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.ContestRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/contest")
@@ -20,65 +25,68 @@ public class ContestController extends BaseController {
     private ContestRepository contestRepository;
     @Autowired
     private ContestService contestService;
+    @Autowired
+    private ModelMapper modelMapper;
     private static final String ADMIN_CONTEST="/admin/contest";
 
     @PostMapping
     @ResponseBody
-    public ContestDto getAllContest(@RequestBody ContestDto contestDto) {
-        Pageable pageable = getPageable(contestDto.getPage(),contestDto.getSizePerPage(),contestDto.getSortDirection(),contestDto.getSortField());
-        Contest contest=contestDto.getContest();
-        Page<Contest> page=isSearchActive(contest)!=null?contestRepository.findAll(Example.of(contest),pageable):contestRepository.findAll(pageable);
-        contestDto.setContestList(page.getContent());
-        contestDto.setBaseUrl(ADMIN_CONTEST);
-        contestDto.setTotalPages(page.getTotalPages());
-        contestDto.setTotalRecords(page.getTotalElements());
-        return contestDto;
+    public ContestWsDto getAllContest(@RequestBody ContestWsDto contestwsDto) {
+        Pageable pageable = getPageable(contestwsDto.getPage(), contestwsDto.getSizePerPage(), contestwsDto.getSortDirection(), contestwsDto.getSortField());
+        ContestDto contestDto = CollectionUtils.isNotEmpty(contestwsDto.getContestList()) ? contestwsDto.getContestList().get(0) : new ContestDto();
+        Contest contest = modelMapper.map(contestDto, Contest.class);
+        Page<Contest> page = isSearchActive(contest) != null ? contestRepository.findAll(Example.of(contest), pageable) : contestRepository.findAll(pageable);
+        contestwsDto.setContestList(modelMapper.map(page.getContent(), List.class));
+        contestwsDto.setTotalPages(page.getTotalPages());
+        contestwsDto.setTotalRecords(page.getTotalElements());
+        contestwsDto.setBaseUrl(ADMIN_CONTEST);
+        return contestwsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public ContestDto getActiveContest(){
-        ContestDto contestDto=new ContestDto();
-        contestDto.setContestList(contestRepository.findByStatusOrderByIdentifier(true));
-        contestDto.setBaseUrl(ADMIN_CONTEST);
-        return contestDto;
+    public ContestWsDto getActiveContest(){
+        ContestWsDto contestwsDto=new ContestWsDto();
+        contestwsDto.setBaseUrl(ADMIN_CONTEST);
+        contestwsDto.setContestList(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true),List.class));
+        return contestwsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public ContestDto editContest(@RequestBody ContestDto request) {
-        ContestDto contestDto = new ContestDto();
-        Contest contest = contestRepository.findByRecordId(request.getRecordId());
-        contestDto.setContest(contest);
-        contestDto.setBaseUrl(ADMIN_CONTEST);
-        return contestDto;
+    public ContestWsDto editContest(@RequestBody ContestWsDto request) {
+        ContestWsDto contestwsDto = new ContestWsDto();
+        contestwsDto.setBaseUrl(ADMIN_CONTEST);
+        Contest contest = contestRepository.findByRecordId(request.getContestList().get(0).getRecordId());
+        if( contest != null){
+            contestwsDto.setContestList(List.of(modelMapper.map(contest, ContestDto.class)));
+        }
+        return contestwsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public ContestDto handleEdit(@RequestBody ContestDto request) {
+    public ContestWsDto handleEdit(@RequestBody ContestWsDto request) {
 
         return contestService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public ContestDto addContest() {
-        ContestDto contestDto = new ContestDto();
-        contestDto.setContestList(contestRepository.findByStatusOrderByIdentifier(true));
-        contestDto.setBaseUrl(ADMIN_CONTEST);
-        return contestDto;
+    public ContestWsDto addContest() {
+        ContestWsDto contestwsDto = new ContestWsDto();
+        contestwsDto.setContestList(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true), List.class));
+        contestwsDto.setBaseUrl(ADMIN_CONTEST);
+        return contestwsDto;
     }
-
     @PostMapping("/delete")
     @ResponseBody
-    public ContestDto deleteContest(@RequestBody ContestDto contestDto) {
-
-        for (String id : contestDto.getRecordId().split(",")) {
-            contestRepository.deleteByRecordId(id);
+    public ContestWsDto deleteContest(@RequestBody ContestWsDto contestwsDto) {
+        for(ContestDto contestDto : contestwsDto.getContestList()){
+            contestRepository.deleteByRecordId(contestDto.getRecordId());
         }
-        contestDto.setMessage("Data deleted Successfully");
-        contestDto.setBaseUrl(ADMIN_CONTEST);
-        return contestDto;
+        contestwsDto.setMessage("Data deleted Successfully");
+        contestwsDto.setBaseUrl(ADMIN_CONTEST);
+        return contestwsDto;
     }
 }
