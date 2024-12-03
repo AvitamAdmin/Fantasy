@@ -1,10 +1,14 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.ExtensionDto;
+import com.avitam.fantasy11.api.dto.ExtensionWsDto;
+import com.avitam.fantasy11.api.dto.KYCDto;
+import com.avitam.fantasy11.api.dto.KYCWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ExtensionService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Extension;
+import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.ExtensionRepository;
 import org.bson.types.Binary;
@@ -13,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class ExtensionServiceImpl implements ExtensionService {
@@ -33,41 +40,41 @@ public class ExtensionServiceImpl implements ExtensionService {
         return extensionRepository.findByRecordId(recordId);
     }
 
+
     @Override
-    public ExtensionDto handleEdit(ExtensionDto request) {
+    public ExtensionWsDto handleEdit(ExtensionWsDto request) {
+        ExtensionWsDto extensionWsDto = new ExtensionWsDto();
+        Extension extensionData = null;
+        List<ExtensionDto> extensionDtos = request.getExtensionList();
+        List<Extension> extensionList = new ArrayList<>();
         ExtensionDto extensionDto = new ExtensionDto();
-        Extension extension = null;
-        if (request.getRecordId() != null) {
-            Extension requestData = request.getExtension();
-            extension = extensionRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, extension);
-        } else {
-            if(baseService.validateIdentifier(EntityConstants.EXTENSION,request.getExtension().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        for (ExtensionDto extensionDto1 : extensionDtos) {
+            if (extensionDto1.getRecordId() != null) {
+                extensionData = extensionRepository.findByRecordId(extensionDto1.getRecordId());
+                modelMapper.map(extensionDto1, extensionData);
+                extensionRepository.save(extensionData);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.KYC, extensionDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    //request.setMessage("Identifier already present");
+                    return request;
+                }
+
+                extensionData = modelMapper.map(extensionDto, Extension.class);
             }
-            extension = request.getExtension();
-        }
-        if(request.getImage()!=null && !request.getImage().isEmpty()) {
-            try {
-                extension.setImage(new Binary(request.getImage().getBytes()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                extensionDto.setMessage("Error processing image file");
-                return extensionDto;
+
+            extensionRepository.save(extensionData);
+            extensionData.setLastModified(new Date());
+            if (extensionData.getRecordId() == null) {
+                extensionData.setRecordId(String.valueOf(extensionData.getId().getTimestamp()));
             }
+            extensionRepository.save(extensionData);
+            extensionList.add(extensionData);
+            extensionWsDto.setMessage("Extension was updated successfully");
+            extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
         }
-        baseService.populateCommonData(extension);
-        extensionRepository.save(extension);
-        if (request.getRecordId() == null) {
-            extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
-        }
-        extensionRepository.save(extension);
-        extensionDto.setExtension(extension);
-        extensionDto.setBaseUrl(ADMIN_EXTENSION);
-        return extensionDto;
+        extensionWsDto.setExtensionList(modelMapper.map(extensionList, List.class));
+        return extensionWsDto;
     }
 
 

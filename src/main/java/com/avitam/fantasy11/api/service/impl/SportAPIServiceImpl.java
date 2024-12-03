@@ -1,15 +1,23 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.ExtensionDto;
+import com.avitam.fantasy11.api.dto.ExtensionWsDto;
 import com.avitam.fantasy11.api.dto.SportAPIDto;
+import com.avitam.fantasy11.api.dto.SportsAPIWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SportAPIService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.Extension;
 import com.avitam.fantasy11.model.SportsApi;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.SportsApiRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class SportAPIServiceImpl implements SportAPIService {
@@ -43,32 +51,38 @@ public class SportAPIServiceImpl implements SportAPIService {
 
     }
 
+
     @Override
-    public SportAPIDto handleEdit(SportAPIDto request) {
-        SportAPIDto sportAPIDto = new SportAPIDto();
-        SportsApi sportsApi = null;
-        if(request.getRecordId()!=null){
-            SportsApi requestData = request.getSportAPI();
-            sportsApi = sportsApiRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, sportsApi);
-        }
-        else {
-            if(baseService.validateIdentifier(EntityConstants.SPORTAPI,request.getSportAPI().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+    public SportsAPIWsDto handleEdit(SportsAPIWsDto request) {
+        SportsAPIWsDto sportsAPIWsDto = new SportsAPIWsDto();
+        SportsApi sportsAPIData = null;
+        List<SportAPIDto> sportsAPIDtos = request.getSportAPIDtoList();
+        List<SportsApi> sportsAPIList = new ArrayList<>();
+        SportAPIDto sportsAPIDto = new SportAPIDto();
+        for (SportAPIDto SportsAPIDto1 : sportsAPIDtos) {
+            if (SportsAPIDto1.getRecordId() != null) {
+                sportsAPIData = sportsApiRepository.findByRecordId(SportsAPIDto1.getRecordId());
+                modelMapper.map(SportsAPIDto1, sportsAPIData);
+                sportsApiRepository.save(sportsAPIData);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.KYC, SportsAPIDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    return request;
+                }
+
+                sportsAPIData = modelMapper.map(sportsAPIDto, SportsApi.class);
             }
-            sportsApi=request.getSportAPI();
+            sportsApiRepository.save(sportsAPIData);
+            sportsAPIData.setLastModified(new Date());
+            if (sportsAPIData.getRecordId() == null) {
+                sportsAPIData.setRecordId(String.valueOf(sportsAPIData.getId().getTimestamp()));
+            }
+            sportsApiRepository.save(sportsAPIData);
+            sportsAPIList.add(sportsAPIData);
+            sportsAPIWsDto.setMessage("Extension was updated successfully");
+            sportsAPIWsDto.setBaseUrl(ADMIN_SPORTAPI);
         }
-        baseService.populateCommonData(sportsApi);
-        sportsApiRepository.save(sportsApi);
-        if(request.getRecordId()==null){
-            sportsApi.setRecordId(String.valueOf(sportsApi.getId().getTimestamp()));
-        }
-        sportsApiRepository.save(sportsApi);
-        sportAPIDto.setSportAPI(sportsApi);
-        sportAPIDto.setBaseUrl(ADMIN_SPORTAPI);
-        return sportAPIDto;
-    }
-}
+        sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsAPIList, List.class));
+        return sportsAPIWsDto;
+    }}
+
