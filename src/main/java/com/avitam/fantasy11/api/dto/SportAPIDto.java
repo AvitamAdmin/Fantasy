@@ -14,6 +14,9 @@ import java.util.List;
 @ToString
 public class SportAPIDto extends CommonDto {
 
-    private SportsApi sportAPI;
-    private List<SportsApi> sportsApiList;
+//    private SportsApi sportAPI;
+//    private List<SportsApi> sportsApiList;
+
+    private String host;
+    private String key;
 }

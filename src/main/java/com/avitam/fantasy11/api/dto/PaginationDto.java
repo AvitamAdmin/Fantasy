@@ -7,15 +7,18 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.domain.Sort;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class PaginationDto {
+public class PaginationDto implements Serializable{
     private int page ;
     private int sizePerPage = 50;
     private Sort.Direction sortDirection = Sort.Direction.DESC;
     private String sortField = "identifier";
-    private int  totalPages;
+    private int totalPages;
     private long totalRecords;
+
 }

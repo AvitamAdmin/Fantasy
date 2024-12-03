@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.repository;
 
 import com.avitam.fantasy11.model.MobileToken;
+import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,5 @@ public interface MobileTokenRepository extends GenericImportRepository<MobileTok
 
     List<MobileToken> findByStatusOrderByIdentifier(boolean b);
 
+    MobileToken findByEmail(String email);
 }

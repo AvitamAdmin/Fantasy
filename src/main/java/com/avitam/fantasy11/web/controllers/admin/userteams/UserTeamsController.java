@@ -1,13 +1,17 @@
 package com.avitam.fantasy11.web.controllers.admin.userteams;
 
+import com.avitam.fantasy11.api.dto.UserTeamWsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
+import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.UserTeams;
+import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -39,26 +43,26 @@ public class UserTeamsController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public UserTeamsDto getAllUserTeams(UserTeamsDto userTeamsDto) {
+    public UserTeamWsDto getAllUserTeams(@RequestBody UserTeamWsDto userTeamWsDto) {
 
-        Pageable pageable = getPageable(userTeamsDto.getPage(), userTeamsDto.getSizePerPage(), userTeamsDto.getSortDirection(), userTeamsDto.getSortField());
-        UserTeams userTeams = userTeamsDto.getUserTeams();
+        Pageable pageable = getPageable(userTeamWsDto.getPage(), userTeamWsDto.getSizePerPage(), userTeamWsDto.getSortDirection(), userTeamWsDto.getSortField());
+        UserTeamsDto userTeamsDto= CollectionUtils.isNotEmpty(userTeamWsDto.getUserTeamsDtoList())?userTeamWsDto.getUserTeamsDtoList() .get(0) : new UserTeamsDto() ;
+        UserTeams userTeams = modelMapper.map(userTeamWsDto, UserTeams.class);
         Page<UserTeams> page = isSearchActive(userTeams)!=null? userTeamsRepository.findAll(Example.of(userTeams), pageable) : userTeamsRepository.findAll(pageable);
-        userTeamsDto.setUserTeamsList(page.getContent());
-        userTeamsDto.setTotalPages(page.getTotalPages());
-        userTeamsDto.setTotalRecords(page.getTotalElements());
-        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
-        return userTeamsDto;
+        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(page.getContent(),List.class));
+        userTeamWsDto.setTotalPages(page.getTotalPages());
+        userTeamWsDto.setTotalRecords(page.getTotalElements());
+        userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public UserTeamsDto getActiveUserTeams(){
-        UserTeamsDto userTeamsDto = new UserTeamsDto();
-        userTeamsDto.setUserTeamsList(userTeamsRepository.findByStatusOrderByIdentifier(true));
-        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
-
-        return userTeamsDto;
+    public UserTeamWsDto getActiveUserTeams(){
+        UserTeamWsDto userTeamWsDto = new UserTeamWsDto();
+        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(userTeamsRepository.findByStatusOrderByIdentifier(true),List.class));
+        userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamWsDto;
     }
 
     @GetMapping("/migrate")
@@ -74,40 +78,38 @@ public class UserTeamsController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public UserTeamsDto editUserTeams(@RequestBody UserTeamsDto request) {
+    public UserTeamWsDto editUserTeams(@RequestBody UserTeamWsDto request) {
 
-        UserTeamsDto userTeamsDto = new UserTeamsDto();
-        UserTeams userTeams = userTeamsRepository.findByRecordId(request.getRecordId());
-        userTeamsDto.setUserTeams(userTeams);
-        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
-        return userTeamsDto;
+        UserTeamWsDto userTeamWsDto = new UserTeamWsDto();
+        userTeamWsDto.setUserTeamsDtoList(modelMapper.map( userTeamsRepository.findByRecordId(request.getRecordId()),List.class));
+        userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public UserTeamsDto handleEdit(@RequestBody UserTeamsDto request) {
+    public UserTeamWsDto handleEdit(@RequestBody UserTeamWsDto request) {
         return userTeamsService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public UserTeamsDto addUserTeams() {
-        UserTeamsDto userTeamsDto = new UserTeamsDto();
-        userTeamsDto.setUserTeamsList(userTeamsRepository.findByStatusOrderByIdentifier(true));
-        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
-
-        return userTeamsDto;
+    public UserTeamWsDto addUserTeams() {
+        UserTeamWsDto userTeamWsDto = new UserTeamWsDto();
+        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(userTeamsRepository.findByStatusOrderByIdentifier(true),List.class));
+        userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public UserTeamsDto delete(@RequestBody UserTeamsDto userTeamsDto) {
-        for (String id : userTeamsDto.getRecordId().split(",")) {
+    public UserTeamWsDto delete(@RequestBody UserTeamWsDto userTeamWsDto) {
+        for (String id : userTeamWsDto.getRecordId().split(",")) {
             userTeamsRepository.deleteByRecordId(id);
         }
-        userTeamsDto.setMessage("Data deleted successfully");
-        userTeamsDto.setBaseUrl(ADMIN_USERTEAMS);
-        return userTeamsDto;
+        userTeamWsDto.setMessage("Data deleted successfully");
+        userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
+        return userTeamWsDto;
     }
 }
 

@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.MobileTokenDto;
+import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.model.MobileToken;
 
 
@@ -13,5 +14,7 @@ public interface MobileTokenService {
     MobileTokenDto handleEdit(MobileTokenDto request);
 
     void updateByRecordId(String recordId);
+
+    String generateOtpForUser(String email);
 
 }

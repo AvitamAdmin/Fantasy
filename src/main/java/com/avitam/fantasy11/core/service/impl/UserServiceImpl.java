@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.core.service.impl;
 
 import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.core.Utility;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.Role;
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
             modelMapper.map(request, user);
         }
         else {
-            user = request.getUser();
+            user = modelMapper.map(request.getUser(),User.class);
             user.setCreationTime(new Date());
             userRepository.save(user);
             }
@@ -172,4 +173,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public UserDto generateOtpForUser(String email) {
+        return null;
+    }
+
+
 }
+
+
+

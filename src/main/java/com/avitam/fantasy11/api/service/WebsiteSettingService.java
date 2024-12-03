@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.WebsiteSettingDto;
+import com.avitam.fantasy11.api.dto.WebsiteSettingsWsDto;
 import com.avitam.fantasy11.model.WebsiteSetting;
 
 public interface WebsiteSettingService {
@@ -9,7 +10,9 @@ public interface WebsiteSettingService {
 
     void deleteByRecordId(String recordId) ;
 
-    WebsiteSettingDto handleEdit(WebsiteSettingDto request);
+    //WebsiteSettingDto handleEdit(WebsiteSettingDto request);
+
+    WebsiteSettingsWsDto handleEdit(WebsiteSettingsWsDto request);
 
     void updateByRecordId(String recordId);
 }

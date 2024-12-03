@@ -14,7 +14,9 @@ import java.util.List;
 @ToString
 public class ExtensionDto extends CommonDto{
 
-    private Extension extension;
-    private List<Extension> ExtensionList;
+//    private Extension extension;
+//    private List<Extension> ExtensionList;
+
+    private String extendStatus;
     private MultipartFile image;
 }

@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
+import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 
 public interface WithdrawalMethodsService {
@@ -9,7 +10,7 @@ public interface WithdrawalMethodsService {
 
     void deleteByRecordId(String recordId) ;
 
-    WithdrawalMethodsDto handleEdit(WithdrawalMethodsDto request);
+    WithdrawalMethodsWsDto handleEdit(WithdrawalMethodsWsDto request);
 
     void updateByRecordId(String recordId);
 }

@@ -1,10 +1,15 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.api.dto.ExtensionDto;
+import com.avitam.fantasy11.api.dto.ExtensionWsDto;
+import com.avitam.fantasy11.api.dto.SportTypeDto;
 import com.avitam.fantasy11.api.service.ExtensionService;
 import com.avitam.fantasy11.model.Extension;
+import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.repository.ExtensionRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -12,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/extension")
@@ -21,67 +28,69 @@ public class ExtensionController extends BaseController {
     private ExtensionRepository extensionRepository;
     @Autowired
     private ExtensionService extensionService;
+    @Autowired
+    ModelMapper modelMapper;
 
     private static final String ADMIN_EXTENSION = "/admin/extension";
 
     @PostMapping
     @ResponseBody
-    public ExtensionDto getAllExtension(@RequestBody ExtensionDto extensionDto) {
-        Pageable pageable = getPageable(extensionDto.getPage(), extensionDto.getSizePerPage(), extensionDto.getSortDirection(), extensionDto.getSortField());
-        Extension extension = extensionDto.getExtension();
+    public ExtensionWsDto getAllExtension(@RequestBody ExtensionWsDto extensionWsDto) {
+        Pageable pageable = getPageable(extensionWsDto.getPage(), extensionWsDto.getSizePerPage(), extensionWsDto.getSortDirection(), extensionWsDto.getSortField());
+        ExtensionDto extensionDto = CollectionUtils.isNotEmpty(extensionWsDto.getExtensionList()) ? extensionWsDto.getExtensionList() .get(0):new ExtensionDto();
+        Extension extension =modelMapper.map(extensionWsDto,Extension.class);
         Page<Extension> page = isSearchActive(extension) != null ? extensionRepository.findAll(Example.of(extension), pageable) : extensionRepository.findAll(pageable);
-        extensionDto.setExtensionList(page.getContent());
-        extensionDto.setTotalPages(page.getTotalPages());
-        extensionDto.setTotalRecords(page.getTotalElements());
-        extensionDto.setBaseUrl(ADMIN_EXTENSION);
-        return extensionDto;
+        extensionWsDto.setExtensionList(modelMapper.map(page.getContent(), List.class));
+        extensionWsDto.setTotalPages(page.getTotalPages());
+        extensionWsDto.setTotalRecords(page.getTotalElements());
+        extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionWsDto;
 
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public ExtensionDto getExtension() {
-        ExtensionDto extensionDto = new ExtensionDto();
-        extensionDto.setExtensionList(extensionRepository.findByStatusOrderByIdentifier(true));
-        extensionDto.setBaseUrl(ADMIN_EXTENSION);
-        return extensionDto;
+    public ExtensionWsDto getExtension() {
+        ExtensionWsDto extensionWsDto = new ExtensionWsDto();
+        extensionWsDto.setExtensionList(modelMapper.map(extensionRepository.findByStatusOrderByIdentifier(true),List.class));
+        extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public ExtensionDto editExtension(@RequestBody ExtensionDto request) {
-        ExtensionDto extensionDto = new ExtensionDto();
-        Extension extension = extensionRepository.findByRecordId(request.getRecordId());
-        extensionDto.setExtension(extension);
-        extensionDto.setBaseUrl(ADMIN_EXTENSION);
-        return extensionDto;
+    public ExtensionWsDto editExtension(@RequestBody ExtensionWsDto request) {
+        ExtensionWsDto extensionWsDto = new ExtensionWsDto();
+        extensionWsDto.setExtensionList(modelMapper.map(extensionRepository.findByRecordId(request.getRecordId()),List.class));
+        extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionWsDto;
     }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public ExtensionDto handleEdit(@ModelAttribute ExtensionDto request) {
+    public ExtensionWsDto handleEdit(@ModelAttribute ExtensionWsDto request) {
         return extensionService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public ExtensionDto addExtension() {
-        ExtensionDto extensionDto = new ExtensionDto();
-        extensionDto.setExtensionList(extensionRepository.findByStatusOrderByIdentifier(true));
-        extensionDto.setBaseUrl(ADMIN_EXTENSION);
-        return extensionDto;
+    public ExtensionWsDto addExtension() {
+        ExtensionWsDto extensionWsDto = new ExtensionWsDto();
+        extensionWsDto.setExtensionList(modelMapper.map(extensionRepository.findByStatusOrderByIdentifier(true),List.class));
+        extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionWsDto;
     }
 
 
     @PostMapping("/delete")
     @ResponseBody
-    public ExtensionDto deleteExtension(@RequestBody ExtensionDto extensionDto) {
+    public ExtensionWsDto deleteExtension(@RequestBody ExtensionWsDto extensionWsDto) {
 
-        for (String id : extensionDto.getRecordId().split(",")) {
+        for (String id : extensionWsDto.getRecordId().split(",")) {
             extensionRepository.deleteByRecordId(id);
         }
-        extensionDto.setMessage("Data deleted Successfully");
-        extensionDto.setBaseUrl(ADMIN_EXTENSION);
-        return extensionDto;
+        extensionWsDto.setMessage("Data deleted Successfully");
+        extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
+        return extensionWsDto;
     }
 }

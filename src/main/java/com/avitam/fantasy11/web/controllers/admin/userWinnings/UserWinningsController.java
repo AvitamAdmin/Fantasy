@@ -1,14 +1,18 @@
 package com.avitam.fantasy11.web.controllers.admin.userWinnings;
 
+import com.avitam.fantasy11.api.dto.MainContestDto;
 import com.avitam.fantasy11.api.dto.UserWinningsDto;
+import com.avitam.fantasy11.api.dto.UserWinningsWsDto;
 import com.avitam.fantasy11.api.service.UserWinningsService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.repository.UserWinningsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -16,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -41,64 +47,62 @@ public class UserWinningsController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public UserWinningsDto getAll(UserWinningsDto userWinningsDto){
+    public UserWinningsWsDto getAll(@RequestBody UserWinningsWsDto userWinningsWsDto){
 
-        Pageable pageable = getPageable(userWinningsDto.getPage(), userWinningsDto.getSizePerPage(), userWinningsDto.getSortDirection(), userWinningsDto.getSortField());
-        UserWinnings userWinnings = userWinningsDto.getUserWinnings();
+        Pageable pageable = getPageable(userWinningsWsDto.getPage(), userWinningsWsDto.getSizePerPage(), userWinningsWsDto.getSortDirection(), userWinningsWsDto.getSortField());
+        UserWinningsDto userWinningsDto= CollectionUtils.isNotEmpty(userWinningsWsDto.getUserWinningsDtoList())?userWinningsWsDto.getUserWinningsDtoList() .get(0) : new UserWinningsDto() ;
+        UserWinnings  userWinnings = modelMapper.map(userWinningsWsDto, UserWinnings.class);
         Page<UserWinnings> page = isSearchActive(userWinnings)!=null ? userWinningsRepository.findAll(Example.of(userWinnings),pageable) : userWinningsRepository.findAll(pageable);
-        userWinningsDto.setUserWinningsList(page.getContent());
-        userWinningsDto.setTotalPages(page.getTotalPages());
-        userWinningsDto.setTotalRecords(page.getTotalElements());
-        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
-        return userWinningsDto;
+        userWinningsWsDto.setUserWinningsDtoList(modelMapper.map(page.getContent(),List.class));
+        userWinningsWsDto.setTotalPages(page.getTotalPages());
+        userWinningsWsDto.setTotalRecords(page.getTotalElements());
+        userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public UserWinningsDto getActiveUserWinnings(){
-        UserWinningsDto userWinningsDto = new UserWinningsDto();
-        userWinningsDto.setUserWinningsList(userWinningsRepository.findByStatusOrderByIdentifier(true));
-        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
-        return userWinningsDto;
+    public UserWinningsWsDto getActiveUserWinnings(){
+        UserWinningsWsDto userWinningsWsDto = new UserWinningsWsDto();
+        userWinningsWsDto.setUserWinningsDtoList(modelMapper.map(userWinningsRepository.findByStatusOrderByIdentifier(true), List.class));
+        userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public UserWinningsDto editUserWinnings(@RequestBody UserWinningsDto request){
-
-        UserWinningsDto userWinningsDto = new UserWinningsDto();
+    public UserWinningsWsDto editUserWinnings(@RequestBody UserWinningsWsDto request){
+        UserWinningsWsDto userWinningsWsDto = new UserWinningsWsDto();
         UserWinnings userWinnings = userWinningsRepository.findByRecordId(request.getRecordId());
-        userWinningsDto.setUserWinnings(userWinnings);
-        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
-
-        return userWinningsDto;
+        userWinningsWsDto.setUserWinningsDtoList((List<UserWinningsDto>) userWinnings);
+        userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public UserWinningsDto handleEdit(@RequestBody UserWinningsDto request) {
+    public UserWinningsWsDto handleEdit(@RequestBody UserWinningsWsDto request) {
 
         return userWinningsService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public UserWinningsDto addUserWinnings() {
-        UserWinningsDto userWinningsDto = new UserWinningsDto();
-        userWinningsDto.setUserWinningsList(userWinningsRepository.findByStatusOrderByIdentifier(true));
-        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
-
-        return userWinningsDto;
+    public UserWinningsWsDto addUserWinnings() {
+        UserWinningsWsDto userWinningsWsDto = new UserWinningsWsDto();
+        userWinningsWsDto.setUserWinningsDtoList(modelMapper.map(userWinningsRepository.findByStatusOrderByIdentifier(true),List.class));
+        userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public UserWinningsDto deleteUserWinnings(@RequestBody UserWinningsDto userWinningsDto) {
-        for (String id : userWinningsDto.getRecordId().split(",")) {
+    public UserWinningsWsDto deleteUserWinnings(@RequestBody UserWinningsWsDto userWinningsWsDto) {
+        for (String id : userWinningsWsDto.getRecordId().split(",")) {
             userWinningsRepository.deleteByRecordId(id);
         }
-        userWinningsDto.setMessage("Data deleted successfully");
-        userWinningsDto.setBaseUrl(ADMIN_USERWINNINGS);
-        return userWinningsDto;
+        userWinningsWsDto.setMessage("Data deleted successfully");
+        userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
+        return userWinningsWsDto;
     }
    }

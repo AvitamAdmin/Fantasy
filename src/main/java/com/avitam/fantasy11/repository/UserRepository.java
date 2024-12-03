@@ -2,6 +2,7 @@ package com.avitam.fantasy11.repository;
 
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,8 +22,9 @@ public interface UserRepository extends GenericImportRepository<User> {
 
     void deleteByRecordId(String recordId);
 
-
     User findByMobileNumber(String mobileNumber);
 
     List<User> findByStatusOrderByIdentifier(boolean b);
+
+
 }

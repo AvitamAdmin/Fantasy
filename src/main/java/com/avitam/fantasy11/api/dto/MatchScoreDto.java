@@ -14,6 +14,14 @@ import java.util.List;
 @ToString
 public class MatchScoreDto extends CommonDto{
 
-    private MatchScore matchScore;
-    private List<MatchScore> matchScoreList;
+//    private MatchScore matchScore;
+//    private List<MatchScore> matchScoreList;
+private String matchId;
+
+    private int team1Score;
+
+    private int team2Score;
+
+    private float overs;
+
 }

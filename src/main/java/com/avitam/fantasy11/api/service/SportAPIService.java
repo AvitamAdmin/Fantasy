@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.SportAPIDto;
+import com.avitam.fantasy11.api.dto.SportsAPIWsDto;
 import com.avitam.fantasy11.model.SportsApi;
 
 public interface SportAPIService {
@@ -11,5 +12,5 @@ public interface SportAPIService {
 
     public void updateByRecordId(String recordId);
 
-    public SportAPIDto handleEdit(SportAPIDto request);
+    public SportsAPIWsDto handleEdit(SportsAPIWsDto request);
 }

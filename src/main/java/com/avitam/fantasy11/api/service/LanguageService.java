@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.LanguageDto;
+import com.avitam.fantasy11.api.dto.LanguageWsDto;
 import com.avitam.fantasy11.model.Language;
 
 
@@ -12,5 +13,5 @@ public interface LanguageService {
 
     public void updateByRecordId(String recordId);
 
-    public LanguageDto handleEdit(LanguageDto request);
+    public LanguageWsDto handleEdit(LanguageWsDto request);
 }

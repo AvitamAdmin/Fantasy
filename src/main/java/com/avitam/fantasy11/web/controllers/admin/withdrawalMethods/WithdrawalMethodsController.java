@@ -1,10 +1,15 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalMethods;
 
+import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
+import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
+import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -13,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/withdrawalMethods")
 public class WithdrawalMethodsController extends BaseController {
@@ -20,63 +27,66 @@ public class WithdrawalMethodsController extends BaseController {
     private WithdrawalMethodsRepository withdrawalMethodsRepository;
     @Autowired
     private WithdrawalMethodsService withdrawalMethodsService;
+    @Autowired
+    ModelMapper modelMapper;
 
     public static final String ADMIN_WITHDRAWALMETHODS = "/admin/withdrawalMethods";
 
     @PostMapping
     @ResponseBody
-    public WithdrawalMethodsDto getAll(@RequestBody WithdrawalMethodsDto withdrawalMethodsDto){
-        Pageable pageable = getPageable(withdrawalMethodsDto.getPage(), withdrawalMethodsDto.getSizePerPage(), withdrawalMethodsDto.getSortDirection(), withdrawalMethodsDto.getSortField());
-        WithdrawalMethods withdrawalMethods = withdrawalMethodsDto.getWithdrawalMethods();
+    public WithdrawalMethodsWsDto getAll(@RequestBody WithdrawalMethodsWsDto withdrawalMethodsWsDto){
+        Pageable pageable = getPageable(withdrawalMethodsWsDto.getPage(), withdrawalMethodsWsDto.getSizePerPage(), withdrawalMethodsWsDto.getSortDirection(), withdrawalMethodsWsDto.getSortField());
+        WithdrawalMethodsDto withdrawalMethodsDto= CollectionUtils.isNotEmpty(withdrawalMethodsWsDto.getWithdrawalMethodsDtoList())?withdrawalMethodsWsDto.getWithdrawalMethodsDtoList() .get(0) : new WithdrawalMethodsDto() ;
+        WithdrawalMethods withdrawalMethods = modelMapper.map(withdrawalMethodsWsDto, WithdrawalMethods.class);
         Page<WithdrawalMethods> page = isSearchActive(withdrawalMethods)!=null ? withdrawalMethodsRepository.findAll(Example.of(withdrawalMethods), pageable) : withdrawalMethodsRepository.findAll(pageable);
-        withdrawalMethodsDto.setWithdrawalMethodsList(page.getContent());
-        withdrawalMethodsDto.setTotalPages(page.getTotalPages());
-        withdrawalMethodsDto.setTotalRecords(page.getTotalElements());
-        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsDto;
+        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(page.getContent(),List.class));
+        withdrawalMethodsWsDto.setTotalPages(page.getTotalPages());
+        withdrawalMethodsWsDto.setTotalRecords(page.getTotalElements());
+        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public WithdrawalMethodsDto getActiveWithdrawalMethods(){
-        WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
-        withdrawalMethodsDto.setWithdrawalMethodsList(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true));
-        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsDto;
+    public WithdrawalMethodsWsDto getActiveWithdrawalMethods(){
+        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
+        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true), List.class));
+        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsWsDto;
     }
     @PostMapping("/getedit")
     @ResponseBody
-    public WithdrawalMethodsDto editWithdrawalMethods (@RequestBody WithdrawalMethodsDto request){
-
-        WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
-        withdrawalMethodsDto.setWithdrawalMethods(withdrawalMethodsRepository.findByRecordId(request.getRecordId()));
-        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsDto;
+    public WithdrawalMethodsWsDto editWithdrawalMethods (@RequestBody WithdrawalMethodsWsDto request){
+        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
+        WithdrawalMethods withdrawalMethods= withdrawalMethodsRepository.findByRecordId(request.getRecordId());
+        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList((List<WithdrawalMethodsDto>) withdrawalMethods);
+        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsWsDto;
     }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public WithdrawalMethodsDto handleEdit(@ModelAttribute WithdrawalMethodsDto request)  {
+    public WithdrawalMethodsWsDto handleEdit(@ModelAttribute WithdrawalMethodsWsDto request)  {
         return withdrawalMethodsService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public WithdrawalMethodsDto addWithdrawalMethods() {
+    public WithdrawalMethodsWsDto addWithdrawalMethods() {
 
-        WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
-        withdrawalMethodsDto.setWithdrawalMethodsList(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true));
-        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsDto;
+        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
+        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true),List.class));
+        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsWsDto;
     }
     @PostMapping("/delete")
     @ResponseBody
-    public WithdrawalMethodsDto deleteWithdrawalMethods(@RequestBody WithdrawalMethodsDto withdrawalMethodsDto) {
-        for (String id : withdrawalMethodsDto.getRecordId().split(",")) {
+    public WithdrawalMethodsWsDto deleteWithdrawalMethods(@RequestBody WithdrawalMethodsWsDto withdrawalMethodsWsDto) {
+        for (String id : withdrawalMethodsWsDto.getRecordId().split(",")) {
             withdrawalMethodsRepository.deleteByRecordId(id);
         }
-        withdrawalMethodsDto.setMessage("Data deleted successfully");
-        withdrawalMethodsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsDto;
+        withdrawalMethodsWsDto.setMessage("Data deleted successfully");
+        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsWsDto;
     }
 }

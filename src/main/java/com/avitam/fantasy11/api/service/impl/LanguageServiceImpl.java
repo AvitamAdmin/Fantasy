@@ -1,9 +1,13 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.KYCDto;
+import com.avitam.fantasy11.api.dto.KYCWsDto;
 import com.avitam.fantasy11.api.dto.LanguageDto;
+import com.avitam.fantasy11.api.dto.LanguageWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.LanguageService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.LanguageRepository;
@@ -11,6 +15,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class LanguageServiceImpl implements LanguageService {
@@ -49,32 +57,41 @@ public class LanguageServiceImpl implements LanguageService {
 
     }
 
-    @Override
-    public LanguageDto handleEdit(@RequestBody LanguageDto request) {
-        LanguageDto languageDto = new LanguageDto();
-        Language language = null;
-        if(request.getRecordId()!=null){
-            Language requestData = request.getLanguage();
-            language = languageRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, language);
-        }
-        else {
-            if(baseService.validateIdentifier(EntityConstants.LANGUAGE,request.getLanguage().getIdentifier())!=null)
-            {
+
+@Override
+public LanguageWsDto handleEdit(LanguageWsDto request) {
+    LanguageWsDto languageWsDto = new LanguageWsDto();
+    Language languageData = null;
+    List<LanguageDto> languageDtos = request.getLanguageDtoList();
+    List<Language> languageList = new ArrayList<>();
+    LanguageDto languageDto = new LanguageDto();
+    for (LanguageDto languageDto1 : languageDtos) {
+        if (languageDto1.getRecordId() != null) {
+            languageData = languageRepository.findByRecordId(languageDto1.getRecordId());
+            modelMapper.map(languageDto1, languageData);
+            languageRepository.save(languageData);
+        } else {
+            if (baseService.validateIdentifier(EntityConstants.KYC, languageDto1.getIdentifier()) != null) {
                 request.setSuccess(false);
-                request.setMessage("Identifier already present");
+                //request.setMessage("Identifier already present");
                 return request;
             }
-            language=request.getLanguage();
+
+            languageData = modelMapper.map(languageDto, Language.class);
         }
-        baseService.populateCommonData(language);
-        languageRepository.save(language);
-        if(request.getRecordId()==null){
-            language.setRecordId(String.valueOf(language.getId().getTimestamp()));
+//            baseService.populateCommonData(kycData);
+//            kycData.setCreator(coreService.getCurrentUser().getCreator());
+        languageRepository.save(languageData);
+        languageData.setLastModified(new Date());
+        if (languageData.getRecordId() == null) {
+            languageData.setRecordId(String.valueOf(languageData.getId().getTimestamp()));
         }
-        languageRepository.save(language);
-        languageDto.setLanguage(language);
-        languageDto.setBaseUrl(ADMIN_LANGUAGE);
-        return languageDto;
+        languageRepository.save(languageData);
+        languageList.add(languageData);
+        languageWsDto.setMessage("MatchType was updated successfully");
+        languageWsDto.setBaseUrl(ADMIN_LANGUAGE);
     }
+    languageWsDto.setLanguageDtoList(modelMapper.map(languageList, List.class));
+    return languageWsDto;
+}
 }

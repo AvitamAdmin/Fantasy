@@ -15,8 +15,10 @@ import java.util.List;
 @ToString
 public class KYCDto extends CommonDto{
 
-    private KYC kyc;
-    private List<KYC> kycList;
+    private String panNumber;
+
+    private String userId;
+
     private MultipartFile panImage;
 
 }

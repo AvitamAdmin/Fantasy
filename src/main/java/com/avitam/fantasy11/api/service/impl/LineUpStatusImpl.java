@@ -1,15 +1,23 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.LeaderBoardDto;
+import com.avitam.fantasy11.api.dto.LeaderBoardWsDto;
 import com.avitam.fantasy11.api.dto.LineUpStatusDto;
+import com.avitam.fantasy11.api.dto.LineUpStatusWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.LineUpStatusService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.LineUpStatus;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.LineUpStatusRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -36,32 +44,42 @@ public class LineUpStatusImpl implements LineUpStatusService {
     }
 
     @Override
-    public LineUpStatusDto handleEdit(LineUpStatusDto request) {
+    public LineUpStatusWsDto handleEdit(LineUpStatusWsDto request) {
+        LineUpStatusWsDto lineUpStatusWsDto = new LineUpStatusWsDto();
+        LineUpStatus lineUpStatusData = null;
+        List<LineUpStatusDto> lineUpStatusDtos = request.getLineUpStatusDtoList();
+        List<LineUpStatus> lineUpStatusList = new ArrayList<>();
         LineUpStatusDto lineUpStatusDto = new LineUpStatusDto();
-        LineUpStatus lineUpStatus = null;
-        if (request.getRecordId() != null) {
-            LineUpStatus requestData = request.getLineUpStatus();
-            lineUpStatus = lineUpStatusRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, lineUpStatus);
-        } else {
-            if(baseService.validateIdentifier(EntityConstants.LINEUPSTATUS,request.getLineUpStatus().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        for (LineUpStatusDto lineUpStatusDto1 : lineUpStatusDtos) {
+            if (lineUpStatusDto1.getRecordId() != null) {
+                lineUpStatusData = lineUpStatusRepository.findByRecordId(lineUpStatusDto1.getRecordId());
+                modelMapper.map(lineUpStatusDto1, lineUpStatusData);
+                lineUpStatusRepository.save(lineUpStatusData);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.KYC, lineUpStatusDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    //request.setMessage("Identifier already present");
+                    return request;
+                }
+
+                lineUpStatusData = modelMapper.map(lineUpStatusDto, LineUpStatus.class);
             }
-            lineUpStatus = request.getLineUpStatus();
+            lineUpStatusRepository.save(lineUpStatusData);
+            lineUpStatusData.setLastModified(new Date());
+            if (lineUpStatusData.getRecordId() == null) {
+                lineUpStatusData.setRecordId(String.valueOf(lineUpStatusData.getId().getTimestamp()));
+            }
+            lineUpStatusRepository.save(lineUpStatusData);
+            lineUpStatusList.add(lineUpStatusData);
+            lineUpStatusWsDto.setMessage("Lineup Status was updated successfully");
+            lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
+
         }
-        baseService.populateCommonData(lineUpStatus);
-        lineUpStatusRepository.save(lineUpStatus);
-        if (request.getRecordId() == null) {
-            lineUpStatus.setRecordId(String.valueOf(lineUpStatus.getId().getTimestamp()));
-        }
-        lineUpStatusRepository.save(lineUpStatus);
-        lineUpStatusDto.setLineUpStatus(lineUpStatus);
-        lineUpStatusDto.setBaseUrl(ADMIN_LINEUP_STATUS);
-        return lineUpStatusDto;
+        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(lineUpStatusList, List.class));
+        return lineUpStatusWsDto;
     }
+
+
 
     @Override
     public void deleteByRecordId(String recordId) {

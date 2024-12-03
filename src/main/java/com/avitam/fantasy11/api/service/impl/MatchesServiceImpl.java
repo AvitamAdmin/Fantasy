@@ -52,7 +52,7 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public MatchesWsDto handleEdit(MatchesWsDto request) {
+    public MatchesDto handleEdit(MatchesWsDto request) {
         MatchesWsDto matcheswsDto = new MatchesWsDto();
         Matches matches =new Matches();
         List<MatchesDto> matchesDto = request.getMatchesDtoList();

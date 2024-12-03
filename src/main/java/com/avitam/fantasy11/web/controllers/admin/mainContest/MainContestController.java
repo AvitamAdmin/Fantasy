@@ -1,14 +1,21 @@
 package com.avitam.fantasy11.web.controllers.admin.mainContest;
 
+import com.avitam.fantasy11.api.dto.LineUpStatusDto;
 import com.avitam.fantasy11.api.dto.MainContestDto;
+import com.avitam.fantasy11.api.dto.MainContestWsDto;
 import com.avitam.fantasy11.api.service.MainContestService;
+import com.avitam.fantasy11.model.LineUpStatus;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.repository.MainContestRepository;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/mainContest")
@@ -18,65 +25,68 @@ public class MainContestController extends com.avitam.fantasy11.web.controllers.
     private MainContestRepository mainContestRepository;
     @Autowired
     MainContestService mainContestService;
+    @Autowired
+    ModelMapper modelMapper;
 
     private static final String ADMIN_MAINCONTEST="/admin/mainContest";
 
 @PostMapping
 @ResponseBody
-public MainContestDto getAllContest(@RequestBody MainContestDto mainContestDto) {
-    Pageable pageable = getPageable(mainContestDto.getPage(),mainContestDto.getSizePerPage(),mainContestDto.getSortDirection(),mainContestDto.getSortField());
-    MainContest mainContest=mainContestDto.getMainContest();
+public MainContestWsDto getAllContest(@RequestBody MainContestWsDto mainContestWsDto) {
+    Pageable pageable = getPageable(mainContestWsDto.getPage(),mainContestWsDto.getSizePerPage(),mainContestWsDto.getSortDirection(),mainContestWsDto.getSortField());
+    MainContestDto mainContestDto= CollectionUtils.isNotEmpty(mainContestWsDto.getMainContestDtoList())?mainContestWsDto.getMainContestDtoList() .get(0) : new MainContestDto() ;
+    MainContest mainContest = modelMapper.map(mainContestWsDto, MainContest.class);
     Page<MainContest> page=isSearchActive(mainContest)!=null ? mainContestRepository.findAll(org.springframework.data.domain.Example.of(mainContest),pageable):mainContestRepository.findAll(pageable);
-    mainContestDto.setMainContestList(page.getContent());
-    mainContestDto.setBaseUrl( ADMIN_MAINCONTEST);
-    mainContestDto.setTotalPages(page.getTotalPages());
-    mainContestDto.setTotalRecords(page.getTotalElements());
-    return mainContestDto;
+    mainContestWsDto.setMainContestDtoList(modelMapper.map(page.getContent(),List.class));
+    mainContestWsDto.setBaseUrl( ADMIN_MAINCONTEST);
+    mainContestWsDto.setTotalPages(page.getTotalPages());
+    mainContestWsDto.setTotalRecords(page.getTotalElements());
+    return mainContestWsDto;
 }
 
     @GetMapping("/get")
     @ResponseBody
-    public MainContestDto getMainContest(){
-    MainContestDto mainContestDto=new MainContestDto();
-        mainContestDto.setMainContestList(mainContestRepository.findByStatusOrderByIdentifier(true));
-        mainContestDto.setBaseUrl(ADMIN_MAINCONTEST);
-        return mainContestDto;
+    public MainContestWsDto getMainContest(){
+    MainContestWsDto mainContestWsDto=new MainContestWsDto();
+        mainContestWsDto.setMainContestDtoList(modelMapper.map(mainContestRepository.findByStatusOrderByIdentifier(true), List.class));
+        mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
+        return mainContestWsDto;
     }
 
 
     @PostMapping("/getedit")
     @ResponseBody
-    public MainContestDto editMainContest(@RequestBody MainContestDto request){
-       MainContestDto mainContestDto=new MainContestDto();
+    public MainContestWsDto editMainContest(@RequestBody MainContestWsDto request){
+       MainContestWsDto mainContestWsDto=new MainContestWsDto();
        MainContest mainContest=mainContestRepository.findByRecordId(request.getRecordId());
-       mainContestDto.setMainContest(mainContest);
-       mainContestDto.setBaseUrl(ADMIN_MAINCONTEST);
-        return mainContestDto;
+        mainContestWsDto.setMainContestDtoList((List<MainContestDto>) mainContest);
+        mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
+        return mainContestWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public MainContestDto handleEdit(@RequestBody MainContestDto request) {
+    public MainContestWsDto handleEdit(@RequestBody MainContestWsDto request) {
         return mainContestService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public MainContestDto addMainContest() {
-        MainContestDto mainContestDto = new MainContestDto();
-        mainContestDto.setMainContestList(mainContestRepository.findByStatusOrderByIdentifier(true));
-        mainContestDto.setBaseUrl(ADMIN_MAINCONTEST);
-        return mainContestDto;
+    public MainContestWsDto addMainContest() {
+        MainContestWsDto mainContestWsDto = new MainContestWsDto();
+        mainContestWsDto.setMainContestDtoList(modelMapper.map(mainContestRepository.findByStatusOrderByIdentifier(true),List.class));
+        mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
+        return mainContestWsDto;
     }
     @PostMapping("/delete")
     @ResponseBody
-    public MainContestDto deleteContest(@RequestBody MainContestDto mainContestDto) {
+    public MainContestWsDto deleteContest(@RequestBody MainContestWsDto mainContestWsDto) {
 
-        for (String id : mainContestDto.getRecordId().split(",")) {
+        for (String id : mainContestWsDto.getRecordId().split(",")) {
             mainContestRepository.deleteByRecordId(id);
         }
-        mainContestDto.setMessage("Data deleted Successfully");
-        mainContestDto.setBaseUrl(ADMIN_MAINCONTEST);
-        return mainContestDto;
+        mainContestWsDto.setMessage("Data deleted Successfully");
+        mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
+        return mainContestWsDto;
     }
         }

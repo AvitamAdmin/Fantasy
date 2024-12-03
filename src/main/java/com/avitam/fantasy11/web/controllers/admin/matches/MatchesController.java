@@ -47,15 +47,15 @@ public class MatchesController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public MatchesWsDto getAllMatches(@RequestBody MatchesWsDto matcheswsDto) {
-        Pageable pageable=getPageable(matcheswsDto.getPage(),matcheswsDto.getSizePerPage(),matcheswsDto.getSortDirection(),matcheswsDto.getSortField());
-        MatchesDto matchesDto = CollectionUtils.isNotEmpty(matcheswsDto.getMatchesDtoList()) ? matcheswsDto.getMatchesDtoList().get(0):new MatchesDto();
-        Matches matches =modelMapper.map(matcheswsDto,Matches.class);
+    public MatchesWsDto getAllMatches(@RequestBody MatchesWsDto matchesWsDto) {
+        Pageable pageable=getPageable(matchesWsDto.getPage(),matchesWsDto.getSizePerPage(),matchesWsDto.getSortDirection(),matchesWsDto.getSortField());
+        MatchesDto matchesDto = CollectionUtils.isNotEmpty(matchesWsDto.getMatchesDtoList()) ? matchesWsDto.getMatchesDtoList().get(0):new MatchesDto();
+        Matches matches =modelMapper.map(matchesWsDto,Matches.class);
         Page<Matches> page= isSearchActive(matches) !=null ? matchesRepository.findAll(Example.of(matches),pageable): matchesRepository.findAll(pageable);
-        matcheswsDto.setMatchesDtoList(modelMapper.map(page.getContent(), List.class));
-        matcheswsDto.setBaseUrl(ADMIN_MATCHES);
-        matcheswsDto.setTotalRecords(page.getTotalElements());
-        return matcheswsDto;
+        matchesWsDto.setMatchesDtoList(modelMapper.map(page.getContent(), List.class));
+        matchesWsDto.setBaseUrl(ADMIN_MATCHES);
+        matchesWsDto.setTotalRecords(page.getTotalElements());
+        return matchesWsDto;
     }
 
     @GetMapping("/get")
@@ -94,46 +94,50 @@ public class MatchesController extends BaseController {
 
 //    @PostMapping("/getMatchStatus")
 //    @ResponseBody
-//    public MatchesWsDto getUpcomingMatches(@RequestBody MatchesWsDto request)
-//    {
-//        MatchesWsDto matcheswsDto=new MatchesWsDto();
-//        String eventStatus= request.getMatchesDtoList().getEventStatus();
-//        if(eventStatus.equalsIgnoreCase("Upcoming"))
-//        {
-//            matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
+//    public MatchesWsDto getUpcomingMatches(@RequestBody MatchesWsDto request) {
+//        MatchesWsDto matcheswsDto = new MatchesWsDto();
+//
+//        List<MatchesDto> matchesDtoList = new ArrayList<>();
+//        for (MatchesDto matchesDto : request.getMatchesDtoList()) {
+//
+//            String recordId = matchesDto.getRecordId();
+//            Matches matches = matchesRepository.findByRecordId(recordId);
+//
+//            if (matches.getEventStatus().equalsIgnoreCase("Upcoming")) {
+//                modelMapper.map(matches, matchesDto);
+//                matcheswsDto.setMatchesDtoList(matchesDtoList.add(matchesDto));
+//               // matcheswsDto.setMatchesDtoList(matchesRepository.findByEventStatus(eventStatus));
+//            } else if (eventStatus.equalsIgnoreCase("Live")) {
+//             //   matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
+//            } else if (eventStatus.equalsIgnoreCase("Closed")) {
+//             //   matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
+//            }
+//
+//            matchesDto.setBaseUrl(ADMIN_MATCHES);
+//            return matchesDto;
 //        }
-//        else if(eventStatus.equalsIgnoreCase("Live"))
-//        {
-//            matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
-//        }
-//        else if(eventStatus.equalsIgnoreCase("Closed"))
-//        {
-//            matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
-//        }
-//        matchesDto.setBaseUrl(ADMIN_MATCHES);
-//        return matchesDto;
 //    }
+    @PostMapping("/getedit")
+    @ResponseBody
+    public MatchesWsDto editMatches(@RequestBody MatchesWsDto request) {
+        MatchesWsDto matchesWsDto = new MatchesWsDto();
+        Matches matches = matchesRepository.findByRecordId(request.getRecordId());
+        modelMapper.map(matches, matchesWsDto);
+        matchesWsDto.setMatchesDtoList((List<MatchesDto>) matches);
+        matchesWsDto.setBaseUrl(ADMIN_MATCHES);
+        return matchesWsDto;
+    }
 
-//    @PostMapping("/getedit")
-//    @ResponseBody
-//    public MatchesDto editMatches(@RequestBody MatchesDto request) {
-//        MatchesDto matchesDto = new MatchesDto();
-//        Matches matches = matchesRepository.findByRecordId(request.getRecordId());
-//        matchesDto.setMatches(matches);
-//        matchesDto.setBaseUrl(ADMIN_MATCHES);
-//        return matchesDto;
-//    }
 
 
-
-//    @GetMapping("/add")
-//    @ResponseBody
-//    public MatchesDto addMatches() {
-//        MatchesDto matchesDto = new MatchesDto();
-//        matchesDto.setMatchesList(matchesRepository.findByStatusOrderByIdentifier(true));
-//        matchesDto.setBaseUrl(ADMIN_MATCHES);
-//        return matchesDto;
-//    }
+    @GetMapping("/add")
+    @ResponseBody
+    public MatchesWsDto addMatches() {
+        MatchesWsDto matchesWsDto = new MatchesWsDto();
+        matchesWsDto.setMatchesDtoList( modelMapper.map(matchesRepository.findByStatusOrderByIdentifier(true),List.class));
+        matchesWsDto.setBaseUrl(ADMIN_MATCHES);
+        return matchesWsDto;
+    }
 
 
 }

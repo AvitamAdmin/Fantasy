@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,5 +94,10 @@ public class AdminController extends BaseController{
         return userDto;
     }
 
+    @GetMapping("/generate-otp")
+    public ResponseEntity<UserDto> generateOtp(@RequestParam String email) {
+        UserDto userDto = userService.generateOtpForUser(email);
+        return ResponseEntity.ok(userDto);
+    }
 
 }

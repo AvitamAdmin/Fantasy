@@ -15,6 +15,9 @@ import java.util.List;
 
 public class TournamentDto extends CommonDto{
 
-    private Tournament tournament;
-    private List<Tournament> tournamentList;
+    private String dateAndTime;
+
+    private String sportId;
+//    private Tournament tournament;
+//    private List<Tournament> tournamentList;
 }

@@ -1,16 +1,21 @@
 package com.avitam.fantasy11.web.controllers.admin.matchType;
 
 import com.avitam.fantasy11.api.dto.MatchTypeDto;
+import com.avitam.fantasy11.api.dto.MatchTypeWsDto;
 import com.avitam.fantasy11.api.service.MatchTypeService;
 import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.repository.MatchTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/matchType")
@@ -20,65 +25,67 @@ public class MatchTypeController extends BaseController {
     private MatchTypeRepository matchTypeRepository;
     @Autowired
     private MatchTypeService matchTypeService;
+    @Autowired
+    ModelMapper modelMapper;
 
     private static final String ADMIN_MATCHTYPE="/admin/matchType";
 
     @PostMapping
     @ResponseBody
-    public MatchTypeDto getAllMatchTypes(@RequestBody MatchTypeDto matchTypeDto){
-        Pageable pageable=getPageable(matchTypeDto.getPage(),matchTypeDto.getSizePerPage(),matchTypeDto.getSortDirection(),matchTypeDto.getSortField());
-        MatchType matchType=matchTypeDto.getMatchType();
-        Page<MatchType> page=isSearchActive(matchType) !=null ? matchTypeRepository.findAll(Example.of(matchType),pageable) : matchTypeRepository.findAll(pageable);
-        matchTypeDto.setMatchTypeList(page.getContent());
-        matchTypeDto.setTotalPages(page.getTotalPages());
-        matchTypeDto.setTotalRecords(page.getTotalElements());
-        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
-        return matchTypeDto;
+    public MatchTypeWsDto getAllMatchTypes(@RequestBody MatchTypeWsDto matchTypeWsDto){
+        Pageable pageable=getPageable(matchTypeWsDto.getPage(),matchTypeWsDto.getSizePerPage(),matchTypeWsDto.getSortDirection(),matchTypeWsDto.getSortField());
+        MatchTypeDto matchTypeDto= CollectionUtils.isNotEmpty(matchTypeWsDto.getMatchTypeDtoList()) ? matchTypeWsDto.getMatchTypeDtoList().get(0) : new MatchTypeDto();
+        MatchType matchType = modelMapper.map(matchTypeWsDto, MatchType.class);
+        Page<MatchType> page=isSearchActive(matchTypeWsDto) !=null ? matchTypeRepository.findAll(Example.of(matchType),pageable) : matchTypeRepository.findAll(pageable);
+        matchTypeWsDto.setMatchTypeDtoList(modelMapper.map(page.getContent(), List.class));
+        matchTypeWsDto.setTotalPages(page.getTotalPages());
+        matchTypeWsDto.setTotalRecords(page.getTotalElements());
+        matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public MatchTypeDto getActiveMatchType (){
-        MatchTypeDto matchTypeDto=new MatchTypeDto();
-        matchTypeDto.setMatchTypeList(matchTypeRepository.findByStatusOrderByIdentifier(true));
-        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
-        return matchTypeDto;
+    public MatchTypeWsDto getActiveMatchType (){
+        MatchTypeWsDto matchTypeWsDto=new MatchTypeWsDto();
+        matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
+        matchTypeWsDto.setMatchTypeDtoList(modelMapper.map(matchTypeRepository.findByStatusOrderByIdentifier(true), List.class));
+        return matchTypeWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public MatchTypeDto edit (@RequestBody MatchTypeDto request){
-
-        MatchTypeDto matchTypeDto=new MatchTypeDto();
+    public MatchTypeWsDto edit (@RequestBody MatchTypeWsDto request){
+        MatchTypeWsDto matchTypeWsDto=new MatchTypeWsDto();
         MatchType matchType=matchTypeRepository.findByRecordId(request.getRecordId());
-        matchTypeDto.setMatchType(matchType);
-        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
-        return matchTypeDto;
+        matchTypeWsDto.setMatchTypeDtoList((List<MatchTypeDto>) matchType);
+        matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public MatchTypeDto handleEdit(@RequestBody MatchTypeDto request) {
+    public MatchTypeWsDto handleEdit(@RequestBody MatchTypeWsDto request) {
 
         return matchTypeService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public MatchTypeDto add() {
-        MatchTypeDto matchTypeDto=new MatchTypeDto();
-        matchTypeDto.setMatchTypeList(matchTypeRepository.findByStatusOrderByIdentifier(true));
-        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
-        return matchTypeDto;
+    public MatchTypeWsDto add() {
+        MatchTypeWsDto matchTypeWsDto=new MatchTypeWsDto();
+        matchTypeWsDto.setMatchTypeDtoList(modelMapper.map(matchTypeRepository.findByStatusOrderByIdentifier(true),List.class));
+        matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeWsDto;
     }
     @PostMapping("/delete")
     @ResponseBody
-    public MatchTypeDto delete(@RequestBody MatchTypeDto matchTypeDto) {
-        for (String id : matchTypeDto.getRecordId().split(",")) {
+    public MatchTypeWsDto delete(@RequestBody MatchTypeWsDto matchTypeWsDto) {
+        for (String id : matchTypeWsDto.getRecordId().split(",")) {
             matchTypeRepository.deleteByRecordId(id);
         }
-        matchTypeDto.setMessage("Data delete successfully");
-        matchTypeDto.setBaseUrl(ADMIN_MATCHTYPE);
-        return matchTypeDto;
+        matchTypeWsDto.setMessage("Data delete successfully");
+        matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
+        return matchTypeWsDto;
     }
 }

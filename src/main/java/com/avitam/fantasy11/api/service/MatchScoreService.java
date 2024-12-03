@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.MatchScoreDto;
+import com.avitam.fantasy11.api.dto.MatchScoreWsDto;
 import com.avitam.fantasy11.model.MatchScore;
 
 public interface MatchScoreService {
@@ -10,5 +11,5 @@ public interface MatchScoreService {
 
         void updateByRecordId(String recordId);
 
-        MatchScoreDto handleEdit(MatchScoreDto request);
+        MatchScoreWsDto handleEdit(MatchScoreWsDto request);
 }

@@ -2,13 +2,14 @@ package com.avitam.fantasy11.api.service;
 
 
 import com.avitam.fantasy11.api.dto.LineUpStatusDto;
+import com.avitam.fantasy11.api.dto.LineUpStatusWsDto;
 import com.avitam.fantasy11.model.LineUpStatus;
 
 public interface LineUpStatusService {
 
     LineUpStatus findByRecordId(String recordId);
 
-    LineUpStatusDto handleEdit(LineUpStatusDto request);
+    LineUpStatusWsDto handleEdit(LineUpStatusWsDto request);
 
     void deleteByRecordId(String recordId);
 

@@ -25,4 +25,6 @@ public class BaseEntity {
     private String modifiedBy;
     private String pic;
     private String identifier;
+    private String username;
+    private String email;
 }

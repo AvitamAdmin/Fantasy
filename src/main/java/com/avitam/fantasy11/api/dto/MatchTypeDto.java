@@ -14,6 +14,6 @@ import java.util.List;
 @ToString
 public class MatchTypeDto extends CommonDto{
 
-    private MatchType matchType;
-    private List<MatchType> matchTypeList;
+//    private MatchType matchType;
+//    private List<MatchType> matchTypeList;
 }
