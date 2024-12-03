@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.ScriptDto;
+import com.avitam.fantasy11.api.dto.ScriptWsDto;
 import com.avitam.fantasy11.model.Role;
 
 public interface ScriptService {
@@ -11,5 +12,5 @@ public interface ScriptService {
 
     void updateByRecordId(String recordId);
 
-    ScriptDto handleEdit(ScriptDto request);
+    ScriptWsDto handleEdit(ScriptWsDto scriptWsDto);
 }

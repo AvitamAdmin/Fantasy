@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.ScriptDto;
+import com.avitam.fantasy11.api.dto.ScriptWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ScriptService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -8,9 +9,13 @@ import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.Script;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.ScriptRepository;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
 public class ScriptServiceImpl implements ScriptService {
 
@@ -24,6 +29,7 @@ public class ScriptServiceImpl implements ScriptService {
     private BaseService baseService;
 
     public static final String ADMIN_SCRIPT = "/admin/script";
+
     @Override
     public Role findByRecordId(String recordId) {
         return null;
@@ -40,32 +46,37 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public ScriptDto handleEdit(ScriptDto request) {
+    public ScriptWsDto handleEdit(ScriptWsDto scriptWsDto) {
         {
             ScriptDto scriptDto = new ScriptDto();
-            Script script=null;
-            if (request.getRecordId()!=null) {
-                Script requestData=request.getScript();
-                script=scriptRepository.findByRecordId(request.getRecordId());
-                modelMapper.map(requestData,script);
-            }else {
-                if(baseService.validateIdentifier(EntityConstants.SCRIPT,request.getScript().getIdentifier())!=null)
-                {
-                    request.setSuccess(false);
-                    request.setMessage("Identifier already present");
-                    return request;
+            Script script = null;
+            List<Script> scripts = new ArrayList<>();
+            List<ScriptDto> scriptDtoList = scriptWsDto.getScriptDtoList();
+            for (ScriptDto scriptDto1 : scriptDtoList) {
+                if (scriptDto1.getRecordId() != null) {
+                    script = scriptRepository.findByRecordId(scriptDto1.getRecordId());
+                    modelMapper.map(scriptDto1, script);
+                } else {
+                    if (baseService.validateIdentifier(EntityConstants.SCRIPT, scriptDto1.getIdentifier()) != null) {
+                        scriptWsDto.setSuccess(false);
+                        scriptWsDto.setMessage("Identifier already present");
+                        return scriptWsDto;
+                    }
+                    script = modelMapper.map(scriptDto, Script.class);
                 }
-                script=request.getScript();
+                baseService.populateCommonData(script);
+                script.setCreator(coreService.getCurrentUser().getCreator());
+                script.setModifiedBy(String.valueOf(new Date()));
+                if (scriptWsDto.getRecordId() == null) {
+                    script.setRecordId(String.valueOf(script.getId().getTimestamp()));
+                }
+                scriptRepository.save(script);
+                scripts.add(script);
+                scriptWsDto.setMessage("Script updated successfully!");
+                scriptWsDto.setBaseUrl(ADMIN_SCRIPT);
             }
-            baseService.populateCommonData(script);
-            scriptRepository.save(script);
-            if (request.getRecordId()==null){
-                script.setRecordId(String.valueOf(script.getId().getTimestamp()));
-            }
-            scriptRepository.save(script);
-            scriptDto.setScript(script);
-            scriptDto.setBaseUrl(ADMIN_SCRIPT);
-            return scriptDto;
+            scriptWsDto.setScriptDtoList(modelMapper.map(script, List.class));
+            return scriptWsDto;
         }
 
     }

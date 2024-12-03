@@ -1,12 +1,15 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.GatewaysAutomaticDto;
+import com.avitam.fantasy11.api.dto.GatewaysAutomaticWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.GatewaysAutomaticService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.GatewaysAutomatic;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.GatewaysAutomaticRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,49 +42,52 @@ public class GatewaysAutomaticServiceImpl implements GatewaysAutomaticService {
     }
 
     @Override
-    public GatewaysAutomaticDto handleEdit(GatewaysAutomaticDto request) {
+    public GatewaysAutomaticWsDto handleEdit(GatewaysAutomaticWsDto gatewaysAutomaticWsDto) {
         GatewaysAutomaticDto gatewaysAutomaticDto = new GatewaysAutomaticDto();
         GatewaysAutomatic gatewaysAutomatic = null;
-        if(request.getRecordId()!=null){
-            GatewaysAutomatic requestData = request.getGatewaysAutomatic();
-            gatewaysAutomatic = gatewaysAutomaticRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, gatewaysAutomatic);
-        }
-        else {
-            if(baseService.validateIdentifier(EntityConstants.GATEWAYS_AUTOMATIC,request.getGatewaysAutomatic().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        List<GatewaysAutomaticDto> requestData = gatewaysAutomaticWsDto.getGatewaysAutomaticDtoList();
+        List<GatewaysAutomatic> gatewaysAutomatics = new ArrayList<>();
+        for(GatewaysAutomaticDto gatewaysAutomaticDto1:requestData) {
+            if (gatewaysAutomaticDto1.getRecordId() != null) {
+                gatewaysAutomaticRepository.findByRecordId(gatewaysAutomaticDto1.getRecordId());
+                modelMapper.map(requestData, gatewaysAutomatic);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.GATEWAYS_AUTOMATIC, gatewaysAutomaticDto1.getGatewaysAutomatic().getIdentifier()) != null) {
+                    gatewaysAutomaticWsDto.setSuccess(false);
+                    gatewaysAutomaticWsDto.setMessage("Identifier already present");
+                    return gatewaysAutomaticWsDto;
+                }
+                gatewaysAutomatic = modelMapper.map(gatewaysAutomaticDto, GatewaysAutomatic.class);
             }
-            gatewaysAutomatic=request.getGatewaysAutomatic();
-        }
-        if (request.getLogo() != null && !request.getLogo().isEmpty()) {
-            try {
-                gatewaysAutomatic.setLogo(new Binary(request.getLogo().getBytes()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                gatewaysAutomaticDto.setMessage("Error processing image file");
-                return gatewaysAutomaticDto;
+            if (gatewaysAutomaticDto.getLogo() != null && !gatewaysAutomaticDto.getLogo().isEmpty()) {
+                try {
+                    gatewaysAutomatic.setLogo(new Binary(gatewaysAutomaticDto.getLogo().getBytes()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    gatewaysAutomaticWsDto.setMessage("Error processing image file");
+                    return gatewaysAutomaticWsDto;
+                }
             }
+            baseService.populateCommonData(gatewaysAutomatic);
+            gatewaysAutomaticRepository.save(gatewaysAutomatic);
+            if (gatewaysAutomatic.getRecordId() == null) {
+                gatewaysAutomatic.setRecordId(String.valueOf(gatewaysAutomatic.getId().getTimestamp()));
+            }
+            gatewaysAutomaticRepository.save(gatewaysAutomatic);
+            gatewaysAutomatics.add(gatewaysAutomatic);
+            gatewaysAutomaticWsDto.setMessage("Updated successfully!");
+            gatewaysAutomaticWsDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
         }
-        baseService.populateCommonData(gatewaysAutomatic);
-        gatewaysAutomaticRepository.save(gatewaysAutomatic);
-        if(request.getRecordId()==null){
-            gatewaysAutomatic.setRecordId(String.valueOf(gatewaysAutomatic.getId().getTimestamp()));
-        }
-        gatewaysAutomaticRepository.save(gatewaysAutomatic);
-        gatewaysAutomaticDto.setGatewaysAutomatic(gatewaysAutomatic);
-        gatewaysAutomaticDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
-        return gatewaysAutomaticDto;
+        gatewaysAutomaticWsDto.setGatewaysAutomaticDtoList(modelMapper.map(gatewaysAutomatic,List.class));
+        return gatewaysAutomaticWsDto;
     }
 
     @Override
-    public void updateByRecordId(String recordId) {
-        GatewaysAutomatic  gatewaysAutomaticOptional=gatewaysAutomaticRepository.findByRecordId(recordId);
-        if(gatewaysAutomaticOptional!=null)
+    public void updateByRecordId(GatewaysAutomaticWsDto gatewaysAutomaticWsDto) {
+        GatewaysAutomatic  gatewaysAutomatic=gatewaysAutomaticRepository.findByRecordId(gatewaysAutomaticWsDto.getRecordId());
+        if(gatewaysAutomatic!=null)
         {
-            gatewaysAutomaticRepository.save(gatewaysAutomaticOptional);
+            gatewaysAutomaticRepository.save(gatewaysAutomatic);
         }
     }
 

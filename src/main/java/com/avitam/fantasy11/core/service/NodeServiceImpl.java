@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.core.service;
 
 import com.avitam.fantasy11.api.dto.NodeDto;
+import com.avitam.fantasy11.api.dto.NodeWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.Role;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class NodeServiceImpl implements NodeService {
+
+    private static final String ADMIN_INTERFACE="/admin/interface";
 
     @Autowired
     private NodeRepository nodeRepository;
@@ -89,30 +92,37 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public NodeDto handleEdit(NodeDto request) {
+    public NodeWsDto handleEdit(NodeWsDto nodeWsDto) {
         NodeDto nodeDto=new NodeDto();
         Node node=null;
-        if (request.getRecordId()!=null){
-            Node requestData=request.getNode();
-            node=nodeRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData,node);
-        }else {
-            if(baseService.validateIdentifier(EntityConstants.NODE,request.getNode().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        List<Node> nodes = new ArrayList<>();
+        List<NodeDto> nodeDtoList = nodeWsDto.getNodeDtoList();
+        for(NodeDto nodeDto1 : nodeDtoList) {
+            if (nodeDto1.getRecordId() != null) {
+                node = nodeRepository.findByRecordId(nodeDto1.getRecordId());
+                modelMapper.map(nodeDto1, node);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.NODE, nodeDto1.getNode().getIdentifier()) != null) {
+                    nodeWsDto.setSuccess(false);
+                    nodeWsDto.setMessage("Identifier already present");
+                    return nodeWsDto;
+                }
+                node = modelMapper.map(nodeDto, Node.class);
             }
-            node=request.getNode();
+            baseService.populateCommonData(node);
+            node.setCreator(coreService.getCurrentUser().getCreator());
+            nodeRepository.save(node);
+            node.setLastModified(new Date());
+            if (nodeWsDto.getRecordId() == null) {
+                node.setRecordId(String.valueOf(node.getId().getTimestamp()));
+            }
+            nodeRepository.save(node);
+            nodes.add(node);
+            nodeWsDto.setMessage("Node Updated Successfully!");
+            nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         }
-       baseService.populateCommonData(node);
-        nodeRepository.save(node);
-        if (request.getRecordId()==null){
-            node.setRecordId(String.valueOf(node.getId().getTimestamp()));
-        }
-        nodeRepository.save(node);
-        nodeDto.setNode(node);
-        return nodeDto;
+        nodeWsDto.setNodeDtoList(modelMapper.map(node,List.class));
+        return nodeWsDto;
     }
 
     @Override

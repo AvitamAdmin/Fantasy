@@ -1,10 +1,15 @@
 package com.avitam.fantasy11.web.controllers.admin.intface;
 
+import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.NodeDto;
+import com.avitam.fantasy11.api.dto.NodeWsDto;
 import com.avitam.fantasy11.core.service.NodeService;
+import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -27,61 +32,58 @@ public class InterfaceController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public NodeDto getAllNodes(@RequestBody NodeDto nodeDto){
-        Pageable pageable=getPageable(nodeDto.getPage(),nodeDto.getSizePerPage(),nodeDto.getSortDirection(),nodeDto.getSortField());
-        Node node=nodeDto.getNode();
+    public NodeWsDto getAllNodes(@RequestBody NodeWsDto nodeWsDto){
+        Pageable pageable=getPageable(nodeWsDto.getPage(),nodeWsDto.getSizePerPage(),nodeWsDto.getSortDirection(),nodeWsDto.getSortField());
+        NodeDto nodeDto = CollectionUtils.isNotEmpty(nodeWsDto.getNodeDtoList()) ? nodeWsDto.getNodeDtoList().get(0) : null;
+        Node node = nodeDto != null ? modelMapper.map(nodeDto, Node.class) : null;
         Page<Node> page= isSearchActive(node) != null ? nodeRepository.findAll(Example.of(node),pageable): nodeRepository.findAll(pageable);
-        nodeDto.setNodeList(page.getContent());
-        nodeDto.setTotalPages(page.getTotalPages());
-        nodeDto.setTotalRecords(page.getTotalElements());
-        nodeDto.setBaseUrl(ADMIN_INTERFACE);
-        return nodeDto;
+        nodeWsDto.setNodeDtoList(modelMapper.map(page.getContent(), List.class));
+        nodeWsDto.setTotalPages(page.getTotalPages());
+        nodeWsDto.setTotalRecords(page.getTotalElements());
+        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeWsDto;
     }
     @GetMapping("/get")
     @ResponseBody
-    public NodeDto getActiveInterface() {
-        NodeDto nodeDto=new NodeDto();
-        nodeDto.setNodeList(nodeRepository.findByStatusOrderByIdentifier(true));
-        nodeDto.setBaseUrl(ADMIN_INTERFACE);
-        return nodeDto;
+    public NodeWsDto getActiveInterface() {
+        NodeWsDto nodeWsDto=new NodeWsDto();
+        nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByStatusOrderByIdentifier(true),List.class));
+        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public NodeDto edit(@RequestBody NodeDto request) {
-        NodeDto nodeDto=new NodeDto();
-        Node node= nodeRepository.findByRecordId(request.getRecordId());
-        nodeDto.setNode(node);
-        nodeDto.setBaseUrl(ADMIN_INTERFACE);
-        return nodeDto;
+    public NodeWsDto edit(@RequestBody NodeWsDto nodeWsDto) {
+        Node node= nodeRepository.findByRecordId(nodeWsDto.getRecordId());
+        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public NodeDto handleEdit(@RequestBody NodeDto request) {
-
-        return nodeService.handleEdit(request);
+    public NodeWsDto handleEdit(@RequestBody NodeWsDto nodeWsDto) {
+        return nodeService.handleEdit(nodeWsDto);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public NodeDto addInterface() {
-        NodeDto nodeDto=new NodeDto();
-        nodeDto.setNodeList(nodeRepository.findByStatusOrderByIdentifier(true));
-        nodeDto.setBaseUrl(ADMIN_INTERFACE);
-        return nodeDto;
+    public NodeWsDto addInterface() {
+        NodeWsDto nodeWsDto=new NodeWsDto();
+        nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByStatusOrderByIdentifier(true),List.class));
+        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public NodeDto delete(@RequestBody NodeDto nodeDto) {
-        for (String id : nodeDto.getRecordId().split(",")) {
-
-            nodeRepository.deleteByRecordId(id);
+    public NodeWsDto delete(@RequestBody NodeWsDto nodeWsDto) {
+        for (NodeDto nodeDto : nodeWsDto.getNodeDtoList()) {
+            nodeRepository.deleteByRecordId(nodeDto.getRecordId());
         }
-        nodeDto.setMessage("Data deleted successfully");
-        nodeDto.setBaseUrl(ADMIN_INTERFACE);
-        return nodeDto;
+        nodeWsDto.setMessage("Data deleted successfully");
+        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeWsDto;
     }
 
 }

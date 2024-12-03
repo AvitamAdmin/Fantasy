@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.AddressDto;
+import com.avitam.fantasy11.api.dto.AddressWsDto;
 import com.avitam.fantasy11.model.Address;
 
 public interface AddressService {
@@ -9,7 +10,7 @@ public interface AddressService {
 
     void deleteByRecordId(String recordId) ;
 
-    AddressDto handleEdit(AddressDto request);
+    AddressWsDto handleEdit(AddressWsDto addressWsDto);
 
     void updateByRecordId(String recordId);
 }

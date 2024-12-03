@@ -27,7 +27,6 @@ public class DashBoardController {
 
     @GetMapping
     public String getDashBoardDatas(Model model) {
-
         List<Deposits> allDeposits = depositsRepository.findAll();
         List<Deposits> pendingDeposits = depositsRepository.findByDepositStatus("Pending");
         List<Deposits> approvedDeposits = depositsRepository.findByDepositStatus("Approved");

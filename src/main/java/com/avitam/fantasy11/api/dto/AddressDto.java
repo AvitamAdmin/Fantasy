@@ -13,7 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class AddressDto extends CommonDto{
-
-    private Address address;
-    private List<Address> addressList;
+    private String mobileNumber;
+    private String line_1;
+    private String line_2;
+    private String city;
+    private String state;
+    private String pinCode;
 }

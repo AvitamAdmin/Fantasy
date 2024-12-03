@@ -12,7 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class DepositsDto extends CommonDto{
-
-    private Deposits deposits;
+    private String userId;
+    private int payingAmount;
+    private String gatewayName;
+    private String transactionId;
+    private String depositStatus;
     private List<Deposits> depositsList;
 }
