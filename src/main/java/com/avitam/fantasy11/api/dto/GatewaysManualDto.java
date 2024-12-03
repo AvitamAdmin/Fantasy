@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.bson.types.Binary;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -14,8 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class GatewaysManualDto extends CommonDto{
-
-    private GatewaysManual gatewaysManual;
-    private List<GatewaysManual> gatewaysManualList;
+    private String gateway;
+    private String gatewayStatus;
     private MultipartFile logo;
 }

@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.GatewaysAutomaticDto;
+import com.avitam.fantasy11.api.dto.GatewaysAutomaticWsDto;
 import com.avitam.fantasy11.model.GatewaysAutomatic;
 
 public interface GatewaysAutomaticService {
@@ -9,7 +9,7 @@ public interface GatewaysAutomaticService {
 
     void deleteByRecordId(String recordId) ;
 
-    GatewaysAutomaticDto handleEdit(GatewaysAutomaticDto request);
+    GatewaysAutomaticWsDto handleEdit(GatewaysAutomaticWsDto gatewaysAutomaticWsDto);
 
-    void updateByRecordId(String recordId);
+    void updateByRecordId(GatewaysAutomaticWsDto recordId);
 }

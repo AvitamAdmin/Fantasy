@@ -1,13 +1,14 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import jakarta.mail.MessagingException;
 
 public interface EmailOTPService {
 
-    public UserDto sendOtp(UserDto userDto) throws MessagingException;
+    public UserWsDto sendOtp(UserWsDto userWsDto) throws MessagingException;
 
-    public UserDto validateOtp(UserDto userDto);
+    public UserWsDto validateOtp(UserWsDto userWsDto);
 
-    public UserDto saveUsername(UserDto userDto);
+    public UserWsDto saveUsername(UserWsDto userWsDto);
 }

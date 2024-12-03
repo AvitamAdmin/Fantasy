@@ -14,7 +14,5 @@ import java.util.List;
 @ToString
 
 public class ScriptDto extends CommonDto{
-
     private Script script;
-    private List<Script> scripts;
 }

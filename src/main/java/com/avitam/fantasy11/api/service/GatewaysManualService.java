@@ -1,6 +1,8 @@
 package com.avitam.fantasy11.api.service;
 
+import com.avitam.fantasy11.api.dto.GatewaysAutomaticWsDto;
 import com.avitam.fantasy11.api.dto.GatewaysManualDto;
+import com.avitam.fantasy11.api.dto.GatewaysManualWsDto;
 import com.avitam.fantasy11.model.GatewaysManual;
 
 public interface GatewaysManualService {
@@ -9,7 +11,7 @@ public interface GatewaysManualService {
 
     void deleteByRecordId(String recordId) ;
 
-    GatewaysManualDto handleEdit(GatewaysManualDto request);
+    GatewaysManualWsDto handleEdit(GatewaysManualWsDto gatewaysManualWsDto);
 
     void updateByRecordId(String recordId);
 }

@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.DepositsDto;
+import com.avitam.fantasy11.api.dto.DepositsWsDto;
 import com.avitam.fantasy11.model.Deposits;
 
 public interface DepositsService {
@@ -9,7 +10,7 @@ public interface DepositsService {
 
     void deleteByRecordId(String recordId);
 
-    DepositsDto handleEdit(DepositsDto request);
+    DepositsWsDto handleEdit(DepositsWsDto depositsWsDto);
 
     void updateByRecordId(String recordId);
 

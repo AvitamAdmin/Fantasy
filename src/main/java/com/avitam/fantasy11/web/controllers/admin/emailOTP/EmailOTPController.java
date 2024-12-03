@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.emailOTP;
 
 import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
 import com.avitam.fantasy11.model.User;
 import jakarta.mail.MessagingException;
@@ -22,21 +23,21 @@ public class EmailOTPController {
 
     // Endpoint to send OTP
     @PostMapping("/send-otp")
-    public UserDto sendOtp(@RequestBody UserDto userDto) throws MessagingException {
+    public UserWsDto sendOtp(@RequestBody UserWsDto userWsDto) throws MessagingException {
 
-        return emailOTPService.sendOtp(userDto);
+        return emailOTPService.sendOtp(userWsDto);
     }
 
     // Endpoint to validate OTP
     @PostMapping("/validate-otp")
-    public UserDto validateOtp(@RequestBody UserDto userDto) {
-        return emailOTPService.validateOtp(userDto);
+    public UserWsDto validateOtp(@RequestBody UserWsDto userWsDto) {
+        return emailOTPService.validateOtp(userWsDto);
     }
 
     @PostMapping("/saveUserName")
-    public UserDto saveUsername(@RequestBody User user) {
-        UserDto userDto = modelMapper.map(user, UserDto.class);
-        return emailOTPService.saveUsername(userDto);
+    public UserWsDto saveUsername(@RequestBody UserWsDto userWsDto) {
+        userWsDto = modelMapper.map(userWsDto, UserWsDto.class);
+        return emailOTPService.saveUsername(userWsDto);
     }
 
 }
