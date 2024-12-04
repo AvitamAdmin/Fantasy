@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.MobileOTPService;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.UserRepository;
@@ -42,35 +43,36 @@ public class MobileOTPServiceImpl implements MobileOTPService {
     private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
 
     @Override
-    public UserDto sendOtp(UserDto userDto) {
-        String mobileNumber = userDto.getMobileNumber();
+    public UserWsDto sendOtp(UserWsDto userWsDto) {
+        for (UserDto userDto: userWsDto.getUserDtoList()) {
+            String mobileNumber = userDto.getMobileNumber();
+            if (mobileNumber == null || mobileNumber.isEmpty()) {
+                userWsDto.setSuccess(false);
+                userWsDto.setMessage("Mobile number is required.");
+                return userWsDto;
+            }
 
-        if (mobileNumber == null || mobileNumber.isEmpty()) {
-            userDto.setSuccess(false);
-            userDto.setMessage("Mobile number is required.");
-            return userDto;
+
+            String otp = generateOtp();
+            otpMap.put(mobileNumber, otp);
+            otpExpirationMap.put(mobileNumber, LocalDateTime.now().plusMinutes(otpExpirationMinutes));
+
+            // Call MSG91 API to send OTP
+            String url = "https://api.msg91.com/api/v5/otp?authkey=" + apiKey
+                    + "&mobile=" + mobileNumber
+                    + "&sender=" + senderId
+                    + "&otp=" + otp;
+
+            try {
+                restTemplate.getForObject(url, String.class);
+                userWsDto.setSuccess(true);
+                userWsDto.setMessage("OTP sent successfully.");
+            } catch (Exception e) {
+                userWsDto.setSuccess(false);
+                userWsDto.setMessage("Failed to send OTP: " + e.getMessage());
+            }
         }
-
-        String otp = generateOtp();
-        otpMap.put(mobileNumber, otp);
-        otpExpirationMap.put(mobileNumber, LocalDateTime.now().plusMinutes(otpExpirationMinutes));
-
-        // Call MSG91 API to send OTP
-        String url = "https://api.msg91.com/api/v5/otp?authkey=" + apiKey
-                + "&mobile=" + mobileNumber
-                + "&sender=" + senderId
-                + "&otp=" + otp;
-
-        try {
-            restTemplate.getForObject(url, String.class);
-            userDto.setSuccess(true);
-            userDto.setMessage("OTP sent successfully.");
-        } catch (Exception e) {
-            userDto.setSuccess(false);
-            userDto.setMessage("Failed to send OTP: " + e.getMessage());
-        }
-
-        return userDto;
+        return userWsDto;
     }
 
     private String generateOtp() {
@@ -83,70 +85,72 @@ public class MobileOTPServiceImpl implements MobileOTPService {
     }
 
     @Override
-    public UserDto validateOtp(UserDto userDto) {
-        String mobileNumber = userDto.getMobileNumber();
-        String otp = userDto.getOtp();
+    public UserWsDto validateOtp(UserWsDto userWsDto) {
+        for(UserDto userDto: userWsDto.getUserDtoList()) {
+            String mobileNumber = userDto.getMobileNumber();
+            String otp = userDto.getOtp();
 
-        if (mobileNumber == null || otp == null || mobileNumber.isEmpty() || otp.isEmpty()) {
-            userDto.setSuccess(false);
-            userDto.setMessage("Mobile number and OTP are required.");
-            return userDto;
-        }
-
-        boolean isOtpValid = otpMap.containsKey(mobileNumber) &&
-                otpMap.get(mobileNumber).equals(otp) &&
-                otpExpirationMap.containsKey(mobileNumber) &&
-                LocalDateTime.now().isBefore(otpExpirationMap.get(mobileNumber));
-
-        if (isOtpValid) {
-            // Clear OTP after successful validation
-            otpMap.remove(mobileNumber);
-            otpExpirationMap.remove(mobileNumber);
-            User existingUser = userRepository.findByMobileNumber(mobileNumber);
-            if (existingUser == null) {
-                // Save the email in the database if not present
-                User newUser = new User();
-                newUser.setMobileNumber(mobileNumber);
-                newUser.setStatus(true);
-                userRepository.save(newUser);
+            if (mobileNumber == null || otp == null || mobileNumber.isEmpty() || otp.isEmpty()) {
+                userWsDto.setSuccess(false);
+                userWsDto.setMessage("Mobile number and OTP are required.");
+                return userWsDto;
             }
-            UserDetails userDetails = userDetailsService.loadUserByUsername(mobileNumber);
-            userDto.setToken(jwtUtility.generateToken(userDetails));
-            userDto.setSuccess(true);
-            userDto.setMessage("OTP validated successfully.");
-        } else {
-            userDto.setSuccess(false);
-            userDto.setMessage("OTP is invalid or has expired.");
-        }
 
-        return userDto;
+            boolean isOtpValid = otpMap.containsKey(mobileNumber) &&
+                    otpMap.get(mobileNumber).equals(otp) &&
+                    otpExpirationMap.containsKey(mobileNumber) &&
+                    LocalDateTime.now().isBefore(otpExpirationMap.get(mobileNumber));
+
+            if (isOtpValid) {
+                // Clear OTP after successful validation
+                otpMap.remove(mobileNumber);
+                otpExpirationMap.remove(mobileNumber);
+                User existingUser = userRepository.findByMobileNumber(mobileNumber);
+                if (existingUser == null) {
+                    // Save the email in the database if not present
+                    User newUser = new User();
+                    newUser.setMobileNumber(mobileNumber);
+                    newUser.setStatus(true);
+                    userRepository.save(newUser);
+                }
+                UserDetails userDetails = userDetailsService.loadUserByUsername(mobileNumber);
+                userDto.setToken(jwtUtility.generateToken(userDetails));
+                userWsDto.setSuccess(true);
+                userWsDto.setMessage("OTP validated successfully.");
+            } else {
+                userWsDto.setSuccess(false);
+                userWsDto.setMessage("OTP is invalid or has expired.");
+            }
+        }
+        return userWsDto;
     }
 
     @Override
-    public UserDto saveUsername(UserDto userDto){
-        String mobileNumber = userDto.getMobileNumber();
-        String username = userDto.getUsername();
+    public UserWsDto saveUsername(UserWsDto userWsDto){
+        for (UserDto userDto : userWsDto.getUserDtoList()) {
 
-        if (mobileNumber == null || mobileNumber.isEmpty() || username == null || username.isEmpty()) {
-            userDto.setSuccess(false);
-            userDto.setMessage("Mobile number and Username are required.");
-            return userDto;
+            String mobileNumber = userDto.getMobileNumber();
+            String username = userDto.getUsername();
+
+            if (mobileNumber == null || mobileNumber.isEmpty() || username == null || username.isEmpty()) {
+                userWsDto.setSuccess(false);
+                userWsDto.setMessage("Mobile number and Username are required.");
+                return userWsDto;
+            }
+
+            User existingUser = userRepository.findByMobileNumber(mobileNumber);
+            if (existingUser == null) {
+                userWsDto.setSuccess(false);
+                userWsDto.setMessage("User not found. Please validate OTP first.");
+                return userWsDto;
+            }
+
+            existingUser.setUsername(username);
+            userRepository.save(existingUser);
         }
-
-        User existingUser = userRepository.findByMobileNumber(mobileNumber);
-        if (existingUser == null) {
-            userDto.setSuccess(false);
-            userDto.setMessage("User not found. Please validate OTP first.");
-            return userDto;
-        }
-
-        existingUser.setUsername(username);
-        userRepository.save(existingUser);
-
-        userDto.setUser(existingUser);
-        userDto.setSuccess(true);
-        userDto.setMessage("Username saved successfully.");
-        return userDto;
+        userWsDto.setSuccess(true);
+        userWsDto.setMessage("Username saved successfully.");
+        return userWsDto;
     }
 
 }
