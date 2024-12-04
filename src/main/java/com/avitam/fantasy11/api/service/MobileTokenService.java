@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.MobileTokenDto;
+import com.avitam.fantasy11.api.dto.MobileTokenWsDto;
 import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.model.MobileToken;
 
@@ -11,7 +11,7 @@ public interface MobileTokenService {
 
     void deleteByRecordId(String recordId);
 
-    MobileTokenDto handleEdit(MobileTokenDto request);
+    MobileTokenWsDto handleEdit(MobileTokenWsDto request);
 
     void updateByRecordId(String recordId);
 

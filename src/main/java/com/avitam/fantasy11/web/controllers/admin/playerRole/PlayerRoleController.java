@@ -1,17 +1,20 @@
 package com.avitam.fantasy11.web.controllers.admin.playerRole;
 
-import com.avitam.fantasy11.api.dto.PlayerDto;
-import com.avitam.fantasy11.api.dto.PlayerRoleDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.PlayerRoleService;
 import com.avitam.fantasy11.model.PlayerRole;
 import com.avitam.fantasy11.repository.PlayerRoleRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -23,63 +26,70 @@ public class PlayerRoleController extends BaseController {
     @Autowired
     private PlayerRoleService playerRoleService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     private static final String ADMIN_PLAYERROLE="/admin/playerRole";
 
     @PostMapping
     @ResponseBody
-    public PlayerRoleDto getAllPlayerRole(@RequestBody PlayerRoleDto playerRoleDto){
-        Pageable pageable=getPageable(playerRoleDto.getPage(),playerRoleDto.getSizePerPage(),playerRoleDto.getSortDirection(),playerRoleDto.getSortField());
-        PlayerRole playerRole=playerRoleDto.getPlayerRole();
+    public PlayerRoleWsDto getAllPlayerRole(@RequestBody PlayerRoleWsDto playerRoleWsDto){
+        Pageable pageable=getPageable(playerRoleWsDto.getPage(),playerRoleWsDto.getSizePerPage(),playerRoleWsDto.getSortDirection(),playerRoleWsDto.getSortField());
+        CommonDto playerRoleDto = CollectionUtils.isNotEmpty(playerRoleWsDto.getPlayerRoleDtoList())? playerRoleWsDto.getPlayerRoleDtoList().get(0) : new PlayerRoleDto();
+        PlayerRole playerRole= modelMapper.map(playerRoleDto, PlayerRole.class);
+
         Page<PlayerRole> page=isSearchActive(playerRole)!=null ? playerRoleRepository.findAll(Example.of(playerRole),pageable): playerRoleRepository.findAll(pageable);
-        playerRoleDto.setPlayerRoleList(page.getContent());
-        playerRoleDto.setBaseUrl(ADMIN_PLAYERROLE);
-        playerRoleDto.setTotalPages(page.getTotalPages());
-        playerRoleDto.setTotalRecords(page.getTotalElements());
-        return playerRoleDto;
+        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(page.getContent(), List.class));
+        playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
+        playerRoleWsDto.setTotalPages(page.getTotalPages());
+        playerRoleWsDto.setTotalRecords(page.getTotalElements());
+        return playerRoleWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public PlayerRoleDto getActivePlayerRole() {
-        PlayerRoleDto playerRoleDto=new PlayerRoleDto();
-        playerRoleDto.setPlayerRoleList(playerRoleRepository.findByStatusOrderByIdentifier(true));
-        playerRoleDto.setBaseUrl(ADMIN_PLAYERROLE);
-        return playerRoleDto;
+    public PlayerRoleWsDto getActivePlayerRole() {
+        PlayerRoleWsDto playerRoleWsDto=new PlayerRoleWsDto();
+        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoleRepository.findByStatusOrderByIdentifier(true),List.class));
+        playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
+        return playerRoleWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public PlayerRoleDto editPlayerRole(@RequestBody PlayerDto request) {
-        PlayerRoleDto playerRoleDto=new PlayerRoleDto();
-        PlayerRole playerRole=playerRoleRepository.findByRecordId(request.getRecordId());
-        playerRoleDto.setPlayerRole(playerRole);
-        playerRoleDto.setBaseUrl(ADMIN_PLAYERROLE);
-        return playerRoleDto;
+    public PlayerRoleWsDto editPlayerRole(@RequestBody PlayerWsDto request) {
+        PlayerRoleWsDto playerRoleWsDto=new PlayerRoleWsDto();
+        playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
+        PlayerRole playerRole=playerRoleRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
+        if(playerRole != null){
+            playerRoleWsDto.setPlayerRoleDtoList(List.of(modelMapper.map(playerRole,PlayerRoleDto.class)));
+        }
+        return playerRoleWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public PlayerRoleDto handleEdit(@RequestBody PlayerRoleDto request) {
+    public PlayerRoleWsDto handleEdit(@RequestBody PlayerRoleWsDto request) {
         return playerRoleService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public PlayerRoleDto addPlayerRole() {
-        PlayerRoleDto playerRoleDto=new PlayerRoleDto();
-        playerRoleDto.setPlayerRoleList(playerRoleRepository.findByStatusOrderByIdentifier(true));
-        playerRoleDto.setBaseUrl(ADMIN_PLAYERROLE);
-        return playerRoleDto;
+    public PlayerRoleWsDto addPlayerRole() {
+        PlayerRoleWsDto playerRoleWsDto=new PlayerRoleWsDto();
+        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoleRepository.findByStatusOrderByIdentifier(true),List.class));
+        playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
+        return playerRoleWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public PlayerRoleDto delete(@RequestBody PlayerRoleDto playerRoleDto) {
-        for (String id : playerRoleDto.getRecordId().split(",")) {
-            playerRoleRepository.deleteByRecordId(id);
+    public PlayerRoleWsDto delete(@RequestBody PlayerRoleWsDto playerRoleWsDto) {
+        for (PlayerRoleDto playerRoleDto :playerRoleWsDto.getPlayerRoleDtoList()){
+            playerRoleRepository.deleteByRecordId(playerRoleDto.getRecordId());
         }
-        playerRoleDto.setMessage("Data deleted successfully");
-        playerRoleDto.setBaseUrl(ADMIN_PLAYERROLE);
-        return playerRoleDto;
+        playerRoleWsDto.setMessage("Data deleted successfully");
+        playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
+        return playerRoleWsDto;
     }
 }

@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.NotificationDto;
+import com.avitam.fantasy11.api.dto.NotificationWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.NotificationService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -10,6 +11,10 @@ import com.avitam.fantasy11.repository.NotificationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -30,32 +35,39 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDto handleEdit(NotificationDto request) {
-        NotificationDto notificationDto = new NotificationDto();
+    public NotificationWsDto handleEdit(NotificationWsDto request) {
+        NotificationWsDto notificationWsDto = new NotificationWsDto();
         Notification notification = null;
-        if(request.getRecordId()!=null){
-            Notification requestData = request.getNotification();
-            notification = notificationRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, notification);
-        }
-        else {
-            if(baseService.validateIdentifier(EntityConstants.NOTIFICATION,request.getNotification().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        List<NotificationDto> notificationDtos = request.getNotificationDtoList();
+        List<Notification> notifications = new ArrayList<>();
+        NotificationDto notificationDto = new NotificationDto();
+        for(NotificationDto notificationDto1 :notificationDtos){
+            if(notificationDto1.getRecordId() != null){
+                notification = notificationRepository.findByRecordId(notificationDto1.getRecordId());
+                modelMapper.map(notificationDto1,notification);
+                notificationRepository.save(notification);
+            }else{
+                if(baseService.validateIdentifier(EntityConstants.CONTEST,notificationDto1.getIdentifier()) !=null){
+                    request.setMessage("Identifier already present");
+                    request.setSuccess(false);
+                    return request;
+                }
+                notification = modelMapper.map(notificationDto, Notification.class);
             }
-            notification=request.getNotification();
+            notificationRepository.save(notification);
+
+            notification.setLastModified(new Date());
+            if(notificationDto.getRecordId()== null){
+                notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
+            }
+            notificationRepository.save(notification);
+            notifications.add(notification);
+            notificationWsDto.setMessage("Notification was updated successfully");
+            notificationWsDto.setBaseUrl(ADMIN_NOTIFICATION);
         }
-        baseService.populateCommonData(notification);
-        notificationRepository.save(notification);
-        if(request.getRecordId()==null){
-            notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
-        }
-        notificationRepository.save(notification);
-        notificationDto.setNotification(notification);
-        notificationDto.setBaseUrl(ADMIN_NOTIFICATION);
-        return notificationDto;
+        notificationWsDto.setNotificationDtoList(modelMapper.map(notifications, List.class));
+        return notificationWsDto;
+
     }
 
     @Override

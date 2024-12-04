@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.PendingWithdrawalDto;
+import com.avitam.fantasy11.api.dto.PendingWithdrawalWsDto;
 import com.avitam.fantasy11.model.PendingWithdrawal;
 
 public interface PendingWithdrawalService {
@@ -9,7 +9,7 @@ public interface PendingWithdrawalService {
 
     void deleteByRecordId(String recordId) ;
 
-    PendingWithdrawalDto handleEdit(PendingWithdrawalDto request);
+    PendingWithdrawalWsDto handleEdit(PendingWithdrawalWsDto request);
 
     void updateByRecordId(String recordId);
 }

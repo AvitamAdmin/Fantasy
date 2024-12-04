@@ -14,6 +14,9 @@ import java.util.List;
 @ToString
 public class ContestJoinedDto extends CommonDto{
 
-    private ContestJoined contestJoined;
-    private List<ContestJoined> contestJoinedList;
+    private String userId;
+
+    private String matchId;
+
+    private String userTeamId;
 }

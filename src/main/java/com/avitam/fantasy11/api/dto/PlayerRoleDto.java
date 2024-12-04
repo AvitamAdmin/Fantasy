@@ -13,6 +13,5 @@ import java.util.List;
 @ToString
 public class PlayerRoleDto extends CommonDto{
 
-    private PlayerRole playerRole;
-    private List<PlayerRole> playerRoleList;
+    private String playerRole;
 }

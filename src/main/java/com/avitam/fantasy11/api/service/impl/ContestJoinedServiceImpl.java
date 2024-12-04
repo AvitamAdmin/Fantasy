@@ -1,15 +1,23 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.dto.ContestJoinedDto;
+import com.avitam.fantasy11.api.dto.ContestJoinedWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ContestJoinedService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestJoined;
 import com.avitam.fantasy11.repository.ContestJoinedRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class ContestJoinedServiceImpl implements ContestJoinedService {
@@ -32,32 +40,39 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
     }
 
     @Override
-    public ContestJoinedDto handleEdit(ContestJoinedDto request) {
+    public ContestJoinedWsDto handleEdit(ContestJoinedWsDto request) {
+        ContestJoinedWsDto contestJoinedWsDto = new ContestJoinedWsDto();
+        ContestJoined contestJoined = null;
+        List<ContestJoinedDto> contestJoinedDtos = request.getContestJoinedDtoList();
+        List<ContestJoined> contestJoineds = new ArrayList<>();
+        for(ContestJoinedDto contestJoinedDto1 : contestJoinedDtos){
+            if(contestJoinedDto1.getRecordId() != null){
+                contestJoined = contestJoinedRepository.findByRecordId(contestJoinedDto1.getRecordId());
+                modelMapper.map(contestJoinedDto1,contestJoined);
+                contestJoinedRepository.save(contestJoined);
+            }else {
+                if(baseService.validateIdentifier(EntityConstants.CONTEST_JOINED,contestJoinedDto1.getIdentifier()) != null){
+                    request.setSuccess(false);
+                    request.setMessage("Identifier already present");
+                    return request;
+                }
+                contestJoined = modelMapper.map(contestJoinedDto1, ContestJoined.class);
+                contestJoinedRepository.save(contestJoined);
 
-        ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
-        ContestJoined contestJoined=null;
-        if (request.getRecordId()!=null){
-            ContestJoined requestData=request.getContestJoined();
-            contestJoined=contestJoinedRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData,contestJoined);
-        }else {
-            if(baseService.validateIdentifier(EntityConstants.CONTEST_JOINED,request.getContestJoined().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
             }
-            contestJoined=request.getContestJoined();
+            contestJoined.setLastModified(new Date());
+            if (contestJoined.getRecordId() == null) {
+                contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
+            }
+            contestJoinedRepository.save(contestJoined);
+            contestJoineds.add(contestJoined);
+            contestJoinedWsDto.setMessage("Contest was updated successfully");
+            contestJoinedWsDto.setBaseUrl(ADMIN_CONTESTJOINED);
         }
-        baseService.populateCommonData(contestJoined);
-        contestJoinedRepository.save(contestJoined);
-        if (request.getRecordId()==null){
-            contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
-        }
-        contestJoinedRepository.save(contestJoined);
-        contestJoinedDto.setContestJoined(contestJoined);
-        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
-        return contestJoinedDto;
+        contestJoinedWsDto.setContestJoinedDtoList(modelMapper.map(contestJoineds, List.class));
+        return contestJoinedWsDto;
+
+
     }
 
     @Override

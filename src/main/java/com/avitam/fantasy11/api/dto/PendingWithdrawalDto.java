@@ -14,6 +14,9 @@ import java.util.List;
 @ToString
 public class PendingWithdrawalDto extends CommonDto{
 
-    private PendingWithdrawal pendingWithdrawal;
-    private List<PendingWithdrawal> pendingWithdrawalList;
+    private String methodName;
+    private String trx;
+    private double amountOfWithdraw;
+    private double amountInMethod;
+    private String withdrawalStatus;
 }

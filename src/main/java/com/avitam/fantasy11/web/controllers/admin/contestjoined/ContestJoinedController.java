@@ -1,16 +1,21 @@
 package com.avitam.fantasy11.web.controllers.admin.contestjoined;
 
 import com.avitam.fantasy11.api.dto.ContestJoinedDto;
+import com.avitam.fantasy11.api.dto.ContestJoinedWsDto;
 import com.avitam.fantasy11.api.service.ContestJoinedService;
 import com.avitam.fantasy11.model.ContestJoined;
 import com.avitam.fantasy11.repository.ContestJoinedRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -21,63 +26,69 @@ public class ContestJoinedController extends BaseController {
     private ContestJoinedRepository contestJoinedRepository;
     @Autowired
     private ContestJoinedService contestJoinedService;
+    @Autowired
+    private ModelMapper modelMapper;
     private static final String ADMIN_CONTESTJOINED="/admin/contestJoined";
 
     @PostMapping
     @ResponseBody
-    public ContestJoinedDto getAllContestJoined(@RequestBody ContestJoinedDto contestJoinedDto) {
-        Pageable pageable=getPageable(contestJoinedDto.getPage(),contestJoinedDto.getSizePerPage(),contestJoinedDto.getSortDirection(),contestJoinedDto.getSortField());
-        ContestJoined contestJoined=contestJoinedDto.getContestJoined();
-        Page<ContestJoined> page=isSearchActive(contestJoined) !=null ? contestJoinedRepository.findAll(Example.of(contestJoined),pageable) :contestJoinedRepository.findAll(pageable);
-        contestJoinedDto.setContestJoinedList(page.getContent());
-        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
-        contestJoinedDto.setTotalPages(page.getTotalPages());
-        contestJoinedDto.setTotalRecords(page.getTotalElements());
-        return contestJoinedDto;
+    public ContestJoinedWsDto getAllContestJoined(@RequestBody ContestJoinedWsDto contestJoinedWsDto) {
+        Pageable pageable=getPageable(contestJoinedWsDto.getPage(),contestJoinedWsDto.getSizePerPage(),contestJoinedWsDto.getSortDirection(),contestJoinedWsDto.getSortField());
+        ContestJoinedDto contestJoinedDto = CollectionUtils.isNotEmpty(contestJoinedWsDto.getContestJoinedDtoList()) ? contestJoinedWsDto.getContestJoinedDtoList().get(0) : new ContestJoinedDto();
+        ContestJoined contestJoined = modelMapper.map(contestJoinedDto, ContestJoined.class);
+        Page<ContestJoined> page = isSearchActive(contestJoined) !=null ? contestJoinedRepository.findAll(Example.of(contestJoined),pageable) : contestJoinedRepository.findAll(pageable);
+        contestJoinedWsDto.setContestJoinedDtoList(modelMapper.map(page.getContent(), List.class));
+        contestJoinedWsDto.setBaseUrl(ADMIN_CONTESTJOINED);
+        contestJoinedWsDto.setTotalPages(page.getTotalPages());
+        contestJoinedWsDto.setTotalRecords(page.getTotalElements());
+        return contestJoinedWsDto;
+
     }
     @GetMapping("/get")
     @ResponseBody
-    public ContestJoinedDto getContestJoined(){
-        ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
-        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findByStatusOrderByIdentifier(true));
-        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
-        return contestJoinedDto;
+    public ContestJoinedWsDto getContestJoined(){
+        ContestJoinedWsDto contestJoinedwsDto =new ContestJoinedWsDto();
+        contestJoinedwsDto.setBaseUrl(ADMIN_CONTESTJOINED);
+        contestJoinedwsDto.setContestJoinedDtoList(modelMapper.map(contestJoinedRepository.findByStatusOrderByIdentifier(true), List.class));
+        return contestJoinedwsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public ContestJoinedDto edit(@RequestBody ContestJoinedDto request) {
-        ContestJoinedDto contestJoinedDto=new ContestJoinedDto();
-        ContestJoined contestJoined=contestJoinedRepository.findByRecordId(request.getRecordId());
-        contestJoinedDto.setContestJoined(contestJoined);
-        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
-        return contestJoinedDto;
-    }
+    public ContestJoinedWsDto edit(@RequestBody ContestJoinedWsDto request) {
+        ContestJoinedWsDto contestJoinedwsDto = new ContestJoinedWsDto();
+        contestJoinedwsDto.setBaseUrl(ADMIN_CONTESTJOINED);
 
+        ContestJoined contestJoined = contestJoinedRepository.findByRecordId(request.getContestJoinedDtoList().get(0).getRecordId());
+        if (contestJoined != null){
+            contestJoinedwsDto.setContestJoinedDtoList(List.of(modelMapper.map(contestJoined, ContestJoinedDto.class)));
+        }
+        return contestJoinedwsDto;
+    }
     @PostMapping("/edit")
     @ResponseBody
-    public ContestJoinedDto handleEdit(@RequestBody ContestJoinedDto request) {
+    public ContestJoinedWsDto handleEdit(@RequestBody ContestJoinedWsDto request) {
 
         return contestJoinedService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public ContestJoinedDto add() {
-        ContestJoinedDto contestJoinedDto = new ContestJoinedDto();
-        contestJoinedDto.setContestJoinedList(contestJoinedRepository.findByStatusOrderByIdentifier(true));
-        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
-        return contestJoinedDto;
+    public ContestJoinedWsDto add() {
+        ContestJoinedWsDto contestJoinedwsDto = new ContestJoinedWsDto();
+        contestJoinedwsDto.setContestJoinedDtoList(modelMapper.map(contestJoinedRepository.findByStatusOrderByIdentifier(true),List.class));
+        contestJoinedwsDto.setBaseUrl(ADMIN_CONTESTJOINED);
+        return contestJoinedwsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public ContestJoinedDto delete(@RequestBody ContestJoinedDto contestJoinedDto) {
-        for (String id : contestJoinedDto.getRecordId().split(",")) {
-            contestJoinedRepository.deleteByRecordId(id);
+    public ContestJoinedWsDto delete(@RequestBody ContestJoinedWsDto contestJoinedWsDto) {
+        for (ContestJoinedDto contestJoinedDto : contestJoinedWsDto.getContestJoinedDtoList()) {
+            contestJoinedRepository.deleteByRecordId(contestJoinedDto.getRecordId());
         }
-        contestJoinedDto.setMessage("Data deleted Successfully");
-        contestJoinedDto.setBaseUrl(ADMIN_CONTESTJOINED);
-        return contestJoinedDto;
+        contestJoinedWsDto.setMessage("Data deleted Successfully");
+        contestJoinedWsDto.setBaseUrl(ADMIN_CONTESTJOINED);
+        return contestJoinedWsDto;
     }
 }

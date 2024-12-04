@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.mobileOTP;
 
 import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.MobileOTPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,19 +17,19 @@ public class MobileOTPController {
     private MobileOTPService mobileOTPService;
 
     @PostMapping("/send-otp")
-    public UserDto sendOtp(@RequestBody UserDto userDto) {
+    public UserWsDto sendOtp(@RequestBody UserWsDto userWsDto) {
 
-        return mobileOTPService.sendOtp(userDto);
+        return mobileOTPService.sendOtp(userWsDto);
     }
 
     @PostMapping("/validate-otp")
-    public UserDto validateOtp(@RequestBody UserDto userDto) {
+    public UserWsDto validateOtp(@RequestBody UserWsDto userWsDto) {
 
-        return mobileOTPService.validateOtp(userDto);
+        return mobileOTPService.validateOtp(userWsDto);
     }
 
     @PostMapping("/save-username")
-    public UserDto saveUsername(@RequestBody  UserDto userDto){
-        return mobileOTPService.saveUsername(userDto);
+    public UserWsDto saveUsername(@RequestBody  UserWsDto userWsDto){
+        return mobileOTPService.saveUsername(userWsDto);
     }
 }

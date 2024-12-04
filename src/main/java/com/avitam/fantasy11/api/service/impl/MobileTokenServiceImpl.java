@@ -1,18 +1,20 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.MobileTokenDto;
-import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.MobileTokenWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MobileTokenService;
-import com.avitam.fantasy11.core.Utility;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MobileToken;
-import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MobileTokenRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class MobileTokenServiceImpl implements MobileTokenService {
@@ -41,32 +43,39 @@ public class MobileTokenServiceImpl implements MobileTokenService {
     }
 
     @Override
-    public MobileTokenDto handleEdit(MobileTokenDto request) {
-        MobileTokenDto mobileTokenDto=new MobileTokenDto();
-        MobileToken mobileToken=null;
-        if(request.getRecordId()!=null){
-            MobileToken requestData=request.getMobileToken();
-            mobileToken=mobileTokenRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData,mobileToken);
-        }else{
-            if(baseService.validateIdentifier(EntityConstants.MOBILE_TOKEN,request.getMobileToken().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+    public MobileTokenWsDto handleEdit(MobileTokenWsDto request) {
+        MobileTokenWsDto mobileTokenWsDto = new MobileTokenWsDto();
+        MobileToken mobileToken = null;
+        List<MobileTokenDto> mobileTokenDtos = request.getMobileTokenDtoList();
+        List<MobileToken>mobileTokens = new ArrayList<>();
+        MobileTokenDto mobileTokenDto = new MobileTokenDto();
+        for(MobileTokenDto mobileTokenDto1 : mobileTokenDtos){
+            if(mobileTokenDto1.getRecordId() != null){
+                mobileToken = mobileTokenRepository.findByRecordId(mobileTokenDto1.getRecordId());
+                modelMapper.map(mobileTokenDto1,mobileToken);
+                mobileTokenRepository.save(mobileToken);
+            }else{
+                if(baseService.validateIdentifier(EntityConstants.MOBILE_TOKEN,mobileTokenDto1.getIdentifier()) !=null){
+                    request.setSuccess(false);
+                    request.setMessage("Identifier already present");
+                    return request;
+                }
+                mobileToken = modelMapper.map(mobileTokenDto,MobileToken.class);
             }
-            mobileToken=request.getMobileToken();
-            mobileToken.setOtp(Utility.OtpUtil.generateOtp(4));
+            mobileTokenRepository.save(mobileToken);
+            mobileToken.setLastModified(new Date());
+            if (mobileToken.getRecordId()== null){
+                mobileToken.setRecordId(String.valueOf(mobileToken.getId().getTimestamp()));
+            }
+            mobileTokenRepository.save(mobileToken);
+            mobileTokens.add(mobileToken);
+            mobileTokenWsDto.setBaseUrl(ADMIN_MOBILETOKEN);
+            mobileTokenWsDto.setMessage("MobileToken was updated successfully");
+
         }
-       baseService.populateCommonData(mobileToken);
-        mobileTokenRepository.save(mobileToken);
-        if (request.getRecordId()==null){
-            mobileToken.setRecordId(String.valueOf(mobileToken.getId().getTimestamp()));
-        }
-        mobileTokenRepository.save(mobileToken);
-        mobileTokenDto.setMobileToken(mobileToken);
-        mobileTokenDto.setBaseUrl(ADMIN_MOBILETOKEN);
-        return mobileTokenDto;
+        mobileTokenWsDto.setMobileTokenDtoList(modelMapper.map(mobileTokens,List.class));
+        return mobileTokenWsDto;
+
     }
 
     @Override
@@ -78,23 +87,8 @@ public class MobileTokenServiceImpl implements MobileTokenService {
         }
     }
 
-   @Override
-    public  String generateOtpForUser(String email) {
-        MobileToken mobileToken = mobileTokenRepository.findByEmail(email);
-        if (mobileToken == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        String otp = Utility.OtpUtil.generateOtp(4);  // Generate a 4-digit OTP
-        mobileToken.setOtp(otp);                     // Set OTP in the user entity
-        mobileTokenRepository.save(mobileToken);            // Save the user with OTP in the database
-
-        MobileTokenDto mobileTokenDto = new MobileTokenDto();
-        mobileTokenDto.getMobileToken().setId(mobileToken.getId());
-        mobileTokenDto.getMobileToken().setUsername(mobileToken.getUsername());
-        mobileTokenDto.getMobileToken().setEmail(mobileToken.getEmail());
-        mobileTokenDto.setOtp(otp);                  // Set OTP in the response DTO
-
-        return otp;
+    @Override
+    public String generateOtpForUser(String email) {
+        return "";
     }
 }

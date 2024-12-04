@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.pendingWithdrawal;
 
 import com.avitam.fantasy11.api.dto.PendingWithdrawalDto;
+import com.avitam.fantasy11.api.dto.PendingWithdrawalWsDto;
 import com.avitam.fantasy11.api.service.PendingWithdrawalService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.PendingWithdrawal;
@@ -8,6 +9,7 @@ import com.avitam.fantasy11.repository.PendingWithdrawalRepository;
 import com.avitam.fantasy11.repository.UserWinningsRepository;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/pendingWithdrawal")
@@ -38,60 +42,65 @@ public class PendingWithdrawalController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public PendingWithdrawalDto getAll(@RequestBody PendingWithdrawalDto pendingWithdrawalDto){
-        Pageable pageable = getPageable(pendingWithdrawalDto.getPage(), pendingWithdrawalDto.getSizePerPage(), pendingWithdrawalDto.getSortDirection(), pendingWithdrawalDto.getSortField());
-        PendingWithdrawal pendingWithdrawal = pendingWithdrawalDto.getPendingWithdrawal();
+    public PendingWithdrawalWsDto getAll(@RequestBody PendingWithdrawalWsDto pendingWithdrawalWsDto){
+        Pageable pageable = getPageable(pendingWithdrawalWsDto.getPage(), pendingWithdrawalWsDto.getSizePerPage(), pendingWithdrawalWsDto.getSortDirection(), pendingWithdrawalWsDto.getSortField());
+        PendingWithdrawalDto pendingWithdrawalDto = CollectionUtils.isNotEmpty(pendingWithdrawalWsDto.getPendingWithdrawalDtoList()) ? pendingWithdrawalWsDto.getPendingWithdrawalDtoList().get(0) : new PendingWithdrawalDto();
+        PendingWithdrawal pendingWithdrawal = modelMapper.map(pendingWithdrawalDto, PendingWithdrawal.class);
         Page<PendingWithdrawal> page = isSearchActive(pendingWithdrawal)!=null ? pendingWithdrawalRepository.findAll(Example.of(pendingWithdrawal), pageable) : pendingWithdrawalRepository.findAll(pageable);
-        pendingWithdrawalDto.setPendingWithdrawalList(page.getContent());
-        pendingWithdrawalDto.setTotalPages(page.getTotalPages());
-        pendingWithdrawalDto.setTotalRecords(page.getTotalElements());
-        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
-        return pendingWithdrawalDto;
+        pendingWithdrawalWsDto.setPendingWithdrawalDtoList(modelMapper.map(page.getContent(),List.class));
+        pendingWithdrawalWsDto.setTotalPages(page.getTotalPages());
+        pendingWithdrawalWsDto.setTotalRecords(page.getTotalElements());
+        pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public PendingWithdrawalDto getActivePendingWithdrawal(){
-        PendingWithdrawalDto pendingWithdrawalDto = new PendingWithdrawalDto();
-        pendingWithdrawalDto.setPendingWithdrawalList(pendingWithdrawalRepository.findByStatusOrderByIdentifier(true));
-        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
-        return pendingWithdrawalDto;
+    public PendingWithdrawalWsDto getActivePendingWithdrawal(){
+        PendingWithdrawalWsDto pendingWithdrawalWsDto = new PendingWithdrawalWsDto();
+        pendingWithdrawalWsDto.setPendingWithdrawalDtoList(modelMapper.map(pendingWithdrawalRepository.findByStatusOrderByIdentifier(true), List.class));
+        pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalWsDto;
     }
 
 
     @PostMapping("/getedit")
     @ResponseBody
-    public PendingWithdrawalDto editPendingWithdrawal (@RequestBody PendingWithdrawalDto request){
+    public PendingWithdrawalWsDto editPendingWithdrawal (@RequestBody PendingWithdrawalWsDto request){
 
-        PendingWithdrawalDto pendingWithdrawalDto = new PendingWithdrawalDto();
-        pendingWithdrawalDto.setPendingWithdrawal(pendingWithdrawalRepository.findByRecordId(request.getRecordId()));
-        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
-        return pendingWithdrawalDto;
+        PendingWithdrawalWsDto pendingWithdrawalWsDto = new PendingWithdrawalWsDto();
+        pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        PendingWithdrawal pendingWithdrawal = pendingWithdrawalRepository.findByRecordId(request.getPendingWithdrawalDtoList().get(0).getRecordId());
+        if( pendingWithdrawal !=  null){
+            pendingWithdrawalWsDto.setPendingWithdrawalDtoList(List.of(modelMapper.map(pendingWithdrawal, PendingWithdrawalDto.class)));
+        }
+        return pendingWithdrawalWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public PendingWithdrawalDto handleEdit(@RequestBody PendingWithdrawalDto request)  {
+    public PendingWithdrawalWsDto handleEdit(@RequestBody PendingWithdrawalWsDto request)  {
         return pendingWithdrawalService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public PendingWithdrawalDto addPendingWithdrawal() {
+    public PendingWithdrawalWsDto addPendingWithdrawal() {
 
-        PendingWithdrawalDto pendingWithdrawalDto = new PendingWithdrawalDto();
-        pendingWithdrawalDto.setPendingWithdrawalList(pendingWithdrawalRepository.findByStatusOrderByIdentifier(true));
-        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
-        return pendingWithdrawalDto;
+        PendingWithdrawalWsDto pendingWithdrawalWsDto = new PendingWithdrawalWsDto();
+        pendingWithdrawalWsDto.setPendingWithdrawalDtoList(modelMapper.map(pendingWithdrawalRepository.findByStatusOrderByIdentifier(true),List.class));
+        pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalWsDto;
     }
     @PostMapping("/delete")
     @ResponseBody
-    public PendingWithdrawalDto deletePendingWithdrawal(@RequestBody PendingWithdrawalDto pendingWithdrawalDto) {
-        for (String id : pendingWithdrawalDto.getRecordId().split(",")) {
-            withdrawalMethodsRepository.deleteById(new ObjectId(id));
+    public PendingWithdrawalWsDto deletePendingWithdrawal(@RequestBody PendingWithdrawalWsDto pendingWithdrawalWsDto) {
+        for (PendingWithdrawalDto pendingWithdrawalDto :pendingWithdrawalWsDto.getPendingWithdrawalDtoList()){
+            pendingWithdrawalRepository.deleteByRecordId(pendingWithdrawalDto.getRecordId());
         }
-        pendingWithdrawalDto.setMessage("Data deleted successfully");
-        pendingWithdrawalDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
-        return pendingWithdrawalDto;
+        pendingWithdrawalWsDto.setMessage("Data deleted successfully");
+        pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+        return pendingWithdrawalWsDto;
+
     }
 }

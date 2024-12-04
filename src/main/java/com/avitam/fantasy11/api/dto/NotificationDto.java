@@ -14,6 +14,6 @@ import java.util.List;
 @ToString
 public class NotificationDto extends CommonDto{
 
-    private Notification notification;
-    private List<Notification> notificationList;
+    private String message;
+    private String mobileNumber;
 }

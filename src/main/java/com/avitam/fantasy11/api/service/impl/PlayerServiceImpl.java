@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.PlayerDto;
+import com.avitam.fantasy11.api.dto.PlayerWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
@@ -35,41 +39,42 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public PlayerDto handleEdit(PlayerDto request) {
-        PlayerDto playerDto=new PlayerDto();
+    public PlayerWsDto handleEdit(PlayerWsDto request) {
+        PlayerWsDto playerWsDto=new PlayerWsDto();
         Player player=null;
-        if (request.getRecordId()!=null){
-            Player requestData=request.getPlayer();
-            player=playerRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData,player);
-        }else {
-            if(baseService.validateIdentifier(EntityConstants.PLAYER,request.getPlayer().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        List<PlayerDto>playerDto = request.getPlayerDtoList();
+        List<Player>players = new ArrayList<>();
+        PlayerDto playerDto1 = new PlayerDto();
+        for(PlayerDto playerDto2: playerDto) {
+            if (playerDto2.getRecordId() != null) {
+                player = playerRepository.findByRecordId(playerDto2.getRecordId());
+                modelMapper.map(playerDto2, player);
+                playerRepository.save(player);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.PLAYER, playerDto2.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    request.setMessage("Identifier already present");
+                    return request;
+                }
+                player = modelMapper.map(playerDto1, Player.class);
+
             }
-            player=request.getPlayer();
-        }
-        if(request.getPlayerImage()!=null && !request.getPlayerImage().isEmpty()) {
-            try {
-                player.setPlayerImage(new Binary(request.getPlayerImage().getBytes()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                playerDto.setMessage("Error processing image file");
-                return playerDto;
+            playerRepository.save(player);
+            player.setLastModified(new Date());
+            if (playerDto1.getRecordId() == null) {
+                player.setRecordId(String.valueOf(player.getId().getTimestamp()));
+
             }
+            playerRepository.save(player);
+            players.add(player);
+            playerWsDto.setMessage("Player was updated successfully");
+            playerWsDto.setBaseUrl(ADMIN_PLAYER);
         }
-        baseService.populateCommonData(player);
-        playerRepository.save(player);
-        if (request.getRecordId()==null){
-            player.setRecordId(String.valueOf(player.getId().getTimestamp()));
-        }
-        playerRepository.save(player);
-        playerDto.setPlayer(player);
-        playerDto.setBaseUrl(ADMIN_PLAYER);
-        return playerDto;
+        playerWsDto.setPlayerDtoList(modelMapper.map(players, List.class));
+        return playerWsDto;
     }
+
+
 
     @Override
     public void deleteByRecordId(String recordId) {

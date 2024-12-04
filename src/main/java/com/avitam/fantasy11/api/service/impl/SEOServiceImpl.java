@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.SEODto;
+import com.avitam.fantasy11.api.dto.SEOWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SEOService;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class SEOServiceImpl implements SEOService {
@@ -52,40 +56,37 @@ public class SEOServiceImpl implements SEOService {
     }
 
     @Override
-    public SEODto handleEdit(SEODto request) {
-        SEODto seoDto = new SEODto();
+    public SEOWsDto handleEdit(SEOWsDto request) {
+        SEOWsDto seoWsDto = new SEOWsDto();
         SEO seo = null;
-        if(request.getRecordId()!=null){
-            SEO requestData = request.getSeo();
-            seo = seoRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(requestData, seo);
-        }
-        else {
-            if(baseService.validateIdentifier(EntityConstants.SEO,request.getSeo().getIdentifier())!=null)
-            {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        List<SEODto> seoDtos = request.getSeoDtoList();
+        List<SEO> seos = new ArrayList<>();
+        SEODto seoDto = new SEODto();
+        for(SEODto seoDto1: seoDtos) {
+            if (seoDto1.getRecordId() != null) {
+                seo = seoRepository.findByRecordId(seoDto1.getRecordId());
+                modelMapper.map(seoDto1, seo);
+                seoRepository.save(seo);
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.SEO, seoDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    request.setMessage("identifier already present");
+                    return request;
+                }
+                seo = modelMapper.map(seoDto1, SEO.class);
+                seoRepository.save(seo);
             }
-            seo=request.getSeo();
-        }
-        if(request.getImage()!=null && !request.getImage().isEmpty()) {
-            try {
-                seo.setImage(new Binary(request.getImage().getBytes()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                seoDto.setMessage("Error processing image file");
-                return seoDto;
+            seo.setLastModified(new Date());
+            if (seo.getRecordId() == null) {
+                seo.setRecordId(String.valueOf(seo.getId().getTimestamp()));
             }
+            seoRepository.save(seo);
+            seos.add(seo);
+            seoWsDto.setMessage("seo was updated successfully");
+            seoWsDto.setBaseUrl(ADMIN_SEO);
+
         }
-        baseService.populateCommonData(seo);
-        seoRepository.save(seo);
-        if(request.getRecordId()==null){
-            seo.setRecordId(String.valueOf(seo.getId().getTimestamp()));
-        }
-        seoRepository.save(seo);
-        seoDto.setSeo(seo);
-        seoDto.setBaseUrl(ADMIN_SEO);
-        return seoDto;
+        seoWsDto.setSeoDtoList(modelMapper.map(seos,List.class));
+        return seoWsDto;
     }
 }

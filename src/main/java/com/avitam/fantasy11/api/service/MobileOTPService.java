@@ -1,12 +1,13 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 
 public interface MobileOTPService {
 
-    public UserDto sendOtp(UserDto userDto);
+    public UserWsDto sendOtp(UserWsDto userwsDto);
 
-    public UserDto validateOtp(UserDto userDto);
+    public UserWsDto validateOtp(UserWsDto userWsDto);
 
-    public UserDto saveUsername(UserDto userDto);
+    public UserWsDto saveUsername(UserWsDto userWsDto);
 }
