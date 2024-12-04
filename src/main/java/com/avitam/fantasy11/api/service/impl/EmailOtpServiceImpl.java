@@ -170,7 +170,6 @@ public class EmailOtpServiceImpl implements EmailOTPService {
         existingUser.setUsername(username);
         userRepository.save(existingUser);
 
-        userDto.setUser(existingUser);
         userWsDto.setSuccess(true);
         userWsDto.setMessage("Username saved successfully.");
         return userWsDto;

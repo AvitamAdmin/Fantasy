@@ -43,12 +43,12 @@ public class TeamLineupController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public TeamLineUpWsDto getAll(@RequestBody TeamLineUpWsDto teamLineUpWsDto){
+    public TeamLineUpWsDto getAll(@RequestBody TeamLineUpWsDto teamLineUpWsDto) {
         Pageable pageable = getPageable(teamLineUpWsDto.getPage(), teamLineUpWsDto.getSizePerPage(), teamLineUpWsDto.getSortDirection(), teamLineUpWsDto.getSortField());
-        TeamLineUpDto teamLineUpDto = CollectionUtils.isNotEmpty(teamLineUpWsDto.getTeamLineUpDtoList()) ? teamLineUpWsDto.getTeamLineUpDtoList().get(0):new TeamLineUpDto();
-        TeamLineup teamLineup =modelMapper.map(teamLineUpWsDto,TeamLineup.class);
-        Page<TeamLineup> page = isSearchActive(teamLineup)!=null ? teamLineupRepository.findAll(Example.of(teamLineup), pageable) : teamLineupRepository.findAll(pageable);
-        teamLineUpDto.setTeamLineupList(page.getContent());
+        TeamLineUpDto teamLineUpDto = CollectionUtils.isNotEmpty(teamLineUpWsDto.getTeamLineUpDtoList()) ? teamLineUpWsDto.getTeamLineUpDtoList().get(0) : new TeamLineUpDto();
+        TeamLineup teamLineup = modelMapper.map(teamLineUpWsDto, TeamLineup.class);
+        Page<TeamLineup> page = isSearchActive(teamLineup) != null ? teamLineupRepository.findAll(Example.of(teamLineup), pageable) : teamLineupRepository.findAll(pageable);
+        teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(page.getContent(), List.class));
         teamLineUpWsDto.setTotalPages(page.getTotalPages());
         teamLineUpWsDto.setTotalRecords(page.getTotalElements());
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
@@ -57,7 +57,7 @@ public class TeamLineupController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public TeamLineUpWsDto getActiveTeamLineUp(){
+    public TeamLineUpWsDto getActiveTeamLineUp() {
         TeamLineUpWsDto teamLineUpWsDto = new TeamLineUpWsDto();
         teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(teamLineupRepository.findByStatusOrderByIdentifier(true), List.class));
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
@@ -66,21 +66,17 @@ public class TeamLineupController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public TeamLineUpWsDto editTeamLineup (@RequestBody TeamLineUpWsDto request){
+    public TeamLineUpWsDto editTeamLineup(@RequestBody TeamLineUpWsDto request) {
 
         TeamLineUpWsDto teamLineUpWsDto = new TeamLineUpWsDto();
-        teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(teamLineupRepository.findByRecordId(request.getRecordId()),List.class));
+        teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(teamLineupRepository.findByRecordId(request.getRecordId()), List.class));
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
-            //model.addAttribute("editForm", teamLineUpForm);
-            //model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
-            //model.addAttribute("players",playerRepository.findAll().stream().filter(player ->player.getId()!=null).collect(Collectors.toList()));
         return teamLineUpWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
     public TeamLineUpWsDto handleEdit(@RequestBody TeamLineUpWsDto request) {
-        //model.addAttribute("editForm", teamLineUpForm);
         return teamLineUpService.handleEdit(request);
     }
 
@@ -89,13 +85,11 @@ public class TeamLineupController extends BaseController {
     public TeamLineUpWsDto addTeamLineup(@RequestBody TeamLineUpWsDto request) {
 
         TeamLineUpWsDto teamLineUpWsDto = new TeamLineUpWsDto();
-        teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(teamLineupRepository.findByStatusOrderByIdentifier(true),List.class));
+        teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(teamLineupRepository.findByStatusOrderByIdentifier(true), List.class));
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
-        //model.addAttribute("editForm", form);
-        //model.addAttribute("teams",teamRepository.findAll().stream().filter(team -> team.getId()!=null).collect(Collectors.toList()));
-        //model.addAttribute("players",playerRepository.findAll().stream().filter(player ->player.getId()!=null).collect(Collectors.toList()));
         return teamLineUpWsDto;
     }
+
     @PostMapping("/delete")
     @ResponseBody
     public TeamLineUpWsDto deleteTeamLineup(@RequestBody TeamLineUpWsDto teamLineUpWsDto) {

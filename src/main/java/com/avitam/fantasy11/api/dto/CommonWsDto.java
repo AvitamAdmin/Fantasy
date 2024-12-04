@@ -13,8 +13,6 @@ public class CommonWsDto extends PaginationDto{
     private String baseUrl;
     private String recordId;
     private String message;
-    private int  totalPages;
-    private long totalRecords;
     private boolean success = true;
     private  String token;
     private String email;

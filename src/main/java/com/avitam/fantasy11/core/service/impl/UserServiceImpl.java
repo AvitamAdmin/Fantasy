@@ -1,7 +1,7 @@
 package com.avitam.fantasy11.core.service.impl;
 
 import com.avitam.fantasy11.api.dto.UserDto;
-import com.avitam.fantasy11.core.Utility;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.Role;
@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public static final String TOKEN_INVALID = "invalidToken";
     public static final String TOKEN_EXPIRED = "expired";
     public static final String TOKEN_VALID = "valid";
-    public static final String ADMIN_USER="/admin/user";
+    public static final String ADMIN_USER = "/admin/user";
 
     @Autowired
     private UserRepository userRepository;
@@ -43,31 +41,34 @@ public class UserServiceImpl implements UserService {
     private CoreService coreService;
 
     @Override
-    public void save( UserDto request) {
-        User user=null;
-        if(request.getRecordId()!=null)
-        {
-            user = userRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(request, user);
-        }
-        else {
-            user = modelMapper.map(request.getUser(),User.class);
-            user.setCreationTime(new Date());
-            userRepository.save(user);
+    public void save(UserWsDto request) {
+        List<UserDto> userDtos = request.getUserDtoList();
+        List<User> userList = new ArrayList<>();
+        User user = null;
+        for (UserDto userDto : userDtos) {
+            if (userDto.getRecordId() != null) {
+                user = userRepository.findByRecordId(userDto.getRecordId());
+                modelMapper.map(userDto, user);
+                userRepository.save(user);
+            } else {
+                user = modelMapper.map(userDto, User.class);
+                user.setCreationTime(new Date());
+                userRepository.save(user);
             }
             user.setLastModified(new Date());
-        if(StringUtils.isNotEmpty(user.getPassword()))
-        {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setPasswordConfirm(bCryptPasswordEncoder.encode(user.getPasswordConfirm()));
-        }
+            if (StringUtils.isNotEmpty(user.getPassword())) {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+                user.setPasswordConfirm(bCryptPasswordEncoder.encode(user.getPasswordConfirm()));
+            }
             userRepository.save(user);
-            if (request.getRecordId() == null) {
+            if (user.getRecordId() == null) {
                 user.setRecordId(String.valueOf(user.getId().getTimestamp()));
             }
             userRepository.save(user);
-            request.setUser(user);
-            request.setBaseUrl(ADMIN_USER);
+            userList.add(user);
+        }
+        request.setBaseUrl(ADMIN_USER);
+        request.setUserDtoList(modelMapper.map(userList, List.class));
     }
 
     @Override
@@ -168,18 +169,8 @@ public class UserServiceImpl implements UserService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
-
         user.setResetPasswordToken(null);
         userRepository.save(user);
     }
 
-    @Override
-    public UserDto generateOtpForUser(String email) {
-        return null;
-    }
-
-
 }
-
-
-

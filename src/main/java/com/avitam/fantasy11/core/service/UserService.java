@@ -2,14 +2,14 @@ package com.avitam.fantasy11.core.service;
 
 
 import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.model.VerificationToken;
 
 public interface UserService {
 
 
-    void save(UserDto request);
-
+    void save(UserWsDto request);
 
     User findByUserName(String userName);
 
@@ -37,5 +37,4 @@ public interface UserService {
     void updatePassword(User user, String password);
 
 
-    UserDto generateOtpForUser(String email);
 }

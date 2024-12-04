@@ -71,7 +71,7 @@ public class RoleServiceImpl implements RoleService {
             }
             roleRepository.save(role);
             roles.add(role);
-            roleDto.setBaseUrl(ADMIN_ROLE);
+            request.setBaseUrl(ADMIN_ROLE);
         }
         request.setRoleDtoList(modelMapper.map(roles, List.class));
         return request;

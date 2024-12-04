@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.web.controllers;
 
-import com.avitam.fantasy11.api.dto.UserDto;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.core.Utility;
 import com.avitam.fantasy11.core.service.SecurityService;
 import com.avitam.fantasy11.core.service.UserService;
@@ -145,7 +145,7 @@ public class SecurityController {
 
     @PostMapping("/register")
     @ResponseBody
-    public UserDto processRegister(@RequestBody UserDto request) {
+    public UserWsDto processRegister(@RequestBody UserWsDto request) {
        userService.save(request);
        request.setMessage("Registration Successful!!");
        return request;

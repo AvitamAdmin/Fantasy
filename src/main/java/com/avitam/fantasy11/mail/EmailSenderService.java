@@ -20,9 +20,9 @@ public class EmailSenderService {
 
         SimpleMailMessage message=new SimpleMailMessage();
         message.setFrom(fromEmailId);
-        message.setTo(request.getEmail().getTo());
-        message.setText(request.getEmail().getContent());
-        message.setSubject(request.getEmail().getSubject());
+        message.setTo(request.getTo());
+        message.setText(request.getContent());
+        message.setSubject(request.getSubject());
 
         javaMailSender.send(message);
 

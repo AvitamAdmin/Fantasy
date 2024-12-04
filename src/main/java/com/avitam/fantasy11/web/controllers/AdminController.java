@@ -1,103 +1,96 @@
 package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.api.dto.UserDto;
-import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.User;
-import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/user")
 public class AdminController extends BaseController{
 
     public static final String ADMIN_USER="/admin/user";
-    Logger logger= LoggerFactory.getLogger(AdminController.class);
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private ModelMapper modelMapper;
 
     @PostMapping("")
     @ResponseBody
-    public UserDto getAllUsers(@RequestBody UserDto userDto) {
-        Pageable pageable = getPageable(userDto.getPage(), userDto.getSizePerPage(), userDto.getSortDirection(), userDto.getSortField());
-        User user = userDto.getUser();
+    public UserWsDto getAllUsers(@RequestBody UserWsDto userWsDto) {
+        Pageable pageable = getPageable(userWsDto.getPage(), userWsDto.getSizePerPage(), userWsDto.getSortDirection(), userWsDto.getSortField());
+        UserDto userDto= CollectionUtils.isNotEmpty(userWsDto.getUserDtoList())? userWsDto.getUserDtoList().get(0) : new UserDto();
+        User user = modelMapper.map(userDto, User.class);
         Page<User> page = isSearchActive(user) != null ? userRepository.findAll(Example.of(user), pageable) : userRepository.findAll(pageable);
-        userDto.setUsersList(page.getContent());
-        userDto.setTotalPages(page.getTotalPages());
-        userDto.setTotalRecords(page.getTotalElements());
-        userDto.setBaseUrl(ADMIN_USER);
-        return userDto;
+        userWsDto.setUserDtoList(modelMapper.map(page.getContent(),List.class));
+        userWsDto.setTotalPages(page.getTotalPages());
+        userWsDto.setTotalRecords(page.getTotalElements());
+        userWsDto.setBaseUrl(ADMIN_USER);
+        return userWsDto;
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public UserDto getActiveUserList() {
-        UserDto userDto = new UserDto();
-        userDto.setUsersList(userRepository.findByStatusOrderByIdentifier(true));
-        userDto.setBaseUrl(ADMIN_USER);
-        return userDto;
+    public UserWsDto getActiveUserList() {
+        UserWsDto userWsDto = new UserWsDto();
+        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByStatusOrderByIdentifier(true),List.class));
+        userWsDto.setBaseUrl(ADMIN_USER);
+        return userWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-    public UserDto editUser(@RequestBody UserDto request) {
-        UserDto userDto = new UserDto();
-        User user = userRepository.findByRecordId(userDto.getRecordId());
-        userDto.setUser(user);
-        userDto.setBaseUrl(ADMIN_USER);
-        return userDto;
+    public UserWsDto editUser(@RequestBody UserWsDto request) {
+        UserWsDto userWsDto = new UserWsDto();
+        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByRecordId(request.getRecordId()),List.class));
+        userWsDto.setBaseUrl(ADMIN_USER);
+        return userWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public UserDto save(@RequestBody UserDto request) {
-
+    public UserWsDto save(@RequestBody UserWsDto request) {
         userService.save(request);
         return request;
     }
 
     @GetMapping("/add")
     @ResponseBody
-    public UserDto addUser() {
-        UserDto userDto=new UserDto();
-        userDto.setUsersList(userRepository.findByStatusOrderByIdentifier(true));
-        userDto.setBaseUrl(ADMIN_USER);
-        return userDto;
+    public UserWsDto addUser() {
+        UserWsDto userWsDto=new UserWsDto();
+        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByStatusOrderByIdentifier(true),List.class));
+        userWsDto.setBaseUrl(ADMIN_USER);
+        return userWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public UserDto deleteUser(@RequestBody UserDto userDto) {
+    public UserWsDto deleteUser(@RequestBody UserWsDto userWsDto) {
 
-        for (String id : userDto.getRecordId().split(",")) {
-            userRepository.deleteByRecordId(id);
+        for (UserDto data : userWsDto.getUserDtoList()) {
+            userRepository.deleteByRecordId(data.getRecordId());
         }
-        userDto.setBaseUrl(ADMIN_USER);
-        userDto.setMessage("Data Deleted Successfully");
-        return userDto;
+        userWsDto.setBaseUrl(ADMIN_USER);
+        userWsDto.setMessage("Data Deleted Successfully");
+        return userWsDto;
     }
 
-    @GetMapping("/generate-otp")
-    public ResponseEntity<UserDto> generateOtp(@RequestParam String email) {
-        UserDto userDto = userService.generateOtpForUser(email);
-        return ResponseEntity.ok(userDto);
-    }
+//    @GetMapping("/generate-otp")
+//    public ResponseEntity<UserDto> generateOtp(@RequestParam String email) {
+//        UserDto userDto = userService.generateOtpForUser(email);
+//        return ResponseEntity.ok(userDto);
+//    }
 
 }
