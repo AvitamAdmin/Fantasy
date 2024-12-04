@@ -45,31 +45,31 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Matches matches=matchesRepository.findByRecordId(recordId);
-        if(matches !=null){
+        Matches matches = matchesRepository.findByRecordId(recordId);
+        if (matches != null) {
             matchesRepository.save(matches);
         }
     }
 
     @Override
-    public MatchesDto handleEdit(MatchesWsDto request) {
-        MatchesWsDto matcheswsDto = new MatchesWsDto();
-        Matches matches =new Matches();
+    public MatchesWsDto handleEdit(MatchesWsDto request) {
+        Matches matches = new Matches();
         List<MatchesDto> matchesDto = request.getMatchesDtoList();
         List<Matches> matchesList = new ArrayList<>();
-        for(MatchesDto matchesDtos : matchesDto){
-           if(matchesDtos.getRecordId() != null){
-               matches = matchesRepository.findByRecordId(matchesDtos.getRecordId());
-               modelMapper.map(matchesDtos, matches);
-               matchesRepository.save(matches);
-           }else{
-               matches= modelMapper.map(matchesDtos, Matches.class);
-               matchesRepository.save(matches);
-           }
-           if(request.getRecordId()== null){
-               matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
-           }
-           matchesRepository.save(matches);
+        for (MatchesDto matchesDtos : matchesDto) {
+            if (matchesDtos.getRecordId() != null) {
+                matches = matchesRepository.findByRecordId(matchesDtos.getRecordId());
+                modelMapper.map(matchesDtos, matches);
+                matchesRepository.save(matches);
+            } else {
+                matches = modelMapper.map(matchesDtos, Matches.class);
+                eventStatus(matches, request);
+                matchesRepository.save(matches);
+            }
+            if (request.getRecordId() == null) {
+                matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
+            }
+            matchesRepository.save(matches);
             matchesList.add(matches);
             request.setBaseUrl(ADMIN_MATCHES);
 
@@ -78,25 +78,23 @@ public class MatchesServiceImpl implements MatchesService {
         return request;
 
 
-
     }
 
-//    public void eventStatus(Matches matches,MatchesDto request)
-//    {
-//        LocalDateTime startDateAndTime=LocalDateTime.parse(request.getMatches().getStartDateAndTime());
-//        LocalDateTime endDateAndTime=LocalDateTime.parse(request.getMatches().getEndDateAndTime());
-//        LocalDateTime currentDateAndTime=LocalDateTime.now();
-//
-//        if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isAfter(currentDateAndTime)){
-//            matches.setEventStatus("Live");
-//        }
-//        else if( startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isBefore(currentDateAndTime))
-//        {
-//            matches.setEventStatus("Closed");
-//        }
-//        else if(startDateAndTime.isAfter(currentDateAndTime))
-//        {
-//            matches.setEventStatus("Upcoming");
-//        }
+    public void eventStatus(Matches matches, MatchesWsDto request) {
+
+        for (MatchesDto matchesDto : request.getMatchesDtoList()) {
+            LocalDateTime startDateAndTime = LocalDateTime.parse(matchesDto.getStartDateAndTime());
+            LocalDateTime endDateAndTime = LocalDateTime.parse(matchesDto.getEndDateAndTime());
+            LocalDateTime currentDateAndTime = LocalDateTime.now();
+
+            if (startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isAfter(currentDateAndTime)) {
+                matches.setEventStatus("Live");
+            } else if (startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isBefore(currentDateAndTime)) {
+                matches.setEventStatus("Closed");
+            } else if (startDateAndTime.isAfter(currentDateAndTime)) {
+                matches.setEventStatus("Upcoming");
+            }
+        }
     }
+}
 
