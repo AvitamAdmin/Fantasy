@@ -119,7 +119,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressWsDto handleEdit(AddressWsDto addressWsDto) {
-        AddressDto addressDto = new AddressDto();
+       // AddressWsDto addressWsDto = new AddressWsDto();
         Address address = null;
         List<Address> addresses = new ArrayList<>();
         List<AddressDto> addressDtoList = addressWsDto.getAddressDtoList();
@@ -133,7 +133,7 @@ public class AddressServiceImpl implements AddressService {
                     addressWsDto.setMessage("Identifier already present");
                     return addressWsDto;
                 }
-                address = modelMapper.map(addressDto, Address.class);
+                address = modelMapper.map(addressDto1, Address.class);
             }
 //            baseService.populateCommonData(address);
 //            address.setCreator(coreService.getCurrentUser().getCreator());
