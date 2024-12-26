@@ -64,7 +64,7 @@ public class RoleServiceImpl implements RoleService {
                 }
                 role = modelMapper.map(roleDto, Role.class);
             }
-            baseService.populateCommonData(role);
+            //baseService.populateCommonData(role);
             roleRepository.save(role);
             if (request.getRecordId() == null) {
                 role.setRecordId(String.valueOf(role.getId().getTimestamp()));

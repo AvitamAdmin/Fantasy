@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.PointsMasterDto;
 import com.avitam.fantasy11.api.dto.PointsMasterWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PointsMasterService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.PointsMaster;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.PointsMasterRepository;
@@ -21,8 +20,6 @@ public class PointsMasterServiceImpl implements PointsMasterService {
     private PointsMasterRepository pointsMasterRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
 
@@ -48,15 +45,15 @@ public class PointsMasterServiceImpl implements PointsMasterService {
 
     @Override
     public PointsMasterWsDto handleEdit(PointsMasterWsDto request) {
-        PointsMasterDto pointsMasterDto = new PointsMasterDto();
+
         List<PointsMasterDto> pointsMasterDtos = request.getPointsMasterDtos();
         List<PointsMaster> pointsMasterList=new ArrayList<>();
         PointsMaster pointsMaster = null;
 
         for (PointsMasterDto pointsMasterDto1 : pointsMasterDtos) {
-            if (request.getRecordId() != null) {
+            if (pointsMasterDto1.getRecordId() != null) {
                 PointsMaster requestData = modelMapper.map(pointsMasterDto1, PointsMaster.class);
-                pointsMaster = pointsMasterRepository.findByRecordId(request.getRecordId());
+                pointsMaster = pointsMasterRepository.findByRecordId(pointsMasterDto1.getRecordId());
                 modelMapper.map(requestData, pointsMaster);
             } else {
                 if (baseService.validateIdentifier(EntityConstants.POINTS_MASTER, pointsMasterDto1.getIdentifier()) != null) {
@@ -66,7 +63,8 @@ public class PointsMasterServiceImpl implements PointsMasterService {
                 }
                 pointsMaster = modelMapper.map(pointsMasterDto1, PointsMaster.class);
             }
-            baseService.populateCommonData(pointsMaster);
+            //baseService.populateCommonData(pointsMaster);
+            pointsMaster.setStatus(true);
             pointsMasterRepository.save(pointsMaster);
             if (request.getRecordId() == null) {
                 pointsMaster.setRecordId(String.valueOf(pointsMaster.getId().getTimestamp()));

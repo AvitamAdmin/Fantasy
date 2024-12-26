@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.pointsUpdate;
 
-import com.avitam.fantasy11.api.dto.PointsMasterDto;
 import com.avitam.fantasy11.api.dto.PointsUpdateDto;
 import com.avitam.fantasy11.api.dto.PointsUpdateWsDto;
 import com.avitam.fantasy11.api.service.PointsUpdateService;
-import com.avitam.fantasy11.model.PointsMaster;
 import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.repository.PointsUpdateRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -29,16 +27,16 @@ public class PointsUpdateController extends BaseController {
     private PointsUpdateService pointsUpdateService;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_POINTSUPDATE="/admin/pointsUpdate";
+    private static final String ADMIN_POINTSUPDATE = "/admin/pointsUpdate";
 
     @PostMapping
     @ResponseBody
-    public PointsUpdateWsDto getAllPointsUpdate(@RequestBody PointsUpdateWsDto pointsUpdateWsDto){
+    public PointsUpdateWsDto getAllPointsUpdate(@RequestBody PointsUpdateWsDto pointsUpdateWsDto) {
 
-        Pageable pageable=getPageable(pointsUpdateWsDto.getPage(),pointsUpdateWsDto.getSizePerPage(),pointsUpdateWsDto.getSortDirection(),pointsUpdateWsDto.getSortField());
-        PointsUpdateDto pointsUpdateDto= CollectionUtils.isNotEmpty(pointsUpdateWsDto.getPointsUpdateDtoList()) ? pointsUpdateWsDto.getPointsUpdateDtoList().get(0) : new PointsUpdateDto();
-        PointsUpdate pointsUpdate=modelMapper.map(pointsUpdateDto, PointsUpdate.class);
-        Page<PointsUpdate>page=isSearchActive(pointsUpdate) != null ? pointsUpdateRepository.findAll(Example.of(pointsUpdate),pageable): pointsUpdateRepository.findAll(pageable);
+        Pageable pageable = getPageable(pointsUpdateWsDto.getPage(), pointsUpdateWsDto.getSizePerPage(), pointsUpdateWsDto.getSortDirection(), pointsUpdateWsDto.getSortField());
+        PointsUpdateDto pointsUpdateDto = CollectionUtils.isNotEmpty(pointsUpdateWsDto.getPointsUpdateDtoList()) ? pointsUpdateWsDto.getPointsUpdateDtoList().get(0) : new PointsUpdateDto();
+        PointsUpdate pointsUpdate = modelMapper.map(pointsUpdateDto, PointsUpdate.class);
+        Page<PointsUpdate> page = isSearchActive(pointsUpdate) != null ? pointsUpdateRepository.findAll(Example.of(pointsUpdate), pageable) : pointsUpdateRepository.findAll(pageable);
         pointsUpdateWsDto.setPointsUpdateDtoList(modelMapper.map(page.getContent(), List.class));
         pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         pointsUpdateWsDto.setTotalPages(page.getTotalPages());
@@ -49,8 +47,8 @@ public class PointsUpdateController extends BaseController {
     @GetMapping("/get")
     @ResponseBody
     public PointsUpdateWsDto getActivePointsUpdate() {
-        PointsUpdateWsDto pointsUpdateWsDto=new PointsUpdateWsDto();
-        pointsUpdateWsDto.setPointsUpdateDtoList(modelMapper.map(pointsUpdateRepository.findByStatusOrderByIdentifier(true),List.class));
+        PointsUpdateWsDto pointsUpdateWsDto = new PointsUpdateWsDto();
+        pointsUpdateWsDto.setPointsUpdateDtoList(modelMapper.map(pointsUpdateRepository.findByStatusOrderByIdentifier(true), List.class));
         pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateWsDto;
     }
@@ -58,7 +56,7 @@ public class PointsUpdateController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public PointsUpdateWsDto editPointsUpdate(@RequestBody PointsUpdateWsDto request) {
-        PointsUpdateWsDto pointsUpdateWsDto=new PointsUpdateWsDto();
+        PointsUpdateWsDto pointsUpdateWsDto = new PointsUpdateWsDto();
         PointsUpdate pointsUpdate = pointsUpdateRepository.findByRecordId(request.getPointsUpdateDtoList().get(0).getRecordId());
         if (pointsUpdate != null) {
             pointsUpdateWsDto.setPointsUpdateDtoList(List.of(modelMapper.map(pointsUpdate, PointsUpdateDto.class)));
@@ -70,14 +68,14 @@ public class PointsUpdateController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public PointsUpdateWsDto handleEdit(@RequestBody PointsUpdateWsDto request) {
-         return pointsUpdateService.handleEdit(request);
+        return pointsUpdateService.handleEdit(request);
     }
 
     @GetMapping("/add")
     @ResponseBody
     public PointsUpdateWsDto addPointsUpdate() {
-        PointsUpdateWsDto pointsUpdateWsDto=new PointsUpdateWsDto();
-        pointsUpdateWsDto.setPointsUpdateDtoList(modelMapper.map(pointsUpdateRepository.findByStatusOrderByIdentifier(true),List.class));
+        PointsUpdateWsDto pointsUpdateWsDto = new PointsUpdateWsDto();
+        pointsUpdateWsDto.setPointsUpdateDtoList(modelMapper.map(pointsUpdateRepository.findByStatusOrderByIdentifier(true), List.class));
         pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateWsDto;
     }
@@ -88,8 +86,8 @@ public class PointsUpdateController extends BaseController {
         for (PointsUpdateDto data : pointsUpdateWsDto.getPointsUpdateDtoList()) {
             pointsUpdateRepository.deleteByRecordId(data.getRecordId());
         }
-          pointsUpdateWsDto.setMessage("Data deleted Successfully");
-          pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
+        pointsUpdateWsDto.setMessage("Data deleted Successfully");
+        pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateWsDto;
     }
 }

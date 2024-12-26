@@ -14,6 +14,25 @@ import java.util.List;
 @ToString
 public class PointsMasterDto extends CommonDto{
 
-    private PointsMaster pointsMaster;
-    private List<PointsMaster> pointsMasterList;
+    private String matchTypeId;
+
+    private float runs;
+
+    private float wickets;
+
+    private float halfCentury;
+
+    private float century;
+
+    private float thirtyPlus;
+
+    private float threeWickets;
+
+    private float fiveWickets;
+
+    private float hattrickWickets;
+
+    private float hattrickSixes;
+
+    private float economy;
 }

@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.TournamentDto;
 import com.avitam.fantasy11.api.dto.TournamentWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TournamentService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Tournament;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.TournamentRepository;
@@ -20,8 +19,6 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private TournamentRepository tournamentRepository;
     @Autowired
@@ -44,14 +41,15 @@ public class TournamentServiceImpl implements TournamentService {
                 tournament = tournamentRepository.findByRecordId(request.getRecordId());
                 modelMapper.map(requestData, tournament);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.TOURNAMENT, tournament.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.TOURNAMENT, tournamentDto.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
                 tournament = modelMapper.map(tournamentDto, Tournament.class);
             }
-            baseService.populateCommonData(tournament);
+          //  baseService.populateCommonData(tournament);
+            tournament.setStatus(true);
             tournamentRepository.save(tournament);
             if (request.getRecordId() == null) {
                 tournament.setRecordId(String.valueOf(tournament.getId().getTimestamp()));

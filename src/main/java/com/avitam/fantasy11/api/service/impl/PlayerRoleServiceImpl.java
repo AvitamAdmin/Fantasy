@@ -37,14 +37,12 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
 
     @Override
     public PlayerRoleWsDto handleEdit(PlayerRoleWsDto request) {
-        PlayerRoleWsDto playerRoleWsDto = new PlayerRoleWsDto();
         PlayerRole playerRole = null;
         List<PlayerRoleDto> playerRoleDto = request.getPlayerRoleDtoList();
         List<PlayerRole> playerRoles = new ArrayList<>();
-        PlayerRoleDto playerRoleDto1 = new PlayerRoleDto();
         for (PlayerRoleDto playerRoleDto2 : playerRoleDto) {
-            if (playerRoleDto2 != null) {
-                playerRole = playerRoleRepository.findByRecordId(request.getRecordId());
+            if (playerRoleDto2.getRecordId() != null) {
+                playerRole = playerRoleRepository.findByRecordId(playerRoleDto2.getRecordId());
                 modelMapper.map(playerRoleDto2, playerRole);
                 playerRoleRepository.save(playerRole);
             } else {
@@ -53,21 +51,21 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
                     request.setMessage("Identifier already present");
                     return request;
                 }
-                playerRole = modelMapper.map(playerRoleDto1, PlayerRole.class);
+                playerRole = modelMapper.map(playerRoleDto2, PlayerRole.class);
             }
             playerRoleRepository.save(playerRole);
             playerRole.setLastModified(new Date());
-            if (playerRoleDto1.getRecordId() == null) {
+            if (playerRoleDto2.getRecordId() == null) {
                 playerRole.setRecordId(String.valueOf(playerRole.getId().getTimestamp()));
             }
             playerRoleRepository.save(playerRole);
             playerRoles.add(playerRole);
-            playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
-            playerRoleWsDto.setMessage("playerRole was updated successfully");
+            request.setBaseUrl(ADMIN_PLAYERROLE);
+            request.setMessage("playerRole was updated successfully");
 
         }
-        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoles,List.class));
-        return playerRoleWsDto;
+        request.setPlayerRoleDtoList(modelMapper.map(playerRoles,List.class));
+        return request;
     }
 
 

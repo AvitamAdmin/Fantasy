@@ -25,20 +25,18 @@ public class PlayerRoleController extends BaseController {
     private PlayerRoleRepository playerRoleRepository;
     @Autowired
     private PlayerRoleService playerRoleService;
-
     @Autowired
     private ModelMapper modelMapper;
 
-    private static final String ADMIN_PLAYERROLE="/admin/playerRole";
+    private static final String ADMIN_PLAYERROLE = "/admin/playerRole";
 
     @PostMapping
     @ResponseBody
-    public PlayerRoleWsDto getAllPlayerRole(@RequestBody PlayerRoleWsDto playerRoleWsDto){
-        Pageable pageable=getPageable(playerRoleWsDto.getPage(),playerRoleWsDto.getSizePerPage(),playerRoleWsDto.getSortDirection(),playerRoleWsDto.getSortField());
-        CommonDto playerRoleDto = CollectionUtils.isNotEmpty(playerRoleWsDto.getPlayerRoleDtoList())? playerRoleWsDto.getPlayerRoleDtoList().get(0) : new PlayerRoleDto();
-        PlayerRole playerRole= modelMapper.map(playerRoleDto, PlayerRole.class);
-
-        Page<PlayerRole> page=isSearchActive(playerRole)!=null ? playerRoleRepository.findAll(Example.of(playerRole),pageable): playerRoleRepository.findAll(pageable);
+    public PlayerRoleWsDto getAllPlayerRole(@RequestBody PlayerRoleWsDto playerRoleWsDto) {
+        Pageable pageable = getPageable(playerRoleWsDto.getPage(), playerRoleWsDto.getSizePerPage(), playerRoleWsDto.getSortDirection(), playerRoleWsDto.getSortField());
+        CommonDto playerRoleDto = CollectionUtils.isNotEmpty(playerRoleWsDto.getPlayerRoleDtoList()) ? playerRoleWsDto.getPlayerRoleDtoList().get(0) : new PlayerRoleDto();
+        PlayerRole playerRole = modelMapper.map(playerRoleDto, PlayerRole.class);
+        Page<PlayerRole> page = isSearchActive(playerRole) != null ? playerRoleRepository.findAll(Example.of(playerRole), pageable) : playerRoleRepository.findAll(pageable);
         playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(page.getContent(), List.class));
         playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
         playerRoleWsDto.setTotalPages(page.getTotalPages());
@@ -49,8 +47,8 @@ public class PlayerRoleController extends BaseController {
     @GetMapping("/get")
     @ResponseBody
     public PlayerRoleWsDto getActivePlayerRole() {
-        PlayerRoleWsDto playerRoleWsDto=new PlayerRoleWsDto();
-        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoleRepository.findByStatusOrderByIdentifier(true),List.class));
+        PlayerRoleWsDto playerRoleWsDto = new PlayerRoleWsDto();
+        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoleRepository.findByStatusOrderByIdentifier(true), List.class));
         playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
         return playerRoleWsDto;
     }
@@ -58,11 +56,11 @@ public class PlayerRoleController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public PlayerRoleWsDto editPlayerRole(@RequestBody PlayerWsDto request) {
-        PlayerRoleWsDto playerRoleWsDto=new PlayerRoleWsDto();
+        PlayerRoleWsDto playerRoleWsDto = new PlayerRoleWsDto();
         playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
-        PlayerRole playerRole=playerRoleRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
-        if(playerRole != null){
-            playerRoleWsDto.setPlayerRoleDtoList(List.of(modelMapper.map(playerRole,PlayerRoleDto.class)));
+        PlayerRole playerRole = playerRoleRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
+        if (playerRole != null) {
+            playerRoleWsDto.setPlayerRoleDtoList(List.of(modelMapper.map(playerRole, PlayerRoleDto.class)));
         }
         return playerRoleWsDto;
     }
@@ -76,8 +74,8 @@ public class PlayerRoleController extends BaseController {
     @GetMapping("/add")
     @ResponseBody
     public PlayerRoleWsDto addPlayerRole() {
-        PlayerRoleWsDto playerRoleWsDto=new PlayerRoleWsDto();
-        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoleRepository.findByStatusOrderByIdentifier(true),List.class));
+        PlayerRoleWsDto playerRoleWsDto = new PlayerRoleWsDto();
+        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoleRepository.findByStatusOrderByIdentifier(true), List.class));
         playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
         return playerRoleWsDto;
     }
@@ -85,7 +83,7 @@ public class PlayerRoleController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public PlayerRoleWsDto delete(@RequestBody PlayerRoleWsDto playerRoleWsDto) {
-        for (PlayerRoleDto playerRoleDto :playerRoleWsDto.getPlayerRoleDtoList()){
+        for (PlayerRoleDto playerRoleDto : playerRoleWsDto.getPlayerRoleDtoList()) {
             playerRoleRepository.deleteByRecordId(playerRoleDto.getRecordId());
         }
         playerRoleWsDto.setMessage("Data deleted successfully");

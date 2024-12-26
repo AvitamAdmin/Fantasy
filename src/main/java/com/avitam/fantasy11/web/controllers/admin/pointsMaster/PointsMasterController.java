@@ -6,7 +6,6 @@ import com.avitam.fantasy11.api.service.PointsMasterService;
 import com.avitam.fantasy11.model.PointsMaster;
 import com.avitam.fantasy11.repository.PointsMasterRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import jakarta.validation.constraints.Email;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,8 @@ public class PointsMasterController extends BaseController {
 
         Pageable pageable = getPageable(pointsMasterWsDto.getPage(), pointsMasterWsDto.getSizePerPage(), pointsMasterWsDto.getSortDirection(), pointsMasterWsDto.getSortField());
         PointsMasterDto pointsMasterDto = CollectionUtils.isNotEmpty(pointsMasterWsDto.getPointsMasterDtos()) ? pointsMasterWsDto.getPointsMasterDtos().get(0) : new PointsMasterDto();
-        PointsMaster pointsUpdate = modelMapper.map(pointsMasterDto, PointsMaster.class);
-        Page<PointsMaster> page = isSearchActive(pointsUpdate) != null ? pointsMasterRepository.findAll(Example.of(pointsUpdate), pageable) : pointsMasterRepository.findAll(pageable);
+        PointsMaster pointsMaster = modelMapper.map(pointsMasterDto, PointsMaster.class);
+        Page<PointsMaster> page = isSearchActive(pointsMaster) != null ? pointsMasterRepository.findAll(Example.of(pointsMaster), pageable) : pointsMasterRepository.findAll(pageable);
         pointsMasterWsDto.setPointsMasterDtos(modelMapper.map(page.getContent(), List.class));
         pointsMasterWsDto.setTotalPages(page.getTotalPages());
         pointsMasterWsDto.setTotalRecords(page.getTotalElements());
@@ -92,6 +91,4 @@ public class PointsMasterController extends BaseController {
         pointsMasterWsDto.setRedirectUrl("/admin/pointsMaster");
         return pointsMasterWsDto;
     }
-
-
 }

@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.PointsUpdateDto;
 import com.avitam.fantasy11.api.dto.PointsUpdateWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PointsUpdateService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.PointsUpdateRepository;
@@ -23,8 +22,6 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
 
     private static final String ADMIN_POINTSUPDATE = "/admin/pointsUpdate";
@@ -42,15 +39,15 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
 
     @Override
     public PointsUpdateWsDto handleEdit(PointsUpdateWsDto request) {
-        PointsUpdateDto pointsUpdateDto = new PointsUpdateDto();
-        List<PointsUpdateDto> pointsUpdateDtos = request.getPointsUpdateDtoList();
+
         List<PointsUpdate> pointsUpdates = new ArrayList<>();
         PointsUpdate pointsUpdate = new PointsUpdate();
+        List<PointsUpdateDto> pointsUpdateDtos = request.getPointsUpdateDtoList();
 
         for (PointsUpdateDto pointsUpdateDto1 : pointsUpdateDtos) {
-            if (request.getRecordId() != null) {
+            if (pointsUpdateDto1.getRecordId() != null) {
                 PointsUpdate requestData = modelMapper.map(pointsUpdateDto1, PointsUpdate.class);
-                pointsUpdate = pointsUpdateRepository.findByRecordId(request.getRecordId());
+                pointsUpdate = pointsUpdateRepository.findByRecordId(pointsUpdateDto1.getRecordId());
                 modelMapper.map(requestData, pointsUpdate);
             } else {
                 if (baseService.validateIdentifier(EntityConstants.POINTS_UPDATE, pointsUpdate.getIdentifier()) != null) {
@@ -60,7 +57,8 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
                 }
                 pointsUpdate = modelMapper.map(pointsUpdateDto1, PointsUpdate.class);
             }
-            baseService.populateCommonData(pointsUpdate);
+            //baseService.populateCommonData(pointsUpdate);
+            pointsUpdate.setStatus(true);
             pointsUpdateRepository.save(pointsUpdate);
             if (request.getRecordId() == null) {
                 pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));

@@ -7,7 +7,6 @@ import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.model.VerificationToken;
-import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.repository.VerificationTokenRepository;
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,15 +29,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private VerificationTokenRepository tokenRepository;
     @Autowired
     private CoreService coreService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void save(UserWsDto request) {
@@ -53,12 +50,12 @@ public class UserServiceImpl implements UserService {
             } else {
                 user = modelMapper.map(userDto, User.class);
                 user.setCreationTime(new Date());
-                userRepository.save(user);
+
             }
             user.setLastModified(new Date());
             if (StringUtils.isNotEmpty(user.getPassword())) {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-                user.setPasswordConfirm(bCryptPasswordEncoder.encode(user.getPasswordConfirm()));
+
             }
             userRepository.save(user);
             if (user.getRecordId() == null) {

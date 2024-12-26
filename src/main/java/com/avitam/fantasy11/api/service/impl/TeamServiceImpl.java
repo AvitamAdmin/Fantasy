@@ -66,7 +66,7 @@ public class TeamServiceImpl implements TeamService {
                 }
                 team = modelMapper.map(teamDto1, Team.class);
             }
-            if (teamDto1.getLogo() != null && !teamDto1.getImage().isEmpty()) {
+            if (teamDto1.getImage() != null ) {
                 try {
                     team.setLogo(new Binary(teamDto1.getImage().getBytes()));
                 } catch (IOException e) {
@@ -75,7 +75,7 @@ public class TeamServiceImpl implements TeamService {
                     return request;
                 }
             }
-            baseService.populateCommonData(team);
+           // baseService.populateCommonData(team);
             teamRepository.save(team);
             if (request.getRecordId() == null) {
                 team.setRecordId(String.valueOf(team.getId().getTimestamp()));

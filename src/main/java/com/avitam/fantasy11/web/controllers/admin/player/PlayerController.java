@@ -59,7 +59,6 @@ public class PlayerController extends BaseController {
     public PlayerWsDto editPlayer(@RequestBody PlayerWsDto request){
       PlayerWsDto playerWsDto = new PlayerWsDto();
         playerWsDto.setBaseUrl(ADMIN_PlAYER);
-
         Player player= playerRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
         if(player != null){
             playerWsDto.setPlayerDtoList(List.of(modelMapper.map(player, PlayerDto.class)));

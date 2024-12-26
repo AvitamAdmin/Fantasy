@@ -2,10 +2,8 @@ package com.avitam.fantasy11.web.controllers.admin.tournament;
 
 import com.avitam.fantasy11.api.dto.TournamentDto;
 import com.avitam.fantasy11.api.dto.TournamentWsDto;
-import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.service.TournamentService;
 import com.avitam.fantasy11.model.Tournament;
-import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.repository.TournamentRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,7 +26,7 @@ public class TournamentController extends BaseController {
     @Autowired
     private TournamentRepository tournamentRepository;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     private static final String ADMIN_TOURNAMENT="/admin/tournament";
 
     @PostMapping
@@ -58,7 +56,7 @@ public class TournamentController extends BaseController {
     @ResponseBody
     public TournamentWsDto editTournament (@RequestBody TournamentWsDto request){
         TournamentWsDto tournamentWsDto=new TournamentWsDto();
-           tournamentWsDto.setTournamentDtoList(modelMapper.map(tournamentRepository.findByRecordId(request.getRecordId()),List.class));
+           tournamentWsDto.setTournamentDtoList(modelMapper.map(tournamentRepository.findByRecordId(request.getTournamentDtoList().get(0).getRecordId()),List.class));
            tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
            return tournamentWsDto;
     }
@@ -82,8 +80,8 @@ public class TournamentController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public TournamentWsDto delete (@RequestBody TournamentWsDto tournamentWsDto) {
-        for (String id : tournamentWsDto.getRecordId().split(",")) {
-            tournamentRepository.deleteByRecordId(id);
+        for (TournamentDto id : tournamentWsDto.getTournamentDtoList()) {
+            tournamentRepository.deleteByRecordId(id.getRecordId());
         }
         tournamentWsDto.setMessage("Data deleted Successfully");
         tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
