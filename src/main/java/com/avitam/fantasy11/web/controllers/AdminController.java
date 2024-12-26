@@ -28,7 +28,7 @@ public class AdminController extends BaseController{
     private ModelMapper modelMapper;
 
     @PostMapping("")
-    @ResponseBody
+
     public UserWsDto getAllUsers(@RequestBody UserWsDto userWsDto) {
         Pageable pageable = getPageable(userWsDto.getPage(), userWsDto.getSizePerPage(), userWsDto.getSortDirection(), userWsDto.getSortField());
         UserDto userDto= CollectionUtils.isNotEmpty(userWsDto.getUserDtoList())? userWsDto.getUserDtoList().get(0) : new UserDto();
@@ -42,7 +42,6 @@ public class AdminController extends BaseController{
     }
 
     @GetMapping("/get")
-    @ResponseBody
     public UserWsDto getActiveUserList() {
         UserWsDto userWsDto = new UserWsDto();
         userWsDto.setUserDtoList(modelMapper.map(userRepository.findByStatusOrderByIdentifier(true),List.class));
@@ -51,7 +50,6 @@ public class AdminController extends BaseController{
     }
 
     @PostMapping("/getedit")
-    @ResponseBody
     public UserWsDto editUser(@RequestBody UserWsDto request) {
         UserWsDto userWsDto = new UserWsDto();
         userWsDto.setUserDtoList(modelMapper.map(userRepository.findByRecordId(request.getRecordId()),List.class));
@@ -60,14 +58,12 @@ public class AdminController extends BaseController{
     }
 
     @PostMapping("/edit")
-    @ResponseBody
     public UserWsDto save(@RequestBody UserWsDto request) {
         userService.save(request);
         return request;
     }
 
     @GetMapping("/add")
-    @ResponseBody
     public UserWsDto addUser() {
         UserWsDto userWsDto=new UserWsDto();
         userWsDto.setUserDtoList(modelMapper.map(userRepository.findByStatusOrderByIdentifier(true),List.class));
@@ -76,7 +72,6 @@ public class AdminController extends BaseController{
     }
 
     @PostMapping("/delete")
-    @ResponseBody
     public UserWsDto deleteUser(@RequestBody UserWsDto userWsDto) {
 
         for (UserDto data : userWsDto.getUserDtoList()) {

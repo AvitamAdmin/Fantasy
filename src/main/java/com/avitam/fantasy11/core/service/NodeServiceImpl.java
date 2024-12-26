@@ -93,7 +93,6 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public NodeWsDto handleEdit(NodeWsDto nodeWsDto) {
-        NodeDto nodeDto=new NodeDto();
         Node node=null;
         List<Node> nodes = new ArrayList<>();
         List<NodeDto> nodeDtoList = nodeWsDto.getNodeDtoList();
@@ -102,15 +101,15 @@ public class NodeServiceImpl implements NodeService {
                 node = nodeRepository.findByRecordId(nodeDto1.getRecordId());
                 modelMapper.map(nodeDto1, node);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.NODE, nodeDto1.getNode().getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.NODE, nodeDto1.getIdentifier()) != null) {
                     nodeWsDto.setSuccess(false);
                     nodeWsDto.setMessage("Identifier already present");
                     return nodeWsDto;
                 }
-                node = modelMapper.map(nodeDto, Node.class);
+                node = modelMapper.map(nodeDto1, Node.class);
             }
-            baseService.populateCommonData(node);
-            node.setCreator(coreService.getCurrentUser().getCreator());
+           // baseService.populateCommonData(node);
+           // node.setCreator(coreService.getCurrentUser().getCreator());
             nodeRepository.save(node);
             node.setLastModified(new Date());
             if (nodeWsDto.getRecordId() == null) {
@@ -121,7 +120,7 @@ public class NodeServiceImpl implements NodeService {
             nodeWsDto.setMessage("Node Updated Successfully!");
             nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         }
-        nodeWsDto.setNodeDtoList(modelMapper.map(node,List.class));
+        nodeWsDto.setNodeDtoList(modelMapper.map(nodes,List.class));
         return nodeWsDto;
     }
 
