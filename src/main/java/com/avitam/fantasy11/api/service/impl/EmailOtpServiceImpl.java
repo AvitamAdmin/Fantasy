@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.Random;
@@ -46,6 +47,9 @@ public class EmailOtpServiceImpl implements EmailOTPService {
 
     private static final int OTP_LENGTH = 6;
     private static final int OTP_EXPIRATION_MINUTES = 5;
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int LENGTH = 6;
 
     @Override
     public UserWsDto sendOtp(UserWsDto userWsDto) throws MessagingException {
@@ -169,8 +173,16 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                 userWsDto.setMessage("User not found. Please validate OTP first.");
                 return userWsDto;
             }
-
             existingUser.setUsername(username);
+            SecureRandom RANDOM = new SecureRandom();
+
+            StringBuilder referralCode = new StringBuilder(LENGTH);
+
+            for (int i = 0; i < LENGTH; i++) {
+                int index = RANDOM.nextInt(CHARACTERS.length());
+                referralCode.append(CHARACTERS.charAt(index)).toString();
+            }
+            existingUser.setReferralCode(String.valueOf(referralCode));
             userRepository.save(existingUser);
 
             userWsDto.setSuccess(true);

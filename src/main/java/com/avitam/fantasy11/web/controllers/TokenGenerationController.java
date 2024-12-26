@@ -28,7 +28,7 @@ public class TokenGenerationController extends BaseController {
     @PostMapping("/api/authenticate")
     public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest)
     {
-        //authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
+        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getUsername());
         final String token = jwtUtility.generateToken(userDetails);
         return new JwtResponse(token);

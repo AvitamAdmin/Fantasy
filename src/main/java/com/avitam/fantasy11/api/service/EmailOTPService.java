@@ -6,9 +6,9 @@ import jakarta.mail.MessagingException;
 
 public interface EmailOTPService {
 
-    public UserWsDto sendOtp(UserWsDto userWsDto) throws MessagingException;
+    UserWsDto sendOtp(UserWsDto userWsDto) throws MessagingException;
 
-    public UserWsDto validateOtp(UserWsDto userWsDto);
+    UserWsDto validateOtp(UserWsDto userWsDto);
 
-    public UserWsDto saveUsername(UserWsDto userWsDto);
+    UserWsDto saveUsername(UserWsDto userWsDto);
 }

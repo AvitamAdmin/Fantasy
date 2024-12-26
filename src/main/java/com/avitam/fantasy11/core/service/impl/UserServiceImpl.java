@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
                 userRepository.save(user);
             } else {
                 user = modelMapper.map(userDto, User.class);
+                user.setStatus(true);
                 user.setCreationTime(new Date());
 
             }

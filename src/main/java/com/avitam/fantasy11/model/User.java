@@ -30,5 +30,6 @@ public class User extends BaseEntity{
     private String ResetPasswordToken;
     private String emailOTP;
     private String mobileOTP;
+    private String referralCode;
 
 }

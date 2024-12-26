@@ -22,28 +22,31 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String inputString) {
-        User user = userRepository.findByEmail(inputString);
+        User user = userRepository.findByUsername(inputString);
         User user1 = userRepository.findByMobileNumber(inputString);
+        User user2 = userRepository.findByEmail(inputString);
 
-        if ((user == null || !user.getStatus()) && (user1 == null || !user1.getStatus())) {
+
+        if ((user == null) && (user1 == null || !user1.getStatus()) && (user2 == null)) {
             throw new UsernameNotFoundException(inputString);
         }
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
         if (user != null) {
+            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        }
+
+        if (user1 != null) {
             return new CustomUserDetails(
-                    user.getEmail(),
-                    user.getStatus(),
+                    user1.getMobileNumber(),
+                    user1.getStatus(),
                     grantedAuthorities
             );
         }
+        return new CustomUserDetails(user2.getEmail(),user2.getStatus(),grantedAuthorities);
 
-        return new CustomUserDetails(
-                user1.getMobileNumber(),
-                user1.getStatus(),
-                grantedAuthorities
-        );
+
     }
 
 }
