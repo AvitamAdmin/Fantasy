@@ -35,12 +35,12 @@ public class AddressController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public AddressWsDto getAllAddress(@RequestBody AddressWsDto addressWsDto){
-        Pageable pageable=getPageable(addressWsDto.getPage(),addressWsDto.getSizePerPage(),addressWsDto.getSortDirection(),addressWsDto.getSortField());
+    public AddressWsDto getAllAddress(@RequestBody AddressWsDto addressWsDto) {
+        Pageable pageable = getPageable(addressWsDto.getPage(), addressWsDto.getSizePerPage(), addressWsDto.getSortDirection(), addressWsDto.getSortField());
         AddressDto addressDto = CollectionUtils.isNotEmpty(addressWsDto.getAddressDtoList()) ? addressWsDto.getAddressDtoList().get(0) : null;
         Address address = addressDto != null ? modelMapper.map(addressDto, Address.class) : null;
-        Page<Address> page=isSearchActive(address)!=null ? addressRepository.findAll(Example.of(address),pageable) : addressRepository.findAll(pageable);
-        addressWsDto.setAddressDtoList(modelMapper.map(page.getContent(),List.class));
+        Page<Address> page = isSearchActive(address) != null ? addressRepository.findAll(Example.of(address), pageable) : addressRepository.findAll(pageable);
+        addressWsDto.setAddressDtoList(modelMapper.map(page.getContent(), List.class));
         addressWsDto.setTotalPages(page.getTotalPages());
         addressWsDto.setTotalRecords(page.getTotalElements());
         addressWsDto.setBaseUrl(ADMIN_ADDRESS);
@@ -51,7 +51,7 @@ public class AddressController extends BaseController {
     @ResponseBody
     public AddressWsDto getActiveAddressList() {
         AddressWsDto addressWsDto = new AddressWsDto();
-        addressWsDto.setAddressDtoList(modelMapper.map(addressRepository.findByStatusOrderByIdentifier(true),List.class));
+        addressWsDto.setAddressDtoList(modelMapper.map(addressRepository.findByStatusOrderByIdentifier(true), List.class));
         addressWsDto.setBaseUrl(ADMIN_ADDRESS);
         return addressWsDto;
     }
@@ -61,7 +61,7 @@ public class AddressController extends BaseController {
     public AddressWsDto editAddress(@RequestBody AddressWsDto addressWsDto) {
 
         Address address = addressRepository.findByRecordId(addressWsDto.getAddressDtoList().get(0).getRecordId());
-        addressWsDto.setAddressDtoList(List.of(modelMapper.map(address,AddressDto.class)));
+        addressWsDto.setAddressDtoList(List.of(modelMapper.map(address, AddressDto.class)));
         addressWsDto.setBaseUrl(ADMIN_ADDRESS);
         return addressWsDto;
     }

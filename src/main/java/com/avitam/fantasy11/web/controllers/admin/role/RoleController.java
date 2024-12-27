@@ -55,18 +55,6 @@ public class RoleController extends BaseController {
         return roleWsDto;
     }
 
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<Role> roleList=roleRepository.findAll();
-        for(Role role:roleList)
-        {
-            role.setRecordId(String.valueOf(role.getId().getTimestamp()));
-            roleRepository.save(role);
-
-        }
-    }
-
     @PostMapping("/getedit")
     @ResponseBody
     public RoleWsDto edit (@RequestBody RoleWsDto request) {
@@ -87,22 +75,11 @@ public class RoleController extends BaseController {
     }
 
 
-    @GetMapping("/add")
-    @ResponseBody
-    public RoleWsDto add() {
-        RoleWsDto roleWsDto = new RoleWsDto();
-        roleWsDto.setRoleDtoList(modelMapper.map(roleRepository.findByStatusOrderByIdentifier(true), List.class));
-        roleWsDto.setBaseUrl(ADMIN_ROLE);
-        return roleWsDto;
-    }
-
-
     @PostMapping("/delete")
     @ResponseBody
     public RoleWsDto delete(@RequestBody RoleWsDto roleWsDto) {
         for (RoleDto roleDto : roleWsDto.getRoleDtoList()){
             roleRepository.deleteByRecordId(roleDto.getRecordId());
-
         }
         roleWsDto.setMessage("Data deleted Successfully");
         roleWsDto.setBaseUrl(ADMIN_ROLE);

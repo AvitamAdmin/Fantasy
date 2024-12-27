@@ -11,7 +11,6 @@ import lombok.ToString;
 @ToString
 public class CommonWsDto extends PaginationDto{
     private String baseUrl;
-    private String recordId;
     private String message;
     private boolean success = true;
     private  String token;
@@ -20,5 +19,6 @@ public class CommonWsDto extends PaginationDto{
     private String mobileNumber;
     private String userName;
     private String redirectUrl;
+    private String recordId;
 }
 

@@ -11,13 +11,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserWinningsWsDto extends CommonWsDto{
+
     private List<UserWinningsDto> userWinningsDtoList;
 
-    private String userId;
 
-    private String matchId;
-
-    private String userTeamId;
-
-    private double winningAmount;
 }

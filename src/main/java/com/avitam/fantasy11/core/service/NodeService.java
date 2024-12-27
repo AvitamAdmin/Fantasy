@@ -7,9 +7,9 @@ import com.avitam.fantasy11.model.Node;
 import java.util.List;
 
 public interface NodeService {
-    List<Node> getAllNodes();
+    List<NodeDto> getAllNodes();
 
-    List<Node> getNodesForRoles();
+    List<NodeDto> getNodesForRoles();
 
     Node findByRecordId(String recordId) ;
 
