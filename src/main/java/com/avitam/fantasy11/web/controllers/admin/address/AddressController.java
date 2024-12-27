@@ -35,7 +35,7 @@ public class AddressController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public AddressDto getAllAddress(@RequestBody AddressWsDto addressWsDto){
+    public AddressWsDto getAllAddress(@RequestBody AddressWsDto addressWsDto){
         Pageable pageable=getPageable(addressWsDto.getPage(),addressWsDto.getSizePerPage(),addressWsDto.getSortDirection(),addressWsDto.getSortField());
         AddressDto addressDto = CollectionUtils.isNotEmpty(addressWsDto.getAddressDtoList()) ? addressWsDto.getAddressDtoList().get(0) : null;
         Address address = addressDto != null ? modelMapper.map(addressDto, Address.class) : null;
@@ -44,7 +44,7 @@ public class AddressController extends BaseController {
         addressWsDto.setTotalPages(page.getTotalPages());
         addressWsDto.setTotalRecords(page.getTotalElements());
         addressWsDto.setBaseUrl(ADMIN_ADDRESS);
-        return addressDto;
+        return addressWsDto;
     }
 
     @GetMapping("/get")
@@ -59,27 +59,17 @@ public class AddressController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public AddressWsDto editAddress(@RequestBody AddressWsDto addressWsDto) {
-        AddressDto addressDto = new AddressDto();
-       // addressWsDto.setAddressDtoList(modelMapper.map(addressRepository.findByRecordId(addressDto.getRecordId(),List.class)));
-        Address address = addressRepository.findByRecordId(addressWsDto.getRecordId());
-        addressWsDto.setAddressDtoList((List<AddressDto>) address);
+
+        Address address = addressRepository.findByRecordId(addressWsDto.getAddressDtoList().get(0).getRecordId());
+        addressWsDto.setAddressDtoList(List.of(modelMapper.map(address,AddressDto.class)));
         addressWsDto.setBaseUrl(ADMIN_ADDRESS);
         return addressWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public AddressWsDto handleEdit(@RequestBody AddressWsDto addressWsDto) {
-        return addressService.handleEdit(addressWsDto);
-    }
-
-    @GetMapping("/add")
-    @ResponseBody
-    public AddressWsDto addAddress() {
-        AddressWsDto addressWsDto = new AddressWsDto();
-        addressWsDto.setAddressDtoList(modelMapper.map(addressRepository.findByStatusOrderByIdentifier(true),List.class));
-        addressWsDto.setBaseUrl(ADMIN_ADDRESS);
-        return addressWsDto;
+    public AddressWsDto handleEdit(@RequestBody AddressWsDto request) {
+        return addressService.handleEdit(request);
     }
 
     @PostMapping("/delete")

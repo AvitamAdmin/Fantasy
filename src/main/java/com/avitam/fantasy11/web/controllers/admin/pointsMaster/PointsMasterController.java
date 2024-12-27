@@ -27,6 +27,7 @@ public class PointsMasterController extends BaseController {
     private PointsMasterService pointsMasterService;
     @Autowired
     private ModelMapper modelMapper;
+
     private static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
 
     @PostMapping

@@ -41,10 +41,10 @@ public class UserTeamsController extends BaseController {
     public UserTeamWsDto getAllUserTeams(@RequestBody UserTeamWsDto userTeamWsDto) {
 
         Pageable pageable = getPageable(userTeamWsDto.getPage(), userTeamWsDto.getSizePerPage(), userTeamWsDto.getSortDirection(), userTeamWsDto.getSortField());
-        UserTeamsDto userTeamsDto= CollectionUtils.isNotEmpty(userTeamWsDto.getUserTeamsDtoList())?userTeamWsDto.getUserTeamsDtoList() .get(0) : new UserTeamsDto() ;
+        UserTeamsDto userTeamsDto = CollectionUtils.isNotEmpty(userTeamWsDto.getUserTeamsDtoList()) ? userTeamWsDto.getUserTeamsDtoList().get(0) : new UserTeamsDto();
         UserTeams userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
-        Page<UserTeams> page = isSearchActive(userTeams)!=null? userTeamsRepository.findAll(Example.of(userTeams), pageable) : userTeamsRepository.findAll(pageable);
-        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(page.getContent(),List.class));
+        Page<UserTeams> page = isSearchActive(userTeams) != null ? userTeamsRepository.findAll(Example.of(userTeams), pageable) : userTeamsRepository.findAll(pageable);
+        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(page.getContent(), List.class));
         userTeamWsDto.setTotalPages(page.getTotalPages());
         userTeamWsDto.setTotalRecords(page.getTotalElements());
         userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
@@ -53,37 +53,28 @@ public class UserTeamsController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public UserTeamWsDto getActiveUserTeams(){
+    public UserTeamWsDto getActiveUserTeams() {
         UserTeamWsDto userTeamWsDto = new UserTeamWsDto();
-        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(userTeamsRepository.findByStatusOrderByIdentifier(true),List.class));
+        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(userTeamsRepository.findByStatusOrderByIdentifier(true), List.class));
         userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
         return userTeamWsDto;
     }
 
-    @GetMapping("/migrate")
-    public void migrate()
-    {
-        List<UserTeams> userTeams=userTeamsRepository.findAll();
-        for(UserTeams userTeams1:userTeams)
-        {
-            userTeams1.setRecordId(String.valueOf(userTeams1.getId().getTimestamp()));
-            userTeamsRepository.save(userTeams1);
-        }
-    }
 
     @PostMapping("/getedit")
     @ResponseBody
     public UserTeamWsDto editUserTeams(@RequestBody UserTeamWsDto request) {
-
-        UserTeamWsDto userTeamWsDto = new UserTeamWsDto();
-        userTeamWsDto.setUserTeamsDtoList(modelMapper.map( userTeamsRepository.findByRecordId(request.getRecordId()),List.class));
-        userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
-        return userTeamWsDto;
+        List<UserTeamsDto> userTeamsDtos = request.getUserTeamsDtoList();
+        UserTeams userTeams = userTeamsRepository.findByRecordId(request.getUserTeamsDtoList().get(0).getRecordId());
+        request.setUserTeamsDtoList(List.of(modelMapper.map(userTeams, UserTeamsDto.class)));
+        request.setBaseUrl(ADMIN_USERTEAMS);
+        return request;
     }
 
     @PostMapping("/edit")
     @ResponseBody
     public UserTeamWsDto handleEdit(@RequestBody UserTeamWsDto request) {
+
         return userTeamsService.handleEdit(request);
     }
 
@@ -91,7 +82,7 @@ public class UserTeamsController extends BaseController {
     @ResponseBody
     public UserTeamWsDto addUserTeams() {
         UserTeamWsDto userTeamWsDto = new UserTeamWsDto();
-        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(userTeamsRepository.findByStatusOrderByIdentifier(true),List.class));
+        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(userTeamsRepository.findByStatusOrderByIdentifier(true), List.class));
         userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
         return userTeamWsDto;
     }
@@ -99,8 +90,8 @@ public class UserTeamsController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public UserTeamWsDto delete(@RequestBody UserTeamWsDto userTeamWsDto) {
-        for (String id : userTeamWsDto.getRecordId().split(",")) {
-            userTeamsRepository.deleteByRecordId(id);
+        for (UserTeamsDto id : userTeamWsDto.getUserTeamsDtoList()) {
+            userTeamsRepository.deleteByRecordId(id.getRecordId());
         }
         userTeamWsDto.setMessage("Data deleted successfully");
         userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);

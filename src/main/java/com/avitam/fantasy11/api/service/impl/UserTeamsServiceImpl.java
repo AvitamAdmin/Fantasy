@@ -49,20 +49,23 @@ public class UserTeamsServiceImpl implements UserTeamsService {
         List<UserTeams> userTeamsList = new ArrayList<>();
         UserTeams userTeams = null;
         for (UserTeamsDto userTeamsDto : userTeamDtos) {
-            if (request.getRecordId() != null) {
-                UserTeams requestData = modelMapper.map(userTeamsDto, UserTeams.class);
-                userTeams = userTeamsRepository.findByRecordId(request.getRecordId());
-                modelMapper.map(requestData, userTeams);
+            if (userTeamsDto.getRecordId() != null) {
+                userTeams = userTeamsRepository.findByRecordId(userTeamsDto.getRecordId());
+                modelMapper.map(userTeamsDto, userTeams);
+                userTeamsRepository.save(userTeams);
+                request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.USER_TEAMS, userTeams.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.USER_TEAMS, userTeamsDto.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
                 userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
             }
-            baseService.populateCommonData(userTeams);
+            //baseService.populateCommonData(userTeams);
+            userTeams.setStatus(true);
             userTeamsRepository.save(userTeams);
+            request.setMessage("Data added Successfully");
             if (request.getRecordId() == null) {
                 userTeams.setRecordId(String.valueOf(userTeams.getId().getTimestamp()));
             }

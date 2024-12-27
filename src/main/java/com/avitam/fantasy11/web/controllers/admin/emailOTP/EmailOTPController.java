@@ -1,9 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.emailOTP;
 
-import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
-import com.avitam.fantasy11.model.User;
 import jakarta.mail.MessagingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +29,12 @@ public class EmailOTPController {
     // Endpoint to validate OTP
     @PostMapping("/validate-otp")
     public UserWsDto validateOtp(@RequestBody UserWsDto userWsDto) {
+
         return emailOTPService.validateOtp(userWsDto);
     }
 
-    @PostMapping("/saveUserName")
+    @PostMapping("/save-userName")
     public UserWsDto saveUsername(@RequestBody UserWsDto userWsDto) {
-        userWsDto = modelMapper.map(userWsDto, UserWsDto.class);
         return emailOTPService.saveUsername(userWsDto);
     }
 

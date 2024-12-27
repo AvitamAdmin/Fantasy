@@ -32,5 +32,6 @@ public class UserDto extends CommonDto{
     private String ResetPasswordToken;
     private String emailOTP;
     private String mobileOTP;
+    private String referralCode;
 
 }

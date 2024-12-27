@@ -27,8 +27,7 @@ public class AdminController extends BaseController{
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping("")
-
+    @PostMapping()
     public UserWsDto getAllUsers(@RequestBody UserWsDto userWsDto) {
         Pageable pageable = getPageable(userWsDto.getPage(), userWsDto.getSizePerPage(), userWsDto.getSortDirection(), userWsDto.getSortField());
         UserDto userDto= CollectionUtils.isNotEmpty(userWsDto.getUserDtoList())? userWsDto.getUserDtoList().get(0) : new UserDto();
@@ -63,14 +62,6 @@ public class AdminController extends BaseController{
         return request;
     }
 
-    @GetMapping("/add")
-    public UserWsDto addUser() {
-        UserWsDto userWsDto=new UserWsDto();
-        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByStatusOrderByIdentifier(true),List.class));
-        userWsDto.setBaseUrl(ADMIN_USER);
-        return userWsDto;
-    }
-
     @PostMapping("/delete")
     public UserWsDto deleteUser(@RequestBody UserWsDto userWsDto) {
 
@@ -82,10 +73,5 @@ public class AdminController extends BaseController{
         return userWsDto;
     }
 
-//    @GetMapping("/generate-otp")
-//    public ResponseEntity<UserDto> generateOtp(@RequestParam String email) {
-//        UserDto userDto = userService.generateOtpForUser(email);
-//        return ResponseEntity.ok(userDto);
-//    }
 
 }
