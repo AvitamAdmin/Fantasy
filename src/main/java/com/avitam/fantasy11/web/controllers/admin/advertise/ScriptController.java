@@ -60,7 +60,7 @@ public class ScriptController extends BaseController {
     @ResponseBody
     public ScriptWsDto edit(@RequestBody ScriptWsDto scriptWsDto) {
         ScriptDto scriptDto = new ScriptDto();
-        Script script = scriptRepository.findByRecordId(scriptWsDto.getRecordId());
+        Script script = scriptRepository.findByRecordId(scriptWsDto.getScriptDtoList().get(0).getRecordId());
         scriptDto.setScript(script);
         scriptWsDto.setBaseUrl(ADMIN_SCRIPT);
         return scriptWsDto;

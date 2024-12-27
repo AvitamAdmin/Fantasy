@@ -4,6 +4,7 @@ import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,6 @@ public interface NodeRepository extends GenericImportRepository<Node> {
     void deleteByRecordId(String recordId);
 
     List<Node> findByStatusOrderByIdentifier(boolean b);
+
+    List<Node> findByParentNode(Object o);
 }

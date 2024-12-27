@@ -111,7 +111,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
     }
 
     @Override
-    public UserWsDto validateOtp(UserWsDto userWsDto) {
+    public UserWsDto  validateOtp(UserWsDto userWsDto) {
         for (UserDto userDto : userWsDto.getUserDtoList()) {
             String email = userDto.getEmail();
             String otp = userDto.getOtp();

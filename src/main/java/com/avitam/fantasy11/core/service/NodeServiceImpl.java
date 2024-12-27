@@ -9,7 +9,7 @@ import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.repository.UserRepository;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,48 +37,60 @@ public class NodeServiceImpl implements NodeService {
     private BaseService baseService;
 
     @Override
-    public List<Node> getAllNodes() {
-        List<Node> allNodes = nodeRepository.findByParentNodeId(null);
-        if (CollectionUtils.isNotEmpty(allNodes)) {
-            allNodes.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
-                    Comparator.nullsFirst(Comparator.naturalOrder())));
-
-            for (Node node : allNodes) {
-                List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
-//                nodes1.sort(Comparator.comparing(nodes -> nodes.getDisplayPriority(),
-//                        Comparator.nullsFirst(Comparator.naturalOrder())));
-                for (Node childNode : nodes1) {
-                    childNode.setParentNode(node.getName()); // Set parent node for each child node
+    public List<NodeDto> getAllNodes() {
+        List<NodeDto> allNodes = new ArrayList<>();
+        List<Node> nodeList = nodeRepository.findByParentNode(null);
+        if (CollectionUtils.isNotEmpty(nodeList)) {
+            for (Node node : nodeList) {
+                NodeDto nodeDto = new NodeDto();
+                modelMapper.map(node, nodeDto);
+                List<Node> childNodes = nodeRepository.findByParentNodeId(node.getRecordId());
+                if (CollectionUtils.isNotEmpty(childNodes)) {
+                    List<Node> childNodeList = childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.getStatus()))
+                            .sorted(Comparator.comparing(nodes -> nodes.getDisplayPriority())).collect(Collectors.toList());
+                    nodeDto.setChildNodes(modelMapper.map(childNodeList, List.class));
                 }
-                node.setChildNodes(nodes1);
+                allNodes.add(nodeDto);
             }
         }
         return allNodes;
     }
 
     @Override
-    public List<Node> getNodesForRoles() {
-
+    //@Cacheable(cacheNames = "roleBasedNodes")
+    public List<NodeDto> getNodesForRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User currentUser = userRepository.findByEmail(principalObject.getUsername());
+        User currentUser = userRepository.findByUsername(principalObject.getUsername());
         Set<Role> roles = currentUser.getRoles();
         Set<Node> nodes = new HashSet<>();
         for (Role role : roles) {
             nodes.addAll(role.getPermissions());
         }
-        List<Node> allNodes = new ArrayList<>();
-        List<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isNotFalse(node.getStatus())).collect(Collectors.toList());
-        nodeList.sort(Comparator.comparing(node -> node.getDisplayPriority()));
-        for (Node node : nodeList) {
-            List<Node> nodes1 = nodeRepository.findByParentNodeId(String.valueOf(node.getId()));
-            node.setChildNodes(nodes1);
-            allNodes.add(node);
+        List<NodeDto> allNodes = new ArrayList<>();
+        Set<Node> nodeList = nodes.stream().filter(node -> BooleanUtils.isTrue(node.getStatus())).collect(Collectors.toSet());
+        List<Node> nodeListArray = new ArrayList<>(nodeList);
+        nodeListArray.sort(Comparator.comparing(node -> node.getDisplayPriority(),
+                Comparator.nullsLast(Comparator.naturalOrder())));
+        Map<String, Set<Node>> parentChildNodes = new HashMap<>();
+        for (Node node : nodeListArray) {
+            String parent = node.getParentNode().getIdentifier();
+            Set<Node> childNodes = new HashSet<>();
+            if (parentChildNodes.containsKey(parent)) {
+                childNodes.addAll(parentChildNodes.get(parent));
+            }
+            childNodes.add(node);
+            parentChildNodes.put(parent, childNodes);
+        }
+
+        for (String key : parentChildNodes.keySet()) {
+            NodeDto nodeDto = new NodeDto();
+            nodeDto.setIdentifier(key);
+            nodeDto.setChildNodes(modelMapper.map(parentChildNodes.get(key), List.class));
+            allNodes.add(nodeDto);
         }
         return allNodes;
-
     }
-
     @Override
     public Node findByRecordId(String recordId) {
 
@@ -102,12 +114,12 @@ public class NodeServiceImpl implements NodeService {
                 node = nodeRepository.findByRecordId(nodeDto1.getRecordId());
                 modelMapper.map(nodeDto1, node);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.NODE, nodeDto1.getNode().getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.NODE, nodeDto1.getIdentifier()) != null) {
                     nodeWsDto.setSuccess(false);
                     nodeWsDto.setMessage("Identifier already present");
                     return nodeWsDto;
                 }
-                node = modelMapper.map(nodeDto, Node.class);
+                node = modelMapper.map(nodeDto1, Node.class);
             }
             baseService.populateCommonData(node);
             node.setCreator(coreService.getCurrentUser().getCreator());

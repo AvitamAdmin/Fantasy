@@ -1,10 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.intface;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.NodeDto;
 import com.avitam.fantasy11.api.dto.NodeWsDto;
 import com.avitam.fantasy11.core.service.NodeService;
-import com.avitam.fantasy11.model.Address;
+import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -27,6 +26,8 @@ public class InterfaceController extends BaseController {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
+    private UserService userService;
+    @Autowired
     private NodeService nodeService;
     private static final String ADMIN_INTERFACE="/admin/interface";
 
@@ -43,13 +44,10 @@ public class InterfaceController extends BaseController {
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
     }
-    @GetMapping("/get")
+    @GetMapping("/getMenu")
     @ResponseBody
-    public NodeWsDto getActiveInterface() {
-        NodeWsDto nodeWsDto=new NodeWsDto();
-        nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByStatusOrderByIdentifier(true),List.class));
-        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
-        return nodeWsDto;
+    public List<NodeDto> getMenu() {
+        return userService.isAdminRole() ? nodeService.getAllNodes() : nodeService.getNodesForRoles();
     }
 
     @PostMapping("/getedit")

@@ -58,7 +58,7 @@ public class AdvertiseController extends BaseController {
     @ResponseBody
     public BannerWsDto edit(@RequestBody BannerWsDto bannerWsDto) {
         BannerDto bannerDto=new BannerDto();
-        Banner banner= bannerRepository.findByRecordId(bannerWsDto.getRecordId());
+        Banner banner= bannerRepository.findByRecordId(bannerWsDto.getBannerList().get(0).getRecordId());
         bannerWsDto.setBannerList((List<BannerDto>) banner);
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
