@@ -1,9 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.sportType;
 
-import com.avitam.fantasy11.api.dto.SportTypeDto;
-import com.avitam.fantasy11.api.dto.SportTypeWsDto;
-import com.avitam.fantasy11.api.dto.TeamLineUpDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.SportTypeService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.SportTypeRepository;
@@ -29,7 +28,7 @@ public class SportsTypeController extends BaseController {
     @Autowired
     private SportTypeService sportTypeService;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     private static final String ADMIN_SPORTSTYPE="/admin/sportType";
 
     @PostMapping
@@ -57,16 +56,18 @@ public class SportsTypeController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public SportTypeWsDto editSportType (@RequestBody SportTypeWsDto request){
-        SportTypeWsDto sportTypeWsDto=new SportTypeWsDto();
-        sportTypeWsDto.setSportTypeDtoList(modelMapper.map(sportTypeRepository.findByRecordId(request.getRecordId()),List.class));
+        SportTypeWsDto sportTypeWsDto = new SportTypeWsDto();
         sportTypeWsDto.setBaseUrl(ADMIN_SPORTSTYPE);
+        SportType sportType = sportTypeRepository.findByRecordId(request.getSportTypeDtoList().get(0).getRecordId());
+        if( sportType != null){
+            sportTypeWsDto.setSportTypeDtoList(List.of(modelMapper.map(sportType, SportTypeDto.class)));
+        }
         return sportTypeWsDto;
     }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public SportTypeWsDto handleEdit(@ModelAttribute SportTypeWsDto request){
-
         return sportTypeService.handleEdit(request);
     }
 
@@ -81,11 +82,12 @@ public class SportsTypeController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public SportTypeWsDto deleteSportType(@RequestBody SportTypeWsDto sportTypeWsDto ) {
-        for (String id : sportTypeWsDto.getRecordId().split(",")) {
-            sportTypeRepository.deleteByRecordId(id);
+        for(SportTypeDto sportTypeDto : sportTypeWsDto.getSportTypeDtoList()){
+            sportTypeRepository.deleteByRecordId(sportTypeDto.getRecordId());
         }
         sportTypeWsDto.setMessage("Data deleted Successfully");
         sportTypeWsDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeWsDto;
+
     }
 }

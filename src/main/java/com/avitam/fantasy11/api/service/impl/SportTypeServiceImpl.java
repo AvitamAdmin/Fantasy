@@ -1,5 +1,4 @@
 package com.avitam.fantasy11.api.service.impl;
-
 import com.avitam.fantasy11.api.dto.SportTypeDto;
 import com.avitam.fantasy11.api.dto.SportTypeWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
@@ -12,7 +11,6 @@ import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +40,12 @@ public class SportTypeServiceImpl implements SportTypeService {
         List<SportType> sportTypeList = new ArrayList<>();
         SportType sportType = null;
         for (SportTypeDto sportTypeDto : sportTypeDtos) {
-            if (request.getRecordId() != null) {
+            if (sportTypeDto.getRecordId() != null) {
                 SportType requestData = modelMapper.map(sportTypeDto, SportType.class);
-                sportType = sportTypeRepository.findByRecordId(request.getRecordId());
+                sportType = sportTypeRepository.findByRecordId(sportTypeDto.getRecordId());
                 modelMapper.map(requestData, sportType);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.SPORT_TYPE, sportType.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.SPORT_TYPE, sportTypeDto.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
@@ -55,7 +53,7 @@ public class SportTypeServiceImpl implements SportTypeService {
                 sportType = modelMapper.map(sportTypeDto, SportType.class);
 
             }
-            if (sportTypeDto.getLogo() != null && !sportTypeDto.getImage().isEmpty()) {
+            if (sportTypeDto.getImage() != null) {
                 try {
                     sportType.setLogo(new Binary(sportTypeDto.getImage().getBytes()));
                 } catch (IOException e) {
@@ -79,7 +77,6 @@ public class SportTypeServiceImpl implements SportTypeService {
 
     @Override
     public void deleteByRecordId(String recordId) {
-
         sportTypeRepository.findByRecordId(recordId);
     }
 
@@ -87,7 +84,6 @@ public class SportTypeServiceImpl implements SportTypeService {
     public void updateByRecordId(String recordId) {
         SportType sportType = sportTypeRepository.findByRecordId(recordId);
         if (sportType != null) {
-
             sportTypeRepository.save(sportType);
         }
     }
