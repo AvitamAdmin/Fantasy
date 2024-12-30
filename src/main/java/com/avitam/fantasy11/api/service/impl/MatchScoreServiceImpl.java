@@ -79,38 +79,39 @@ public class MatchScoreServiceImpl implements MatchScoreService {
 //
 @Override
 public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
-    MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
     MatchScore matchScoreData = null;
     List<MatchScoreDto> matchScoreDtos = request.getMatchScoreDtoList();
     List<MatchScore> matchScoreList = new ArrayList<>();
-    MatchScoreDto matchScoreDto = new MatchScoreDto();
     for (MatchScoreDto matchScoreDto1 : matchScoreDtos) {
         if (matchScoreDto1.getRecordId() != null) {
             matchScoreData = matchScoreRepository.findByRecordId(matchScoreDto1.getRecordId());
             modelMapper.map(matchScoreDto1, matchScoreData);
             matchScoreRepository.save(matchScoreData);
+            request.setMessage("MatchScore was updated successfully");
         } else {
             if (baseService.validateIdentifier(EntityConstants.KYC, matchScoreDto1.getIdentifier()) != null) {
                 request.setSuccess(false);
-                //request.setMessage("Identifier already present");
+                request.setMessage("Identifier already present");
                 return request;
             }
 
-            matchScoreData = modelMapper.map(matchScoreDto, MatchScore.class);
+            matchScoreData = modelMapper.map(matchScoreDto1, MatchScore.class);
         }
+        matchScoreData.setStatus(true);
         matchScoreRepository.save(matchScoreData);
+        request.setMessage("MatchScore added successfully");
         matchScoreData.setLastModified(new Date());
         if (matchScoreData.getRecordId() == null) {
             matchScoreData.setRecordId(String.valueOf(matchScoreData.getId().getTimestamp()));
+
         }
         matchScoreRepository.save(matchScoreData);
         matchScoreList.add(matchScoreData);
-        matchScoreWsDto.setMessage("MatchScore was updated successfully");
-        matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
+        request.setBaseUrl(ADMIN_MATCHSCORE);
 
     }
-    matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(matchScoreList, List.class));
-    return matchScoreWsDto;
+    request.setMatchScoreDtoList(modelMapper.map(matchScoreList, List.class));
+    return request;
 }
 
 }

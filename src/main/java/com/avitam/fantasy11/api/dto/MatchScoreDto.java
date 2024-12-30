@@ -1,6 +1,6 @@
 package com.avitam.fantasy11.api.dto;
 
-import com.avitam.fantasy11.model.MatchScore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,9 +14,7 @@ import java.util.List;
 @ToString
 public class MatchScoreDto extends CommonDto{
 
-//    private MatchScore matchScore;
-//    private List<MatchScore> matchScoreList;
-private String matchId;
+    private String matchId;
 
     private int team1Score;
 
