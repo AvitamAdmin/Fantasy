@@ -47,14 +47,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleWsDto handleEdit(RoleWsDto request) {
-
         List<RoleDto> roleDtos = request.getRoleDtoList();
         List<Role> roles = new ArrayList<>();
         Role role = null;
         for (RoleDto roleDto : roleDtos) {
             if (roleDto.getRecordId() != null) {
                 Role requestData = modelMapper.map(roleDto, Role.class);
-                role = roleRepository.findByRecordId(request.getRecordId());
+                role = roleRepository.findByRecordId(roleDto.getRecordId());
                 modelMapper.map(requestData, role);
             } else {
                 if (baseService.validateIdentifier(EntityConstants.ROLE, role.getIdentifier()) != null) {

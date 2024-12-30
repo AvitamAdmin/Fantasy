@@ -53,11 +53,11 @@ public class MatchTypeServiceImpl implements MatchTypeService {
             } else {
                 if (baseService.validateIdentifier(EntityConstants.KYC, matchTypeDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
-                    //request.setMessage("Identifier already present");
+                    request.setMessage("Identifier already present");
                     return request;
                 }
 
-                matchTypeData = modelMapper.map(matchTypeDto, MatchType.class);
+                matchTypeData = modelMapper.map(matchTypeDto1, MatchType.class);
             }
             matchTypeRepository.save(matchTypeData);
             matchTypeData.setLastModified(new Date());
@@ -66,16 +66,13 @@ public class MatchTypeServiceImpl implements MatchTypeService {
             }
             matchTypeRepository.save(matchTypeData);
             matchTypeList.add(matchTypeData);
-            matchTypeWsDto.setMessage("MatchScore was updated successfully");
-            matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
+            request.setMessage("MatchType updated successfully");
+            request.setBaseUrl(ADMIN_MATCHTYPE);
 
         }
-        matchTypeWsDto.setMatchTypeDtoList(modelMapper.map(matchTypeList, List.class));
-        return matchTypeWsDto;
+        request.setMatchTypeDtoList(modelMapper.map(matchTypeList, List.class));
+        return request;
     }
-
-
-
 
     @Override
     public void deleteByRecordId(String recordId) {

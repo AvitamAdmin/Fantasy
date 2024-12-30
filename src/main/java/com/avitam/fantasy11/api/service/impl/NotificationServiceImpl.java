@@ -52,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
                     request.setSuccess(false);
                     return request;
                 }
-                notification = modelMapper.map(notificationDto, Notification.class);
+                notification = modelMapper.map(notificationDto1, Notification.class);
             }
             notificationRepository.save(notification);
 
@@ -62,11 +62,11 @@ public class NotificationServiceImpl implements NotificationService {
             }
             notificationRepository.save(notification);
             notifications.add(notification);
-            notificationWsDto.setMessage("Notification was updated successfully");
-            notificationWsDto.setBaseUrl(ADMIN_NOTIFICATION);
+            request.setMessage("Notification was updated successfully");
+            request.setBaseUrl(ADMIN_NOTIFICATION);
         }
-        notificationWsDto.setNotificationDtoList(modelMapper.map(notifications, List.class));
-        return notificationWsDto;
+        request.setNotificationDtoList(modelMapper.map(notifications, List.class));
+        return request;
 
     }
 

@@ -2,6 +2,8 @@ package com.avitam.fantasy11.web.controllers.admin.matchType;
 
 import com.avitam.fantasy11.api.dto.MatchTypeDto;
 import com.avitam.fantasy11.api.dto.MatchTypeWsDto;
+import com.avitam.fantasy11.api.dto.NotificationDto;
+import com.avitam.fantasy11.api.dto.NotificationWsDto;
 import com.avitam.fantasy11.api.service.MatchTypeService;
 import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.repository.MatchTypeRepository;
@@ -81,8 +83,8 @@ public class MatchTypeController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public MatchTypeWsDto delete(@RequestBody MatchTypeWsDto matchTypeWsDto) {
-        for (String id : matchTypeWsDto.getRecordId().split(",")) {
-            matchTypeRepository.deleteByRecordId(id);
+        for(MatchTypeDto matchTypeDto:matchTypeWsDto.getMatchTypeDtoList()){
+            matchTypeRepository.deleteByRecordId(matchTypeDto.getRecordId());
         }
         matchTypeWsDto.setMessage("Data delete successfully");
         matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);

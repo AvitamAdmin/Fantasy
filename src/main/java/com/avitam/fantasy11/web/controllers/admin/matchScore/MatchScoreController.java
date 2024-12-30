@@ -34,14 +34,15 @@ public class MatchScoreController extends BaseController {
     private MatchScoreService matchScoreService;
 
     public static final String ADMIN_MATCHSCORE = "/admin/matchScore";
+
     @PostMapping
     @ResponseBody
-    public MatchScoreWsDto getAllScripts(@RequestBody MatchScoreWsDto matchScoreWsDto){
-        Pageable pageable=getPageable(matchScoreWsDto.getPage(),matchScoreWsDto.getSizePerPage(),matchScoreWsDto.getSortDirection(),matchScoreWsDto.getSortField());
-        MatchScoreDto matchScoreDto= CollectionUtils.isNotEmpty(matchScoreWsDto.getMatchScoreDtoList())?matchScoreWsDto.getMatchScoreDtoList().get(0) : new MatchScoreDto() ;
+    public MatchScoreWsDto getAllScripts(@RequestBody MatchScoreWsDto matchScoreWsDto) {
+        Pageable pageable = getPageable(matchScoreWsDto.getPage(), matchScoreWsDto.getSizePerPage(), matchScoreWsDto.getSortDirection(), matchScoreWsDto.getSortField());
+        MatchScoreDto matchScoreDto = CollectionUtils.isNotEmpty(matchScoreWsDto.getMatchScoreDtoList()) ? matchScoreWsDto.getMatchScoreDtoList().get(0) : new MatchScoreDto();
         MatchScore matchScore = modelMapper.map(matchScoreDto, MatchScore.class);
-        Page<MatchScore> page=isSearchActive(matchScore) !=null ? matchScoreRepository.findAll(Example.of(matchScore),pageable) : matchScoreRepository.findAll(pageable);
-        matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(page.getContent(),List.class));
+        Page<MatchScore> page = isSearchActive(matchScore) != null ? matchScoreRepository.findAll(Example.of(matchScore), pageable) : matchScoreRepository.findAll(pageable);
+        matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(page.getContent(), List.class));
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         matchScoreWsDto.setTotalPages(page.getTotalPages());
         matchScoreWsDto.setTotalRecords(page.getTotalElements());
@@ -50,8 +51,8 @@ public class MatchScoreController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public MatchScoreWsDto matchScoreWsDto(){
-        MatchScoreWsDto matchScoreWsDto=new MatchScoreWsDto();
+    public MatchScoreWsDto matchScoreWsDto() {
+        MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
         matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(matchScoreRepository.findByStatusOrderByIdentifier(true), List.class));
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         return matchScoreWsDto;
@@ -59,7 +60,7 @@ public class MatchScoreController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public MatchScoreWsDto edit (@RequestBody MatchScoreWsDto request) {
+    public MatchScoreWsDto edit(@RequestBody MatchScoreWsDto request) {
         MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         MatchScore matchScore = matchScoreRepository.findByRecordId(request.getRecordId());
@@ -70,10 +71,9 @@ public class MatchScoreController extends BaseController {
 
     @PostMapping("/edit")
     @ResponseBody
-    public  MatchScoreWsDto handleEdit(@RequestBody MatchScoreWsDto request) {
+    public MatchScoreWsDto handleEdit(@RequestBody MatchScoreWsDto request) {
         return matchScoreService.handleEdit(request);
     }
-
 
 
     @GetMapping("/add")
@@ -81,15 +81,15 @@ public class MatchScoreController extends BaseController {
     public MatchScoreWsDto addScript(@RequestBody MatchScoreWsDto request) {
         MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
-        matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(matchScoreRepository.findByStatusOrderByIdentifier(true),List.class));
+        matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(matchScoreRepository.findByStatusOrderByIdentifier(true), List.class));
         return matchScoreWsDto;
     }
 
     @PostMapping("/delete")
     @ResponseBody
     public MatchScoreWsDto deleteScript(@RequestBody MatchScoreWsDto matchScoreWsDto) {
-        for (String id : matchScoreWsDto.getRecordId().split(",")) {
-            matchScoreRepository.deleteByRecordId(id);
+        for (MatchScoreDto matchScoreDto : matchScoreWsDto.getMatchScoreDtoList()) {
+            matchScoreRepository.deleteByRecordId(matchScoreDto.getRecordId());
         }
         matchScoreWsDto.setMessage("Data deleted Successfully");
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
