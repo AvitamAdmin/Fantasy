@@ -11,5 +11,5 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class DepositsWsDto extends CommonWsDto {
-private List<DepositsDto> depositsList;
+private List<DepositsDto> depositsDtoList;
 }

@@ -7,8 +7,10 @@ import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.repository.AddressRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,7 @@ public class AddressServiceImpl implements AddressService {
         Address address = null;
         List<Address> addresses = new ArrayList<>();
         List<AddressDto> addressDtoList = addressWsDto.getAddressDtoList();
-        for(AddressDto addressDto1 :addressDtoList) {
+        for (AddressDto addressDto1 : addressDtoList) {
             if (addressDto1.getRecordId() != null) {
                 address = addressRepository.findByRecordId(addressDto1.getRecordId());
                 modelMapper.map(addressDto1, address);
@@ -55,7 +57,7 @@ public class AddressServiceImpl implements AddressService {
                 }
                 address = modelMapper.map(addressDto1, Address.class);
             }
-//            baseService.populateCommonData(address);
+            baseService.populateCommonData(address);
             address.setStatus(true);
             addressRepository.save(address);
             if (addressWsDto.getRecordId() == null) {
@@ -67,15 +69,14 @@ public class AddressServiceImpl implements AddressService {
 
             addressWsDto.setBaseUrl(ADMIN_ADDRESS);
         }
-        addressWsDto.setAddressDtoList(modelMapper.map(addresses,List.class));
+        addressWsDto.setAddressDtoList(modelMapper.map(addresses, List.class));
         return addressWsDto;
     }
 
     @Override
     public void updateByRecordId(String recordId) {
-        Address address=addressRepository.findByRecordId(recordId);
-        if(address!=null)
-        {
+        Address address = addressRepository.findByRecordId(recordId);
+        if (address != null) {
             addressRepository.save(address);
         }
     }

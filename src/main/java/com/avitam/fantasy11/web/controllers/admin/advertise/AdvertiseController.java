@@ -1,14 +1,14 @@
 package com.avitam.fantasy11.web.controllers.admin.advertise;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.BannerDto;
 import com.avitam.fantasy11.api.dto.BannerWsDto;
 import com.avitam.fantasy11.api.service.BannerService;
-import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.Banner;
 import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+
 import java.util.List;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 
 @Controller
 @RequestMapping("/admin/banner")
@@ -33,11 +32,11 @@ public class AdvertiseController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public BannerWsDto getAllBanner(@RequestBody BannerWsDto bannerWsDto){
-        Pageable pageable=getPageable(bannerWsDto.getPage(), bannerWsDto.getSizePerPage(), bannerWsDto.getSortDirection(), bannerWsDto.getSortField());
+    public BannerWsDto getAllBanner(@RequestBody BannerWsDto bannerWsDto) {
+        Pageable pageable = getPageable(bannerWsDto.getPage(), bannerWsDto.getSizePerPage(), bannerWsDto.getSortDirection(), bannerWsDto.getSortField());
         BannerDto bannerDto = CollectionUtils.isNotEmpty(bannerWsDto.getBannerList()) ? bannerWsDto.getBannerList().get(0) : null;
         Banner banner = bannerDto != null ? modelMapper.map(bannerDto, Banner.class) : null;
-        Page<Banner> page= isSearchActive(banner) !=null ? bannerRepository.findAll(Example.of(banner),pageable) : bannerRepository.findAll(pageable);
+        Page<Banner> page = isSearchActive(banner) != null ? bannerRepository.findAll(Example.of(banner), pageable) : bannerRepository.findAll(pageable);
         bannerWsDto.setBannerList(modelMapper.map(page.getContent(), List.class));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         bannerWsDto.setTotalPages(page.getTotalPages());
@@ -47,9 +46,9 @@ public class AdvertiseController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public BannerWsDto getActiveBanner(){
-        BannerWsDto bannerWsDto=new BannerWsDto();
-        bannerWsDto.setBannerList(modelMapper.map(bannerRepository.findByStatusOrderByIdentifier(true),List.class));
+    public BannerWsDto getActiveBanner() {
+        BannerWsDto bannerWsDto = new BannerWsDto();
+        bannerWsDto.setBannerList(modelMapper.map(bannerRepository.findByStatusOrderByIdentifier(true), List.class));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
     }
@@ -57,9 +56,7 @@ public class AdvertiseController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public BannerWsDto edit(@RequestBody BannerWsDto bannerWsDto) {
-        BannerDto bannerDto=new BannerDto();
-        Banner banner= bannerRepository.findByRecordId(bannerWsDto.getBannerList().get(0).getRecordId());
-        bannerWsDto.setBannerList((List<BannerDto>) banner);
+        bannerWsDto.setBannerList(modelMapper.map(bannerRepository.findByRecordId(bannerWsDto.getBannerList().get(0).getRecordId()),List.class));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
     }
@@ -68,15 +65,6 @@ public class AdvertiseController extends BaseController {
     @ResponseBody
     public BannerWsDto handleEdit(@RequestBody BannerWsDto bannerWsDto) {
         return bannerService.handleEdit(bannerWsDto);
-    }
-
-    @GetMapping("/add")
-    @ResponseBody
-    public BannerWsDto add() {
-        BannerWsDto bannerWsDto=new BannerWsDto();
-        bannerWsDto.setBannerList(modelMapper.map(bannerRepository.findByStatusOrderByIdentifier(true),List.class));
-        bannerWsDto.setBaseUrl(ADMIN_BANNER);
-        return bannerWsDto;
     }
 
     @PostMapping("/delete")

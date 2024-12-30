@@ -31,12 +31,12 @@ public class TeamController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public TeamWsDto getAllTeams(@RequestBody TeamWsDto teamWsDto){
+    public TeamWsDto getAllTeams(@RequestBody TeamWsDto teamWsDto) {
 
-        Pageable pageable=getPageable(teamWsDto.getPage(),teamWsDto.getSizePerPage(),teamWsDto.getSortDirection(),teamWsDto.getSortField());
-        TeamDto teamDto= CollectionUtils.isNotEmpty(teamWsDto.getTeamDtoList()) ? teamWsDto.getTeamDtoList().get(0) : new TeamDto();
-        Team team=modelMapper.map(teamDto,Team.class);
-        Page<Team> page=isSearchActive(team)!=null ? teamRepository.findAll(Example.of(team),pageable) : teamRepository.findAll(pageable);
+        Pageable pageable = getPageable(teamWsDto.getPage(), teamWsDto.getSizePerPage(), teamWsDto.getSortDirection(), teamWsDto.getSortField());
+        TeamDto teamDto = CollectionUtils.isNotEmpty(teamWsDto.getTeamDtoList()) ? teamWsDto.getTeamDtoList().get(0) : new TeamDto();
+        Team team = modelMapper.map(teamDto, Team.class);
+        Page<Team> page = isSearchActive(team) != null ? teamRepository.findAll(Example.of(team), pageable) : teamRepository.findAll(pageable);
         teamWsDto.setTeamDtoList(modelMapper.map(page.getContent(), List.class));
         teamWsDto.setTotalPages(page.getTotalPages());
         teamWsDto.setTotalRecords(page.getTotalElements());
@@ -48,23 +48,22 @@ public class TeamController extends BaseController {
     @ResponseBody
     public TeamWsDto getActiveTeamList() {
         TeamWsDto teamWsDto = new TeamWsDto();
-        teamWsDto.setTeamDtoList(modelMapper.map(teamRepository.findByStatusOrderByIdentifier(true),List.class));
-        teamWsDto.setBaseUrl(ADMIN_TEAM);
-        return teamWsDto;
-    }
-    @PostMapping("/getedit")
-    @ResponseBody
-    public TeamWsDto editTeam(@RequestBody TeamWsDto request) {
-        TeamWsDto teamWsDto = new TeamWsDto();
-        Team team = teamRepository.findByRecordId(request.getRecordId());
-        if(team!=null){
-            teamWsDto.setTeamDtoList(List.of(modelMapper.map(team,TeamDto.class)));
-        }
+        teamWsDto.setTeamDtoList(modelMapper.map(teamRepository.findByStatusOrderByIdentifier(true), List.class));
         teamWsDto.setBaseUrl(ADMIN_TEAM);
         return teamWsDto;
     }
 
-    @PostMapping(value="/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/getedit")
+    @ResponseBody
+    public TeamWsDto editTeam(@RequestBody TeamWsDto request) {
+        TeamWsDto teamWsDto = new TeamWsDto();
+        Team team = teamRepository.findByRecordId(request.getTeamDtoList().get(0).getRecordId());
+        teamWsDto.setTeamDtoList(List.of(modelMapper.map(team, TeamDto.class)));
+        teamWsDto.setBaseUrl(ADMIN_TEAM);
+        return teamWsDto;
+    }
+
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public TeamWsDto handleEdit(@ModelAttribute TeamWsDto request) {
 
@@ -75,10 +74,11 @@ public class TeamController extends BaseController {
     @ResponseBody
     public TeamWsDto addTeam() {
         TeamWsDto teamWsDto = new TeamWsDto();
-        teamWsDto.setTeamDtoList(modelMapper.map(teamRepository.findByStatusOrderByIdentifier(true),List.class));
+        teamWsDto.setTeamDtoList(modelMapper.map(teamRepository.findByStatusOrderByIdentifier(true), List.class));
         teamWsDto.setBaseUrl(ADMIN_TEAM);
         return teamWsDto;
     }
+
     @PostMapping("/delete")
     @ResponseBody
     public TeamWsDto deleteTeam(@RequestBody TeamWsDto teamWsDto) {

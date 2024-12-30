@@ -1,14 +1,14 @@
 package com.avitam.fantasy11.web.controllers.admin.deposits;
 
-import com.avitam.fantasy11.api.dto.BannerDto;
 import com.avitam.fantasy11.api.dto.DepositsDto;
 import com.avitam.fantasy11.api.dto.DepositsWsDto;
 import com.avitam.fantasy11.api.service.DepositsService;
-import com.avitam.fantasy11.model.Banner;
 import com.avitam.fantasy11.model.Deposits;
 import com.avitam.fantasy11.repository.DepositsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+
 import java.util.List;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +34,10 @@ public class DepositsLogController extends BaseController {
     @ResponseBody
     public DepositsWsDto getAllDeposits(@RequestBody DepositsWsDto depositsWsDto) {
         Pageable pageable = getPageable(depositsWsDto.getPage(), depositsWsDto.getSizePerPage(), depositsWsDto.getSortDirection(), depositsWsDto.getSortField());
-        DepositsDto depositsDto = CollectionUtils.isNotEmpty(depositsWsDto.getDepositsList()) ? depositsWsDto.getDepositsList().get(0) : null;
+        DepositsDto depositsDto = CollectionUtils.isNotEmpty(depositsWsDto.getDepositsDtoList()) ? depositsWsDto.getDepositsDtoList().get(0) : null;
         Deposits deposits = depositsDto != null ? modelMapper.map(depositsDto, Deposits.class) : null;
         Page<Deposits> page = isSearchActive(deposits) != null ? depositsRepository.findAll(Example.of(deposits), pageable) : depositsRepository.findAll(pageable);
-        depositsWsDto.setDepositsList(modelMapper.map(page.getContent(), List.class));
+        depositsWsDto.setDepositsDtoList(modelMapper.map(page.getContent(), List.class));
         depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);
         depositsWsDto.setTotalPages(page.getTotalPages());
         depositsWsDto.setTotalRecords(page.getTotalElements());
@@ -65,7 +65,7 @@ public class DepositsLogController extends BaseController {
     @ResponseBody
     public DepositsWsDto getActiveDeposit() {
         DepositsWsDto depositsWsDto = new DepositsWsDto();
-        depositsWsDto.setDepositsList(modelMapper.map(depositsRepository.findByStatusOrderByIdentifier(true), List.class));
+        depositsWsDto.setDepositsDtoList(modelMapper.map(depositsRepository.findByStatusOrderByIdentifier(true), List.class));
         depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);
         return depositsWsDto;
     }
@@ -73,8 +73,7 @@ public class DepositsLogController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public DepositsWsDto edit(@RequestBody DepositsWsDto depositsWsDto) {
-        Deposits deposits = depositsRepository.findByRecordId(depositsWsDto.getRecordId());
-        depositsWsDto.setDepositsList((List<DepositsDto>) deposits);
+        depositsWsDto.setDepositsDtoList(modelMapper.map(depositsRepository.findByRecordId(depositsWsDto.getDepositsDtoList().get(0).getRecordId()), List.class));
         depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);
         return depositsWsDto;
     }
@@ -85,19 +84,10 @@ public class DepositsLogController extends BaseController {
         return depositService.handleEdit(depositsWsDto);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public DepositsWsDto add() {
-        DepositsWsDto depositsWsDto = new DepositsWsDto();
-        depositsWsDto.setDepositsList(modelMapper.map(depositsRepository.findByStatusOrderByIdentifier(true), List.class));
-        depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);
-        return depositsWsDto;
-    }
-
     @PostMapping("/delete")
     @ResponseBody
     public DepositsWsDto delete(@RequestBody DepositsWsDto depositsWsDto) {
-        for (DepositsDto depositsDto : depositsWsDto.getDepositsList()) {
+        for (DepositsDto depositsDto : depositsWsDto.getDepositsDtoList()) {
             depositsRepository.deleteByRecordId(depositsDto.getRecordId());
         }
         depositsWsDto.setMessage("Data deleted Successfully");

@@ -7,6 +7,7 @@ import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.model.VerificationToken;
+import com.avitam.fantasy11.repository.RoleRepository;
 import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.repository.VerificationTokenRepository;
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private CoreService coreService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public void save(UserWsDto request) {
@@ -133,11 +136,14 @@ public class UserServiceImpl implements UserService {
     public boolean isAdminRole() {
         Set<Role> roles = coreService.getCurrentUser().getRoles();
         if (CollectionUtils.isNotEmpty(roles)) {
-            for (Role role : roles) {
-                if ("ROLE_ADMIN".equals(role.getName())) {
-                    return true;
-                }
+            if(roles!=null){
+                roles.stream().
+                        map(role -> roleRepository.findByRecordId(role.getRecordId()))
+                        .filter(Objects::nonNull)
+                        .anyMatch(role -> "ROLE_ADMIN".equalsIgnoreCase(role.getName()));
             }
+            return true;
+
         }
         return false;
     }

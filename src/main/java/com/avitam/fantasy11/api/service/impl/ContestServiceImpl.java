@@ -39,40 +39,38 @@ public class ContestServiceImpl implements ContestService {
 
     @Override
     public ContestWsDto handleEdit(ContestWsDto request) {
-        ContestWsDto contestWsDto = new ContestWsDto();
         Contest contestData = null;
         List<ContestDto> contestDtos = request.getContestDtos();
         List<Contest> contestList = new ArrayList<>();
-        ContestDto contestDto = new ContestDto();
+
         for (ContestDto contestDto1 : contestDtos) {
             if (contestDto1.getRecordId() != null) {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
                 contestRepository.save(contestData);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.CONTEST, contestDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
-
                 contestData = modelMapper.map(contestDto1, Contest.class);
             }
-            //baseService.populateCommonData(contestData);
-            //contestData.setCreator(coreService.getCurrentUser().getCreator());
+            baseService.populateCommonData(contestData);
             contestRepository.save(contestData);
 
             contestData.setLastModified(new Date());
-            if (contestDto.getRecordId() == null) {
+            if (contestData.getRecordId() == null) {
                 contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
             }
             contestRepository.save(contestData);
             contestList.add(contestData);
-            contestWsDto.setMessage("Contest was updated successfully");
-            contestWsDto.setBaseUrl(ADMIN_CONTEST);
+            request.setMessage("Contest added Successfully");
+            request.setBaseUrl(ADMIN_CONTEST);
         }
-        contestWsDto.setContestDtos(modelMapper.map(contestList, List.class));
-        return contestWsDto;
+        request.setContestDtos(modelMapper.map(contestList, List.class));
+        return request;
     }
 
     @Override

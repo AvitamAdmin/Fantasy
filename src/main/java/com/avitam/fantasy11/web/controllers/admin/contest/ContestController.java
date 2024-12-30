@@ -27,7 +27,7 @@ public class ContestController extends BaseController {
     private ContestService contestService;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_CONTEST="/admin/contest";
+    private static final String ADMIN_CONTEST = "/admin/contest";
 
     @PostMapping
     @ResponseBody
@@ -45,10 +45,10 @@ public class ContestController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public ContestWsDto getActiveContest(){
-        ContestWsDto contestwsDto=new ContestWsDto();
+    public ContestWsDto getActiveContest() {
+        ContestWsDto contestwsDto = new ContestWsDto();
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
-        contestwsDto.setContestDtos(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true),List.class));
+        contestwsDto.setContestDtos(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true), List.class));
         return contestwsDto;
     }
 
@@ -58,9 +58,7 @@ public class ContestController extends BaseController {
         ContestWsDto contestwsDto = new ContestWsDto();
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
         Contest contest = contestRepository.findByRecordId(request.getContestDtos().get(0).getRecordId());
-        if( contest != null){
-            contestwsDto.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
-        }
+        contestwsDto.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
         return contestwsDto;
     }
 
@@ -71,18 +69,10 @@ public class ContestController extends BaseController {
         return contestService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public ContestWsDto addContest() {
-        ContestWsDto contestwsDto = new ContestWsDto();
-        contestwsDto.setContestDtos(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true), List.class));
-        contestwsDto.setBaseUrl(ADMIN_CONTEST);
-        return contestwsDto;
-    }
     @PostMapping("/delete")
     @ResponseBody
     public ContestWsDto deleteContest(@RequestBody ContestWsDto contestwsDto) {
-        for(ContestDto contestDto : contestwsDto.getContestDtos()){
+        for (ContestDto contestDto : contestwsDto.getContestDtos()) {
             contestRepository.deleteByRecordId(contestDto.getRecordId());
         }
         contestwsDto.setMessage("Data deleted Successfully");

@@ -8,9 +8,10 @@ import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Banner;
 import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +47,16 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public BannerWsDto handleEdit(BannerWsDto bannerWsDto) {
-        BannerDto bannerDto=new BannerDto();
-        Banner banner=null;
+
+        Banner banner = null;
         List<Banner> banners = new ArrayList<>();
         List<BannerDto> bannerDtoList = bannerWsDto.getBannerList();
-        for(BannerDto bannerDto1 : bannerDtoList) {
+        for (BannerDto bannerDto1 : bannerDtoList) {
             if (bannerDto1.getRecordId() != null) {
                 banner = bannerRepository.findByRecordId(bannerDto1.getRecordId());
                 modelMapper.map(bannerDto1, banner);
+                bannerRepository.save(banner);
+                bannerWsDto.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.BANNER, bannerDto1.getIdentifier()) != null) {
                     bannerWsDto.setSuccess(false);
@@ -63,9 +66,9 @@ public class BannerServiceImpl implements BannerService {
 
                 banner = modelMapper.map(bannerDto1, Banner.class);
             }
-            if (bannerDto.getImage() != null && !bannerDto.getImage().isEmpty()) {
+            if (bannerDto1.getImage() != null) {
                 try {
-                    banner.setImage(new Binary(bannerDto.getImage().getBytes()));
+                    banner.setImage(new Binary(bannerDto1.getImage().getBytes()));
                 } catch (IOException e) {
                     e.printStackTrace();
                     bannerWsDto.setMessage("Error processing image file");
@@ -73,25 +76,25 @@ public class BannerServiceImpl implements BannerService {
                 }
             }
             baseService.populateCommonData(banner);
+            banner.setStatus(true);
             bannerRepository.save(banner);
-            banner.setCreator(coreService.getCurrentUser().getCreator());
-            banner.setModifiedBy(String.valueOf(new Date()));
-            if (bannerWsDto.getRecordId() == null) {
+            if (banner.getRecordId() == null) {
                 banner.setRecordId(String.valueOf(banner.getId().getTimestamp()));
             }
             bannerRepository.save(banner);
+            bannerWsDto.setMessage("Data added Successfully");
             banners.add(banner);
             bannerWsDto.setBaseUrl(ADMIN_BANNER);
         }
-        bannerWsDto.setBannerList(modelMapper.map(banner,List.class));
+        bannerWsDto.setBannerList(modelMapper.map(banner, List.class));
         return bannerWsDto;
     }
 
     @Override
     public void updateByRecordId(String recordId) {
 
-        Banner banner=bannerRepository.findByRecordId(recordId);
-        if(banner!=null){
+        Banner banner = bannerRepository.findByRecordId(recordId);
+        if (banner != null) {
             bannerRepository.save(banner);
         }
 

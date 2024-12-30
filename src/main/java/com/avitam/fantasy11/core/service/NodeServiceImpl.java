@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class NodeServiceImpl implements NodeService {
 
-    private static final String ADMIN_INTERFACE="/admin/interface";
+    private static final String ADMIN_INTERFACE = "/admin/interface";
 
     @Autowired
     private NodeRepository nodeRepository;
@@ -91,6 +91,7 @@ public class NodeServiceImpl implements NodeService {
         }
         return allNodes;
     }
+
     @Override
     public Node findByRecordId(String recordId) {
 
@@ -105,14 +106,15 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public NodeWsDto handleEdit(NodeWsDto nodeWsDto) {
-        NodeDto nodeDto=new NodeDto();
-        Node node=null;
+        Node node = null;
         List<Node> nodes = new ArrayList<>();
         List<NodeDto> nodeDtoList = nodeWsDto.getNodeDtoList();
-        for(NodeDto nodeDto1 : nodeDtoList) {
+        for (NodeDto nodeDto1 : nodeDtoList) {
             if (nodeDto1.getRecordId() != null) {
                 node = nodeRepository.findByRecordId(nodeDto1.getRecordId());
                 modelMapper.map(nodeDto1, node);
+                nodeRepository.save(node);
+                nodeWsDto.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.NODE, nodeDto1.getIdentifier()) != null) {
                     nodeWsDto.setSuccess(false);
@@ -122,25 +124,23 @@ public class NodeServiceImpl implements NodeService {
                 node = modelMapper.map(nodeDto1, Node.class);
             }
             baseService.populateCommonData(node);
-            node.setCreator(coreService.getCurrentUser().getCreator());
             nodeRepository.save(node);
-            node.setLastModified(new Date());
             if (nodeWsDto.getRecordId() == null) {
                 node.setRecordId(String.valueOf(node.getId().getTimestamp()));
             }
             nodeRepository.save(node);
             nodes.add(node);
-            nodeWsDto.setMessage("Node Updated Successfully!");
+            nodeWsDto.setMessage("Node added Successfully!");
             nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         }
-        nodeWsDto.setNodeDtoList(modelMapper.map(node,List.class));
+        nodeWsDto.setNodeDtoList(modelMapper.map(node, List.class));
         return nodeWsDto;
     }
 
     @Override
     public void updateByRecordId(String recordId) {
-        Node node=nodeRepository.findByRecordId(recordId);
-        if(node!=null) {
+        Node node = nodeRepository.findByRecordId(recordId);
+        if (node != null) {
 
             nodeRepository.save(node);
         }
