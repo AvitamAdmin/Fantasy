@@ -63,7 +63,7 @@ public class GatewaysManualController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public GatewaysManualWsDto editGatewaysManual(@RequestBody GatewaysManualWsDto gatewaysManualWsDto) {
-        gatewaysManualWsDto.setGatewaysManualDtoList(modelMapper.map(gatewaysManualRepository.findByRecordId(gatewaysManualWsDto.getRecordId()), List.class));
+        gatewaysManualWsDto.setGatewaysManualDtoList(modelMapper.map(gatewaysManualRepository.findByRecordId(gatewaysManualWsDto.getGatewaysManualDtoList().get(0).getRecordId()), List.class));
         gatewaysManualWsDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
         return gatewaysManualWsDto;
     }

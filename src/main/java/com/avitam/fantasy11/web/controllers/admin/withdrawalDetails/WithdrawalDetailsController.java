@@ -68,7 +68,7 @@ public class WithdrawalDetailsController extends BaseController {
     @ResponseBody
     public WithdrawalDetailsWsDto editPendingWithdrawal(@RequestBody WithdrawalDetailsWsDto request) {
         WithdrawalDetailsWsDto withdrawalDetailsWsDto = new WithdrawalDetailsWsDto();
-        withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsRepository.findByRecordId(request.getRecordId()),List.class));
+        withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsRepository.findByRecordId(request.getWithdrawalDetailsDtoList().get(0).getRecordId()),List.class));
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         return withdrawalDetailsWsDto;
     }
@@ -92,7 +92,7 @@ public class WithdrawalDetailsController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public WithdrawalDetailsWsDto deleteWithdrawalDetails(@RequestBody WithdrawalDetailsWsDto withdrawalDetailsWsDto) {
-        for (String id : withdrawalDetailsWsDto.getRecordId().split(",")) {
+        for (String id : withdrawalDetailsWsDto.getWithdrawalDetailsDtoList().get(0).getRecordId().split(",")) {
             withdrawalDetailsRepository.deleteByRecordId(id);
         }
         withdrawalDetailsWsDto.setMessage("Data deleted successfully");

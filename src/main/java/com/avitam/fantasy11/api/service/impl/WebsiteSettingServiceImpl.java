@@ -1,12 +1,12 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.UserWinningsDto;
+
 import com.avitam.fantasy11.api.dto.WebsiteSettingDto;
 import com.avitam.fantasy11.api.dto.WebsiteSettingsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WebsiteSettingService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.UserWinnings;
+
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WebsiteSettingRepository;

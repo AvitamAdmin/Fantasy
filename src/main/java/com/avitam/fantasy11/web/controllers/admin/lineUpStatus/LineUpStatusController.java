@@ -60,7 +60,7 @@ public class LineUpStatusController extends BaseController {
     @ResponseBody
     public LineUpStatusWsDto editLineupStatus(@RequestBody LineUpStatusWsDto request) {
         LineUpStatusWsDto lineUpStatusWsDto = new LineUpStatusWsDto();
-        LineUpStatus lineUpStatus = lineUpStatusRepository.findByRecordId(request.getRecordId());
+        LineUpStatus lineUpStatus = lineUpStatusRepository.findByRecordId(request.getLineUpStatusDtoList().get(0).getRecordId());
         lineUpStatusWsDto.setLineUpStatusDtoList((List<LineUpStatusDto>) lineUpStatus);
         lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
         return lineUpStatusWsDto;
@@ -84,7 +84,7 @@ public class LineUpStatusController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public LineUpStatusWsDto deleteLineupStatus(@RequestBody LineUpStatusWsDto lineUpStatusWSDto) {
-        for (String id : lineUpStatusWSDto.getRecordId().split(",")) {
+        for (String id : lineUpStatusWSDto.getLineUpStatusDtoList().get(0).getRecordId().split(",")) {
             lineUpStatusRepository.deleteByRecordId(id);
         }
         lineUpStatusWSDto.setMessage("Data deleted Successfully");

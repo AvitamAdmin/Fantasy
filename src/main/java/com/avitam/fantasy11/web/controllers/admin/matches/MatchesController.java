@@ -121,7 +121,7 @@ public class MatchesController extends BaseController {
     @ResponseBody
     public MatchesWsDto editMatches(@RequestBody MatchesWsDto request) {
         MatchesWsDto matchesWsDto = new MatchesWsDto();
-        Matches matches = matchesRepository.findByRecordId(request.getRecordId());
+        Matches matches = matchesRepository.findByRecordId(request.getMatchesDtoList().get(0).getRecordId());
         modelMapper.map(matches, matchesWsDto);
         matchesWsDto.setMatchesDtoList((List<MatchesDto>) matches);
         matchesWsDto.setBaseUrl(ADMIN_MATCHES);

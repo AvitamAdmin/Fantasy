@@ -63,10 +63,10 @@ public class PointsMasterServiceImpl implements PointsMasterService {
                 }
                 pointsMaster = modelMapper.map(pointsMasterDto1, PointsMaster.class);
             }
-            //baseService.populateCommonData(pointsMaster);
+            baseService.populateCommonData(pointsMaster);
             pointsMaster.setStatus(true);
             pointsMasterRepository.save(pointsMaster);
-            if (request.getRecordId() == null) {
+            if (pointsMaster.getRecordId() == null) {
                 pointsMaster.setRecordId(String.valueOf(pointsMaster.getId().getTimestamp()));
             }
             pointsMasterRepository.save(pointsMaster);

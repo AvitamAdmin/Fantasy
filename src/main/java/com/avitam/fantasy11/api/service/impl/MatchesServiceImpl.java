@@ -66,7 +66,7 @@ public class MatchesServiceImpl implements MatchesService {
                 eventStatus(matches, request);
                 matchesRepository.save(matches);
             }
-            if (request.getRecordId() == null) {
+            if (matches.getRecordId() == null) {
                 matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
             }
             matchesRepository.save(matches);

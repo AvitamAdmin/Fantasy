@@ -58,7 +58,7 @@ public MainContestWsDto getAllContest(@RequestBody MainContestWsDto mainContestW
     @ResponseBody
     public MainContestWsDto editMainContest(@RequestBody MainContestWsDto request){
        MainContestWsDto mainContestWsDto=new MainContestWsDto();
-       MainContest mainContest=mainContestRepository.findByRecordId(request.getRecordId());
+       MainContest mainContest=mainContestRepository.findByRecordId(request.getMainContestDtoList().get(0).getRecordId());
         mainContestWsDto.setMainContestDtoList((List<MainContestDto>) mainContest);
         mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
         return mainContestWsDto;
@@ -82,7 +82,7 @@ public MainContestWsDto getAllContest(@RequestBody MainContestWsDto mainContestW
     @ResponseBody
     public MainContestWsDto deleteContest(@RequestBody MainContestWsDto mainContestWsDto) {
 
-        for (String id : mainContestWsDto.getRecordId().split(",")) {
+        for (String id : mainContestWsDto.getMainContestDtoList().get(0).getRecordId().split(",")) {
             mainContestRepository.deleteByRecordId(id);
         }
         mainContestWsDto.setMessage("Data deleted Successfully");

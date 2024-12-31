@@ -57,10 +57,10 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
                 }
                 pointsUpdate = modelMapper.map(pointsUpdateDto1, PointsUpdate.class);
             }
-            //baseService.populateCommonData(pointsUpdate);
+            baseService.populateCommonData(pointsUpdate);
             pointsUpdate.setStatus(true);
             pointsUpdateRepository.save(pointsUpdate);
-            if (request.getRecordId() == null) {
+            if (pointsUpdate.getRecordId() == null) {
                 pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));
             }
             pointsUpdateRepository.save(pointsUpdate);

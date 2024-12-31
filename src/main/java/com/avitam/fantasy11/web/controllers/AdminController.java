@@ -51,7 +51,7 @@ public class AdminController extends BaseController{
     @PostMapping("/getedit")
     public UserWsDto editUser(@RequestBody UserWsDto request) {
         UserWsDto userWsDto = new UserWsDto();
-        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByRecordId(request.getRecordId()),List.class));
+        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByRecordId(request.getUserDtoList().get(0).getRecordId()),List.class));
         userWsDto.setBaseUrl(ADMIN_USER);
         return userWsDto;
     }

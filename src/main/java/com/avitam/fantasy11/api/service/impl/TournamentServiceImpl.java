@@ -36,9 +36,9 @@ public class TournamentServiceImpl implements TournamentService {
         List<Tournament> tournaments = new ArrayList<>();
         Tournament tournament = null;
         for (TournamentDto tournamentDto : tournamentDtos) {
-            if (request.getRecordId() != null) {
+            if (tournamentDto.getRecordId() != null) {
                 Tournament requestData = modelMapper.map(tournamentDto, Tournament.class);
-                tournament = tournamentRepository.findByRecordId(request.getRecordId());
+                tournament = tournamentRepository.findByRecordId(tournamentDto.getRecordId());
                 modelMapper.map(requestData, tournament);
             } else {
                 if (baseService.validateIdentifier(EntityConstants.TOURNAMENT, tournamentDto.getIdentifier()) != null) {
@@ -48,10 +48,10 @@ public class TournamentServiceImpl implements TournamentService {
                 }
                 tournament = modelMapper.map(tournamentDto, Tournament.class);
             }
-          //  baseService.populateCommonData(tournament);
+           baseService.populateCommonData(tournament);
             tournament.setStatus(true);
             tournamentRepository.save(tournament);
-            if (request.getRecordId() == null) {
+            if (tournament.getRecordId() == null) {
                 tournament.setRecordId(String.valueOf(tournament.getId().getTimestamp()));
             }
             tournamentRepository.save(tournament);

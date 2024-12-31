@@ -53,7 +53,7 @@ public class InterfaceController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public NodeWsDto edit(@RequestBody NodeWsDto nodeWsDto) {
-        Node node= nodeRepository.findByRecordId(nodeWsDto.getRecordId());
+        Node node= nodeRepository.findByRecordId(nodeWsDto.getNodeDtoList().get(0).getRecordId());
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
     }

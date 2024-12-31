@@ -67,7 +67,7 @@ public class ScriptServiceImpl implements ScriptService {
                 baseService.populateCommonData(script);
                 script.setCreator(coreService.getCurrentUser().getCreator());
                 script.setModifiedBy(String.valueOf(new Date()));
-                if (scriptWsDto.getRecordId() == null) {
+                if (script.getRecordId() == null) {
                     script.setRecordId(String.valueOf(script.getId().getTimestamp()));
                 }
                 scriptRepository.save(script);
