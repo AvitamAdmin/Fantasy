@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalMethods;
 
-import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
-import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -58,7 +56,7 @@ public class WithdrawalMethodsController extends BaseController {
     @ResponseBody
     public WithdrawalMethodsWsDto editWithdrawalMethods (@RequestBody WithdrawalMethodsWsDto request){
         WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
-        WithdrawalMethods withdrawalMethods= withdrawalMethodsRepository.findByRecordId(request.getRecordId());
+        WithdrawalMethods withdrawalMethods= withdrawalMethodsRepository.findByRecordId(request.getWithdrawalMethodsDtoList().get(0).getRecordId());
         withdrawalMethodsWsDto.setWithdrawalMethodsDtoList((List<WithdrawalMethodsDto>) withdrawalMethods);
         withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
         return withdrawalMethodsWsDto;
@@ -70,20 +68,12 @@ public class WithdrawalMethodsController extends BaseController {
         return withdrawalMethodsService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public WithdrawalMethodsWsDto addWithdrawalMethods() {
-
-        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
-        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true),List.class));
-        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsWsDto;
-    }
+ 
     @PostMapping("/delete")
     @ResponseBody
     public WithdrawalMethodsWsDto deleteWithdrawalMethods(@RequestBody WithdrawalMethodsWsDto withdrawalMethodsWsDto) {
-        for (String id : withdrawalMethodsWsDto.getRecordId().split(",")) {
-            withdrawalMethodsRepository.deleteByRecordId(id);
+        for (WithdrawalMethodsDto data : withdrawalMethodsWsDto.getWithdrawalMethodsDtoList()) {
+            withdrawalMethodsRepository.deleteByRecordId(data.getRecordId());
         }
         withdrawalMethodsWsDto.setMessage("Data deleted successfully");
         withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);

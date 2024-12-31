@@ -125,7 +125,7 @@ public class NodeServiceImpl implements NodeService {
             }
             baseService.populateCommonData(node);
             nodeRepository.save(node);
-            if (nodeWsDto.getRecordId() == null) {
+            if (node.getRecordId() == null) {
                 node.setRecordId(String.valueOf(node.getId().getTimestamp()));
             }
             nodeRepository.save(node);

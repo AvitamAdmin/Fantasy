@@ -2,10 +2,8 @@ package com.avitam.fantasy11.web.controllers.admin.leaderBoard;
 
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.dto.LeaderBoardWsDto;
-import com.avitam.fantasy11.api.dto.MatchScoreDto;
 import com.avitam.fantasy11.api.service.LeaderBoardService;
 import com.avitam.fantasy11.model.LeaderBoard;
-import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.repository.LeaderBoardRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -58,7 +56,7 @@ public class LeaderBoardController extends BaseController {
     @ResponseBody
     public LeaderBoardWsDto editLeaderBoard(@RequestBody LeaderBoardWsDto request) {
         LeaderBoardWsDto leaderBoardWsDto=new LeaderBoardWsDto();
-        LeaderBoard leaderBoard=leaderBoardRepository.findByRecordId(request.getRecordId());
+        LeaderBoard leaderBoard=leaderBoardRepository.findByRecordId(request.getLeaderBoardDtoList().get(0).getRecordId());
         leaderBoardWsDto.setLeaderBoardDtoList((List<LeaderBoardDto>) leaderBoard);
         leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardWsDto;
@@ -83,8 +81,8 @@ public class LeaderBoardController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public LeaderBoardWsDto deleteLeaderBoard(@RequestBody LeaderBoardWsDto leaderBoardWsDto) {
-        for (String id : leaderBoardWsDto.getRecordId().split(",")) {
-              leaderBoardRepository.deleteByRecordId(id);
+        for (LeaderBoardDto data : leaderBoardWsDto.getLeaderBoardDtoList()) {
+              leaderBoardRepository.deleteByRecordId(data.getRecordId());
         }
         leaderBoardWsDto.setMessage("Data deleted Successfully");
         leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);

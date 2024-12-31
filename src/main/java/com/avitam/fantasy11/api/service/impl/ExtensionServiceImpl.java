@@ -49,7 +49,7 @@ public class ExtensionServiceImpl implements ExtensionService {
                 extensionRepository.save(extension);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, extensionDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.EXTENSION, extensionDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
@@ -63,9 +63,9 @@ public class ExtensionServiceImpl implements ExtensionService {
                         throw new RuntimeException(e);
                     }
                 }
-
             }
             baseService.populateCommonData(extension);
+            extension.setStatus(true);
             extensionRepository.save(extension);
             extension.setLastModified(new Date());
             if (extension.getRecordId() == null) {

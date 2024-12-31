@@ -14,11 +14,8 @@ public class CommonWsDto extends PaginationDto{
     private String message;
     private boolean success = true;
     private  String token;
-    private String email;
-    private String otp;
-    private String mobileNumber;
     private String userName;
     private String redirectUrl;
-    private String recordId;
+    private String otp;
 }
 

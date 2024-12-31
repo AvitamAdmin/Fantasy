@@ -63,7 +63,7 @@ public class MatchScoreController extends BaseController {
     public MatchScoreWsDto edit(@RequestBody MatchScoreWsDto request) {
         MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
-        MatchScore matchScore = matchScoreRepository.findByRecordId(request.getRecordId());
+        MatchScore matchScore = matchScoreRepository.findByRecordId(request.getMatchScoreDtoList().get(0).getRecordId());
         matchScoreWsDto.setMatchScoreDtoList((List<MatchScoreDto>) matchScore);
         return matchScoreWsDto;
     }

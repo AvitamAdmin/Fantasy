@@ -59,8 +59,8 @@ public class MatchTypeController extends BaseController {
     @ResponseBody
     public MatchTypeWsDto edit (@RequestBody MatchTypeWsDto request){
         MatchTypeWsDto matchTypeWsDto=new MatchTypeWsDto();
-        MatchType matchType=matchTypeRepository.findByRecordId(request.getRecordId());
-        matchTypeWsDto.setMatchTypeDtoList((List<MatchTypeDto>) matchType);
+        MatchType matchType=matchTypeRepository.findByRecordId(request.getMatchTypeDtoList().get(0).getRecordId());
+        matchTypeWsDto.setMatchTypeDtoList(List.of(modelMapper.map(matchType, MatchTypeDto.class)));
         matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
         return matchTypeWsDto;
     }

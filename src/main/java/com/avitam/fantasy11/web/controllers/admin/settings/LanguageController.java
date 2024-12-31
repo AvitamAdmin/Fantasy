@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
-import com.avitam.fantasy11.api.dto.ExtensionDto;
 import com.avitam.fantasy11.api.dto.LanguageDto;
 import com.avitam.fantasy11.api.dto.LanguageWsDto;
 import com.avitam.fantasy11.api.service.LanguageService;
-import com.avitam.fantasy11.model.Extension;
 import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.repository.LanguageRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -35,10 +33,10 @@ public class LanguageController extends BaseController {
     @PostMapping
     @ResponseBody
     public LanguageWsDto getAll(@RequestBody LanguageWsDto languageWsDto) {
-        Pageable pageable=getPageable(languageWsDto.getPage(),languageWsDto.getSizePerPage(),languageWsDto.getSortDirection(),languageWsDto.getSortField());
-        LanguageDto languageDto = CollectionUtils.isNotEmpty(languageWsDto.getLanguageDtoList()) ? languageWsDto.getLanguageDtoList()  .get(0):new LanguageDto();
-        Language language =modelMapper.map(languageWsDto,Language.class);
-        Page<Language> page=isSearchActive(language)!=null ? languageRepository.findAll(Example.of(language),pageable) : languageRepository.findAll(pageable);
+        Pageable pageable = getPageable(languageWsDto.getPage(), languageWsDto.getSizePerPage(), languageWsDto.getSortDirection(), languageWsDto.getSortField());
+        LanguageDto languageDto = CollectionUtils.isNotEmpty(languageWsDto.getLanguageDtoList()) ? languageWsDto.getLanguageDtoList().get(0) : new LanguageDto();
+        Language language = modelMapper.map(languageDto, Language.class);
+        Page<Language> page = isSearchActive(language) != null ? languageRepository.findAll(Example.of(language), pageable) : languageRepository.findAll(pageable);
         languageWsDto.setLanguageDtoList(modelMapper.map(page.getContent(), List.class));
         languageWsDto.setTotalPages(page.getTotalPages());
         languageWsDto.setTotalRecords(page.getTotalElements());
@@ -50,7 +48,7 @@ public class LanguageController extends BaseController {
     @ResponseBody
     public LanguageWsDto getActiveLanguageList() {
         LanguageWsDto languageWsDto = new LanguageWsDto();
-        languageWsDto.setLanguageDtoList(modelMapper.map(languageRepository.findByStatusOrderByIdentifier(true),List.class));
+        languageWsDto.setLanguageDtoList(modelMapper.map(languageRepository.findByStatusOrderByIdentifier(true), List.class));
         languageWsDto.setBaseUrl(ADMIN_LANGUAGE);
         return languageWsDto;
     }
@@ -59,7 +57,8 @@ public class LanguageController extends BaseController {
     @ResponseBody
     public LanguageWsDto edit(@RequestBody LanguageWsDto request) {
         LanguageWsDto languageWsDto = new LanguageWsDto();
-        languageWsDto.setLanguageDtoList(modelMapper.map(languageRepository.findByRecordId(request.getRecordId()),List.class));
+        Language language = languageRepository.findByRecordId(request.getLanguageDtoList().get(0).getRecordId());
+        languageWsDto.setLanguageDtoList(List.of(modelMapper.map(language, LanguageDto.class)));
         languageWsDto.setBaseUrl(ADMIN_LANGUAGE);
         return languageWsDto;
     }
@@ -71,21 +70,13 @@ public class LanguageController extends BaseController {
         return languageService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public LanguageWsDto add() {
-        LanguageWsDto languageWsDto = new LanguageWsDto();
-        languageWsDto.setLanguageDtoList(modelMapper.map(languageRepository.findByStatusOrderByIdentifier(true),List.class));
-        languageWsDto.setBaseUrl(ADMIN_LANGUAGE);
-        return languageWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody
     public LanguageWsDto delete(@RequestBody LanguageWsDto languageWsDto) {
-        for (String id : languageWsDto.getRecordId().split(",")) {
+        for (LanguageDto data : languageWsDto.getLanguageDtoList()) {
 
-            languageRepository.deleteByRecordId(id);
+            languageRepository.deleteByRecordId(data.getRecordId());
         }
         languageWsDto.setMessage("Data deleted successfully!!");
         languageWsDto.setBaseUrl(ADMIN_LANGUAGE);

@@ -48,6 +48,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
         List<UserTeamsDto> userTeamDtos = request.getUserTeamsDtoList();
         List<UserTeams> userTeamsList = new ArrayList<>();
         UserTeams userTeams = null;
+
         for (UserTeamsDto userTeamsDto : userTeamDtos) {
             if (userTeamsDto.getRecordId() != null) {
                 userTeams = userTeamsRepository.findByRecordId(userTeamsDto.getRecordId());
@@ -62,20 +63,18 @@ public class UserTeamsServiceImpl implements UserTeamsService {
                 }
                 userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
             }
-            //baseService.populateCommonData(userTeams);
+            baseService.populateCommonData(userTeams);
             userTeams.setStatus(true);
             userTeamsRepository.save(userTeams);
-            request.setMessage("Data added Successfully");
-            if (request.getRecordId() == null) {
+            if (userTeams.getRecordId() == null) {
                 userTeams.setRecordId(String.valueOf(userTeams.getId().getTimestamp()));
             }
             userTeamsRepository.save(userTeams);
+            request.setMessage("Data added Successfully");
             userTeamsList.add(userTeams);
-            request.setBaseUrl(ADMIN_USERTEAM);
         }
+        request.setBaseUrl(ADMIN_USERTEAM);
         request.setUserTeamsDtoList(modelMapper.map(userTeamsList, List.class));
         return request;
     }
-
-
 }

@@ -7,7 +7,6 @@ import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.repository.SEORepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.xmlbeans.impl.xb.xsdschema.ListDocument;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -25,7 +24,7 @@ import java.util.List;
 public class SEOController extends BaseController {
 
     @Autowired
-     private SEORepository seoRepository;
+    private SEORepository seoRepository;
     @Autowired
     private SEOService seoService;
     @Autowired
@@ -34,12 +33,12 @@ public class SEOController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public SEOWsDto getAll(@RequestBody SEOWsDto seoWsDto){
-        Pageable pageable=getPageable(seoWsDto.getPage(),seoWsDto.getSizePerPage(),seoWsDto.getSortDirection(),seoWsDto.getSortField());
+    public SEOWsDto getAll(@RequestBody SEOWsDto seoWsDto) {
+        Pageable pageable = getPageable(seoWsDto.getPage(), seoWsDto.getSizePerPage(), seoWsDto.getSortDirection(), seoWsDto.getSortField());
         SEODto seoDto = CollectionUtils.isNotEmpty(seoWsDto.getSeoDtoList()) ? seoWsDto.getSeoDtoList().get(0) : new SEODto();
-        SEO seo = modelMapper.map(seoDto,SEO.class);
-        Page<SEO> page=isSearchActive(seo)!=null ? seoRepository.findAll(Example.of(seo),pageable) : seoRepository.findAll(pageable);
-        seoWsDto.setSeoDtoList(modelMapper.map(page.getContent().get(0), List.class));
+        SEO seo = modelMapper.map(seoDto, SEO.class);
+        Page<SEO> page = isSearchActive(seo) != null ? seoRepository.findAll(Example.of(seo), pageable) : seoRepository.findAll(pageable);
+        seoWsDto.setSeoDtoList(modelMapper.map(page.getContent(), List.class));
         seoWsDto.setTotalPages(page.getTotalPages());
         seoWsDto.setTotalRecords(page.getTotalElements());
         seoWsDto.setBaseUrl(ADMIN_SEO);
@@ -50,21 +49,18 @@ public class SEOController extends BaseController {
     @ResponseBody
     public SEOWsDto getActiveSEOList() {
         SEOWsDto seoWsDto = new SEOWsDto();
-        seoWsDto.setSeoDtoList(modelMapper.map(seoRepository.findByStatusOrderByIdentifier(true),List.class));
+        seoWsDto.setSeoDtoList(modelMapper.map(seoRepository.findByStatusOrderByIdentifier(true), List.class));
         seoWsDto.setBaseUrl(ADMIN_SEO);
         return seoWsDto;
     }
 
     @PostMapping("/getedit")
     @ResponseBody
-        public SEOWsDto edit(@RequestBody SEOWsDto request){
+    public SEOWsDto edit(@RequestBody SEOWsDto request) {
         SEOWsDto seoWsDto = new SEOWsDto();
         seoWsDto.setBaseUrl(ADMIN_SEO);
-
         SEO seo = seoRepository.findByRecordId(request.getSeoDtoList().get(0).getRecordId());
-        if(seo != null) {
-            seoWsDto.setSeoDtoList(List.of(modelMapper.map(seo, SEODto.class)));
-        }
+        seoWsDto.setSeoDtoList(List.of(modelMapper.map(seo, SEODto.class)));
         return seoWsDto;
     }
 
@@ -75,20 +71,11 @@ public class SEOController extends BaseController {
         return seoService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public SEOWsDto add(){
-        SEOWsDto seoWsDto = new SEOWsDto();
-        seoWsDto.setSeoDtoList(modelMapper.map(seoRepository.findByStatusOrderByIdentifier(true),List.class));
-        seoWsDto.setBaseUrl(ADMIN_SEO);
-        return seoWsDto;
-    }
     @PostMapping("/delete")
     @ResponseBody
     public SEOWsDto delete(@RequestBody SEOWsDto seoWsDto) {
-        for (SEODto seoDto : seoWsDto.getSeoDtoList()){
-            seoRepository.deleteByRecordId(seoWsDto.getRecordId());
-
+        for (SEODto seoDto : seoWsDto.getSeoDtoList()) {
+            seoRepository.deleteByRecordId(seoDto.getRecordId());
         }
         seoWsDto.setMessage("Data deleted successfully!!");
         seoWsDto.setBaseUrl(ADMIN_SEO);

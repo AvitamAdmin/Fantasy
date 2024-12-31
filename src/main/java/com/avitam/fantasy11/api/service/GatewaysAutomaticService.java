@@ -11,5 +11,4 @@ public interface GatewaysAutomaticService {
 
     GatewaysAutomaticWsDto handleEdit(GatewaysAutomaticWsDto gatewaysAutomaticWsDto);
 
-    void updateByRecordId(GatewaysAutomaticWsDto recordId);
 }

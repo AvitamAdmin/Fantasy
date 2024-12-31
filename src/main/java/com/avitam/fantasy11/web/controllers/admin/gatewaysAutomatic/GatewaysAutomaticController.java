@@ -1,11 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.gatewaysAutomatic;
 
-import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.GatewaysAutomaticDto;
 import com.avitam.fantasy11.api.dto.GatewaysAutomaticWsDto;
 import com.avitam.fantasy11.api.service.GatewaysAutomaticService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.GatewaysAutomatic;
 import com.avitam.fantasy11.repository.GatewaysAutomaticRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -57,10 +55,11 @@ public class GatewaysAutomaticController extends BaseController {
     }
     @PostMapping("/getedit")
     @ResponseBody
-    public GatewaysAutomaticWsDto editGatewaysAutomatic (@RequestBody GatewaysAutomaticWsDto gatewaysAutomaticWsDto){
-        gatewaysAutomaticWsDto.setGatewaysAutomaticDtoList(modelMapper.map(gatewaysAutomaticRepository.findByRecordId(gatewaysAutomaticWsDto.getRecordId()),List.class));
-        gatewaysAutomaticWsDto.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
-        return gatewaysAutomaticWsDto;
+    public GatewaysAutomaticWsDto editGatewaysAutomatic (@RequestBody GatewaysAutomaticWsDto request){
+        GatewaysAutomatic gatewaysAutomatic=gatewaysAutomaticRepository.findByRecordId(request.getGatewaysAutomaticDtoList().get(0).getRecordId());
+        request.setGatewaysAutomaticDtoList(List.of(modelMapper.map(gatewaysAutomatic, GatewaysAutomaticDto.class)));
+        request.setBaseUrl(ADMIN_GATEWAYSAUTOMATIC);
+        return request;
     }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
