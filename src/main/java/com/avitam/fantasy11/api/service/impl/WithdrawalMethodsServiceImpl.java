@@ -59,7 +59,7 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
                 modelMapper.map(withdrawalMethodsDto1, withdrawalMethodsData);
                 withdrawalMethodsRepository.save(withdrawalMethodsData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, withdrawalMethodsDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.WITHDRAWAL_METHODS, withdrawalMethodsDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("already present");
                     return request;

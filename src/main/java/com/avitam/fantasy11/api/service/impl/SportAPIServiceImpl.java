@@ -65,7 +65,7 @@ public class SportAPIServiceImpl implements SportAPIService {
                 modelMapper.map(SportsAPIDto1, sportsAPIData);
                 sportsApiRepository.save(sportsAPIData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, SportsAPIDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.SPORTAPI, SportsAPIDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     return request;
                 }

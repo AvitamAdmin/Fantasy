@@ -58,7 +58,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
                 modelMapper.map(leaderBoardDto1, leaderBoardData);
                 leaderBoardRepository.save(leaderBoardData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, leaderBoardDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.LEADER_BOARD, leaderBoardDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     //request.setMessage("Identifier already present");
                     return request;

@@ -47,7 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
                 modelMapper.map(notificationDto1,notification);
                 notificationRepository.save(notification);
             }else{
-                if(baseService.validateIdentifier(EntityConstants.CONTEST,notificationDto1.getIdentifier()) !=null){
+                if(baseService.validateIdentifier(EntityConstants.NOTIFICATION,notificationDto1.getIdentifier()) !=null){
                     request.setMessage("Identifier already present");
                     request.setSuccess(false);
                     return request;

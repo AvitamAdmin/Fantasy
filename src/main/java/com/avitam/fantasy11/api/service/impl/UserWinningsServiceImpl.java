@@ -58,7 +58,7 @@ public class UserWinningsServiceImpl implements UserWinningsService {
                 userWinningsRepository.save(userWinningsData);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, userWinningsDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.USER_WINNINGS, userWinningsDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("already present");
                     return request;

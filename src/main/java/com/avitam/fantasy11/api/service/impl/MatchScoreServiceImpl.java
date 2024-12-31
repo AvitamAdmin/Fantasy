@@ -89,7 +89,7 @@ public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
             matchScoreRepository.save(matchScoreData);
             request.setMessage("MatchScore was updated successfully");
         } else {
-            if (baseService.validateIdentifier(EntityConstants.KYC, matchScoreDto1.getIdentifier()) != null) {
+            if (baseService.validateIdentifier(EntityConstants.MATCH_SCORE, matchScoreDto1.getIdentifier()) != null) {
                 request.setSuccess(false);
                 request.setMessage("Identifier already present");
                 return request;

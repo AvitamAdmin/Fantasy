@@ -54,7 +54,7 @@ public class MainContestServiceImpl implements MainContestService {
                 modelMapper.map(mainContestDto1, mainContestData);
                 mainContestRepository.save(mainContestData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, mainContestDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.MAINCONTEST, mainContestDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     //request.setMessage("Identifier already present");
                     return request;

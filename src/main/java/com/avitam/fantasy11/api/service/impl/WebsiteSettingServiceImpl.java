@@ -54,7 +54,7 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
                 modelMapper.map(websiteSettingDto1, websiteSettingData);
                 websiteSettingRepository.save(websiteSettingData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, websiteSettingDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.WEBSITESETTING, websiteSettingDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("already present");
                     return request;

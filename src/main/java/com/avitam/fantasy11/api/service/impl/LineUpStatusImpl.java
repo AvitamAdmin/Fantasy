@@ -56,7 +56,7 @@ public class LineUpStatusImpl implements LineUpStatusService {
                 modelMapper.map(lineUpStatusDto1, lineUpStatusData);
                 lineUpStatusRepository.save(lineUpStatusData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, lineUpStatusDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.LINEUPSTATUS, lineUpStatusDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     //request.setMessage("Identifier already present");
                     return request;

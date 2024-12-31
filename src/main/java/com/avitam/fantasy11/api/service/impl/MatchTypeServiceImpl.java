@@ -51,7 +51,7 @@ public class MatchTypeServiceImpl implements MatchTypeService {
                 modelMapper.map(matchTypeDto1, matchTypeData);
                 matchTypeRepository.save(matchTypeData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, matchTypeDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.MATCH_TYPE, matchTypeDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;

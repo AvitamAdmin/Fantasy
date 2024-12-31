@@ -71,7 +71,7 @@ public LanguageWsDto handleEdit(LanguageWsDto request) {
             modelMapper.map(languageDto1, languageData);
             languageRepository.save(languageData);
         } else {
-            if (baseService.validateIdentifier(EntityConstants.KYC, languageDto1.getIdentifier()) != null) {
+            if (baseService.validateIdentifier(EntityConstants.LANGUAGE, languageDto1.getIdentifier()) != null) {
                 request.setSuccess(false);
                 //request.setMessage("Identifier already present");
                 return request;

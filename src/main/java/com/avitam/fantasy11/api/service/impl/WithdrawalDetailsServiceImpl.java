@@ -57,7 +57,7 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
                 modelMapper.map(withdrawalDetailsDto1, withdrawalDetailsData);
                 withdrawalDetailsRepository.save(withdrawalDetailsData);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, withdrawalDetailsDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.WITHDRAWAL_DETAILS, withdrawalDetailsDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("already present");
                     return request;
