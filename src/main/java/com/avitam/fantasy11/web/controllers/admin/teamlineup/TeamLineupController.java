@@ -69,7 +69,7 @@ public class TeamLineupController extends BaseController {
     public TeamLineUpWsDto editTeamLineup(@RequestBody TeamLineUpWsDto request) {
 
         TeamLineUpWsDto teamLineUpWsDto = new TeamLineUpWsDto();
-        teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(teamLineupRepository.findByRecordId(request.getRecordId()), List.class));
+        teamLineUpWsDto.setTeamLineUpDtoList(modelMapper.map(teamLineupRepository.findByRecordId(request.getTeamLineUpDtoList().get(0).getRecordId()), List.class));
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
         return teamLineUpWsDto;
     }
@@ -93,8 +93,8 @@ public class TeamLineupController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public TeamLineUpWsDto deleteTeamLineup(@RequestBody TeamLineUpWsDto teamLineUpWsDto) {
-        for (String id : teamLineUpWsDto.getRecordId().split(",")) {
-            teamLineupRepository.deleteByRecordId(id);
+        for (TeamLineUpDto data : teamLineUpWsDto.getTeamLineUpDtoList()) {
+            teamLineupRepository.deleteByRecordId(data.getRecordId());
         }
         teamLineUpWsDto.setMessage("Data deleted successfully");
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);

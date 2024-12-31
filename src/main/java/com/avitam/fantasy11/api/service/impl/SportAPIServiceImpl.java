@@ -1,13 +1,9 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.ExtensionDto;
-import com.avitam.fantasy11.api.dto.ExtensionWsDto;
 import com.avitam.fantasy11.api.dto.SportAPIDto;
 import com.avitam.fantasy11.api.dto.SportsAPIWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SportAPIService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Extension;
 import com.avitam.fantasy11.model.SportsApi;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.SportsApiRepository;
@@ -24,13 +20,8 @@ public class SportAPIServiceImpl implements SportAPIService {
 
     @Autowired
     private SportsApiRepository sportsApiRepository;
-
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private CoreService coreService;
-
     @Autowired
     private BaseService baseService;
 
@@ -38,7 +29,7 @@ public class SportAPIServiceImpl implements SportAPIService {
 
     @Override
     public SportsApi findByRecordId(String recordId) {
-        return null;
+        return sportsApiRepository.findByRecordId(recordId);
     }
 
     @Override
@@ -54,35 +45,37 @@ public class SportAPIServiceImpl implements SportAPIService {
 
     @Override
     public SportsAPIWsDto handleEdit(SportsAPIWsDto request) {
-        SportsAPIWsDto sportsAPIWsDto = new SportsAPIWsDto();
-        SportsApi sportsAPIData = null;
+        SportsApi sportsApiData = null;
         List<SportAPIDto> sportsAPIDtos = request.getSportAPIDtoList();
         List<SportsApi> sportsAPIList = new ArrayList<>();
-        SportAPIDto sportsAPIDto = new SportAPIDto();
-        for (SportAPIDto SportsAPIDto1 : sportsAPIDtos) {
-            if (SportsAPIDto1.getRecordId() != null) {
-                sportsAPIData = sportsApiRepository.findByRecordId(SportsAPIDto1.getRecordId());
-                modelMapper.map(SportsAPIDto1, sportsAPIData);
-                sportsApiRepository.save(sportsAPIData);
+
+        for (SportAPIDto sportsApiDto1 : sportsAPIDtos) {
+            if (sportsApiDto1.getRecordId() != null) {
+                sportsApiData = sportsApiRepository.findByRecordId(sportsApiDto1.getRecordId());
+                modelMapper.map(sportsApiDto1, sportsApiData);
+                sportsApiRepository.save(sportsApiData);
+                request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.SPORTAPI, SportsAPIDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.SPORTAPI, sportsApiDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
+                    request.setMessage("Identifier already present");
                     return request;
                 }
-
-                sportsAPIData = modelMapper.map(sportsAPIDto, SportsApi.class);
+                sportsApiData = modelMapper.map(sportsApiDto1, SportsApi.class);
             }
-            sportsApiRepository.save(sportsAPIData);
-            sportsAPIData.setLastModified(new Date());
-            if (sportsAPIData.getRecordId() == null) {
-                sportsAPIData.setRecordId(String.valueOf(sportsAPIData.getId().getTimestamp()));
+            baseService.populateCommonData(sportsApiData);
+            sportsApiRepository.save(sportsApiData);
+            sportsApiData.setLastModified(new Date());
+            if (sportsApiData.getRecordId() == null) {
+                sportsApiData.setRecordId(String.valueOf(sportsApiData.getId().getTimestamp()));
             }
-            sportsApiRepository.save(sportsAPIData);
-            sportsAPIList.add(sportsAPIData);
-            sportsAPIWsDto.setMessage("Extension was updated successfully");
-            sportsAPIWsDto.setBaseUrl(ADMIN_SPORTAPI);
+            sportsApiRepository.save(sportsApiData);
+            request.setMessage("Data added successfully");
+            sportsAPIList.add(sportsApiData);
         }
-        sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsAPIList, List.class));
-        return sportsAPIWsDto;
-    }}
+        request.setBaseUrl(ADMIN_SPORTAPI);
+        request.setSportAPIDtoList(modelMapper.map(sportsAPIList, List.class));
+        return request;
+    }
+}
 

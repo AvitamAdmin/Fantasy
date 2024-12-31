@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.GatewaysManualDto;
 import com.avitam.fantasy11.api.dto.GatewaysManualWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.GatewaysManualService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.GatewaysManual;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.GatewaysManualRepository;
@@ -24,8 +23,6 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
     private GatewaysManualRepository gatewaysManualRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
 
@@ -48,8 +45,8 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
         List<GatewaysManual> gatewaysManuals = new ArrayList<>();
         List<GatewaysManualDto> gatewaysManualDtoList = gatewaysManualWsDto.getGatewaysManualDtoList();
         for (GatewaysManualDto gatewaysManualDto1 : gatewaysManualDtoList) {
-            if (gatewaysManualWsDto.getRecordId() != null) {
-                gatewaysManual = gatewaysManualRepository.findByRecordId(gatewaysManualWsDto.getRecordId());
+            if (gatewaysManualDto1.getRecordId() != null) {
+                gatewaysManual = gatewaysManualRepository.findByRecordId(gatewaysManualDto1.getRecordId());
                 modelMapper.map(gatewaysManualDto1, gatewaysManual);
                 gatewaysManualRepository.save(gatewaysManual);
             } else {
@@ -71,7 +68,7 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
             }
             baseService.populateCommonData(gatewaysManual);
             gatewaysManualRepository.save(gatewaysManual);
-            if (gatewaysManualWsDto.getRecordId() == null) {
+            if (gatewaysManual.getRecordId() == null) {
                 gatewaysManual.setRecordId(String.valueOf(gatewaysManual.getId().getTimestamp()));
             }
             gatewaysManualRepository.save(gatewaysManual);

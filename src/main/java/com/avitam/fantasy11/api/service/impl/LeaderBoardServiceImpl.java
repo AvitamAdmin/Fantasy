@@ -27,8 +27,6 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
 
     public static final String ADMIN_LEADER_BOARD = "/admin/leaderBoard";
@@ -60,7 +58,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
             } else {
                 if (baseService.validateIdentifier(EntityConstants.LEADER_BOARD, leaderBoardDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
-                    //request.setMessage("Identifier already present");
+                    request.setMessage("Identifier already present");
                     return request;
                 }
 

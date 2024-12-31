@@ -5,12 +5,11 @@ import com.avitam.fantasy11.api.dto.DepositsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.DepositsService;
 import com.avitam.fantasy11.model.Deposits;
-import com.avitam.fantasy11.repository.DepositsRepository;
-import com.avitam.fantasy11.repository.EntityConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avitam.fantasy11.repository.DepositsRepository;
+import com.avitam.fantasy11.repository.EntityConstants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +45,7 @@ public class DepositsServiceImpl implements DepositsService {
         List<Deposits> depositsList = new ArrayList<>();
 
         for (DepositsDto depositsDto : depositsDtos) {
-            if (depositsWsDto.getRecordId() != null) {
+            if (depositsDto.getRecordId() != null) {
                 depositsData = depositsRepository.findByRecordId(depositsDto.getRecordId());
                 modelMapper.map(depositsDto, depositsData);
                 depositsWsDto.setMessage("Data updated Successfully");
@@ -65,10 +64,10 @@ public class DepositsServiceImpl implements DepositsService {
                 depositsData.setRecordId(String.valueOf(depositsData.getId().getTimestamp()));
             }
             depositsRepository.save(depositsData);
-            depositsList.add(depositsData);
             depositsWsDto.setMessage("Deposits added Successfully!");
-            depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);
+            depositsList.add(depositsData);
         }
+        depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);
         depositsWsDto.setDepositsDtoList(modelMapper.map(depositsList, List.class));
         return depositsWsDto;
     }

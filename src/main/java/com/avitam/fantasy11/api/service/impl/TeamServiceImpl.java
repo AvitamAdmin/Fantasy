@@ -54,10 +54,11 @@ public class TeamServiceImpl implements TeamService {
         List<Team> teams = new ArrayList<>();
         Team team = new Team();
         for (TeamDto teamDto1 : teamDtoList) {
-            if (request.getRecordId() != null) {
+            if (teamDto1.getRecordId() != null) {
                 Team requestData = modelMapper.map(teamDto1, Team.class);
-                team = teamRepository.findByRecordId(request.getRecordId());
+                team = teamRepository.findByRecordId(teamDto1.getRecordId());
                 modelMapper.map(requestData, team);
+                teamRepository.save(team);
             } else {
                 if (baseService.validateIdentifier(EntityConstants.TEAM, team.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -75,9 +76,9 @@ public class TeamServiceImpl implements TeamService {
                     return request;
                 }
             }
-           // baseService.populateCommonData(team);
+            baseService.populateCommonData(team);
             teamRepository.save(team);
-            if (request.getRecordId() == null) {
+            if (team.getRecordId() == null) {
                 team.setRecordId(String.valueOf(team.getId().getTimestamp()));
             }
             teamRepository.save(team);

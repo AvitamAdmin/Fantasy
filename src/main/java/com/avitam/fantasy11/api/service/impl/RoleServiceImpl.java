@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.dto.RoleWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.RoleService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.RoleRepository;
@@ -55,6 +54,8 @@ public class RoleServiceImpl implements RoleService {
                 Role requestData = modelMapper.map(roleDto, Role.class);
                 role = roleRepository.findByRecordId(roleDto.getRecordId());
                 modelMapper.map(requestData, role);
+                roleRepository.save(role);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.ROLE, role.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -63,15 +64,16 @@ public class RoleServiceImpl implements RoleService {
                 }
                 role = modelMapper.map(roleDto, Role.class);
             }
-            //baseService.populateCommonData(role);
+            baseService.populateCommonData(role);
             roleRepository.save(role);
-            if (request.getRecordId() == null) {
+            if (role.getRecordId() == null) {
                 role.setRecordId(String.valueOf(role.getId().getTimestamp()));
             }
             roleRepository.save(role);
+            request.setMessage("Data added Successfully");
             roles.add(role);
-            request.setBaseUrl(ADMIN_ROLE);
         }
+        request.setBaseUrl(ADMIN_ROLE);
         request.setRoleDtoList(modelMapper.map(roles, List.class));
         return request;
 

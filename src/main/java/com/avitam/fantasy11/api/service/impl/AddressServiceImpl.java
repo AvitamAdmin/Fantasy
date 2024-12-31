@@ -6,7 +6,6 @@ import com.avitam.fantasy11.api.service.AddressService;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.repository.AddressRepository;
-import com.avitam.fantasy11.repository.EntityConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private BaseService baseService;
     @Autowired
@@ -50,17 +48,17 @@ public class AddressServiceImpl implements AddressService {
                 addressRepository.save(address);
                 addressWsDto.setMessage("Address updated successfully!");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.ADDRESS, addressDto1.getIdentifier()) != null) {
-                    addressWsDto.setSuccess(false);
-                    addressWsDto.setMessage("Identifier already present");
-                    return addressWsDto;
-                }
+//                if (baseService.validateIdentifier(EntityConstants.ADDRESS, addressDto1.getIdentifier()) != null) {
+//                    addressWsDto.setSuccess(false);
+//                    addressWsDto.setMessage("Identifier already present");
+//                    return addressWsDto;
+//                }
                 address = modelMapper.map(addressDto1, Address.class);
             }
             baseService.populateCommonData(address);
             address.setStatus(true);
             addressRepository.save(address);
-            if (addressWsDto.getRecordId() == null) {
+            if (address.getRecordId() == null) {
                 address.setRecordId(String.valueOf(address.getId().getTimestamp()));
             }
             addressRepository.save(address);

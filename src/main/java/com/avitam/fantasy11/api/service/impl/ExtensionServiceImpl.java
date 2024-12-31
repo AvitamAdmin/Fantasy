@@ -63,9 +63,9 @@ public class ExtensionServiceImpl implements ExtensionService {
                         throw new RuntimeException(e);
                     }
                 }
-
             }
             baseService.populateCommonData(extension);
+            extension.setStatus(true);
             extensionRepository.save(extension);
             extension.setLastModified(new Date());
             if (extension.getRecordId() == null) {

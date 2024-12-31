@@ -5,11 +5,11 @@ import com.avitam.fantasy11.model.SEO;
 
 public interface SEOService {
 
-    public SEO findByRecordId(String recordId);
+    SEO findByRecordId(String recordId);
 
-    public void deleteByRecordId(String recordId);
+    void deleteByRecordId(String recordId);
 
-    public void updateByRecordId(String recordId);
+    void updateByRecordId(String recordId);
 
-    public SEOWsDto handleEdit(SEOWsDto request);
+    SEOWsDto handleEdit(SEOWsDto request);
 }

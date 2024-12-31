@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
-import com.avitam.fantasy11.api.dto.LanguageDto;
 import com.avitam.fantasy11.api.dto.SportAPIDto;
 import com.avitam.fantasy11.api.dto.SportsAPIWsDto;
 import com.avitam.fantasy11.api.service.SportAPIService;
-import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.model.SportsApi;
 import com.avitam.fantasy11.repository.SportsApiRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -36,10 +34,10 @@ public class SportAPIController extends BaseController {
     @PostMapping
     @ResponseBody
     public SportsAPIWsDto getAll(@RequestBody SportsAPIWsDto sportsAPIWsDto) {
-        Pageable pageable=getPageable(sportsAPIWsDto.getPage(),sportsAPIWsDto.getSizePerPage(),sportsAPIWsDto.getSortDirection(),sportsAPIWsDto.getSortField());
-        SportAPIDto sportAPIDto = CollectionUtils.isNotEmpty(sportsAPIWsDto.getSportAPIDtoList()) ? sportsAPIWsDto.getSportAPIDtoList()  .get(0):new SportAPIDto();
-        SportsApi sportsApi =modelMapper.map(sportsAPIWsDto,SportsApi.class);
-        Page<SportsApi> page=isSearchActive(sportsApi)!=null ? sportsApiRepository.findAll(Example.of(sportsApi),pageable) : sportsApiRepository.findAll(pageable);
+        Pageable pageable = getPageable(sportsAPIWsDto.getPage(), sportsAPIWsDto.getSizePerPage(), sportsAPIWsDto.getSortDirection(), sportsAPIWsDto.getSortField());
+        SportAPIDto sportAPIDto = CollectionUtils.isNotEmpty(sportsAPIWsDto.getSportAPIDtoList()) ? sportsAPIWsDto.getSportAPIDtoList().get(0) : new SportAPIDto();
+        SportsApi sportsApi = modelMapper.map(sportAPIDto, SportsApi.class);
+        Page<SportsApi> page = isSearchActive(sportsApi) != null ? sportsApiRepository.findAll(Example.of(sportsApi), pageable) : sportsApiRepository.findAll(pageable);
         sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(page.getContent(), List.class));
         sportsAPIWsDto.setTotalPages(page.getTotalPages());
         sportsAPIWsDto.setTotalRecords(page.getTotalElements());
@@ -50,8 +48,8 @@ public class SportAPIController extends BaseController {
     @GetMapping("/get")
     @ResponseBody
     public SportsAPIWsDto getActiveSportAPIList() {
-       SportsAPIWsDto sportsAPIWsDto = new SportsAPIWsDto();
-        sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsApiRepository.findByStatusOrderByIdentifier(true),List.class));
+        SportsAPIWsDto sportsAPIWsDto = new SportsAPIWsDto();
+        sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsApiRepository.findByStatusOrderByIdentifier(true), List.class));
         sportsAPIWsDto.setBaseUrl(ADMIN_SPORTAPI);
         return sportsAPIWsDto;
     }
@@ -60,7 +58,8 @@ public class SportAPIController extends BaseController {
     @ResponseBody
     public SportsAPIWsDto edit(@RequestBody SportsAPIWsDto request) {
         SportsAPIWsDto sportsAPIWsDto = new SportsAPIWsDto();
-        sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsApiRepository.findByRecordId(request.getRecordId()),List.class));
+        SportsApi sportsApi = sportsApiRepository.findByRecordId(request.getSportAPIDtoList().get(0).getRecordId());
+        sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsApi, List.class));
         sportsAPIWsDto.setBaseUrl(ADMIN_SPORTAPI);
         return sportsAPIWsDto;
     }
@@ -72,21 +71,12 @@ public class SportAPIController extends BaseController {
         return sportAPIService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public SportsAPIWsDto add() {
-        SportsAPIWsDto sportsAPIWsDto = new SportsAPIWsDto();
-        sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsApiRepository.findByStatusOrderByIdentifier(true),List.class));
-        sportsAPIWsDto.setBaseUrl(ADMIN_SPORTAPI);
-        return sportsAPIWsDto;
-    }
-
     @PostMapping("/delete")
     @ResponseBody
     public SportsAPIWsDto delete(@RequestBody SportsAPIWsDto sportsAPIWsDto) {
-        for (String id : sportsAPIWsDto.getRecordId().split(",")) {
+        for (SportAPIDto data : sportsAPIWsDto.getSportAPIDtoList()) {
 
-            sportsApiRepository.deleteByRecordId(id);
+            sportsApiRepository.deleteByRecordId(data.getRecordId());
         }
         sportsAPIWsDto.setMessage("Data deleted successfully!!");
         sportsAPIWsDto.setBaseUrl(ADMIN_SPORTAPI);

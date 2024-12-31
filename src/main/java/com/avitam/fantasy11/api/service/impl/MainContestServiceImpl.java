@@ -1,13 +1,10 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.LineUpStatusDto;
-import com.avitam.fantasy11.api.dto.LineUpStatusWsDto;
 import com.avitam.fantasy11.api.dto.MainContestDto;
 import com.avitam.fantasy11.api.dto.MainContestWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MainContestService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.LineUpStatus;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MainContestRepository;
@@ -53,10 +50,11 @@ public class MainContestServiceImpl implements MainContestService {
                 mainContestData = mainContestRepository.findByRecordId(mainContestDto1.getRecordId());
                 modelMapper.map(mainContestDto1, mainContestData);
                 mainContestRepository.save(mainContestData);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.MAINCONTEST, mainContestDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
-                    //request.setMessage("Identifier already present");
+                    request.setMessage("Identifier already present");
                     return request;
                 }
 
@@ -69,7 +67,7 @@ public class MainContestServiceImpl implements MainContestService {
             }
             mainContestRepository.save(mainContestData);
             mainContestList.add(mainContestData);
-            mainContestWsDto.setMessage("Main Contest was updated successfully");
+            mainContestWsDto.setMessage("Data added successfully");
             mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
 
         }

@@ -82,13 +82,6 @@ public class GatewaysAutomaticServiceImpl implements GatewaysAutomaticService {
         return gatewaysAutomaticWsDto;
     }
 
-    @Override
-    public void updateByRecordId(GatewaysAutomaticWsDto gatewaysAutomaticWsDto) {
-        GatewaysAutomatic  gatewaysAutomatic=gatewaysAutomaticRepository.findByRecordId(gatewaysAutomaticWsDto.getRecordId());
-        if(gatewaysAutomatic!=null)
-        {
-            gatewaysAutomaticRepository.save(gatewaysAutomatic);
-        }
-    }
+
 
 }
