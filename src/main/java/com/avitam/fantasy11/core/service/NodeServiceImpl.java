@@ -32,19 +32,17 @@ public class NodeServiceImpl implements NodeService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
 
     @Override
     public List<NodeDto> getAllNodes() {
         List<NodeDto> allNodes = new ArrayList<>();
-        List<Node> nodeList = nodeRepository.findByParentNode(null);
+        List<Node> nodeList = nodeRepository.findByStatusOrderByDisplayPriority(true).stream().filter(node -> node.getParentNode()==null).collect(Collectors.toUnmodifiableList());
         if (CollectionUtils.isNotEmpty(nodeList)) {
             for (Node node : nodeList) {
                 NodeDto nodeDto = new NodeDto();
                 modelMapper.map(node, nodeDto);
-                List<Node> childNodes = nodeRepository.findByParentNodeId(node.getRecordId());
+                List<Node> childNodes = nodeRepository.findByParentNode_RecordId(node.getRecordId());
                 if (CollectionUtils.isNotEmpty(childNodes)) {
                     List<Node> childNodeList = childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.getStatus()))
                             .sorted(Comparator.comparing(nodes -> nodes.getDisplayPriority())).collect(Collectors.toList());
