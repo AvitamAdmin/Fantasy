@@ -46,6 +46,7 @@ public class LineUpStatusImpl implements LineUpStatusService {
                 lineUpStatusData = lineUpStatusRepository.findByRecordId(lineUpStatusDto1.getRecordId());
                 modelMapper.map(lineUpStatusDto1, lineUpStatusData);
                 lineUpStatusRepository.save(lineUpStatusData);
+                request.setMessage("Lineup Status was updated successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.LINEUPSTATUS, lineUpStatusDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -55,15 +56,15 @@ public class LineUpStatusImpl implements LineUpStatusService {
 
                 lineUpStatusData = modelMapper.map(lineUpStatusDto1, LineUpStatus.class);
             }
+            baseService.populateCommonData(lineUpStatusData);
             lineUpStatusData.setStatus(true);
             lineUpStatusRepository.save(lineUpStatusData);
-            lineUpStatusData.setLastModified(new Date());
             if (lineUpStatusData.getRecordId() == null) {
                 lineUpStatusData.setRecordId(String.valueOf(lineUpStatusData.getId().getTimestamp()));
             }
             lineUpStatusRepository.save(lineUpStatusData);
             lineUpStatusList.add(lineUpStatusData);
-            request.setMessage("Lineup Status was updated successfully");
+            request.setMessage("Lineup Status added successfully");
             request.setBaseUrl(ADMIN_LINEUP_STATUS);
 
         }

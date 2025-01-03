@@ -55,11 +55,11 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
                     gatewaysManualWsDto.setMessage("Identifier already present");
                     return gatewaysManualWsDto;
                 }
-                gatewaysManual = modelMapper.map(gatewaysManualDto, GatewaysManual.class);
+                gatewaysManual = modelMapper.map(gatewaysManualDto1, GatewaysManual.class);
             }
-            if (gatewaysManualDto.getLogo() != null && !gatewaysManualDto.getLogo().isEmpty()) {
+            if (gatewaysManualDto1.getImage() != null) {
                 try {
-                    gatewaysManual.setLogo(new Binary(gatewaysManualDto.getLogo().getBytes()));
+                    gatewaysManual.setLogo(new Binary(gatewaysManualDto1.getImage().getBytes()));
                 } catch (IOException e) {
                     e.printStackTrace();
                     gatewaysManualWsDto.setMessage("Error processing image file");
@@ -67,6 +67,7 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
                 }
             }
             baseService.populateCommonData(gatewaysManual);
+            gatewaysManual.setStatus(true);
             gatewaysManualRepository.save(gatewaysManual);
             if (gatewaysManual.getRecordId() == null) {
                 gatewaysManual.setRecordId(String.valueOf(gatewaysManual.getId().getTimestamp()));
@@ -76,7 +77,7 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
             gatewaysManualWsDto.setMessage("Manuals updated successfully!");
             gatewaysManualWsDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
         }
-        gatewaysManualWsDto.setGatewaysManualDtoList(modelMapper.map(gatewaysManual, List.class));
+        gatewaysManualWsDto.setGatewaysManualDtoList(modelMapper.map(gatewaysManuals, List.class));
         return gatewaysManualWsDto;
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 @ToString
 public class GatewaysAutomaticDto extends CommonDto{
 
-    private GatewaysAutomatic gatewaysAutomatic;
-    private List<GatewaysAutomatic> gatewaysAutomaticList;
+    private String gateway;
+    private String gatewayStatus;
     private MultipartFile logo;
 }

@@ -17,5 +17,5 @@ import java.util.List;
 public class GatewaysManualDto extends CommonDto{
     private String gateway;
     private String gatewayStatus;
-    private MultipartFile logo;
+    private MultipartFile image;
 }

@@ -43,25 +43,25 @@ public class GatewaysAutomaticServiceImpl implements GatewaysAutomaticService {
 
     @Override
     public GatewaysAutomaticWsDto handleEdit(GatewaysAutomaticWsDto gatewaysAutomaticWsDto) {
-        GatewaysAutomaticDto gatewaysAutomaticDto = new GatewaysAutomaticDto();
         GatewaysAutomatic gatewaysAutomatic = null;
         List<GatewaysAutomaticDto> requestData = gatewaysAutomaticWsDto.getGatewaysAutomaticDtoList();
         List<GatewaysAutomatic> gatewaysAutomatics = new ArrayList<>();
+
         for(GatewaysAutomaticDto gatewaysAutomaticDto1:requestData) {
             if (gatewaysAutomaticDto1.getRecordId() != null) {
                 gatewaysAutomaticRepository.findByRecordId(gatewaysAutomaticDto1.getRecordId());
                 modelMapper.map(requestData, gatewaysAutomatic);
             } else {
-                if (baseService.validateIdentifier(EntityConstants.GATEWAYS_AUTOMATIC, gatewaysAutomaticDto1.getGatewaysAutomatic().getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.GATEWAYS_AUTOMATIC, gatewaysAutomaticDto1.getIdentifier()) != null) {
                     gatewaysAutomaticWsDto.setSuccess(false);
                     gatewaysAutomaticWsDto.setMessage("Identifier already present");
                     return gatewaysAutomaticWsDto;
                 }
-                gatewaysAutomatic = modelMapper.map(gatewaysAutomaticDto, GatewaysAutomatic.class);
+                gatewaysAutomatic = modelMapper.map(gatewaysAutomaticDto1, GatewaysAutomatic.class);
             }
-            if (gatewaysAutomaticDto.getLogo() != null && !gatewaysAutomaticDto.getLogo().isEmpty()) {
+            if (gatewaysAutomaticDto1.getLogo() != null && !gatewaysAutomaticDto1.getLogo().isEmpty()) {
                 try {
-                    gatewaysAutomatic.setLogo(new Binary(gatewaysAutomaticDto.getLogo().getBytes()));
+                    gatewaysAutomatic.setLogo(new Binary(gatewaysAutomaticDto1.getLogo().getBytes()));
                 } catch (IOException e) {
                     e.printStackTrace();
                     gatewaysAutomaticWsDto.setMessage("Error processing image file");
