@@ -48,16 +48,15 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
 
     @Override
     public WithdrawalMethodsWsDto handleEdit(WithdrawalMethodsWsDto request) {
-        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
         WithdrawalMethods withdrawalMethodsData = null;
         List<WithdrawalMethodsDto> withdrawalMethodsDtos = request.getWithdrawalMethodsDtoList();
         List<WithdrawalMethods> withdrawalMethodsList = new ArrayList<>();
-        WithdrawalMethodsDto withdrawalMethodsDto = new WithdrawalMethodsDto();
         for (WithdrawalMethodsDto withdrawalMethodsDto1 : withdrawalMethodsDtos) {
             if (withdrawalMethodsDto1.getRecordId() != null) {
                 withdrawalMethodsData = withdrawalMethodsRepository.findByRecordId(withdrawalMethodsDto1.getRecordId());
                 modelMapper.map(withdrawalMethodsDto1, withdrawalMethodsData);
                 withdrawalMethodsRepository.save(withdrawalMethodsData);
+                request.setMessage("Data Updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.WITHDRAWAL_METHODS, withdrawalMethodsDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -65,31 +64,30 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
                     return request;
                 }
 
-                withdrawalMethodsData = modelMapper.map( withdrawalMethodsDto,  WithdrawalMethods.class);
+                withdrawalMethodsData = modelMapper.map(withdrawalMethodsDto1, WithdrawalMethods.class);
             }
+
+            baseService.populateCommonData(withdrawalMethodsData);
+            withdrawalMethodsData.setStatus(true);
             withdrawalMethodsRepository.save(withdrawalMethodsData);
-            withdrawalMethodsData.setLastModified(new Date());
             if (withdrawalMethodsData.getRecordId() == null) {
                 withdrawalMethodsData.setRecordId(String.valueOf(withdrawalMethodsData.getId().getTimestamp()));
             }
             withdrawalMethodsRepository.save(withdrawalMethodsData);
             withdrawalMethodsList.add(withdrawalMethodsData);
-            withdrawalMethodsWsDto.setMessage("Withdrawal Details was updated successfully");
-            withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+            request.setMessage("Withdrawal Details added successfully");
+            request.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
 
         }
-        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsList, List.class));
-        return withdrawalMethodsWsDto;
+        request.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsList, List.class));
+        return request;
     }
-
-
 
 
     @Override
     public void updateByRecordId(String recordId) {
-        WithdrawalMethods WithdrawalMethodsOptional=withdrawalMethodsRepository.findByRecordId(recordId);
-        if(WithdrawalMethodsOptional!=null)
-        {
+        WithdrawalMethods WithdrawalMethodsOptional = withdrawalMethodsRepository.findByRecordId(recordId);
+        if (WithdrawalMethodsOptional != null) {
             withdrawalMethodsRepository.save(WithdrawalMethodsOptional);
         }
     }
