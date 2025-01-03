@@ -46,40 +46,38 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
 
     @Override
     public WithdrawalDetailsWsDto handleEdit(WithdrawalDetailsWsDto request) {
-        WithdrawalDetailsWsDto withdrawalDetailsWsDto = new WithdrawalDetailsWsDto();
+
         WithdrawalDetails withdrawalDetailsData = null;
         List<WithdrawalDetailsDto> withdrawalDetailsDtos = request.getWithdrawalDetailsDtoList();
         List<WithdrawalDetails> withdrawalDetailsList = new ArrayList<>();
-        WithdrawalDetailsDto withdrawalDetailsDto = new WithdrawalDetailsDto();
         for (WithdrawalDetailsDto withdrawalDetailsDto1 : withdrawalDetailsDtos) {
             if (withdrawalDetailsDto1.getRecordId() != null) {
                 withdrawalDetailsData = withdrawalDetailsRepository.findByRecordId(withdrawalDetailsDto1.getRecordId());
                 modelMapper.map(withdrawalDetailsDto1, withdrawalDetailsData);
                 withdrawalDetailsRepository.save(withdrawalDetailsData);
+                request.setMessage("Data Updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.WITHDRAWAL_DETAILS, withdrawalDetailsDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("already present");
                     return request;
                 }
-
-                withdrawalDetailsData = modelMapper.map(withdrawalDetailsDto, WithdrawalDetails.class);
+                withdrawalDetailsData = modelMapper.map(withdrawalDetailsDto1, WithdrawalDetails.class);
             }
-            withdrawalDetailsRepository.save(withdrawalDetailsData);
-            withdrawalDetailsData.setLastModified(new Date());
-            if (withdrawalDetailsData.getRecordId() == null) {
-                withdrawalDetailsData.setRecordId(String.valueOf(withdrawalDetailsData.getId().getTimestamp()));
-            }
+            baseService.populateCommonData(withdrawalDetailsData);
+            withdrawalDetailsData.setStatus(true);
+           // withdrawalDetailsRepository.save(withdrawalDetailsData);
+//            if (withdrawalDetailsData.getRecordId() == null) {
+//                withdrawalDetailsData.setRecordId(String.valueOf(withdrawalDetailsData.getId().getTimestamp()));
+//            }
             withdrawalDetailsRepository.save(withdrawalDetailsData);
             withdrawalDetailsList.add(withdrawalDetailsData);
-            withdrawalDetailsWsDto.setMessage("Withdrawal Details was updated successfully");
-            withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
-
+            request.setMessage("Data Added Successfully");
+            request.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         }
-        withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsList, List.class));
-        return withdrawalDetailsWsDto;
+        request.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsList, List.class));
+        return request;
     }
-
 
     @Override
     public void updateByRecordId(String recordId) {
@@ -88,6 +86,4 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
             withdrawalDetailsRepository.save(withdrawalDetailsOptional);
         }
     }
-
-
 }

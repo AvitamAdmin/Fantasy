@@ -16,8 +16,6 @@ import java.util.List;
 @ToString
 public class WithdrawalMethodsDto extends CommonDto{
 
-//    private WithdrawalMethods withdrawalMethods;
-//    private List<WithdrawalMethods> WithdrawalMethodsList;
     private MultipartFile logo;
     private String methodName;
     private String currency;

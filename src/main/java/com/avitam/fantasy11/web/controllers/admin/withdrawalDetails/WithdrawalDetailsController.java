@@ -1,10 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalDetails;
 
-import com.avitam.fantasy11.api.dto.UserWinningsDto;
-import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
-import com.avitam.fantasy11.api.dto.WithdrawalDetailsWsDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.Extension;
 import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.repository.PendingWithdrawalRepository;
@@ -35,7 +34,7 @@ public class WithdrawalDetailsController extends BaseController {
     @Autowired
     private WithdrawalDetailsService withdrawalDetailsService;
     @Autowired
-    WithdrawalDetailsRepository withdrawalDetailsRepository;
+    private WithdrawalDetailsRepository withdrawalDetailsRepository;
 
     @Autowired
     private PendingWithdrawalRepository pendingWithdrawalRepository;
@@ -64,14 +63,18 @@ public class WithdrawalDetailsController extends BaseController {
         return withdrawalDetailsWsDto;
     }
 
+
+
+
     @PostMapping("/getedit")
     @ResponseBody
     public WithdrawalDetailsWsDto editPendingWithdrawal(@RequestBody WithdrawalDetailsWsDto request) {
-        WithdrawalDetailsWsDto withdrawalDetailsWsDto = new WithdrawalDetailsWsDto();
-        withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsRepository.findByRecordId(request.getWithdrawalDetailsDtoList().get(0).getRecordId()),List.class));
-        withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
-        return withdrawalDetailsWsDto;
+        WithdrawalDetails withdrawalDetails = withdrawalDetailsRepository.findByRecordId(request.getWithdrawalDetailsDtoList().get(0).getRecordId());
+        request.setWithdrawalDetailsDtoList(List.of(modelMapper.map(withdrawalDetails,WithdrawalDetailsDto.class)));
+        request.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
+        return request;
     }
+
 
     @PostMapping("/edit")
     @ResponseBody
@@ -82,7 +85,6 @@ public class WithdrawalDetailsController extends BaseController {
     @GetMapping("/add")
     @ResponseBody
     public WithdrawalDetailsWsDto addWithdrawalDetailsDto() {
-
         WithdrawalDetailsWsDto withdrawalDetailsWsDto = new WithdrawalDetailsWsDto();
         withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsRepository.findByStatusOrderByIdentifier(true),List.class));
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
@@ -92,14 +94,27 @@ public class WithdrawalDetailsController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public WithdrawalDetailsWsDto deleteWithdrawalDetails(@RequestBody WithdrawalDetailsWsDto withdrawalDetailsWsDto) {
-        for (String id : withdrawalDetailsWsDto.getWithdrawalDetailsDtoList().get(0).getRecordId().split(",")) {
-            withdrawalDetailsRepository.deleteByRecordId(id);
+        for (WithdrawalDetailsDto data : withdrawalDetailsWsDto.getWithdrawalDetailsDtoList()) {
+            withdrawalDetailsRepository.deleteByRecordId(data.getRecordId());
         }
         withdrawalDetailsWsDto.setMessage("Data deleted successfully");
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         return withdrawalDetailsWsDto;
     }
 }
+
+//    @PostMapping("/delete")
+//    @ResponseBody
+//    public ExtensionWsDto deleteExtension(@RequestBody ExtensionWsDto extensionWsDto) {
+//
+//        for (ExtensionDto data : extensionWsDto.getExtensionDtoList()) {
+//            extensionRepository.deleteByRecordId(data.getRecordId());
+//        }
+//        extensionWsDto.setMessage("Data deleted Successfully");
+//        extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
+//        return extensionWsDto;
+//    }
+//}
 
 
 

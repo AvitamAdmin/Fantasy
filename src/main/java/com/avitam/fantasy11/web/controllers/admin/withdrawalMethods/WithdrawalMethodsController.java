@@ -1,8 +1,11 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalMethods;
 
+import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
+import com.avitam.fantasy11.api.dto.WithdrawalDetailsWsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
+import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -52,15 +55,24 @@ public class WithdrawalMethodsController extends BaseController {
         withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
         return withdrawalMethodsWsDto;
     }
+
+
+
     @PostMapping("/getedit")
     @ResponseBody
     public WithdrawalMethodsWsDto editWithdrawalMethods (@RequestBody WithdrawalMethodsWsDto request){
-        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
         WithdrawalMethods withdrawalMethods= withdrawalMethodsRepository.findByRecordId(request.getWithdrawalMethodsDtoList().get(0).getRecordId());
-        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList((List<WithdrawalMethodsDto>) withdrawalMethods);
-        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsWsDto;
+        request.setWithdrawalMethodsDtoList(List.of(modelMapper.map(withdrawalMethods,WithdrawalMethodsDto.class)));
+        request.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return request;
     }
+
+//    public WithdrawalDetailsWsDto editPendingWithdrawal(@RequestBody WithdrawalDetailsWsDto request) {
+//        WithdrawalDetails withdrawalDetails = withdrawalDetailsRepository.findByRecordId(request.getWithdrawalDetailsDtoList().get(0).getRecordId());
+//        request.setWithdrawalDetailsDtoList(List.of(modelMapper.map(withdrawalDetails, WithdrawalDetailsDto.class)));
+//        request.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
+//        return request;
+//    }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
@@ -68,6 +80,14 @@ public class WithdrawalMethodsController extends BaseController {
         return withdrawalMethodsService.handleEdit(request);
     }
 
+    @GetMapping("/add")
+    @ResponseBody
+    public WithdrawalMethodsWsDto addWithdrawalMethodsDto() {
+        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
+        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true),List.class));
+        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
+        return withdrawalMethodsWsDto;
+    }
  
     @PostMapping("/delete")
     @ResponseBody
