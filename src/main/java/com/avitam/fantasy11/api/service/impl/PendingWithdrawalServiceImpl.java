@@ -24,8 +24,6 @@ public class PendingWithdrawalServiceImpl implements PendingWithdrawalService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
 
     public static final String ADMIN_PENDINGWITHDRAWAL = "/admin/pendingWithdrawal";
@@ -42,36 +40,38 @@ public class PendingWithdrawalServiceImpl implements PendingWithdrawalService {
 
     @Override
     public PendingWithdrawalWsDto handleEdit(PendingWithdrawalWsDto request) {
-        PendingWithdrawalWsDto pendingWithdrawalWsDto = new PendingWithdrawalWsDto();
+
         PendingWithdrawal pendingWithdrawal = null;
         List<PendingWithdrawalDto> pendingWithdrawalDto = request.getPendingWithdrawalDtoList();
         List<PendingWithdrawal> pendingWithdrawals = new ArrayList<>();
-        PendingWithdrawalDto pendingWithdrawalDto1 = new PendingWithdrawalDto();
-        for(PendingWithdrawalDto pendingWithdrawalDto2 :pendingWithdrawalDto){
-            if(pendingWithdrawalDto2.getRecordId()!=null){
-                pendingWithdrawal = pendingWithdrawalRepository.findByRecordId(pendingWithdrawalDto2.getRecordId());
-                modelMapper.map(pendingWithdrawalDto2, pendingWithdrawal);
+
+        for(PendingWithdrawalDto pendingWithdrawalDto1 :pendingWithdrawalDto){
+            if(pendingWithdrawalDto1.getRecordId()!=null){
+                pendingWithdrawal = pendingWithdrawalRepository.findByRecordId(pendingWithdrawalDto1.getRecordId());
+                modelMapper.map(pendingWithdrawalDto1, pendingWithdrawal);
                 pendingWithdrawalRepository.save(pendingWithdrawal);
+                request.setMessage("Data updated Successfully");
             }else {
-                if(baseService.validateIdentifier(EntityConstants.PENDING_WITHDRAWL,pendingWithdrawalDto2.getIdentifier()) !=null){
+                if(baseService.validateIdentifier(EntityConstants.PENDING_WITHDRAWL,pendingWithdrawalDto1.getIdentifier()) !=null){
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
                 pendingWithdrawal=modelMapper.map(pendingWithdrawalDto1,PendingWithdrawal.class);
             }
+            baseService.populateCommonData(pendingWithdrawal);
+            pendingWithdrawal.setStatus(true);
             pendingWithdrawalRepository.save(pendingWithdrawal);
-            pendingWithdrawal.setLastModified(new Date());
             if (pendingWithdrawalDto1.getRecordId() == null) {
                 pendingWithdrawal.setRecordId(String.valueOf(pendingWithdrawal.getId().getTimestamp()));
             }
             pendingWithdrawalRepository.save(pendingWithdrawal);
             pendingWithdrawals.add(pendingWithdrawal);
-            pendingWithdrawalWsDto.setMessage("Contest was updated successfully");
-            pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
+            request.setMessage("Data added successfully");
+            request.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
         }
-        pendingWithdrawalWsDto.setPendingWithdrawalDtoList(modelMapper.map(pendingWithdrawals, List.class));
-        return pendingWithdrawalWsDto;
+        request.setPendingWithdrawalDtoList(modelMapper.map(pendingWithdrawals, List.class));
+        return request;
 
 
     }

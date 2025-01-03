@@ -1,13 +1,9 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.MainContestDto;
-import com.avitam.fantasy11.api.dto.MainContestWsDto;
 import com.avitam.fantasy11.api.dto.MatchScoreDto;
 import com.avitam.fantasy11.api.dto.MatchScoreWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MatchScoreService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MatchScoreRepository;
@@ -25,8 +21,6 @@ public class MatchScoreServiceImpl implements MatchScoreService {
    private MatchScoreRepository matchScoreRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
     @Override
@@ -47,47 +41,19 @@ public class MatchScoreServiceImpl implements MatchScoreService {
         }
     }
 
-//    @Override
-//    public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
-//        {
-//            MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
-//            MatchScore matchScore=null;
-//            if (request.getRecordId()!=null) {
-//                MatchScore requestData=request.getMatchScoreDtoList();
-//                matchScore=matchScoreRepository.findByRecordId(request.getRecordId());
-//                modelMapper.map(requestData,matchScore);
-//            }else {
-//                if(baseService.validateIdentifier(EntityConstants.MATCH_SCORE,request.getMatchScore().getIdentifier())!=null)
-//                {
-//                    request.setSuccess(false);
-//                    request.setMessage("Identifier already present");
-//                    return request;
-//                }
-//                matchScore=request.getMatchScore();
-//            }
-//            baseService.populateCommonData(matchScore);
-//            matchScoreRepository.save(matchScore);
-//            if (request.getRecordId()==null){
-//                matchScore.setRecordId(String.valueOf(matchScore.getId().getTimestamp()));
-//            }
-//            matchScoreRepository.save(matchScore);
-//            matchScoreDto.setMatchScore(matchScore);
-//            matchScoreDto.setBaseUrl(ADMIN_MATCHSCORE);
-//            return matchScoreWsDto;
-//        }
 
-//
 @Override
 public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
     MatchScore matchScoreData = null;
     List<MatchScoreDto> matchScoreDtos = request.getMatchScoreDtoList();
     List<MatchScore> matchScoreList = new ArrayList<>();
+
     for (MatchScoreDto matchScoreDto1 : matchScoreDtos) {
         if (matchScoreDto1.getRecordId() != null) {
             matchScoreData = matchScoreRepository.findByRecordId(matchScoreDto1.getRecordId());
             modelMapper.map(matchScoreDto1, matchScoreData);
             matchScoreRepository.save(matchScoreData);
-            request.setMessage("MatchScore was updated successfully");
+            request.setMessage("MatchScore updated successfully");
         } else {
             if (baseService.validateIdentifier(EntityConstants.MATCH_SCORE, matchScoreDto1.getIdentifier()) != null) {
                 request.setSuccess(false);
@@ -97,10 +63,10 @@ public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
 
             matchScoreData = modelMapper.map(matchScoreDto1, MatchScore.class);
         }
+        baseService.populateCommonData(matchScoreData);
         matchScoreData.setStatus(true);
         matchScoreRepository.save(matchScoreData);
         request.setMessage("MatchScore added successfully");
-        matchScoreData.setLastModified(new Date());
         if (matchScoreData.getRecordId() == null) {
             matchScoreData.setRecordId(String.valueOf(matchScoreData.getId().getTimestamp()));
 

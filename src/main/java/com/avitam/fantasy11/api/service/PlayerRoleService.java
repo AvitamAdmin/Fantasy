@@ -6,11 +6,11 @@ import com.avitam.fantasy11.model.PlayerRole;
 
 public interface PlayerRoleService {
 
-    public PlayerRole findByRecordId(String recordId);
+    PlayerRole findByRecordId(String recordId);
 
     PlayerRoleWsDto handleEdit(PlayerRoleWsDto request);
 
-    public void deleteByRecordId(String recordId);
+    void deleteByRecordId(String recordId);
 
-    public  void updateByRecordId(String recordId);
+    void updateByRecordId(String recordId);
 }

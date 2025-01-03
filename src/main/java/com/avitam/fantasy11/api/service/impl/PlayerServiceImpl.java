@@ -37,7 +37,6 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PlayerWsDto handleEdit(PlayerWsDto request) {
-        PlayerWsDto playerWsDto = new PlayerWsDto();
         Player player = null;
         List<PlayerDto> playerDto = request.getPlayerDtoList();
         List<Player> players = new ArrayList<>();
@@ -46,6 +45,7 @@ public class PlayerServiceImpl implements PlayerService {
                 player = playerRepository.findByRecordId(playerDto1.getRecordId());
                 modelMapper.map(playerDto1, player);
                 playerRepository.save(player);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.PLAYER, playerDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -62,23 +62,21 @@ public class PlayerServiceImpl implements PlayerService {
                         return request;
                     }
                 }
-                playerRepository.save(player);
             }
-
-            player.setLastModified(new Date());
+            baseService.populateCommonData(player);
+            player.setStatus(true);
+            playerRepository.save(player);
             if (playerDto1.getRecordId() == null) {
                 player.setRecordId(String.valueOf(player.getId().getTimestamp()));
-
             }
             playerRepository.save(player);
             players.add(player);
-            playerWsDto.setMessage("Player was updated successfully");
-            playerWsDto.setBaseUrl(ADMIN_PLAYER);
+            request.setMessage("Data added successfully");
+            request.setBaseUrl(ADMIN_PLAYER);
         }
-        playerWsDto.setPlayerDtoList(modelMapper.map(players, List.class));
-        return playerWsDto;
+        request.setPlayerDtoList(modelMapper.map(players, List.class));
+        return request;
     }
-
 
     @Override
     public void deleteByRecordId(String recordId) {

@@ -65,10 +65,10 @@ public class LanguageServiceImpl implements LanguageService {
                     request.setMessage("Identifier already present");
                     return request;
                 }
-
                 languageData = modelMapper.map(languageDto1, Language.class);
             }
             baseService.populateCommonData(languageData);
+            languageData.setStatus(true);
             languageRepository.save(languageData);
             if (languageData.getRecordId() == null) {
                 languageData.setRecordId(String.valueOf(languageData.getId().getTimestamp()));
@@ -76,7 +76,6 @@ public class LanguageServiceImpl implements LanguageService {
             languageRepository.save(languageData);
             request.setMessage("Data added successfully");
             languageList.add(languageData);
-
         }
         request.setBaseUrl(ADMIN_LANGUAGE);
         request.setLanguageDtoList(modelMapper.map(languageList, List.class));

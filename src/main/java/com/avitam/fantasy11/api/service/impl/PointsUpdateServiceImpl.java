@@ -49,6 +49,7 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
                 PointsUpdate requestData = modelMapper.map(pointsUpdateDto1, PointsUpdate.class);
                 pointsUpdate = pointsUpdateRepository.findByRecordId(pointsUpdateDto1.getRecordId());
                 modelMapper.map(requestData, pointsUpdate);
+                request.setMessage("Data updated Successfully ");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.POINTS_UPDATE, pointsUpdate.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -64,6 +65,7 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
                 pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));
             }
             pointsUpdateRepository.save(pointsUpdate);
+            request.setMessage("Data added Successfully");
             pointsUpdates.add(pointsUpdate);
             request.setBaseUrl(ADMIN_POINTSUPDATE);
         }

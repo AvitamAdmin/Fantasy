@@ -1,24 +1,17 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
-import com.avitam.fantasy11.api.dto.WithdrawalDetailsWsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
-import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,8 +21,6 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
     private WithdrawalMethodsRepository withdrawalMethodsRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
 
@@ -51,6 +42,7 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
         WithdrawalMethods withdrawalMethodsData = null;
         List<WithdrawalMethodsDto> withdrawalMethodsDtos = request.getWithdrawalMethodsDtoList();
         List<WithdrawalMethods> withdrawalMethodsList = new ArrayList<>();
+
         for (WithdrawalMethodsDto withdrawalMethodsDto1 : withdrawalMethodsDtos) {
             if (withdrawalMethodsDto1.getRecordId() != null) {
                 withdrawalMethodsData = withdrawalMethodsRepository.findByRecordId(withdrawalMethodsDto1.getRecordId());
@@ -91,6 +83,5 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
             withdrawalMethodsRepository.save(WithdrawalMethodsOptional);
         }
     }
-
 
 }

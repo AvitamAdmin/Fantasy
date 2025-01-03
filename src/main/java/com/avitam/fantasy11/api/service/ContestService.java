@@ -5,6 +5,7 @@ import com.avitam.fantasy11.model.Contest;
 
 
 public interface ContestService {
+
     Contest findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);

@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.dto.ContestWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ContestService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.ContestRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -24,8 +22,6 @@ public class ContestServiceImpl implements ContestService {
     private ContestRepository contestRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
 
@@ -58,9 +54,8 @@ public class ContestServiceImpl implements ContestService {
                 contestData = modelMapper.map(contestDto1, Contest.class);
             }
             baseService.populateCommonData(contestData);
+            contestData.setStatus(true);
             contestRepository.save(contestData);
-
-            contestData.setLastModified(new Date());
             if (contestData.getRecordId() == null) {
                 contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
             }

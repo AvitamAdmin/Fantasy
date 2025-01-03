@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 

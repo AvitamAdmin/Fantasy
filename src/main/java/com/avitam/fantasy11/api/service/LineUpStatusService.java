@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
 
-import com.avitam.fantasy11.api.dto.LineUpStatusDto;
 import com.avitam.fantasy11.api.dto.LineUpStatusWsDto;
 import com.avitam.fantasy11.model.LineUpStatus;
 

@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.MatchTypeDto;
 import com.avitam.fantasy11.api.dto.MatchTypeWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MatchTypeService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MatchTypeRepository;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,8 +21,6 @@ public class MatchTypeServiceImpl implements MatchTypeService {
     private MatchTypeRepository matchTypeRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
 
@@ -37,19 +33,19 @@ public class MatchTypeServiceImpl implements MatchTypeService {
     }
 
 
-
     @Override
     public MatchTypeWsDto handleEdit(MatchTypeWsDto request) {
-        MatchTypeWsDto matchTypeWsDto = new MatchTypeWsDto();
+
         MatchType matchTypeData = null;
         List<MatchTypeDto> matchTypeDtos = request.getMatchTypeDtoList();
         List<MatchType> matchTypeList = new ArrayList<>();
-        MatchTypeDto matchTypeDto = new MatchTypeDto();
+
         for (MatchTypeDto matchTypeDto1 : matchTypeDtos) {
             if (matchTypeDto1.getRecordId() != null) {
                 matchTypeData = matchTypeRepository.findByRecordId(matchTypeDto1.getRecordId());
                 modelMapper.map(matchTypeDto1, matchTypeData);
                 matchTypeRepository.save(matchTypeData);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.MATCH_TYPE, matchTypeDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -59,14 +55,15 @@ public class MatchTypeServiceImpl implements MatchTypeService {
 
                 matchTypeData = modelMapper.map(matchTypeDto1, MatchType.class);
             }
+            baseService.populateCommonData(matchTypeData);
+            matchTypeData.setStatus(true);
             matchTypeRepository.save(matchTypeData);
-            matchTypeData.setLastModified(new Date());
             if (matchTypeData.getRecordId() == null) {
                 matchTypeData.setRecordId(String.valueOf(matchTypeData.getId().getTimestamp()));
             }
             matchTypeRepository.save(matchTypeData);
             matchTypeList.add(matchTypeData);
-            request.setMessage("MatchType updated successfully");
+            request.setMessage("MatchType added successfully");
             request.setBaseUrl(ADMIN_MATCHTYPE);
 
         }

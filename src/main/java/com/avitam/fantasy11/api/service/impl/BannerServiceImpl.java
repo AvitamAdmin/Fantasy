@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.BannerDto;
 import com.avitam.fantasy11.api.dto.BannerWsDto;
 import com.avitam.fantasy11.api.service.BannerService;
 import com.avitam.fantasy11.api.service.BaseService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Banner;
 import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
@@ -26,11 +25,8 @@ public class BannerServiceImpl implements BannerService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
     public static final String ADMIN_BANNER = "/admin/banner";
-
 
     @Override
     public Banner findByRecordId(String recordId) {
@@ -50,7 +46,7 @@ public class BannerServiceImpl implements BannerService {
 
         Banner banner = null;
         List<Banner> banners = new ArrayList<>();
-        List<BannerDto> bannerDtoList = bannerWsDto.getBannerList();
+        List<BannerDto> bannerDtoList = bannerWsDto.getBannerDtoList();
         for (BannerDto bannerDto1 : bannerDtoList) {
             if (bannerDto1.getRecordId() != null) {
                 banner = bannerRepository.findByRecordId(bannerDto1.getRecordId());
@@ -86,7 +82,7 @@ public class BannerServiceImpl implements BannerService {
             banners.add(banner);
             bannerWsDto.setBaseUrl(ADMIN_BANNER);
         }
-        bannerWsDto.setBannerList(modelMapper.map(banner, List.class));
+        bannerWsDto.setBannerDtoList(modelMapper.map(banner, List.class));
         return bannerWsDto;
     }
 

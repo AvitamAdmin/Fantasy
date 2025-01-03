@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.MainContestDto;
 import com.avitam.fantasy11.api.dto.MainContestWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.MainContestService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MainContestRepository;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,13 +19,8 @@ public class MainContestServiceImpl implements MainContestService {
 
     @Autowired
     private MainContestRepository mainContestRepository;
-
-    @Autowired
-    private CoreService coreService;
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private BaseService baseService;
 
@@ -40,11 +33,10 @@ public class MainContestServiceImpl implements MainContestService {
 
     @Override
     public MainContestWsDto handleEdit(MainContestWsDto request) {
-        MainContestWsDto mainContestWsDto = new MainContestWsDto();
         MainContest mainContestData = null;
         List<MainContestDto> mainContestDtos = request.getMainContestDtoList();
         List<MainContest> mainContestList = new ArrayList<>();
-        MainContestDto mainContestDto = new MainContestDto();
+
         for (MainContestDto mainContestDto1 : mainContestDtos) {
             if (mainContestDto1.getRecordId() != null) {
                 mainContestData = mainContestRepository.findByRecordId(mainContestDto1.getRecordId());
@@ -58,21 +50,22 @@ public class MainContestServiceImpl implements MainContestService {
                     return request;
                 }
 
-                mainContestData = modelMapper.map(mainContestDto, MainContest.class);
+                mainContestData = modelMapper.map(mainContestDto1, MainContest.class);
             }
+            baseService.populateCommonData(mainContestData);
+            mainContestData.setStatus(true);
             mainContestRepository.save(mainContestData);
-            mainContestData.setLastModified(new Date());
             if (mainContestData.getRecordId() == null) {
                 mainContestData.setRecordId(String.valueOf(mainContestData.getId().getTimestamp()));
             }
             mainContestRepository.save(mainContestData);
             mainContestList.add(mainContestData);
-            mainContestWsDto.setMessage("Data added successfully");
-            mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
+            request.setMessage("Data added successfully");
+            request.setBaseUrl(ADMIN_MAINCONTEST);
 
         }
-        mainContestWsDto.setMainContestDtoList(modelMapper.map(mainContestList, List.class));
-        return mainContestWsDto;
+        request.setMainContestDtoList(modelMapper.map(mainContestList, List.class));
+        return request;
     }
 
 

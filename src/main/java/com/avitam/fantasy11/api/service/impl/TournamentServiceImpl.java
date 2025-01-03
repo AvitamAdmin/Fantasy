@@ -37,9 +37,11 @@ public class TournamentServiceImpl implements TournamentService {
         Tournament tournament = null;
         for (TournamentDto tournamentDto : tournamentDtos) {
             if (tournamentDto.getRecordId() != null) {
-                Tournament requestData = modelMapper.map(tournamentDto, Tournament.class);
                 tournament = tournamentRepository.findByRecordId(tournamentDto.getRecordId());
-                modelMapper.map(requestData, tournament);
+                modelMapper.map(tournamentDto, tournament);
+                tournamentRepository.save(tournament);
+                request.setMessage("Data updated Successfully");
+
             } else {
                 if (baseService.validateIdentifier(EntityConstants.TOURNAMENT, tournamentDto.getIdentifier()) != null) {
                     request.setSuccess(false);

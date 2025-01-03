@@ -28,16 +28,11 @@ public class SecurityController {
     @Autowired
     private UserService userService;
 
-
-    @Autowired
-    private SecurityService securityService;
-
-
-    @Autowired
-    ApplicationEventPublisher eventPublisher;
-
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @GetMapping("/forgotpassword")
     public String showForgotPasswordForm(HttpServletRequest request, Model model) {
@@ -127,14 +122,6 @@ public class SecurityController {
         return "index";
     }
 
-    @Autowired
-    private MessageSource messages;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {

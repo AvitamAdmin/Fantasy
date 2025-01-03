@@ -10,7 +10,7 @@ public interface PlayerService {
 
     PlayerWsDto handleEdit(PlayerWsDto request);
 
-    public void deleteByRecordId(String recordId);
+    void deleteByRecordId(String recordId);
 
-    public  void updateByRecordId(String recordId);
+    void updateByRecordId(String recordId);
 }

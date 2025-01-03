@@ -63,8 +63,10 @@ public class SEOServiceImpl implements SEOService {
                     return request;
                 }
                 seo = modelMapper.map(seoDto1, SEO.class);
-                seoRepository.save(seo);
             }
+            baseService.populateCommonData(seo);
+            seo.setStatus(true);
+            seoRepository.save(seo);
             if (seo.getRecordId() == null) {
                 seo.setRecordId(String.valueOf(seo.getId().getTimestamp()));
             }

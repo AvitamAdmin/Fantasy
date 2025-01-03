@@ -24,8 +24,6 @@ public class MobileTokenServiceImpl implements MobileTokenService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
 
     private static final String ADMIN_MOBILETOKEN="/admin/mobileToken";
@@ -44,37 +42,38 @@ public class MobileTokenServiceImpl implements MobileTokenService {
 
     @Override
     public MobileTokenWsDto handleEdit(MobileTokenWsDto request) {
-        MobileTokenWsDto mobileTokenWsDto = new MobileTokenWsDto();
+
         MobileToken mobileToken = null;
         List<MobileTokenDto> mobileTokenDtos = request.getMobileTokenDtoList();
         List<MobileToken>mobileTokens = new ArrayList<>();
-        MobileTokenDto mobileTokenDto = new MobileTokenDto();
+
         for(MobileTokenDto mobileTokenDto1 : mobileTokenDtos){
             if(mobileTokenDto1.getRecordId() != null){
                 mobileToken = mobileTokenRepository.findByRecordId(mobileTokenDto1.getRecordId());
                 modelMapper.map(mobileTokenDto1,mobileToken);
                 mobileTokenRepository.save(mobileToken);
+                request.setMessage("Data updated Successfully");
             }else{
                 if(baseService.validateIdentifier(EntityConstants.MOBILE_TOKEN,mobileTokenDto1.getIdentifier()) !=null){
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
-                mobileToken = modelMapper.map(mobileTokenDto,MobileToken.class);
+                mobileToken = modelMapper.map(mobileTokenDto1,MobileToken.class);
             }
+            baseService.populateCommonData(mobileToken);
             mobileTokenRepository.save(mobileToken);
-            mobileToken.setLastModified(new Date());
             if (mobileToken.getRecordId()== null){
                 mobileToken.setRecordId(String.valueOf(mobileToken.getId().getTimestamp()));
             }
             mobileTokenRepository.save(mobileToken);
             mobileTokens.add(mobileToken);
-            mobileTokenWsDto.setBaseUrl(ADMIN_MOBILETOKEN);
-            mobileTokenWsDto.setMessage("MobileToken was updated successfully");
+            request.setBaseUrl(ADMIN_MOBILETOKEN);
+            request.setMessage("MobileToken added successfully");
 
         }
-        mobileTokenWsDto.setMobileTokenDtoList(modelMapper.map(mobileTokens,List.class));
-        return mobileTokenWsDto;
+        request.setMobileTokenDtoList(modelMapper.map(mobileTokens,List.class));
+        return request;
 
     }
 

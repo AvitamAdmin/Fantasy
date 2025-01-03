@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.MobileTokenWsDto;
-import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.model.MobileToken;
 
 

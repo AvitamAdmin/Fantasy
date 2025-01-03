@@ -1,16 +1,15 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.MainContestDto;
 import com.avitam.fantasy11.api.dto.MainContestWsDto;
 import com.avitam.fantasy11.model.MainContest;
 
 public interface MainContestService {
 
-    public MainContest findByRecordId(String recordId);
+    MainContest findByRecordId(String recordId);
 
-    public void deleteByRecordId(String recordId);
+    void deleteByRecordId(String recordId);
 
-    public void updateByRecordId(String recordId);
+    void updateByRecordId(String recordId);
 
     MainContestWsDto handleEdit(MainContestWsDto request);
 

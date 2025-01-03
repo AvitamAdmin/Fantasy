@@ -28,26 +28,15 @@ import java.util.UUID;
 public class HomeController {
 
     @Autowired
-    protected NodeRepository nodeRepository;
-    Logger LOG = LoggerFactory.getLogger(HomeController.class);
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private NodeService nodeService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private MailService mailService;
-    @Autowired
-    private Environment env;
+
 
     @Autowired
     private WebsiteSettingRepository websiteSettingRepository;
 
     @GetMapping("/home")
-    @ResponseBody
     public ModelAndView home(HttpSession session, Model model) {
         model.addAttribute("nodes", userService.isAdminRole() ? nodeService.getAllNodes() : nodeService.getNodesForRoles());
         String currentUserSession = (String) session.getAttribute("currentUserSession");

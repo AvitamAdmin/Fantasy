@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 public class ExtensionDto extends CommonDto{
 
-
     private String extendStatus;
     private MultipartFile images;
 }

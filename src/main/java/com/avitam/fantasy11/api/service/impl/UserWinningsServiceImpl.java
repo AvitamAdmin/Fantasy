@@ -66,9 +66,9 @@ public class UserWinningsServiceImpl implements UserWinningsService {
 
                 userWinningsData = modelMapper.map(userWinningsDto1, UserWinnings.class);
             }
+            baseService.populateCommonData(userWinningsData);
             userWinningsData.setStatus(true);
             userWinningsRepository.save(userWinningsData);
-            userWinningsData.setLastModified(new Date());
             if (userWinningsData.getRecordId() == null) {
                 userWinningsData.setRecordId(String.valueOf(userWinningsData.getId().getTimestamp()));
             }

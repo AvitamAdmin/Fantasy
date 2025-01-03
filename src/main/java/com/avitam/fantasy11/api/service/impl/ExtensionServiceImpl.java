@@ -36,7 +36,7 @@ public class ExtensionServiceImpl implements ExtensionService {
 
 
     @Override
-    public ExtensionWsDto handleEdit(ExtensionWsDto request){
+    public ExtensionWsDto handleEdit(ExtensionWsDto request) {
 
         Extension extension = null;
         List<ExtensionDto> extensionDtos = request.getExtensionDtoList();
@@ -56,7 +56,7 @@ public class ExtensionServiceImpl implements ExtensionService {
                 }
                 extension = modelMapper.map(extensionDto1, Extension.class);
 
-                if (extensionDto1.getImages() != null ) {
+                if (extensionDto1.getImages() != null) {
                     try {
                         extension.setImage(new Binary(extensionDto1.getImages().getBytes()));
                     } catch (IOException e) {
@@ -67,7 +67,6 @@ public class ExtensionServiceImpl implements ExtensionService {
             baseService.populateCommonData(extension);
             extension.setStatus(true);
             extensionRepository.save(extension);
-            extension.setLastModified(new Date());
             if (extension.getRecordId() == null) {
                 extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
             }

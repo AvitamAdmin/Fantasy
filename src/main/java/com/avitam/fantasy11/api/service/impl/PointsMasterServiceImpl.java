@@ -47,7 +47,7 @@ public class PointsMasterServiceImpl implements PointsMasterService {
     public PointsMasterWsDto handleEdit(PointsMasterWsDto request) {
 
         List<PointsMasterDto> pointsMasterDtos = request.getPointsMasterDtos();
-        List<PointsMaster> pointsMasterList=new ArrayList<>();
+        List<PointsMaster> pointsMasterList = new ArrayList<>();
         PointsMaster pointsMaster = null;
 
         for (PointsMasterDto pointsMasterDto1 : pointsMasterDtos) {
@@ -55,6 +55,7 @@ public class PointsMasterServiceImpl implements PointsMasterService {
                 PointsMaster requestData = modelMapper.map(pointsMasterDto1, PointsMaster.class);
                 pointsMaster = pointsMasterRepository.findByRecordId(pointsMasterDto1.getRecordId());
                 modelMapper.map(requestData, pointsMaster);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.POINTS_MASTER, pointsMasterDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -74,7 +75,7 @@ public class PointsMasterServiceImpl implements PointsMasterService {
             request.setBaseUrl(ADMIN_POINTSMASTER);
             request.setMessage("Data added Successfully");
         }
-        request.setPointsMasterDtos(modelMapper.map(pointsMasterList,List.class));
+        request.setPointsMasterDtos(modelMapper.map(pointsMasterList, List.class));
         return request;
     }
 }

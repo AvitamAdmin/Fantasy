@@ -24,8 +24,6 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
 
     public static final String ADMIN_TEAM = "/admin/team";
@@ -55,10 +53,10 @@ public class TeamServiceImpl implements TeamService {
         Team team = new Team();
         for (TeamDto teamDto1 : teamDtoList) {
             if (teamDto1.getRecordId() != null) {
-                Team requestData = modelMapper.map(teamDto1, Team.class);
                 team = teamRepository.findByRecordId(teamDto1.getRecordId());
-                modelMapper.map(requestData, team);
+                modelMapper.map(teamDto1, team);
                 teamRepository.save(team);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.TEAM, team.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -67,7 +65,7 @@ public class TeamServiceImpl implements TeamService {
                 }
                 team = modelMapper.map(teamDto1, Team.class);
             }
-            if (teamDto1.getImage() != null ) {
+            if (teamDto1.getImage() != null) {
                 try {
                     team.setLogo(new Binary(teamDto1.getImage().getBytes()));
                 } catch (IOException e) {
@@ -77,6 +75,7 @@ public class TeamServiceImpl implements TeamService {
                 }
             }
             baseService.populateCommonData(team);
+            team.setStatus(true);
             teamRepository.save(team);
             if (team.getRecordId() == null) {
                 team.setRecordId(String.valueOf(team.getId().getTimestamp()));

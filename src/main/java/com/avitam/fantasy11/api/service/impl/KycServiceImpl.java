@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,13 +42,13 @@ public class KycServiceImpl implements KycService {
         KYC kycData = null;
         List<KYCDto> kycDtos = request.getKycDtoList();
         List<KYC> kycList = new ArrayList<>();
-        KYCDto kycDto = new KYCDto();
         for (KYCDto kycDto1 : kycDtos) {
             if (kycDto1.getRecordId() != null) {
                 kycData = kycRepository.findByRecordId(kycDto1.getRecordId());
                 modelMapper.map(kycDto1, kycData);
-                request.setMessage("KYC was updated successfully");
                 kycRepository.save(kycData);
+                request.setMessage("KYC updated successfully");
+
             } else {
                 if (baseService.validateIdentifier(EntityConstants.KYC, kycDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -62,23 +61,19 @@ public class KycServiceImpl implements KycService {
                 try {
                     kycData.setPanImage(new Binary(kycDto1.getPanImage().getBytes()));
                 } catch (IOException e) {
-                    e.printStackTrace();
                     request.setMessage("Error processing image file");
                     return request;
                 }
             }
-
-//            baseService.populateCommonData(kycData);
-            request.setMessage("KYC was added successfully");
+            baseService.populateCommonData(kycData);
             kycData.setStatus(true);
             kycRepository.save(kycData);
-            kycData.setLastModified(new Date());
             if (kycData.getRecordId() == null) {
                 kycData.setRecordId(String.valueOf(kycData.getId().getTimestamp()));
             }
             kycRepository.save(kycData);
             kycList.add(kycData);
-            request.setMessage("MatchType was updated successfully");
+            request.setMessage("KYC was added successfully");
             request.setBaseUrl(ADMIN_KYC);
         }
         request.setKycDtoList(modelMapper.map(kycList, List.class));

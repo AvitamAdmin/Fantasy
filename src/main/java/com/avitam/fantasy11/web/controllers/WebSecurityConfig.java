@@ -98,16 +98,13 @@ public class WebSecurityConfig {
         List<AccessDecisionVoter<?>> decisionVoters = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor());
         return new UnanimousBased(decisionVoters);
     }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-   /*
-    /*@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }*/
+
     @Bean
     public AuthenticationProvider userDetailsAuthProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

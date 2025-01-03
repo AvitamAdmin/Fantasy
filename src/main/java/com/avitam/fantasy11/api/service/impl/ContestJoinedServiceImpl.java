@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.ContestJoinedDto;
 import com.avitam.fantasy11.api.dto.ContestJoinedWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.ContestJoinedService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.ContestJoined;
 import com.avitam.fantasy11.repository.ContestJoinedRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,8 +19,6 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
 
     @Autowired
     private ContestJoinedRepository contestJoinedRepository;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -40,8 +36,9 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
     public ContestJoinedWsDto handleEdit(ContestJoinedWsDto request) {
 
         ContestJoined contestJoined = null;
-        List<ContestJoinedDto> contestJoinedDtos = request.getContestJoinedDtoList();
         List<ContestJoined> contestJoineds = new ArrayList<>();
+        List<ContestJoinedDto> contestJoinedDtos = request.getContestJoinedDtoList();
+
         for (ContestJoinedDto contestJoinedDto1 : contestJoinedDtos) {
             if (contestJoinedDto1.getRecordId() != null) {
                 contestJoined = contestJoinedRepository.findByRecordId(contestJoinedDto1.getRecordId());
@@ -55,15 +52,17 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
                     return request;
                 }
                 contestJoined = modelMapper.map(contestJoinedDto1, ContestJoined.class);
-                contestJoinedRepository.save(contestJoined);
+
             }
-            contestJoined.setLastModified(new Date());
+            baseService.populateCommonData(contestJoined);
+            contestJoined.setStatus(true);
+            contestJoinedRepository.save(contestJoined);
             if (contestJoined.getRecordId() == null) {
                 contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
             }
             contestJoinedRepository.save(contestJoined);
+            request.setMessage("Contest added successfully");
             contestJoineds.add(contestJoined);
-            request.setMessage("Contest was updated successfully");
             request.setBaseUrl(ADMIN_CONTESTJOINED);
         }
         request.setContestJoinedDtoList(modelMapper.map(contestJoineds, List.class));

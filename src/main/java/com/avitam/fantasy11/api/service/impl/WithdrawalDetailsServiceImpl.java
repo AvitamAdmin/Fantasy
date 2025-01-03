@@ -1,15 +1,11 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.WebsiteSettingDto;
-import com.avitam.fantasy11.api.dto.WebsiteSettingsWsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalDetailsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.model.WithdrawalDetails;
-import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WithdrawalDetailsRepository;
 import org.modelmapper.ModelMapper;
@@ -17,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,8 +22,6 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
     private WithdrawalDetailsRepository withdrawalDetailsRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
 
@@ -50,6 +43,7 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
         WithdrawalDetails withdrawalDetailsData = null;
         List<WithdrawalDetailsDto> withdrawalDetailsDtos = request.getWithdrawalDetailsDtoList();
         List<WithdrawalDetails> withdrawalDetailsList = new ArrayList<>();
+
         for (WithdrawalDetailsDto withdrawalDetailsDto1 : withdrawalDetailsDtos) {
             if (withdrawalDetailsDto1.getRecordId() != null) {
                 withdrawalDetailsData = withdrawalDetailsRepository.findByRecordId(withdrawalDetailsDto1.getRecordId());
@@ -66,10 +60,10 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
             }
             baseService.populateCommonData(withdrawalDetailsData);
             withdrawalDetailsData.setStatus(true);
-           // withdrawalDetailsRepository.save(withdrawalDetailsData);
-//            if (withdrawalDetailsData.getRecordId() == null) {
-//                withdrawalDetailsData.setRecordId(String.valueOf(withdrawalDetailsData.getId().getTimestamp()));
-//            }
+            withdrawalDetailsRepository.save(withdrawalDetailsData);
+            if (withdrawalDetailsData.getRecordId() == null) {
+                withdrawalDetailsData.setRecordId(String.valueOf(withdrawalDetailsData.getId().getTimestamp()));
+            }
             withdrawalDetailsRepository.save(withdrawalDetailsData);
             withdrawalDetailsList.add(withdrawalDetailsData);
             request.setMessage("Data Added Successfully");

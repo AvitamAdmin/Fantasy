@@ -64,8 +64,8 @@ public class SportAPIServiceImpl implements SportAPIService {
                 sportsApiData = modelMapper.map(sportsApiDto1, SportsApi.class);
             }
             baseService.populateCommonData(sportsApiData);
+            sportsApiData.setStatus(true);
             sportsApiRepository.save(sportsApiData);
-            sportsApiData.setLastModified(new Date());
             if (sportsApiData.getRecordId() == null) {
                 sportsApiData.setRecordId(String.valueOf(sportsApiData.getId().getTimestamp()));
             }
@@ -78,4 +78,3 @@ public class SportAPIServiceImpl implements SportAPIService {
         return request;
     }
 }
-

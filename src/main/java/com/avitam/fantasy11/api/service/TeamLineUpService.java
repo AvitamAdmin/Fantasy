@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpWsDto;
 import com.avitam.fantasy11.model.TeamLineup;
 

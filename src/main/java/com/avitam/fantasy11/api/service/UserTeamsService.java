@@ -1,7 +1,6 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.UserTeamWsDto;
-import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.model.UserTeams;
 
 public interface UserTeamsService {

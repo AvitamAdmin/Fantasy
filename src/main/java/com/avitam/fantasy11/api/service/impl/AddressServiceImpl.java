@@ -10,6 +10,7 @@ import com.avitam.fantasy11.repository.AddressRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avitam.fantasy11.repository.EntityConstants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,11 +49,11 @@ public class AddressServiceImpl implements AddressService {
                 addressRepository.save(address);
                 addressWsDto.setMessage("Address updated successfully!");
             } else {
-//                if (baseService.validateIdentifier(EntityConstants.ADDRESS, addressDto1.getIdentifier()) != null) {
-//                    addressWsDto.setSuccess(false);
-//                    addressWsDto.setMessage("Identifier already present");
-//                    return addressWsDto;
-//                }
+                if (baseService.validateIdentifier(EntityConstants.ADDRESS, addressDto1.getIdentifier()) != null) {
+                    addressWsDto.setSuccess(false);
+                    addressWsDto.setMessage("Identifier already present");
+                    return addressWsDto;
+                }
                 address = modelMapper.map(addressDto1, Address.class);
             }
             baseService.populateCommonData(address);
@@ -65,8 +66,8 @@ public class AddressServiceImpl implements AddressService {
             addressWsDto.setMessage("Address added successfully!");
             addresses.add(address);
 
-            addressWsDto.setBaseUrl(ADMIN_ADDRESS);
         }
+        addressWsDto.setBaseUrl(ADMIN_ADDRESS);
         addressWsDto.setAddressDtoList(modelMapper.map(addresses, List.class));
         return addressWsDto;
     }

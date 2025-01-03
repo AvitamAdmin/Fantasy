@@ -47,6 +47,7 @@ public class DepositsServiceImpl implements DepositsService {
             if (depositsDto.getRecordId() != null) {
                 depositsData = depositsRepository.findByRecordId(depositsDto.getRecordId());
                 modelMapper.map(depositsDto, depositsData);
+                depositsRepository.save(depositsData);
                 depositsWsDto.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.DEPOSITS, depositsDto.getIdentifier()) != null) {

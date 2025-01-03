@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.api.service;
 
-import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.dto.UserWinningsWsDto;
 import com.avitam.fantasy11.model.UserWinnings;
 

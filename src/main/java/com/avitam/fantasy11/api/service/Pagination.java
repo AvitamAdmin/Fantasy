@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 public interface Pagination {
 
     default Pageable getPageable(int pageNumber, int pageSize, Sort.Direction direction, String... sort) {

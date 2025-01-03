@@ -1,12 +1,9 @@
 package com.avitam.fantasy11.api.dto;
 
-import com.avitam.fantasy11.model.Script;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,5 +11,6 @@ import java.util.List;
 @ToString
 
 public class ScriptDto extends CommonDto{
-    private Script script;
+
+    private String script;
 }

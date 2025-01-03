@@ -12,26 +12,25 @@ import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WebsiteSettingRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class WebsiteSettingServiceImpl implements WebsiteSettingService {
 
     @Autowired
     private WebsiteSettingRepository websiteSettingRepository;
-
     @Autowired
     ModelMapper modelMapper;
     @Autowired
-    private CoreService coreService;
-    @Autowired
     private BaseService baseService;
     public static final String ADMIN_WEBSITESETTINGS = "/admin/websiteSettings";
+
     @Override
-    public WebsiteSetting findByRecordId(String recordId)
-    {
+    public WebsiteSetting findByRecordId(String recordId) {
         return websiteSettingRepository.findByRecordId(recordId);
     }
 
@@ -43,16 +42,17 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
 
     @Override
     public WebsiteSettingsWsDto handleEdit(WebsiteSettingsWsDto request) {
-        WebsiteSettingsWsDto websiteSettingsWsDto = new WebsiteSettingsWsDto();
+
         WebsiteSetting websiteSettingData = null;
         List<WebsiteSettingDto> websiteSettingDtos = request.getWebsiteSettingDtoList();
         List<WebsiteSetting> websiteSettingList = new ArrayList<>();
-        WebsiteSettingDto websiteSettingDto = new WebsiteSettingDto();
+
         for (WebsiteSettingDto websiteSettingDto1 : websiteSettingDtos) {
             if (websiteSettingDto1.getRecordId() != null) {
                 websiteSettingData = websiteSettingRepository.findByRecordId(websiteSettingDto1.getRecordId());
                 modelMapper.map(websiteSettingDto1, websiteSettingData);
                 websiteSettingRepository.save(websiteSettingData);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.WEBSITESETTING, websiteSettingDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -60,27 +60,28 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
                     return request;
                 }
 
-                websiteSettingData = modelMapper.map( websiteSettingDto,  WebsiteSetting.class);
+                websiteSettingData = modelMapper.map(websiteSettingDto1, WebsiteSetting.class);
             }
+            baseService.populateCommonData(websiteSettingData);
+            websiteSettingData.setStatus(true);
             websiteSettingRepository.save(websiteSettingData);
-            websiteSettingData.setLastModified(new Date());
             if (websiteSettingData.getRecordId() == null) {
                 websiteSettingData.setRecordId(String.valueOf(websiteSettingData.getId().getTimestamp()));
             }
             websiteSettingRepository.save(websiteSettingData);
             websiteSettingList.add(websiteSettingData);
-            websiteSettingsWsDto.setMessage("Image was updated successfully");
-            websiteSettingsWsDto.setBaseUrl(ADMIN_WEBSITESETTINGS);
+            request.setMessage("Data added successfully");
+            request.setBaseUrl(ADMIN_WEBSITESETTINGS);
 
         }
-        websiteSettingsWsDto.setWebsiteSettingDtoList(modelMapper.map(websiteSettingList, List.class));
-        return websiteSettingsWsDto;
+        request.setWebsiteSettingDtoList(modelMapper.map(websiteSettingList, List.class));
+        return request;
     }
 
     @Override
     public void updateByRecordId(String recordId) {
-        WebsiteSetting website=websiteSettingRepository.findByRecordId(recordId);
-        if (website!=null){
+        WebsiteSetting website = websiteSettingRepository.findByRecordId(recordId);
+        if (website != null) {
             websiteSettingRepository.save(website);
         }
     }

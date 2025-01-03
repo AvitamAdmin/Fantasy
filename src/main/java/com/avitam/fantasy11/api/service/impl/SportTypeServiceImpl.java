@@ -1,9 +1,9 @@
 package com.avitam.fantasy11.api.service.impl;
+
 import com.avitam.fantasy11.api.dto.SportTypeDto;
 import com.avitam.fantasy11.api.dto.SportTypeWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.SportTypeService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.SportTypeRepository;
@@ -11,6 +11,7 @@ import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,6 @@ public class SportTypeServiceImpl implements SportTypeService {
     private SportTypeRepository sportTypeRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private BaseService baseService;
 
@@ -39,11 +38,13 @@ public class SportTypeServiceImpl implements SportTypeService {
         List<SportTypeDto> sportTypeDtos = request.getSportTypeDtoList();
         List<SportType> sportTypeList = new ArrayList<>();
         SportType sportType = null;
+
         for (SportTypeDto sportTypeDto : sportTypeDtos) {
             if (sportTypeDto.getRecordId() != null) {
-                SportType requestData = modelMapper.map(sportTypeDto, SportType.class);
                 sportType = sportTypeRepository.findByRecordId(sportTypeDto.getRecordId());
-                modelMapper.map(requestData, sportType);
+                modelMapper.map(sportTypeDto, sportType);
+                sportTypeRepository.save(sportType);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.SPORT_TYPE, sportTypeDto.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -63,11 +64,13 @@ public class SportTypeServiceImpl implements SportTypeService {
                 }
             }
             baseService.populateCommonData(sportType);
+            sportType.setStatus(true);
             sportTypeRepository.save(sportType);
             if (sportType.getRecordId() == null) {
                 sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
             }
             sportTypeRepository.save(sportType);
+            request.setMessage("Data added Successfully");
             sportTypeList.add(sportType);
             request.setBaseUrl(ADMIN_SPORTTYPE);
         }

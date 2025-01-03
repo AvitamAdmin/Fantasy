@@ -14,10 +14,5 @@ import java.util.List;
 @ToString
 public class LanguageDto extends CommonDto {
 
-//    private Language language;
-//
-//    private List<Language> languageList;
-
-
     private String code;
 }

@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.TeamLineupRepository;
@@ -51,9 +50,10 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
         TeamLineup teamLineup = null;
         for (TeamLineUpDto teamLineUpDto1 : teamLineUpDtos) {
             if (teamLineUpDto1.getRecordId() != null) {
-                TeamLineup requestData = modelMapper.map(teamLineUpDto1, TeamLineup.class);
                 teamLineup = teamLineupRepository.findByRecordId(teamLineUpDto1.getRecordId());
-                modelMapper.map(requestData, teamLineup);
+                modelMapper.map(teamLineUpDto1, teamLineup);
+                teamLineupRepository.save(teamLineup);
+                request.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineup.getIdentifier()) != null) {
                     request.setSuccess(false);
@@ -63,6 +63,7 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
                 teamLineup = modelMapper.map(teamLineUpDto1, TeamLineup.class);
             }
             baseService.populateCommonData(teamLineup);
+            teamLineup.setStatus(true);
             teamLineupRepository.save(teamLineup);
             if (teamLineup.getRecordId() == null) {
                 teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));

@@ -77,7 +77,6 @@ public class RoleServiceImpl implements RoleService {
         request.setRoleDtoList(modelMapper.map(roles, List.class));
         return request;
 
-
     }
 }
 
