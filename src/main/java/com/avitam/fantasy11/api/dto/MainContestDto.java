@@ -15,7 +15,9 @@ import java.util.List;
 
 public class MainContestDto extends CommonDto {
 
-    private String mainContestName;
+
+
+
     private String mainContestId;
 
     }
