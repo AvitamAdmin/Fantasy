@@ -57,11 +57,10 @@ public MainContestWsDto getAllContest(@RequestBody MainContestWsDto mainContestW
     @PostMapping("/getedit")
     @ResponseBody
     public MainContestWsDto editMainContest(@RequestBody MainContestWsDto request){
-       MainContestWsDto mainContestWsDto=new MainContestWsDto();
        MainContest mainContest=mainContestRepository.findByRecordId(request.getMainContestDtoList().get(0).getRecordId());
-        mainContestWsDto.setMainContestDtoList((List<MainContestDto>) mainContest);
-        mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
-        return mainContestWsDto;
+       request.setMainContestDtoList(List.of(modelMapper.map(mainContest,MainContestDto.class)));
+       request.setBaseUrl(ADMIN_MAINCONTEST);
+       return request;
     }
 
     @PostMapping("/edit")
@@ -82,8 +81,8 @@ public MainContestWsDto getAllContest(@RequestBody MainContestWsDto mainContestW
     @ResponseBody
     public MainContestWsDto deleteContest(@RequestBody MainContestWsDto mainContestWsDto) {
 
-        for (String id : mainContestWsDto.getMainContestDtoList().get(0).getRecordId().split(",")) {
-            mainContestRepository.deleteByRecordId(id);
+        for (MainContestDto mainContestDto: mainContestWsDto.getMainContestDtoList()) {
+            mainContestRepository.deleteByRecordId(mainContestDto.getRecordId());
         }
         mainContestWsDto.setMessage("Data deleted Successfully");
         mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);

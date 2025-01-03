@@ -9,6 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("MainContest")
 public class MainContest extends BaseEntity {
-    private String mainContestName;
+
     private String mainContestId;
 }

@@ -40,11 +40,10 @@ public class MainContestServiceImpl implements MainContestService {
 
     @Override
     public MainContestWsDto handleEdit(MainContestWsDto request) {
-        MainContestWsDto mainContestWsDto = new MainContestWsDto();
         MainContest mainContestData = null;
         List<MainContestDto> mainContestDtos = request.getMainContestDtoList();
         List<MainContest> mainContestList = new ArrayList<>();
-        MainContestDto mainContestDto = new MainContestDto();
+
         for (MainContestDto mainContestDto1 : mainContestDtos) {
             if (mainContestDto1.getRecordId() != null) {
                 mainContestData = mainContestRepository.findByRecordId(mainContestDto1.getRecordId());
@@ -58,8 +57,10 @@ public class MainContestServiceImpl implements MainContestService {
                     return request;
                 }
 
-                mainContestData = modelMapper.map(mainContestDto, MainContest.class);
+                mainContestData = modelMapper.map(mainContestDto1, MainContest.class);
             }
+            baseService.populateCommonData(mainContestData);
+            mainContestData.setStatus(true);
             mainContestRepository.save(mainContestData);
             mainContestData.setLastModified(new Date());
             if (mainContestData.getRecordId() == null) {
@@ -67,12 +68,12 @@ public class MainContestServiceImpl implements MainContestService {
             }
             mainContestRepository.save(mainContestData);
             mainContestList.add(mainContestData);
-            mainContestWsDto.setMessage("Data added successfully");
-            mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
+            request.setMessage("Data added successfully");
+            request.setBaseUrl(ADMIN_MAINCONTEST);
 
         }
-        mainContestWsDto.setMainContestDtoList(modelMapper.map(mainContestList, List.class));
-        return mainContestWsDto;
+        request.setMainContestDtoList(modelMapper.map(mainContestList, List.class));
+        return request;
     }
 
 
