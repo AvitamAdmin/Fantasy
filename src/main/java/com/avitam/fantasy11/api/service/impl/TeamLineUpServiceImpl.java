@@ -55,7 +55,7 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
                 teamLineupRepository.save(teamLineup);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineup.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineUpDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
@@ -65,12 +65,12 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
             baseService.populateCommonData(teamLineup);
             teamLineup.setStatus(true);
             teamLineupRepository.save(teamLineup);
+            request.setMessage("Data added Successfully");
             if (teamLineup.getRecordId() == null) {
                 teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
             }
             teamLineupRepository.save(teamLineup);
             teamLineupList.add(teamLineup);
-            request.setMessage("Data added Successfully");
             request.setBaseUrl(ADMIN_TEAMLINEUP);
         }
         request.setTeamLineUpDtoList(modelMapper.map(teamLineupList, List.class));

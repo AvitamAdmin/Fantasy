@@ -7,10 +7,12 @@ import com.avitam.fantasy11.api.service.SEOService;
 import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.SEORepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +65,15 @@ public class SEOServiceImpl implements SEOService {
                     return request;
                 }
                 seo = modelMapper.map(seoDto1, SEO.class);
+            }
+            if (seoDto1.getImage() != null) {
+                try {
+                    seo.setImage(new Binary(seoDto1.getImage().getBytes()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    request.setMessage("Error processing image file");
+                    return request;
+                }
             }
             baseService.populateCommonData(seo);
             seo.setStatus(true);

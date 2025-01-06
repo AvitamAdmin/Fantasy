@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.leaderBoard;
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.dto.LeaderBoardWsDto;
 import com.avitam.fantasy11.api.service.LeaderBoardService;
+import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.repository.LeaderBoardRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -44,11 +45,13 @@ public class LeaderBoardController extends BaseController {
         leaderBoardWsDto.setTotalRecords(page.getTotalElements());
         return leaderBoardWsDto;
     }
+
     @GetMapping("/get")
     @ResponseBody
-    public LeaderBoardWsDto getActiveLeaderBoard(){
+    public LeaderBoardWsDto getActiveData(){
         LeaderBoardWsDto leaderBoardWsDto=new LeaderBoardWsDto();
-        leaderBoardWsDto.setLeaderBoardDtoList(modelMapper.map(leaderBoardRepository.findStatusOrderByIdentifier(true),List.class));
+        List<LeaderBoard> leaderBoard=leaderBoardRepository.findByStatusOrderByIdentifier(true);
+        leaderBoardWsDto.setLeaderBoardDtoList(modelMapper.map(leaderBoard, List.class));
         leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardWsDto;
     }
@@ -57,7 +60,7 @@ public class LeaderBoardController extends BaseController {
     public LeaderBoardWsDto editLeaderBoard(@RequestBody LeaderBoardWsDto request) {
         LeaderBoardWsDto leaderBoardWsDto=new LeaderBoardWsDto();
         LeaderBoard leaderBoard=leaderBoardRepository.findByRecordId(request.getLeaderBoardDtoList().get(0).getRecordId());
-        leaderBoardWsDto.setLeaderBoardDtoList((List<LeaderBoardDto>) leaderBoard);
+        leaderBoardWsDto.setLeaderBoardDtoList(List.of(modelMapper.map(leaderBoard, LeaderBoardDto.class)));
         leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardWsDto;
     }
@@ -69,14 +72,6 @@ public class LeaderBoardController extends BaseController {
         return leaderBoardService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public LeaderBoardWsDto addLeaderBoard() {
-        LeaderBoardWsDto leaderBoardWsDto = new LeaderBoardWsDto();
-        leaderBoardWsDto.setLeaderBoardDtoList(modelMapper.map(leaderBoardRepository.findStatusOrderByIdentifier(true),List.class));
-        leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
-        return leaderBoardWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody
