@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.advertise;
 
-import com.avitam.fantasy11.api.dto.BannerDto;
 import com.avitam.fantasy11.api.dto.ScriptDto;
 import com.avitam.fantasy11.api.dto.ScriptWsDto;
 import com.avitam.fantasy11.api.service.ScriptService;
-import com.avitam.fantasy11.model.Banner;
 import com.avitam.fantasy11.model.Script;
 import com.avitam.fantasy11.repository.ScriptRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -35,7 +33,6 @@ public class ScriptController extends BaseController {
     @ResponseBody
     public ScriptWsDto getAllScripts(@RequestBody ScriptWsDto scriptWsDto) {
         Pageable pageable = getPageable(scriptWsDto.getPage(), scriptWsDto.getSizePerPage(), scriptWsDto.getSortDirection(), scriptWsDto.getSortField());
-        //Script script=scriptDto.getScript();
         ScriptDto scriptDto = CollectionUtils.isNotEmpty(scriptWsDto.getScriptDtoList()) ? scriptWsDto.getScriptDtoList().get(0) : null;
         Script script = scriptDto != null ? modelMapper.map(scriptDto, Script.class) : null;
         Page<Script> page = isSearchActive(script) != null ? scriptRepository.findAll(Example.of(script), pageable) : scriptRepository.findAll(pageable);
@@ -59,9 +56,8 @@ public class ScriptController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public ScriptWsDto edit(@RequestBody ScriptWsDto scriptWsDto) {
-        ScriptDto scriptDto = new ScriptDto();
         Script script = scriptRepository.findByRecordId(scriptWsDto.getScriptDtoList().get(0).getRecordId());
-        scriptDto.setScript(script);
+        scriptWsDto.setScriptDtoList(List.of(modelMapper.map(script, ScriptDto.class)));
         scriptWsDto.setBaseUrl(ADMIN_SCRIPT);
         return scriptWsDto;
     }
@@ -73,15 +69,6 @@ public class ScriptController extends BaseController {
         return scriptService.handleEdit(scriptWsDto);
     }
 
-
-    @GetMapping("/add")
-    @ResponseBody
-    public ScriptWsDto addScript() {
-        ScriptWsDto scriptWsDto = new ScriptWsDto();
-        scriptWsDto.setScriptDtoList(modelMapper.map(scriptRepository.findByStatusOrderByIdentifier(true), List.class));
-        scriptWsDto.setBaseUrl(ADMIN_SCRIPT);
-        return scriptWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody

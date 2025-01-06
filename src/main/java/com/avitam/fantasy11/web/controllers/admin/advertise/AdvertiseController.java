@@ -34,10 +34,10 @@ public class AdvertiseController extends BaseController {
     @ResponseBody
     public BannerWsDto getAllBanner(@RequestBody BannerWsDto bannerWsDto) {
         Pageable pageable = getPageable(bannerWsDto.getPage(), bannerWsDto.getSizePerPage(), bannerWsDto.getSortDirection(), bannerWsDto.getSortField());
-        BannerDto bannerDto = CollectionUtils.isNotEmpty(bannerWsDto.getBannerList()) ? bannerWsDto.getBannerList().get(0) : null;
+        BannerDto bannerDto = CollectionUtils.isNotEmpty(bannerWsDto.getBannerDtoList()) ? bannerWsDto.getBannerDtoList().get(0) : null;
         Banner banner = bannerDto != null ? modelMapper.map(bannerDto, Banner.class) : null;
         Page<Banner> page = isSearchActive(banner) != null ? bannerRepository.findAll(Example.of(banner), pageable) : bannerRepository.findAll(pageable);
-        bannerWsDto.setBannerList(modelMapper.map(page.getContent(), List.class));
+        bannerWsDto.setBannerDtoList(modelMapper.map(page.getContent(), List.class));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         bannerWsDto.setTotalPages(page.getTotalPages());
         bannerWsDto.setTotalRecords(page.getTotalElements());
@@ -48,7 +48,7 @@ public class AdvertiseController extends BaseController {
     @ResponseBody
     public BannerWsDto getActiveBanner() {
         BannerWsDto bannerWsDto = new BannerWsDto();
-        bannerWsDto.setBannerList(modelMapper.map(bannerRepository.findByStatusOrderByIdentifier(true), List.class));
+        bannerWsDto.setBannerDtoList(modelMapper.map(bannerRepository.findByStatusOrderByIdentifier(true), List.class));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
     }
@@ -56,21 +56,21 @@ public class AdvertiseController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public BannerWsDto edit(@RequestBody BannerWsDto bannerWsDto) {
-        bannerWsDto.setBannerList(modelMapper.map(bannerRepository.findByRecordId(bannerWsDto.getBannerList().get(0).getRecordId()),List.class));
+        bannerWsDto.setBannerDtoList(modelMapper.map(bannerRepository.findByRecordId(bannerWsDto.getBannerDtoList().get(0).getRecordId()),List.class));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
     }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public BannerWsDto handleEdit(@RequestBody BannerWsDto bannerWsDto) {
+    public BannerWsDto handleEdit(@ModelAttribute BannerWsDto bannerWsDto) {
         return bannerService.handleEdit(bannerWsDto);
     }
 
     @PostMapping("/delete")
     @ResponseBody
     public BannerWsDto delete(@RequestBody BannerWsDto bannerWsDto) {
-        for (BannerDto bannerDto : bannerWsDto.getBannerList()) {
+        for (BannerDto bannerDto : bannerWsDto.getBannerDtoList()) {
             bannerRepository.deleteByRecordId(bannerDto.getRecordId());
         }
         bannerWsDto.setMessage("Data deleted successfully");
