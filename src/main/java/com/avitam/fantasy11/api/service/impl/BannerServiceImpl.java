@@ -74,11 +74,11 @@ public class BannerServiceImpl implements BannerService {
             baseService.populateCommonData(banner);
             banner.setStatus(true);
             bannerRepository.save(banner);
+            bannerWsDto.setMessage("Data added Successfully");
             if (banner.getRecordId() == null) {
                 banner.setRecordId(String.valueOf(banner.getId().getTimestamp()));
             }
             bannerRepository.save(banner);
-            bannerWsDto.setMessage("Data added Successfully");
             banners.add(banner);
             bannerWsDto.setBaseUrl(ADMIN_BANNER);
         }

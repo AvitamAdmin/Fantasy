@@ -56,7 +56,8 @@ public class AdvertiseController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public BannerWsDto edit(@RequestBody BannerWsDto bannerWsDto) {
-        bannerWsDto.setBannerDtoList(modelMapper.map(bannerRepository.findByRecordId(bannerWsDto.getBannerDtoList().get(0).getRecordId()),List.class));
+        Banner banner=bannerRepository.findByRecordId(bannerWsDto.getBannerDtoList().get(0).getRecordId());
+        bannerWsDto.setBannerDtoList(List.of(modelMapper.map(banner,BannerDto.class)));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
     }
