@@ -32,7 +32,7 @@ public class UserWinningsController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public UserWinningsWsDto getAll(@RequestBody UserWinningsWsDto userWinningsWsDto) {
+    public UserWinningsWsDto getAllUserWinnings(@RequestBody UserWinningsWsDto userWinningsWsDto) {
 
         Pageable pageable = getPageable(userWinningsWsDto.getPage(), userWinningsWsDto.getSizePerPage(), userWinningsWsDto.getSortDirection(), userWinningsWsDto.getSortField());
         UserWinningsDto userWinningsDto = CollectionUtils.isNotEmpty(userWinningsWsDto.getUserWinningsDtoList()) ? userWinningsWsDto.getUserWinningsDtoList().get(0) : new UserWinningsDto();

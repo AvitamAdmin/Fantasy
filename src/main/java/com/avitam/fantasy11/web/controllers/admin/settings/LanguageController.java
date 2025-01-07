@@ -73,7 +73,7 @@ public class LanguageController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public LanguageWsDto delete(@RequestBody LanguageWsDto languageWsDto) {
+    public LanguageWsDto deleteLanguage(@RequestBody LanguageWsDto languageWsDto) {
         for (LanguageDto data : languageWsDto.getLanguageDtoList()) {
 
             languageRepository.deleteByRecordId(data.getRecordId());

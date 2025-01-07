@@ -57,7 +57,7 @@ public class RoleController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public RoleWsDto edit (@RequestBody RoleWsDto request) {
+    public RoleWsDto editRole (@RequestBody RoleWsDto request) {
         RoleWsDto roleWsDto = new RoleWsDto();
         roleWsDto.setBaseUrl(ADMIN_ROLE);
         Role role= roleRepository.findByRecordId(request.getRoleDtoList().get(0).getRecordId());
@@ -77,7 +77,7 @@ public class RoleController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public RoleWsDto delete(@RequestBody RoleWsDto roleWsDto) {
+    public RoleWsDto deleteRole(@RequestBody RoleWsDto roleWsDto) {
         for (RoleDto roleDto : roleWsDto.getRoleDtoList()){
             roleRepository.deleteByRecordId(roleDto.getRecordId());
         }

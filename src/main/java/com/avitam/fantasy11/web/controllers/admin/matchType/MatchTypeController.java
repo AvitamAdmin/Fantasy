@@ -74,7 +74,7 @@ public class MatchTypeController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public MatchTypeWsDto add() {
+    public MatchTypeWsDto addMatchType() {
         MatchTypeWsDto matchTypeWsDto=new MatchTypeWsDto();
         matchTypeWsDto.setMatchTypeDtoList(modelMapper.map(matchTypeRepository.findByStatusOrderByIdentifier(true),List.class));
         matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
@@ -82,7 +82,7 @@ public class MatchTypeController extends BaseController {
     }
     @PostMapping("/delete")
     @ResponseBody
-    public MatchTypeWsDto delete(@RequestBody MatchTypeWsDto matchTypeWsDto) {
+    public MatchTypeWsDto deleteMatchType(@RequestBody MatchTypeWsDto matchTypeWsDto) {
         for(MatchTypeDto matchTypeDto:matchTypeWsDto.getMatchTypeDtoList()){
             matchTypeRepository.deleteByRecordId(matchTypeDto.getRecordId());
         }

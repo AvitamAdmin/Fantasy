@@ -90,46 +90,6 @@ public class MatchesController extends BaseController {
     }
 
 
-
-
-//    @PostMapping("/getMatchStatus")
-//    @ResponseBody
-//    public MatchesWsDto getUpcomingMatches(@RequestBody MatchesWsDto request) {
-//        MatchesWsDto matcheswsDto = new MatchesWsDto();
-//
-//        List<MatchesDto> matchesDtoList = new ArrayList<>();
-//        for (MatchesDto matchesDto : request.getMatchesDtoList()) {
-//
-//            String recordId = matchesDto.getRecordId();
-//            Matches matches = matchesRepository.findByRecordId(recordId);
-//
-//            if (matches.getEventStatus().equalsIgnoreCase("Upcoming")) {
-//                modelMapper.map(matches, matchesDto);
-//                matcheswsDto.setMatchesDtoList(matchesDtoList.add(matchesDto));
-//               // matcheswsDto.setMatchesDtoList(matchesRepository.findByEventStatus(eventStatus));
-//            } else if (eventStatus.equalsIgnoreCase("Live")) {
-//             //   matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
-//            } else if (eventStatus.equalsIgnoreCase("Closed")) {
-//             //   matchesDto.setMatchesList(matchesRepository.findByEventStatus(eventStatus));
-//            }
-//
-//            matchesDto.setBaseUrl(ADMIN_MATCHES);
-//            return matchesDto;
-//        }
-//    }
-    @PostMapping("/getedit")
-    @ResponseBody
-    public MatchesWsDto editMatches(@RequestBody MatchesWsDto request) {
-        MatchesWsDto matchesWsDto = new MatchesWsDto();
-        Matches matches = matchesRepository.findByRecordId(request.getMatchesDtoList().get(0).getRecordId());
-        modelMapper.map(matches, matchesWsDto);
-        matchesWsDto.setMatchesDtoList((List<MatchesDto>) matches);
-        matchesWsDto.setBaseUrl(ADMIN_MATCHES);
-        return matchesWsDto;
-    }
-
-
-
     @GetMapping("/add")
     @ResponseBody
     public MatchesWsDto addMatches() {

@@ -37,7 +37,7 @@ public class MatchScoreController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public MatchScoreWsDto getAllScripts(@RequestBody MatchScoreWsDto matchScoreWsDto) {
+    public MatchScoreWsDto getAllMatchScore(@RequestBody MatchScoreWsDto matchScoreWsDto) {
         Pageable pageable = getPageable(matchScoreWsDto.getPage(), matchScoreWsDto.getSizePerPage(), matchScoreWsDto.getSortDirection(), matchScoreWsDto.getSortField());
         MatchScoreDto matchScoreDto = CollectionUtils.isNotEmpty(matchScoreWsDto.getMatchScoreDtoList()) ? matchScoreWsDto.getMatchScoreDtoList().get(0) : new MatchScoreDto();
         MatchScore matchScore = modelMapper.map(matchScoreDto, MatchScore.class);
@@ -78,7 +78,7 @@ public class MatchScoreController extends BaseController {
 
     @GetMapping("/add")
     @ResponseBody
-    public MatchScoreWsDto addScript(@RequestBody MatchScoreWsDto request) {
+    public MatchScoreWsDto addMatchScore(@RequestBody MatchScoreWsDto request) {
         MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(matchScoreRepository.findByStatusOrderByIdentifier(true), List.class));
@@ -87,7 +87,7 @@ public class MatchScoreController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public MatchScoreWsDto deleteScript(@RequestBody MatchScoreWsDto matchScoreWsDto) {
+    public MatchScoreWsDto deleteMatchScore(@RequestBody MatchScoreWsDto matchScoreWsDto) {
         for (MatchScoreDto matchScoreDto : matchScoreWsDto.getMatchScoreDtoList()) {
             matchScoreRepository.deleteByRecordId(matchScoreDto.getRecordId());
         }

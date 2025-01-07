@@ -89,7 +89,7 @@ public class UserTeamsController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public UserTeamWsDto delete(@RequestBody UserTeamWsDto userTeamWsDto) {
+    public UserTeamWsDto deleteUserTeams(@RequestBody UserTeamWsDto userTeamWsDto) {
         for (UserTeamsDto id : userTeamWsDto.getUserTeamsDtoList()) {
             userTeamsRepository.deleteByRecordId(id.getRecordId());
         }
@@ -99,42 +99,3 @@ public class UserTeamsController extends BaseController {
     }
 }
 
-/* @ResponseBody
-    @GetMapping("/getPlayersByMatchId/{matchId}")
-    public Map<Integer,List<String>> getMatchDetails(@PathVariable String matchId, Model model){
-        Map<Integer, List<String>> userTeamPlayers = new HashMap<>();
-
-        List<Player> playersList1 = new ArrayList<>();
-        List<Player> playersList2 = new ArrayList<>();
-
-        List<String> playersId = new ArrayList<>();
-        List<String> playersName = new ArrayList<>();
-
-        Optional<Matches> matchesOptional = matchesRepository.findById(matchId);
-        if(matchesOptional.isPresent()){
-            String team1 = matchesOptional.get().getTeam1Id();
-            playersList1 = playerRepository.findByTeamId(team1);
-
-            String team2 = matchesOptional.get().getTeam2Id();
-            playersList2 = playerRepository.findByTeamId(team2);
-
-        }
-
-        for(Player player: playersList1){
-            playersId.add(String.valueOf(player.getId()));
-            playersName.add(player.getName());
-        }
-
-        for(Player player: playersList2){
-            playersId.add(String.valueOf(player.getId()));
-            playersName.add(player.getName());
-        }
-
-        model.addAttribute("playerIds", playersId);
-        model.addAttribute("playerNames", playersName);
-
-        userTeamPlayers.put(1, playersId);
-        userTeamPlayers.put(2, playersName);
-
-        return userTeamPlayers;
-    }*/

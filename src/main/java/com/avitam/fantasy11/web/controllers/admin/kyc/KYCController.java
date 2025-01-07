@@ -32,7 +32,7 @@ public class KYCController extends BaseController {
     private static final String ADMIN_KYC = "/admin/kyc";
 
     @PostMapping
-    public KYCWsDto getAllKYCs(@RequestBody KYCWsDto kycWsDto) {
+    public KYCWsDto getAllKYC(@RequestBody KYCWsDto kycWsDto) {
         Pageable pageable = getPageable(kycWsDto.getPage(), kycWsDto.getSizePerPage(), kycWsDto.getSortDirection(), kycWsDto.getSortField());
         KYCDto kycDto = CollectionUtils.isNotEmpty(kycWsDto.getKycDtoList()) ? kycWsDto.getKycDtoList().get(0) : new KYCDto();
         KYC kyc = kycDto != null ? modelMapper.map(kycDto, KYC.class) : null;
@@ -55,7 +55,7 @@ public class KYCController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public KYCWsDto editPointsMaster(@RequestBody KYCWsDto request) {
+    public KYCWsDto editKYC(@RequestBody KYCWsDto request) {
         KYCWsDto kycWsDto = new KYCWsDto();
         kycWsDto.setBaseUrl(ADMIN_KYC);
         KYC kyc = kycRepository.findByRecordId(request.getKycDtoList().get(0).getRecordId());
@@ -86,7 +86,7 @@ public class KYCController extends BaseController {
         for (KYCDto id : kycWsDto.getKycDtoList()) {
             kycRepository.deleteByRecordId(id.getRecordId());
         }
-        kycWsDto.setMessage("Data deleted Successfully");
+        kycWsDto.setMessage("Data deleted Successfully !!");
         kycWsDto.setBaseUrl(ADMIN_KYC);
         return kycWsDto;
     }

@@ -73,7 +73,7 @@ public class SEOController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public SEOWsDto delete(@RequestBody SEOWsDto seoWsDto) {
+    public SEOWsDto deleteSEO(@RequestBody SEOWsDto seoWsDto) {
         for (SEODto seoDto : seoWsDto.getSeoDtoList()) {
             seoRepository.deleteByRecordId(seoDto.getRecordId());
         }

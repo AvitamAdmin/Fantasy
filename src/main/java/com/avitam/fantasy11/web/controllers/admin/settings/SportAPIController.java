@@ -56,7 +56,7 @@ public class SportAPIController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public SportsAPIWsDto edit(@RequestBody SportsAPIWsDto request) {
+    public SportsAPIWsDto editAPI(@RequestBody SportsAPIWsDto request) {
         SportsAPIWsDto sportsAPIWsDto = new SportsAPIWsDto();
         SportsApi sportsApi = sportsApiRepository.findByRecordId(request.getSportAPIDtoList().get(0).getRecordId());
         sportsAPIWsDto.setSportAPIDtoList(modelMapper.map(sportsApi, List.class));
@@ -73,7 +73,7 @@ public class SportAPIController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public SportsAPIWsDto delete(@RequestBody SportsAPIWsDto sportsAPIWsDto) {
+    public SportsAPIWsDto deleteAPI(@RequestBody SportsAPIWsDto sportsAPIWsDto) {
         for (SportAPIDto data : sportsAPIWsDto.getSportAPIDtoList()) {
 
             sportsApiRepository.deleteByRecordId(data.getRecordId());

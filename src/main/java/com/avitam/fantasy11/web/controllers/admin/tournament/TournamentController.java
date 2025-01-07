@@ -79,7 +79,7 @@ public class TournamentController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public TournamentWsDto delete (@RequestBody TournamentWsDto tournamentWsDto) {
+    public TournamentWsDto deleteTournament (@RequestBody TournamentWsDto tournamentWsDto) {
         for (TournamentDto id : tournamentWsDto.getTournamentDtoList()) {
             tournamentRepository.deleteByRecordId(id.getRecordId());
         }

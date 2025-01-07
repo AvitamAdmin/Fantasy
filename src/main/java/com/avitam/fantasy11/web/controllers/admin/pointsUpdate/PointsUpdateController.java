@@ -82,7 +82,7 @@ public class PointsUpdateController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public PointsUpdateWsDto delete(@RequestBody PointsUpdateWsDto pointsUpdateWsDto) {
+    public PointsUpdateWsDto deletePointsUpdate(@RequestBody PointsUpdateWsDto pointsUpdateWsDto) {
         for (PointsUpdateDto data : pointsUpdateWsDto.getPointsUpdateDtoList()) {
             pointsUpdateRepository.deleteByRecordId(data.getRecordId());
         }

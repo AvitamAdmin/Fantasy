@@ -43,7 +43,7 @@ public class TeamLineupController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public TeamLineUpWsDto getAll(@RequestBody TeamLineUpWsDto teamLineUpWsDto) {
+    public TeamLineUpWsDto getAllTeamLineUp(@RequestBody TeamLineUpWsDto teamLineUpWsDto) {
         Pageable pageable = getPageable(teamLineUpWsDto.getPage(), teamLineUpWsDto.getSizePerPage(), teamLineUpWsDto.getSortDirection(), teamLineUpWsDto.getSortField());
         TeamLineUpDto teamLineUpDto = CollectionUtils.isNotEmpty(teamLineUpWsDto.getTeamLineUpDtoList()) ? teamLineUpWsDto.getTeamLineUpDtoList().get(0) : new TeamLineUpDto();
         TeamLineup teamLineup = modelMapper.map(teamLineUpWsDto, TeamLineup.class);

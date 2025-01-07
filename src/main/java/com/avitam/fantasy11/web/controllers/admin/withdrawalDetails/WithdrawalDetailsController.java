@@ -42,7 +42,7 @@ public class WithdrawalDetailsController extends BaseController {
 
     @PostMapping
     @ResponseBody
-    public WithdrawalDetailsWsDto getAll(@RequestBody WithdrawalDetailsWsDto withdrawalDetailsWsDto) {
+    public WithdrawalDetailsWsDto getAllWithdrawalDetails(@RequestBody WithdrawalDetailsWsDto withdrawalDetailsWsDto) {
         Pageable pageable = getPageable(withdrawalDetailsWsDto.getPage(), withdrawalDetailsWsDto.getSizePerPage(), withdrawalDetailsWsDto.getSortDirection(), withdrawalDetailsWsDto.getSortField());
         WithdrawalDetailsDto withdrawalDetailsDto= CollectionUtils.isNotEmpty(withdrawalDetailsWsDto.getWithdrawalDetailsDtoList())?withdrawalDetailsWsDto.getWithdrawalDetailsDtoList() .get(0) : new WithdrawalDetailsDto() ;
         WithdrawalDetails withdrawalDetails = modelMapper.map(withdrawalDetailsWsDto, WithdrawalDetails.class);
@@ -62,7 +62,6 @@ public class WithdrawalDetailsController extends BaseController {
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         return withdrawalDetailsWsDto;
     }
-
 
 
 
@@ -103,80 +102,4 @@ public class WithdrawalDetailsController extends BaseController {
     }
 }
 
-//    @PostMapping("/delete")
-//    @ResponseBody
-//    public ExtensionWsDto deleteExtension(@RequestBody ExtensionWsDto extensionWsDto) {
-//
-//        for (ExtensionDto data : extensionWsDto.getExtensionDtoList()) {
-//            extensionRepository.deleteByRecordId(data.getRecordId());
-//        }
-//        extensionWsDto.setMessage("Data deleted Successfully");
-//        extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
-//        return extensionWsDto;
-//    }
-//}
-
-
-
-/*@GetMapping("/action")
-    public String getPendingWithdrawal(@RequestParam("id") String id, Model model) {
-
-        Optional<PendingWithdrawal> pendingWithdrawalOptional = pendingWithdrawalRepository.findById(id);
-        WithdrawalDetails withdrawalDetails = new WithdrawalDetails();
-        if (pendingWithdrawalOptional.isPresent()) {
-            PendingWithdrawal pendingWithdrawal = pendingWithdrawalOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-
-            WithdrawalMethods withdrawalMethods = withdrawalMethodsRepository.findByMethodName(pendingWithdrawal.getMethodName());
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            withdrawalDetails.setId(pendingWithdrawal.getId());
-            withdrawalDetails.setMemberName(coreService.getCurrentUser().getName());
-            withdrawalDetails.setMemberEmail(coreService.getCurrentUser().getEmail());
-            withdrawalDetails.setAmountOfWithdraw(pendingWithdrawal.getAmountOfWithdraw());
-            withdrawalDetails.setChargeOfWithdraw(withdrawalMethods.getFixedCharge());
-            withdrawalDetails.setWithdrawMethod(pendingWithdrawal.getMethodName());
-            withdrawalDetails.setProcessingTime(withdrawalMethods.getProcessingTime());
-            withdrawalDetails.setAmountInMethodCurrency(withdrawalMethods.getCurrency());
-            withdrawalDetails.setDateOfCreate(String.valueOf(now));
-            withdrawalDetails.setDetails(" ");
-            withdrawalDetails.setStatus(pendingWithdrawal.getStatus());
-        }
-            WithdrawalDetailsForm withdrawalDetailsForm = modelMapper.map(withdrawalDetails, WithdrawalDetailsForm.class);
-            model.addAttribute("withdrawalDetails", withdrawalDetailsForm);
-            // model.addAttribute("editForm", withdrawalDetailsForm);
-
-        return "withdrawalDetails/withdrawalDetailss";
-    }
-
-    @PostMapping("/action")
-    public String handleAction(@ModelAttribute("withdrawalDetails") WithdrawalDetailsForm withdrawalDetailsForm, Model model) throws IOException {
-
-        WithdrawalDetails withdrawalDetails = modelMapper.map(withdrawalDetailsForm, WithdrawalDetails.class);
-        Optional<PendingWithdrawal> pendingWithdrawalOptional = pendingWithdrawalRepository.findById(withdrawalDetailsForm.getId());
-        if (pendingWithdrawalOptional.isPresent()) {
-            PendingWithdrawal pendingWithdrawal = pendingWithdrawalOptional.get();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-
-            WithdrawalMethods withdrawalMethods = withdrawalMethodsRepository.findByMethodName(pendingWithdrawal.getMethodName());
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            withdrawalDetails.setId(pendingWithdrawal.getId());
-            withdrawalDetails.setMemberName(coreService.getCurrentUser().getName());
-            withdrawalDetails.setMemberEmail(coreService.getCurrentUser().getEmail());
-            withdrawalDetails.setAmountOfWithdraw(pendingWithdrawal.getAmountOfWithdraw());
-            withdrawalDetails.setChargeOfWithdraw(withdrawalMethods.getFixedCharge());
-            withdrawalDetails.setWithdrawMethod(pendingWithdrawal.getMethodName());
-            withdrawalDetails.setProcessingTime(withdrawalMethods.getProcessingTime());
-            withdrawalDetails.setAmountInMethodCurrency(withdrawalMethods.getCurrency());
-            withdrawalDetails.setDateOfCreate(String.valueOf(now));
-            withdrawalDetails.setDetails(" ");
-            withdrawalDetails.setStatus(pendingWithdrawal.getStatus());
-        }
-
-            withdrawalDetailsRepository.save(withdrawalDetails);
-            model.addAttribute("withdrawalDetails", withdrawalDetailsForm);
-
-            return "redirect:/admin/pendingWithdrawal";
-    }*/
 

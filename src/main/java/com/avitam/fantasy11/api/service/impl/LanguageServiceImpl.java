@@ -68,13 +68,14 @@ public class LanguageServiceImpl implements LanguageService {
                 languageData = modelMapper.map(languageDto1, Language.class);
             }
             baseService.populateCommonData(languageData);
+            languageList.add(languageData);
             languageData.setStatus(true);
             languageRepository.save(languageData);
             if (languageData.getRecordId() == null) {
                 languageData.setRecordId(String.valueOf(languageData.getId().getTimestamp()));
+                request.setMessage("Data added successfully");
             }
             languageRepository.save(languageData);
-            request.setMessage("Data added successfully");
             languageList.add(languageData);
         }
         request.setBaseUrl(ADMIN_LANGUAGE);
