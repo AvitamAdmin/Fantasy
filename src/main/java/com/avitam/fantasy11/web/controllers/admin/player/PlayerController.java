@@ -45,14 +45,14 @@ public class PlayerController extends BaseController {
       return  playerWsDto;
   }
 
-//    @GetMapping("/get")
-//    @ResponseBody
-//    public PlayerWsDto getActivePlayers(){
-//        PlayerWsDto playerWsDto=new PlayerWsDto();
-//        playerWsDto.setPlayerDtoList(modelMapper.map(playerRepository.findByStatusOrderByIdentifier(true),List.class));
-//        playerWsDto.setBaseUrl(ADMIN_PlAYER);
-//        return playerWsDto;
-//    }
+    @GetMapping("/get")
+    @ResponseBody
+    public PlayerWsDto getActivePlayers(){
+        PlayerWsDto playerWsDto=new PlayerWsDto();
+        playerWsDto.setPlayerDtoList(modelMapper.map(playerRepository.findByStatusOrderByIdentifier(true),List.class));
+        playerWsDto.setBaseUrl(ADMIN_PlAYER);
+        return playerWsDto;
+    }
 
 
 
