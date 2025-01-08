@@ -1,9 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.player;
 
-import com.avitam.fantasy11.api.dto.PlayerDto;
-import com.avitam.fantasy11.api.dto.PlayerRoleDto;
-import com.avitam.fantasy11.api.dto.PlayerWsDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.PlayerService;
+import com.avitam.fantasy11.model.MobileToken;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -55,17 +54,19 @@ public class PlayerController extends BaseController {
         return playerWsDto;
     }
 
+
+
     @PostMapping("/getedit")
+    @ResponseBody
     public PlayerWsDto editPlayer(@RequestBody PlayerWsDto request){
-      PlayerWsDto playerWsDto = new PlayerWsDto();
-        playerWsDto.setBaseUrl(ADMIN_PlAYER);
-        Player player= playerRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
-        if(player != null){
-            playerWsDto.setPlayerDtoList(List.of(modelMapper.map(player, PlayerDto.class)));
-        }
-        return playerWsDto;
+      Player player= playerRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
+      request.setPlayerDtoList(List.of(modelMapper.map(player, PlayerDto.class)));
+      request.setBaseUrl(ADMIN_PlAYER);
+      return request;
 
     }
+
+
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
