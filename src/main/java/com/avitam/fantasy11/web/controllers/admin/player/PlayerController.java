@@ -54,20 +54,9 @@ public class PlayerController extends BaseController {
         return playerWsDto;
     }
 
-
     @PostMapping("/getedit")
     @ResponseBody
-    public PlayerWsDto editPlayer(@RequestBody PlayerWsDto request) {
-        Player player = playerRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
-        request.setPlayerDtoList(List.of(modelMapper.map(player, PlayerDto.class)));
-        request.setBaseUrl(ADMIN_PlAYER);
-        return request;
-
-    }
-
-    @PostMapping("/get11")
-    @ResponseBody
-    public PlayerWsDto get11Players(@RequestBody PlayerWsDto request) {
+    public PlayerWsDto getEditPlayers(@RequestBody PlayerWsDto request) {
         List<Player> playerList = new ArrayList<>();
         List<PlayerDto> playerDtos = request.getPlayerDtoList();
         for (PlayerDto playerDto : playerDtos) {
