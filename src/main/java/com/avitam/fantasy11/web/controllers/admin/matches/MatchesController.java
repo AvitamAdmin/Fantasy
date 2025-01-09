@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.matches;
 
 
+import com.avitam.fantasy11.api.dto.MainContestWsDto;
 import com.avitam.fantasy11.api.dto.MatchesDto;
 import com.avitam.fantasy11.api.dto.MatchesWsDto;
 import com.avitam.fantasy11.api.dto.PlayerWsDto;
@@ -54,6 +55,16 @@ public class MatchesController extends BaseController {
         request.setBaseUrl(ADMIN_MATCHES);
         return request;
     }
+
+    @GetMapping("/get")
+    @ResponseBody
+    public MatchesWsDto getMainContest(){
+        MatchesWsDto matchesWsDto=new MatchesWsDto();
+        matchesWsDto.setMatchesDtoList(modelMapper.map(matchesRepository.findByStatusOrderByIdentifier(true), List.class));
+        matchesWsDto.setBaseUrl(ADMIN_MATCHES);
+        return matchesWsDto;
+    }
+
 
     @PostMapping("/edit")
     @ResponseBody
