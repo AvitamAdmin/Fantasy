@@ -49,8 +49,14 @@ public class PlayerController extends BaseController {
     @ResponseBody
     public PlayerWsDto getActivePlayers() {
         PlayerWsDto playerWsDto = new PlayerWsDto();
+        Pageable pageable = getPageable(playerWsDto.getPage(), playerWsDto.getSizePerPage(), playerWsDto.getSortDirection(), playerWsDto.getSortField());
+        PlayerDto playerDto = CollectionUtils.isNotEmpty(playerWsDto.getPlayerDtoList()) ? playerWsDto.getPlayerDtoList().get(0) : new PlayerDto();
+        Player player = modelMapper.map(playerDto, Player.class);
         playerWsDto.setPlayerDtoList(modelMapper.map(playerRepository.findByStatusOrderByIdentifier(true), List.class));
+        Page<Player> page = isSearchActive(player) == null ? playerRepository.findAll(Example.of(player), pageable) : (Page<Player>) playerRepository.findByStatusOrderByIdentifier(true);
         playerWsDto.setBaseUrl(ADMIN_PlAYER);
+        playerWsDto.setTotalPages(page.getTotalPages());
+        playerWsDto.setTotalRecords(page.getTotalElements());
         return playerWsDto;
     }
 
@@ -75,15 +81,6 @@ public class PlayerController extends BaseController {
         return playerService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public PlayerWsDto addPlayer() {
-        PlayerWsDto playerWsDto = new PlayerWsDto();
-        playerWsDto.setPlayerDtoList(modelMapper.map(playerRepository.findByStatusOrderByIdentifier(true), List.class));
-        playerWsDto.setBaseUrl(ADMIN_PlAYER);
-        return playerWsDto;
-    }
-
     @PostMapping("/delete")
     @ResponseBody
     public PlayerWsDto deletePlayer(@RequestBody PlayerWsDto playerWsDto) {
@@ -92,6 +89,17 @@ public class PlayerController extends BaseController {
         }
         playerWsDto.setMessage("Data deleted Successfully");
         playerWsDto.setBaseUrl(ADMIN_PlAYER);
+        return playerWsDto;
+    }
+
+    @PostMapping("/getPlayers")
+    @ResponseBody
+    public PlayerWsDto getPlayersByTeam(@RequestParam("team1Id") String team1Id, @RequestParam("team2Id") String team2Id) {
+        PlayerWsDto playerWsDto=new PlayerWsDto();
+        List<Player> team1Players = playerRepository.findByTeamId(team1Id);
+        List<Player> team2Players = playerRepository.findByTeamId(team2Id);
+        team1Players.addAll(team2Players);
+        playerWsDto.setPlayerDtoList(modelMapper.map(team1Players, List.class));
         return playerWsDto;
     }
 }
