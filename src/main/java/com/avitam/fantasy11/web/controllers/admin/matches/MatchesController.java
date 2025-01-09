@@ -28,8 +28,6 @@ public class MatchesController extends BaseController {
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
-    private PlayerRepository playerRepository;
-    @Autowired
     private MatchesService matchesService;
     @Autowired
     private ModelMapper modelMapper;
@@ -48,18 +46,13 @@ public class MatchesController extends BaseController {
         return matchesWsDto;
     }
 
-    @GetMapping("/get")
+    @PostMapping("/getedit")
     @ResponseBody
     public MatchesWsDto getActiveMatches(@RequestBody MatchesWsDto request) {
-        MatchesWsDto matchesWsDto = new MatchesWsDto();
-        List<Matches> matchesList = new ArrayList<>();
-        for (MatchesDto matchesDto : request.getMatchesDtoList()) {
-            matchesList.add(matchesRepository.findByRecordId(matchesDto.getRecordId()));
-
-        }
-        matchesWsDto.setMatchesDtoList(modelMapper.map(matchesList, List.class));
-        matchesWsDto.setBaseUrl(ADMIN_MATCHES);
-        return matchesWsDto;
+        Matches matches=matchesRepository.findByRecordId(request.getMatchesDtoList().get(0).getRecordId());
+        request.setMatchesDtoList(modelMapper.map(matches, List.class));
+        request.setBaseUrl(ADMIN_MATCHES);
+        return request;
     }
 
     @PostMapping("/edit")
