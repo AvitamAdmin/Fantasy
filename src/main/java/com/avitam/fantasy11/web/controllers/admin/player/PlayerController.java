@@ -5,6 +5,7 @@ import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import com.twilio.twiml.voice.Play;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,14 +93,38 @@ public class PlayerController extends BaseController {
         return playerWsDto;
     }
 
+    @PostMapping("/getPlayersList")
+    @ResponseBody
+    public PlayerWsDto getPlayersByTeam(@RequestBody PlayerWsDto request) {
+        List<Player> playerList = new ArrayList<>();
+        List<PlayerDto> playerDtos = request.getPlayerDtoList();
+        for (PlayerDto playerDto : playerDtos) {
+            List<Player> player = playerRepository.findByTeamId(playerDto.getTeamId());
+            playerList.addAll(player);
+        }
+        request.setPlayerDtoList(modelMapper.map(playerList, List.class));
+        return request;
+    }
+
     @PostMapping("/getPlayers")
     @ResponseBody
-    public PlayerWsDto getPlayersByTeam(@RequestParam("team1Id") String team1Id, @RequestParam("team2Id") String team2Id) {
-        PlayerWsDto playerWsDto=new PlayerWsDto();
-        List<Player> team1Players = playerRepository.findByTeamId(team1Id);
-        List<Player> team2Players = playerRepository.findByTeamId(team2Id);
-        team1Players.addAll(team2Players);
-        playerWsDto.setPlayerDtoList(modelMapper.map(team1Players, List.class));
+    public PlayerWsDto getPlayersAll(@RequestParam("team1Id") String team1Id, @RequestParam("team2Id") String team2Id) {
+        PlayerWsDto playerWsDto = new PlayerWsDto();
+        List<Player> playerList1 = playerRepository.findByTeamId(team1Id);
+        List<Player> playerList2 = playerRepository.findByTeamId(team2Id);
+        playerList1.addAll(playerList2);
+        playerWsDto.setPlayerDtoList(modelMapper.map(playerList1, List.class));
         return playerWsDto;
+
+
     }
+
+
 }
+//        List<Player> team1Players = playerRepository.findByTeamId(team1Id);
+//        List<Player> team2Players = playerRepository.findByTeamId(team2Id);
+//        team1Players.addAll(team2Players);
+//        playerWsDto.setPlayerDtoList(modelMapper.map(team1Players, List.class));
+//        return playerWsDto;
+
+
