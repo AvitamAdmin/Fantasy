@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.team;
 
+import com.avitam.fantasy11.api.dto.PlayerDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.dto.TeamWsDto;
 import com.avitam.fantasy11.api.service.TeamService;
+import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -15,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -56,19 +60,35 @@ public class TeamController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public TeamWsDto editTeam(@RequestBody TeamWsDto request) {
-        TeamWsDto teamWsDto = new TeamWsDto();
-        Team team = teamRepository.findByRecordId(request.getTeamDtoList().get(0).getRecordId());
-        teamWsDto.setTeamDtoList(List.of(modelMapper.map(team, TeamDto.class)));
-        teamWsDto.setBaseUrl(ADMIN_TEAM);
-        return teamWsDto;
+        List<Team> teamList= new ArrayList<>();
+        for(TeamDto teamDto:request.getTeamDtoList()){
+            Team team = teamRepository.findByRecordId(teamDto.getRecordId());
+            teamList.add(team);
+        }
+        request.setTeamDtoList(modelMapper.map(teamList,List.class));
+        return request;
+
+
+//        Team team = teamRepository.findByRecordId(request.getTeamDtoList().get(0).getRecordId());
+//        request.setTeamDtoList(List.of(modelMapper.map(team, TeamDto.class)));
+//        request.setBaseUrl(ADMIN_TEAM);
+//        return request;
     }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public TeamWsDto handleEdit(@ModelAttribute TeamWsDto request) {
-
+    public TeamWsDto handleEdit(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo,
+                                @RequestParam("name") String name, @RequestParam("shortName") String shortName) {
+        TeamWsDto request = new TeamWsDto();
+        TeamDto teamDto = new TeamDto();
+        teamDto.setLogo(logo);
+        teamDto.setShortName(shortName);
+        teamDto.setIdentifier(identifier);
+        teamDto.setName(name);
+        request.setTeamDtoList(List.of(teamDto));
         return teamService.handleEdit(request);
     }
+
 
     @GetMapping("/add")
     @ResponseBody

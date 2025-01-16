@@ -35,8 +35,8 @@ public class InterfaceController extends BaseController {
     @ResponseBody
     public NodeWsDto getAllNodes(@RequestBody NodeWsDto nodeWsDto){
         Pageable pageable=getPageable(nodeWsDto.getPage(),nodeWsDto.getSizePerPage(),nodeWsDto.getSortDirection(),nodeWsDto.getSortField());
-        NodeDto nodeDto = CollectionUtils.isNotEmpty(nodeWsDto.getNodeDtoList()) ? nodeWsDto.getNodeDtoList().get(0) : null;
-        Node node = nodeDto != null ? modelMapper.map(nodeDto, Node.class) : null;
+        NodeDto nodeDto = CollectionUtils.isNotEmpty(nodeWsDto.getNodeDtoList()) ? nodeWsDto.getNodeDtoList().get(0) : new NodeDto();
+        Node node = modelMapper.map(nodeDto, Node.class);
         Page<Node> page= isSearchActive(node) != null ? nodeRepository.findAll(Example.of(node),pageable): nodeRepository.findAll(pageable);
         nodeWsDto.setNodeDtoList(modelMapper.map(page.getContent(), List.class));
         nodeWsDto.setTotalPages(page.getTotalPages());
@@ -53,10 +53,13 @@ public class InterfaceController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public NodeWsDto edit(@RequestBody NodeWsDto nodeWsDto) {
-        Node node= nodeRepository.findByRecordId(nodeWsDto.getNodeDtoList().get(0).getRecordId());
+        Node node =nodeRepository.findByRecordId(nodeWsDto.getNodeDtoList().get(0).getRecordId());
+
+        nodeWsDto.setNodeDtoList(List.of(modelMapper.map(node, NodeDto.class)));
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
     }
+
 
     @PostMapping("/edit")
     @ResponseBody
@@ -69,6 +72,14 @@ public class InterfaceController extends BaseController {
     public NodeWsDto addInterface() {
         NodeWsDto nodeWsDto=new NodeWsDto();
         nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByStatusOrderByIdentifier(true),List.class));
+        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
+        return nodeWsDto;
+    }
+    @GetMapping("/get")
+    @ResponseBody
+    public NodeWsDto getInterface() {
+        NodeWsDto nodeWsDto=new NodeWsDto();
+        nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByParentNodeId(null),List.class));
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
     }

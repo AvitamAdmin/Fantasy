@@ -50,7 +50,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamWsDto handleEdit(TeamWsDto request) {
         List<TeamDto> teamDtoList = request.getTeamDtoList();
         List<Team> teams = new ArrayList<>();
-        Team team = new Team();
+        Team team;
         for (TeamDto teamDto1 : teamDtoList) {
             if (teamDto1.getRecordId() != null) {
                 team = teamRepository.findByRecordId(teamDto1.getRecordId());
@@ -58,31 +58,30 @@ public class TeamServiceImpl implements TeamService {
                 teamRepository.save(team);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.TEAM, team.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.TEAM, teamDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
                 team = modelMapper.map(teamDto1, Team.class);
-            }
-            if (teamDto1.getImage() != null) {
-                try {
-                    team.setLogo(new Binary(teamDto1.getImage().getBytes()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    request.setMessage("Error processing image file");
-                    return request;
+
+                if (teamDto1.getLogo() != null) {
+                    try {
+                        team.setLogo(new Binary(teamDto1.getLogo().getBytes()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
+                baseService.populateCommonData(team);
+                team.setStatus(true);
+                teamRepository.save(team);
+                request.setMessage("Data added Successfully");
+                if (team.getRecordId() == null) {
+                    team.setRecordId(String.valueOf(team.getId().getTimestamp()));
+                }
+                teamRepository.save(team);
             }
-            baseService.populateCommonData(team);
-            team.setStatus(true);
-            teamRepository.save(team);
-            if (team.getRecordId() == null) {
-                team.setRecordId(String.valueOf(team.getId().getTimestamp()));
-            }
-            teamRepository.save(team);
             teams.add(team);
-            request.setMessage("Data added Successfully");
             request.setBaseUrl(ADMIN_TEAM);
         }
         request.setTeamDtoList(modelMapper.map(teams, List.class));

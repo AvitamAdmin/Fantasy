@@ -13,5 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class TeamDto extends CommonDto{
 
     private String shortName;
-    private MultipartFile image;
+    private MultipartFile logo;
 }

@@ -60,14 +60,15 @@ public class MatchesServiceImpl implements MatchesService {
                 matches = modelMapper.map(matchesDtos, Matches.class);
                 baseService.populateCommonData(matches);
                 eventStatus(matches, request);
-                matches.setStatus(true);
                 matchesRepository.save(matches);
 
                 if (matches.getRecordId() == null) {
                     matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
                 }
+                matches.setMatchStatus(true);
                 matchesRepository.save(matches);
             }
+
             request.setMessage("Data added Successfully");
             matchesList.add(matches);
             request.setBaseUrl(ADMIN_MATCHES);

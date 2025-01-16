@@ -57,13 +57,14 @@ public class RoleServiceImpl implements RoleService {
                 roleRepository.save(role);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.ROLE, role.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.ROLE, roleDto.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
                 role = modelMapper.map(roleDto, Role.class);
             }
+            role.setStatus(true);
             baseService.populateCommonData(role);
             roleRepository.save(role);
             if (role.getRecordId() == null) {

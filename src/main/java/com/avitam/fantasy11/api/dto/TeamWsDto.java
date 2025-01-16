@@ -12,4 +12,5 @@ import lombok.ToString;
 @ToString
 public class TeamWsDto extends CommonWsDto{
     private List<TeamDto> teamDtoList;
+
 }
