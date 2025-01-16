@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("TeamLineup")
-public class TeamLineup extends  BaseEntity{
+public class    TeamLineup extends  BaseEntity{
 
     private String teamId;
 

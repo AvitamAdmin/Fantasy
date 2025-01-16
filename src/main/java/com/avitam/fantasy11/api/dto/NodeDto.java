@@ -22,4 +22,5 @@ public class NodeDto extends CommonDto{
     private String parentNodeId;
     private List<Node> childNodes;
     private Integer displayPriority;
+
 }

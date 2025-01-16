@@ -136,14 +136,11 @@ public class UserServiceImpl implements UserService {
     public boolean isAdminRole() {
         Set<Role> roles = coreService.getCurrentUser().getRoles();
         if (CollectionUtils.isNotEmpty(roles)) {
-            if (roles != null) {
-                roles.stream().
-                        map(role -> roleRepository.findByRecordId(role.getRecordId()))
-                        .filter(Objects::nonNull)
-                        .anyMatch(role -> "ROLE_ADMIN".equalsIgnoreCase(role.getName()));
+            for (Role role : roles) {
+                if ("ROLE_ADMIN".equals(role.getName())) {
+                    return true;
+                }
             }
-            return true;
-
         }
         return false;
     }

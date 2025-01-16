@@ -122,6 +122,9 @@ public class NodeServiceImpl implements NodeService {
                 node = modelMapper.map(nodeDto1, Node.class);
             }
             baseService.populateCommonData(node);
+            Node parentData=nodeRepository.findByRecordId(node.getParentNode().getRecordId());
+            node.setParentNode(parentData);
+            node.setStatus(true);
             nodeRepository.save(node);
             if (node.getRecordId() == null) {
                 node.setRecordId(String.valueOf(node.getId().getTimestamp()));
@@ -131,7 +134,7 @@ public class NodeServiceImpl implements NodeService {
             nodeWsDto.setMessage("Node added Successfully!");
             nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         }
-        nodeWsDto.setNodeDtoList(modelMapper.map(node, List.class));
+        nodeWsDto.setNodeDtoList(modelMapper.map(nodes, List.class));
         return nodeWsDto;
     }
 

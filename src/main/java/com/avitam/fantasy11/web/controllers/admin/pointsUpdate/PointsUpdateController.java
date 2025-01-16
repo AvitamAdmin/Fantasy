@@ -36,11 +36,11 @@ public class PointsUpdateController extends BaseController {
         Pageable pageable = getPageable(pointsUpdateWsDto.getPage(), pointsUpdateWsDto.getSizePerPage(), pointsUpdateWsDto.getSortDirection(), pointsUpdateWsDto.getSortField());
         PointsUpdateDto pointsUpdateDto = CollectionUtils.isNotEmpty(pointsUpdateWsDto.getPointsUpdateDtoList()) ? pointsUpdateWsDto.getPointsUpdateDtoList().get(0) : new PointsUpdateDto();
         PointsUpdate pointsUpdate = modelMapper.map(pointsUpdateDto, PointsUpdate.class);
-        Page<PointsUpdate> page = isSearchActive(pointsUpdate) != null ? pointsUpdateRepository.findAll(Example.of(pointsUpdate), pageable) : pointsUpdateRepository.findAll(pageable);
+        Page<PointsUpdate> page = isSearchActive(pointsUpdate) == null ? pointsUpdateRepository.findAll(Example.of(pointsUpdate), pageable) : pointsUpdateRepository.findAll(pageable);
         pointsUpdateWsDto.setPointsUpdateDtoList(modelMapper.map(page.getContent(), List.class));
-        pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         pointsUpdateWsDto.setTotalPages(page.getTotalPages());
         pointsUpdateWsDto.setTotalRecords(page.getTotalElements());
+        pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateWsDto;
     }
 
