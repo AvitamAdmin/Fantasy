@@ -1,11 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalMethods;
 
-import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
-import com.avitam.fantasy11.api.dto.WithdrawalDetailsWsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
-import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;

@@ -5,7 +5,9 @@ import com.avitam.fantasy11.api.dto.UserWinningsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.UserWinningsService;
 import com.avitam.fantasy11.model.UserWinnings;
+import com.avitam.fantasy11.repository.ContestRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.repository.UserWinningsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,11 @@ public class UserWinningsServiceImpl implements UserWinningsService {
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
+    @Autowired
+    private ContestRepository contestRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     public static final String ADMIN_USERWINNINGS = "/admin/userWinnings";
 
     @Override
