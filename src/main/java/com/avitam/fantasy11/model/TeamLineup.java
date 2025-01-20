@@ -13,6 +13,8 @@ public class    TeamLineup extends  BaseEntity{
 
     private String matchId;
 
+    private String teamId;
+
     private String playerId;
 
     private int lineupStatus;
