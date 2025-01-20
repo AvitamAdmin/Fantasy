@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("TeamLineup")
 public class    TeamLineup extends  BaseEntity{
 
-    private String teamId;
+    private String matchId;
 
     private String playerId;
 

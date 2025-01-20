@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class TeamLineUpDto extends CommonDto{
 
-    private String teamId;
+    private String matchId;
 
     private String playerId;
 
