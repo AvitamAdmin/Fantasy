@@ -28,10 +28,6 @@ public class PendingWithdrawalController extends BaseController {
     @Autowired
     private PendingWithdrawalRepository pendingWithdrawalRepository;
     @Autowired
-    WithdrawalMethodsRepository withdrawalMethodsRepository;
-    @Autowired
-    UserWinningsRepository userWinningsRepository;
-    @Autowired
     private PendingWithdrawalService pendingWithdrawalService;
     @Autowired
     private CoreService coreService;
@@ -83,15 +79,6 @@ public class PendingWithdrawalController extends BaseController {
         return pendingWithdrawalService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public PendingWithdrawalWsDto addPendingWithdrawal() {
-
-        PendingWithdrawalWsDto pendingWithdrawalWsDto = new PendingWithdrawalWsDto();
-        pendingWithdrawalWsDto.setPendingWithdrawalDtoList(modelMapper.map(pendingWithdrawalRepository.findByStatusOrderByIdentifier(true),List.class));
-        pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
-        return pendingWithdrawalWsDto;
-    }
     @PostMapping("/delete")
     @ResponseBody
     public PendingWithdrawalWsDto deletePendingWithdrawal(@RequestBody PendingWithdrawalWsDto pendingWithdrawalWsDto) {
@@ -101,6 +88,7 @@ public class PendingWithdrawalController extends BaseController {
         pendingWithdrawalWsDto.setMessage("Data deleted successfully");
         pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
         return pendingWithdrawalWsDto;
-
     }
+
+
 }

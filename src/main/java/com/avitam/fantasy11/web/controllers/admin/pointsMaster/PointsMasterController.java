@@ -72,14 +72,6 @@ public class PointsMasterController extends BaseController {
         return pointsMasterService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public PointsMasterWsDto addPointsMaster() {
-        PointsMasterWsDto pointsMasterWsDto = new PointsMasterWsDto();
-        pointsMasterWsDto.setPointsMasterDtos(modelMapper.map(pointsMasterRepository.findByStatusOrderByIdentifier(true), List.class));
-        pointsMasterWsDto.setBaseUrl(ADMIN_POINTSMASTER);
-        return pointsMasterWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody

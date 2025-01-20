@@ -15,6 +15,5 @@ public interface SEORepository extends GenericImportRepository<SEO> {
 
     void deleteByRecordId(String recordId);
 
-
     List<SEO> findByStatusOrderByIdentifier(boolean b);
 }

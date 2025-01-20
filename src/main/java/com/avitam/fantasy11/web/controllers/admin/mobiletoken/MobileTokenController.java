@@ -52,7 +52,7 @@ public class MobileTokenController extends BaseController {
         mobileTokenWsDto.setMobileTokenDtoList(modelMapper.map(mobileTokenRepository.findByStatusOrderByIdentifier(true), List.class));
         return mobileTokenWsDto;
     }
-    @PostMapping("/getedit")  @GetMapping("/edit")
+    @PostMapping("/getedit")
     @ResponseBody
     public MobileTokenWsDto editMobileToken(@RequestBody MobileTokenWsDto request) {
 
@@ -69,15 +69,6 @@ public class MobileTokenController extends BaseController {
     @ResponseBody
     public MobileTokenWsDto handleEdit(@RequestBody MobileTokenWsDto request) {
          return mobileTokenService.handleEdit(request);
-    }
-
-    @GetMapping("/add")
-    @ResponseBody
-    public MobileTokenWsDto addMobileToken() {
-        MobileTokenWsDto mobileTokenWsDto = new MobileTokenWsDto();
-        mobileTokenWsDto.setMobileTokenDtoList(modelMapper.map(mobileTokenRepository.findByStatusOrderByIdentifier(true), List.class));
-        mobileTokenWsDto.setBaseUrl(ADMIN_MOBILETOKEN);
-        return mobileTokenWsDto;
     }
 
     @PostMapping("/delete")

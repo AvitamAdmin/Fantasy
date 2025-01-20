@@ -1,7 +1,5 @@
 package com.avitam.fantasy11.web.controllers.admin.winnings;
 
-import com.avitam.fantasy11.api.dto.UserTeamWsDto;
-import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.dto.WinningsDto;
 import com.avitam.fantasy11.api.dto.WinningsWsDto;
 import com.avitam.fantasy11.api.service.WinningsService;
@@ -28,7 +26,6 @@ public class WinningsController extends BaseController {
     public static final String ADMIN_WINNINGS = "/admin/winnings";
 
 
-
     @GetMapping("/get")
     @ResponseBody
     public WinningsWsDto getActiveWinnings() {
@@ -41,7 +38,7 @@ public class WinningsController extends BaseController {
 
     @PostMapping("/edit")
     @ResponseBody
-    public WinningsWsDto handleEdit(@RequestBody WinningsWsDto request)  {
+    public WinningsWsDto handleEdit(@RequestBody WinningsWsDto request) {
         return winningsService.handleEdit(request);
     }
 

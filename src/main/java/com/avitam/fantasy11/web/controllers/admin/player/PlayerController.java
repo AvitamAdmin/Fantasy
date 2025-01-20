@@ -5,7 +5,6 @@ import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import com.twilio.twiml.voice.Play;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,12 +118,4 @@ public class PlayerController extends BaseController {
 
     }
 
-
 }
-//        List<Player> team1Players = playerRepository.findByTeamId(team1Id);
-//        List<Player> team2Players = playerRepository.findByTeamId(team2Id);
-//        team1Players.addAll(team2Players);
-//        playerWsDto.setPlayerDtoList(modelMapper.map(team1Players, List.class));
-//        return playerWsDto;
-
-

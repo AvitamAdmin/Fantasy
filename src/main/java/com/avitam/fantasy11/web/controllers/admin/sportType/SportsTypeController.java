@@ -36,7 +36,7 @@ public class SportsTypeController extends BaseController {
     public SportTypeWsDto getAllSportType(@RequestBody SportTypeWsDto sportTypeWsDto){
         Pageable pageable=getPageable(sportTypeWsDto.getPage(),sportTypeWsDto.getSizePerPage(),sportTypeWsDto.getSortDirection(), sportTypeWsDto.getSortField());
         SportTypeDto sportTypeDto = CollectionUtils.isNotEmpty(sportTypeWsDto.getSportTypeDtoList()) ? sportTypeWsDto.getSportTypeDtoList()  .get(0):new SportTypeDto();
-        SportType sportType =modelMapper.map(sportTypeWsDto,SportType.class);
+        SportType sportType =modelMapper.map(sportTypeDto,SportType.class);
         Page<SportType> page=isSearchActive(sportType)!=null ? sportTypeRepository.findAll(Example.of(sportType),pageable):sportTypeRepository.findAll(pageable);
         sportTypeWsDto.setSportTypeDtoList(modelMapper.map(page.getContent(), List.class));
         sportTypeWsDto.setBaseUrl(ADMIN_SPORTSTYPE);
@@ -71,14 +71,6 @@ public class SportsTypeController extends BaseController {
         return sportTypeService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public SportTypeWsDto addSportType() {
-        SportTypeWsDto sportTypeWsDto= new SportTypeWsDto();
-        sportTypeWsDto.setSportTypeDtoList(modelMapper.map(sportTypeRepository.findByStatusOrderByIdentifier(true),List.class));
-        sportTypeWsDto.setBaseUrl(ADMIN_SPORTSTYPE);
-        return sportTypeWsDto;
-    }
     @PostMapping("/delete")
     @ResponseBody
     public SportTypeWsDto deleteSportType(@RequestBody SportTypeWsDto sportTypeWsDto ) {
@@ -90,4 +82,6 @@ public class SportsTypeController extends BaseController {
         return sportTypeWsDto;
 
     }
+
+
 }

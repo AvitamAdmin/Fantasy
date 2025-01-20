@@ -29,7 +29,6 @@ public class LeaderBoardController extends BaseController {
     @Autowired
     ModelMapper modelMapper;
 
-
     private static final String ADMIN_LEADERBOARD="/admin/leaderBoard";
 
     @PostMapping
@@ -83,4 +82,5 @@ public class LeaderBoardController extends BaseController {
         leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardWsDto;
     }
+    
 }

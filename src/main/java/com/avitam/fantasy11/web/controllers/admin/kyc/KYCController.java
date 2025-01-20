@@ -3,7 +3,6 @@ package com.avitam.fantasy11.web.controllers.admin.kyc;
 import com.avitam.fantasy11.api.dto.KYCDto;
 import com.avitam.fantasy11.api.dto.KYCWsDto;
 import com.avitam.fantasy11.api.service.KycService;
-import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.repository.KYCRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -70,14 +69,6 @@ public class KYCController extends BaseController {
         return kycService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public KYCWsDto addKyc() {
-        KYCWsDto kycWsDto = new KYCWsDto();
-        kycWsDto.setKycDtoList(modelMapper.map(kycRepository.findByStatusOrderByIdentifier(true), List.class));
-        kycWsDto.setBaseUrl(ADMIN_KYC);
-        return kycWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody

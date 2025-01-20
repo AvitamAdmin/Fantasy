@@ -35,7 +35,7 @@ public class WithdrawalMethodsController extends BaseController {
     public WithdrawalMethodsWsDto getAllWithdrawalMethod(@RequestBody WithdrawalMethodsWsDto withdrawalMethodsWsDto){
         Pageable pageable = getPageable(withdrawalMethodsWsDto.getPage(), withdrawalMethodsWsDto.getSizePerPage(), withdrawalMethodsWsDto.getSortDirection(), withdrawalMethodsWsDto.getSortField());
         WithdrawalMethodsDto withdrawalMethodsDto= CollectionUtils.isNotEmpty(withdrawalMethodsWsDto.getWithdrawalMethodsDtoList())?withdrawalMethodsWsDto.getWithdrawalMethodsDtoList() .get(0) : new WithdrawalMethodsDto() ;
-        WithdrawalMethods withdrawalMethods = modelMapper.map(withdrawalMethodsWsDto, WithdrawalMethods.class);
+        WithdrawalMethods withdrawalMethods = modelMapper.map(withdrawalMethodsDto, WithdrawalMethods.class);
         Page<WithdrawalMethods> page = isSearchActive(withdrawalMethods)!=null ? withdrawalMethodsRepository.findAll(Example.of(withdrawalMethods), pageable) : withdrawalMethodsRepository.findAll(pageable);
         withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(page.getContent(),List.class));
         withdrawalMethodsWsDto.setTotalPages(page.getTotalPages());
@@ -43,6 +43,7 @@ public class WithdrawalMethodsController extends BaseController {
         withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
         return withdrawalMethodsWsDto;
     }
+
 
     @GetMapping("/get")
     @ResponseBody
@@ -54,7 +55,6 @@ public class WithdrawalMethodsController extends BaseController {
     }
 
 
-
     @PostMapping("/getedit")
     @ResponseBody
     public WithdrawalMethodsWsDto editWithdrawalMethods (@RequestBody WithdrawalMethodsWsDto request){
@@ -64,20 +64,13 @@ public class WithdrawalMethodsController extends BaseController {
         return request;
     }
 
+
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public WithdrawalMethodsWsDto handleEdit(@ModelAttribute WithdrawalMethodsWsDto request)  {
         return withdrawalMethodsService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public WithdrawalMethodsWsDto addWithdrawalMethodsDto() {
-        WithdrawalMethodsWsDto withdrawalMethodsWsDto = new WithdrawalMethodsWsDto();
-        withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsRepository.findByStatusOrderByIdentifier(true),List.class));
-        withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-        return withdrawalMethodsWsDto;
-    }
  
     @PostMapping("/delete")
     @ResponseBody
@@ -89,4 +82,6 @@ public class WithdrawalMethodsController extends BaseController {
         withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
         return withdrawalMethodsWsDto;
     }
+
+
 }

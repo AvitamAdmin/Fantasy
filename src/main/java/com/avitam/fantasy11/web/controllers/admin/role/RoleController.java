@@ -85,5 +85,5 @@ public class RoleController extends BaseController {
         roleWsDto.setBaseUrl(ADMIN_ROLE);
         return roleWsDto;
     }
-}
 
+}

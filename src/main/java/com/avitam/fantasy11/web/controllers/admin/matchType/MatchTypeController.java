@@ -37,7 +37,7 @@ public class MatchTypeController extends BaseController {
     public MatchTypeWsDto getAllMatchTypes(@RequestBody MatchTypeWsDto matchTypeWsDto){
         Pageable pageable=getPageable(matchTypeWsDto.getPage(),matchTypeWsDto.getSizePerPage(),matchTypeWsDto.getSortDirection(),matchTypeWsDto.getSortField());
         MatchTypeDto matchTypeDto= CollectionUtils.isNotEmpty(matchTypeWsDto.getMatchTypeDtoList()) ? matchTypeWsDto.getMatchTypeDtoList().get(0) : new MatchTypeDto();
-        MatchType matchType = modelMapper.map(matchTypeWsDto, MatchType.class);
+        MatchType matchType = modelMapper.map(matchTypeDto, MatchType.class);
         Page<MatchType> page=isSearchActive(matchTypeWsDto) !=null ? matchTypeRepository.findAll(Example.of(matchType),pageable) : matchTypeRepository.findAll(pageable);
         matchTypeWsDto.setMatchTypeDtoList(modelMapper.map(page.getContent(), List.class));
         matchTypeWsDto.setTotalPages(page.getTotalPages());
@@ -72,14 +72,7 @@ public class MatchTypeController extends BaseController {
         return matchTypeService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public MatchTypeWsDto addMatchType() {
-        MatchTypeWsDto matchTypeWsDto=new MatchTypeWsDto();
-        matchTypeWsDto.setMatchTypeDtoList(modelMapper.map(matchTypeRepository.findByStatusOrderByIdentifier(true),List.class));
-        matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
-        return matchTypeWsDto;
-    }
+
     @PostMapping("/delete")
     @ResponseBody
     public MatchTypeWsDto deleteMatchType(@RequestBody MatchTypeWsDto matchTypeWsDto) {

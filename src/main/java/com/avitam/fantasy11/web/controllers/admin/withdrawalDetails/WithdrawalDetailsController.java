@@ -2,13 +2,8 @@ package com.avitam.fantasy11.web.controllers.admin.withdrawalDetails;
 
 import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.Extension;
-import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.model.WithdrawalDetails;
-import com.avitam.fantasy11.repository.PendingWithdrawalRepository;
 import com.avitam.fantasy11.repository.WithdrawalDetailsRepository;
-import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -19,25 +14,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin/withdrawalDetails")
 public class WithdrawalDetailsController extends BaseController {
-    @Autowired
-    private WithdrawalMethodsRepository withdrawalMethodsRepository;
-    @Autowired
-    private CoreService coreService;
-    @Autowired
+      @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private WithdrawalDetailsService withdrawalDetailsService;
     @Autowired
     private WithdrawalDetailsRepository withdrawalDetailsRepository;
 
-    @Autowired
-    private PendingWithdrawalRepository pendingWithdrawalRepository;
     public static final String ADMIN_WITHDRAWALDETAILS = "/admin/withdrawalDetails";
 
     @PostMapping
@@ -45,7 +33,7 @@ public class WithdrawalDetailsController extends BaseController {
     public WithdrawalDetailsWsDto getAllWithdrawalDetails(@RequestBody WithdrawalDetailsWsDto withdrawalDetailsWsDto) {
         Pageable pageable = getPageable(withdrawalDetailsWsDto.getPage(), withdrawalDetailsWsDto.getSizePerPage(), withdrawalDetailsWsDto.getSortDirection(), withdrawalDetailsWsDto.getSortField());
         WithdrawalDetailsDto withdrawalDetailsDto= CollectionUtils.isNotEmpty(withdrawalDetailsWsDto.getWithdrawalDetailsDtoList())?withdrawalDetailsWsDto.getWithdrawalDetailsDtoList() .get(0) : new WithdrawalDetailsDto() ;
-        WithdrawalDetails withdrawalDetails = modelMapper.map(withdrawalDetailsWsDto, WithdrawalDetails.class);
+        WithdrawalDetails withdrawalDetails = modelMapper.map(withdrawalDetailsDto, WithdrawalDetails.class);
         Page<WithdrawalDetails> page = isSearchActive(withdrawalDetails) != null ? withdrawalDetailsRepository.findAll(Example.of(withdrawalDetails), pageable) : withdrawalDetailsRepository.findAll(pageable);
         withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(page.getContent(), List.class));
         withdrawalDetailsWsDto.setTotalPages(page.getTotalPages());
@@ -53,6 +41,7 @@ public class WithdrawalDetailsController extends BaseController {
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         return withdrawalDetailsWsDto;
     }
+
 
     @GetMapping("/get")
     @ResponseBody
@@ -62,7 +51,6 @@ public class WithdrawalDetailsController extends BaseController {
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         return withdrawalDetailsWsDto;
     }
-
 
 
     @PostMapping("/getedit")
@@ -81,14 +69,6 @@ public class WithdrawalDetailsController extends BaseController {
         return withdrawalDetailsService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public WithdrawalDetailsWsDto addWithdrawalDetailsDto() {
-        WithdrawalDetailsWsDto withdrawalDetailsWsDto = new WithdrawalDetailsWsDto();
-        withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsRepository.findByStatusOrderByIdentifier(true),List.class));
-        withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
-        return withdrawalDetailsWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody
@@ -100,6 +80,5 @@ public class WithdrawalDetailsController extends BaseController {
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         return withdrawalDetailsWsDto;
     }
+
 }
-
-

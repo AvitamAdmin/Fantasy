@@ -13,7 +13,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public class NotificationController extends BaseController {
     private NotificationRepository notificationRepository;
     @Autowired
     private NotificationService notificationService;
-
     @Autowired
     private ModelMapper modelMapper;
     public static final String ADMIN_NOTIFICATION = "/admin/notification";
@@ -72,15 +70,6 @@ public class NotificationController extends BaseController {
         return notificationService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public NotificationWsDto addNotification() {
-        NotificationWsDto notificationWsDto = new NotificationWsDto();
-        notificationWsDto.setNotificationDtoList(modelMapper.map(notificationRepository.findByStatusOrderByIdentifier(true),List.class));
-        notificationWsDto.setBaseUrl(ADMIN_NOTIFICATION);
-        return notificationWsDto;
-    }
-
     @PostMapping("/delete")
     @ResponseBody
     public NotificationWsDto deleteNotification(@RequestBody NotificationWsDto notificationWsDto) {
@@ -92,6 +81,6 @@ public class NotificationController extends BaseController {
         notificationWsDto.setMessage("Data deleted successfully");
         return notificationWsDto;
 
-
     }
+
 }

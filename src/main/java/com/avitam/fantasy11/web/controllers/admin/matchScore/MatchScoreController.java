@@ -76,15 +76,6 @@ public class MatchScoreController extends BaseController {
     }
 
 
-    @GetMapping("/add")
-    @ResponseBody
-    public MatchScoreWsDto addMatchScore(@RequestBody MatchScoreWsDto request) {
-        MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
-        matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
-        matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(matchScoreRepository.findByStatusOrderByIdentifier(true), List.class));
-        return matchScoreWsDto;
-    }
-
     @PostMapping("/delete")
     @ResponseBody
     public MatchScoreWsDto deleteMatchScore(@RequestBody MatchScoreWsDto matchScoreWsDto) {

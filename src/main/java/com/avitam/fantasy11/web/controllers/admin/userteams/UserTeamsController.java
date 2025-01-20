@@ -4,8 +4,6 @@ import com.avitam.fantasy11.api.dto.UserTeamWsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.model.UserTeams;
-import com.avitam.fantasy11.repository.MatchesRepository;
-import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,10 +21,6 @@ import java.util.List;
 @RequestMapping("/admin/userTeams")
 public class UserTeamsController extends BaseController {
 
-    @Autowired
-    private MatchesRepository matchesRepository;
-    @Autowired
-    private PlayerRepository playerRepository;
     @Autowired
     private UserTeamsRepository userTeamsRepository;
     @Autowired
@@ -51,6 +45,7 @@ public class UserTeamsController extends BaseController {
         return userTeamWsDto;
     }
 
+
     @GetMapping("/get")
     @ResponseBody
     public UserTeamWsDto getActiveUserTeams() {
@@ -71,6 +66,7 @@ public class UserTeamsController extends BaseController {
         return request;
     }
 
+
     @PostMapping("/edit")
     @ResponseBody
     public UserTeamWsDto handleEdit(@RequestBody UserTeamWsDto request) {
@@ -78,14 +74,6 @@ public class UserTeamsController extends BaseController {
         return userTeamsService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public UserTeamWsDto addUserTeams() {
-        UserTeamWsDto userTeamWsDto = new UserTeamWsDto();
-        userTeamWsDto.setUserTeamsDtoList(modelMapper.map(userTeamsRepository.findByStatusOrderByIdentifier(true), List.class));
-        userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
-        return userTeamWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody
@@ -97,5 +85,6 @@ public class UserTeamsController extends BaseController {
         userTeamWsDto.setBaseUrl(ADMIN_USERTEAMS);
         return userTeamWsDto;
     }
-}
 
+
+}

@@ -71,14 +71,6 @@ public class PlayerRoleController extends BaseController {
         return playerRoleService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public PlayerRoleWsDto addPlayerRole() {
-        PlayerRoleWsDto playerRoleWsDto = new PlayerRoleWsDto();
-        playerRoleWsDto.setPlayerRoleDtoList(modelMapper.map(playerRoleRepository.findByStatusOrderByIdentifier(true), List.class));
-        playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
-        return playerRoleWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody

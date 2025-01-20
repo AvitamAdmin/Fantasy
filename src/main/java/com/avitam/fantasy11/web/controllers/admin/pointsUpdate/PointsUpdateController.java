@@ -71,14 +71,6 @@ public class PointsUpdateController extends BaseController {
         return pointsUpdateService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public PointsUpdateWsDto addPointsUpdate() {
-        PointsUpdateWsDto pointsUpdateWsDto = new PointsUpdateWsDto();
-        pointsUpdateWsDto.setPointsUpdateDtoList(modelMapper.map(pointsUpdateRepository.findByStatusOrderByIdentifier(true), List.class));
-        pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
-        return pointsUpdateWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody

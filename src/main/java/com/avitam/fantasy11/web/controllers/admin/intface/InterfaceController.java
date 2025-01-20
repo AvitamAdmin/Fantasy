@@ -67,14 +67,7 @@ public class InterfaceController extends BaseController {
         return nodeService.handleEdit(nodeWsDto);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public NodeWsDto addInterface() {
-        NodeWsDto nodeWsDto=new NodeWsDto();
-        nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByStatusOrderByIdentifier(true),List.class));
-        nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
-        return nodeWsDto;
-    }
+
     @GetMapping("/get")
     @ResponseBody
     public NodeWsDto getInterface() {

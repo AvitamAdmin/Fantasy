@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.team;
 
-import com.avitam.fantasy11.api.dto.PlayerDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.dto.TeamWsDto;
 import com.avitam.fantasy11.api.service.TeamService;
-import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -60,19 +58,13 @@ public class TeamController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public TeamWsDto editTeam(@RequestBody TeamWsDto request) {
-        List<Team> teamList= new ArrayList<>();
-        for(TeamDto teamDto:request.getTeamDtoList()){
+        List<Team> teamList = new ArrayList<>();
+        for (TeamDto teamDto : request.getTeamDtoList()) {
             Team team = teamRepository.findByRecordId(teamDto.getRecordId());
             teamList.add(team);
         }
-        request.setTeamDtoList(modelMapper.map(teamList,List.class));
+        request.setTeamDtoList(modelMapper.map(teamList, List.class));
         return request;
-
-
-//        Team team = teamRepository.findByRecordId(request.getTeamDtoList().get(0).getRecordId());
-//        request.setTeamDtoList(List.of(modelMapper.map(team, TeamDto.class)));
-//        request.setBaseUrl(ADMIN_TEAM);
-//        return request;
     }
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -87,16 +79,6 @@ public class TeamController extends BaseController {
         teamDto.setName(name);
         request.setTeamDtoList(List.of(teamDto));
         return teamService.handleEdit(request);
-    }
-
-
-    @GetMapping("/add")
-    @ResponseBody
-    public TeamWsDto addTeam() {
-        TeamWsDto teamWsDto = new TeamWsDto();
-        teamWsDto.setTeamDtoList(modelMapper.map(teamRepository.findByStatusOrderByIdentifier(true), List.class));
-        teamWsDto.setBaseUrl(ADMIN_TEAM);
-        return teamWsDto;
     }
 
     @PostMapping("/delete")

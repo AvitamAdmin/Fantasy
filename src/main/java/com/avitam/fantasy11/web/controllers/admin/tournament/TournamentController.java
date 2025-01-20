@@ -35,7 +35,7 @@ public class TournamentController extends BaseController {
 
         Pageable pageable=getPageable(tournamentWsDto.getPage(),tournamentWsDto.getSizePerPage(),tournamentWsDto.getSortDirection(),tournamentWsDto.getSortField());
         TournamentDto tournamentDto= CollectionUtils.isNotEmpty(tournamentWsDto.getTournamentDtoList())?tournamentWsDto.getTournamentDtoList() .get(0) : new TournamentDto() ;
-        Tournament tournament = modelMapper.map(tournamentWsDto, Tournament.class);
+        Tournament tournament = modelMapper.map(tournamentDto, Tournament.class);
         Page<Tournament> page=isSearchActive(tournament)!=null ? tournamentRepository.findAll(Example.of(tournament),pageable) : tournamentRepository.findAll(pageable);
         tournamentWsDto.setTournamentDtoList(modelMapper.map(page.getContent(), List.class));
         tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
@@ -68,14 +68,6 @@ public class TournamentController extends BaseController {
         return tournamentService.handleEdit(request);
     }
 
-    @GetMapping("/add")
-    @ResponseBody
-    public TournamentWsDto addTournament() {
-        TournamentWsDto tournamentWsDto = new TournamentWsDto();
-        tournamentWsDto.setTournamentDtoList(modelMapper.map(tournamentRepository.findByStatusOrderByIdentifier(true),List.class));
-        tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
-        return tournamentWsDto;
-    }
 
     @PostMapping("/delete")
     @ResponseBody
@@ -87,4 +79,6 @@ public class TournamentController extends BaseController {
         tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
         return tournamentWsDto;
     }
+
+
 }

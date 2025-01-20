@@ -1,10 +1,7 @@
 package com.avitam.fantasy11.web.controllers.admin.ContestDetails;
 
-
-
 import com.avitam.fantasy11.api.dto.ContestDetailsDto;
 import com.avitam.fantasy11.api.dto.ContestDetailsWsDto;
-import com.avitam.fantasy11.api.dto.ContestWsDto;
 import com.avitam.fantasy11.api.service.ContestDetailsService;
 import com.avitam.fantasy11.model.ContestDetails;
 import com.avitam.fantasy11.repository.ContestDetailsRepository;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 
 @Controller
@@ -47,6 +43,7 @@ public class ContestDetailsController extends BaseController {
         return contestDetailsService.handelEdit(request);
     }
 
+
     @PostMapping("/getEdit")
     @ResponseBody
     public ContestDetailsWsDto editContestDetails(@RequestBody ContestDetailsWsDto request) {
@@ -68,7 +65,6 @@ public class ContestDetailsController extends BaseController {
         contestDetailsWsDto.setMessage("Data Deleted Successfully");
         return contestDetailsWsDto;
     }
+
+
 }
-
-
-
