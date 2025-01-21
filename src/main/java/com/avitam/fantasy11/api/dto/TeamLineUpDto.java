@@ -13,9 +13,7 @@ public class TeamLineUpDto extends CommonDto{
 
     private String matchId;
 
-    private String teamId;
-
     private String playerId;
 
-    private int lineupStatus;
+    private boolean lineupStatus;
 }

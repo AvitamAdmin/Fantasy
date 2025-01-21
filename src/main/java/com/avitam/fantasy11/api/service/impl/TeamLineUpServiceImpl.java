@@ -55,11 +55,11 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
                 teamLineupRepository.save(teamLineup);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineUpDto1.getIdentifier()) != null) {
-                    request.setSuccess(false);
-                    request.setMessage("Identifier already present");
-                    return request;
-                }
+//                if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineUpDto1.getIdentifier()) != null) {
+//                    request.setSuccess(false);
+//                    request.setMessage("Identifier already present");
+//                    return request;
+//                }
                 teamLineup = modelMapper.map(teamLineUpDto1, TeamLineup.class);
             }
             baseService.populateCommonData(teamLineup);
