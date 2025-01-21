@@ -14,7 +14,9 @@ import java.util.List;
 @ToString
 
 public class LineUpStatusDto extends CommonDto {
-    private boolean lineupStatus;
+    private int lineupStatus;
+
+    private int impactPlayer;
 
 
 
