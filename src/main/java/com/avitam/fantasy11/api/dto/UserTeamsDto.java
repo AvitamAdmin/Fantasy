@@ -17,4 +17,5 @@ public class UserTeamsDto extends CommonDto{
     private String matchId;
     private Set<String> players;
     private String teamName;
+    private String contestId;
 }
