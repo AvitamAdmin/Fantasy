@@ -54,9 +54,9 @@ public class SportTypeServiceImpl implements SportTypeService {
                 sportType = modelMapper.map(sportTypeDto, SportType.class);
 
             }
-            if (sportTypeDto.getImage() != null) {
+            if (sportTypeDto.getLogo() != null) {
                 try {
-                    sportType.setLogo(new Binary(sportTypeDto.getImage().getBytes()));
+                    sportType.setLogo(new Binary(sportTypeDto.getLogo().getBytes()));
                 } catch (IOException e) {
                     e.printStackTrace();
                     request.setMessage("Error processing image file");

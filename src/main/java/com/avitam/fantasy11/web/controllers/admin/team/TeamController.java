@@ -80,6 +80,20 @@ public class TeamController extends BaseController {
         request.setTeamDtoList(List.of(teamDto));
         return teamService.handleEdit(request);
     }
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public TeamWsDto handleEdit(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo,
+                                @RequestParam("name") String name, @RequestParam("shortName") String shortName,@RequestParam("recordId") String recordId) {
+        TeamWsDto request = new TeamWsDto();
+        TeamDto teamDto = new TeamDto();
+        teamDto.setLogo(logo);
+        teamDto.setShortName(shortName);
+        teamDto.setIdentifier(identifier);
+        teamDto.setName(name);
+        teamDto.setRecordId(recordId);
+        request.setTeamDtoList(List.of(teamDto));
+        return teamService.handleEdit(request);
+    }
 
     @PostMapping("/delete")
     @ResponseBody

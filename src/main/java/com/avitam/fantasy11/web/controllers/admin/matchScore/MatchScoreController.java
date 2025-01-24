@@ -41,7 +41,7 @@ public class MatchScoreController extends BaseController {
         Pageable pageable = getPageable(matchScoreWsDto.getPage(), matchScoreWsDto.getSizePerPage(), matchScoreWsDto.getSortDirection(), matchScoreWsDto.getSortField());
         MatchScoreDto matchScoreDto = CollectionUtils.isNotEmpty(matchScoreWsDto.getMatchScoreDtoList()) ? matchScoreWsDto.getMatchScoreDtoList().get(0) : new MatchScoreDto();
         MatchScore matchScore = modelMapper.map(matchScoreDto, MatchScore.class);
-        Page<MatchScore> page = isSearchActive(matchScore) != null ? matchScoreRepository.findAll(Example.of(matchScore), pageable) : matchScoreRepository.findAll(pageable);
+        Page<MatchScore> page = isSearchActive(matchScore) == null ? matchScoreRepository.findAll(Example.of(matchScore), pageable) : matchScoreRepository.findAll(pageable);
         matchScoreWsDto.setMatchScoreDtoList(modelMapper.map(page.getContent(), List.class));
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         matchScoreWsDto.setTotalPages(page.getTotalPages());
@@ -64,7 +64,7 @@ public class MatchScoreController extends BaseController {
         MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         MatchScore matchScore = matchScoreRepository.findByRecordId(request.getMatchScoreDtoList().get(0).getRecordId());
-        matchScoreWsDto.setMatchScoreDtoList((List<MatchScoreDto>) matchScore);
+        matchScoreWsDto.setMatchScoreDtoList(List.of(modelMapper.map(matchScore,MatchScoreDto.class)));
         return matchScoreWsDto;
     }
 

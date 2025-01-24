@@ -47,8 +47,8 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
     public TeamLineUpWsDto handleEdit(TeamLineUpWsDto request) {
         List<TeamLineUpDto> teamLineUpDtos = request.getTeamLineUpDtoList();
         List<TeamLineup> teamLineupList = new ArrayList<>();
-        TeamLineup teamLineup = null;
-        for (TeamLineUpDto teamLineUpDto1 : teamLineUpDtos) {
+        TeamLineup teamLineup  ;
+         for (TeamLineUpDto teamLineUpDto1 : teamLineUpDtos) {
             if (teamLineUpDto1.getRecordId() != null) {
                 teamLineup = teamLineupRepository.findByRecordId(teamLineUpDto1.getRecordId());
                 modelMapper.map(teamLineUpDto1, teamLineup);
@@ -61,11 +61,12 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
 //                    return request;
 //                }
                 teamLineup = modelMapper.map(teamLineUpDto1, TeamLineup.class);
+                request.setMessage("Data added Successfully");
             }
             baseService.populateCommonData(teamLineup);
             teamLineup.setStatus(true);
             teamLineupRepository.save(teamLineup);
-            request.setMessage("Data added Successfully");
+
             if (teamLineup.getRecordId() == null) {
                 teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
             }

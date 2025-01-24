@@ -11,5 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @ToString
 public class SportTypeDto extends CommonDto{
-    private MultipartFile image;
+    private MultipartFile logo;
 }

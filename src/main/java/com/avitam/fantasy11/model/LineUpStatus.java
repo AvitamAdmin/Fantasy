@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class LineUpStatus extends BaseEntity{
 
-    private int lineupStatus;
+    private boolean lineupStatus;
 
-    private int impactPlayer;
+    private boolean impactPlayerStatus;
 }

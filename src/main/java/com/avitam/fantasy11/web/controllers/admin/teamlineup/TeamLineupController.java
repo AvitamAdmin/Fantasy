@@ -58,7 +58,7 @@ public class TeamLineupController extends BaseController {
     public TeamLineUpWsDto editTeamLineup(@RequestBody TeamLineUpWsDto request) {
 
         TeamLineUpWsDto teamLineUpWsDto = new TeamLineUpWsDto();
-        TeamLineup teamLineup=teamLineupRepository.findByRecordId(request.getTeamLineUpDtoList().get(0).getRecordId());
+        TeamLineup teamLineup = teamLineupRepository.findByRecordId(request.getTeamLineUpDtoList().get(0).getRecordId());
         teamLineUpWsDto.setTeamLineUpDtoList(List.of(modelMapper.map(teamLineup, TeamLineUpDto.class)));
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
         return teamLineUpWsDto;

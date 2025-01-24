@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -67,9 +68,33 @@ public class SportsTypeController extends BaseController {
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public SportTypeWsDto handleEdit(@ModelAttribute SportTypeWsDto request){
+    public SportTypeWsDto handleEdit(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo ,
+                                     @RequestParam("name") String name){
+        SportTypeWsDto request = new SportTypeWsDto();
+        SportTypeDto sportTypeDto = new SportTypeDto();
+        sportTypeDto.setLogo(logo);
+        sportTypeDto.setIdentifier(identifier);
+        sportTypeDto.setName(name);
+        request.setSportTypeDtoList(List.of(sportTypeDto));
         return sportTypeService.handleEdit(request);
+
     }
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public SportTypeWsDto handleEditUpdate(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo ,
+                                     @RequestParam("name") String name, @RequestParam("recordId") String recordId){
+        SportTypeWsDto request = new SportTypeWsDto();
+        SportTypeDto sportTypeDto = new SportTypeDto();
+        sportTypeDto.setLogo(logo);
+        sportTypeDto.setIdentifier(identifier);
+        sportTypeDto.setName(name);
+        sportTypeDto.setRecordId(recordId);
+        request.setSportTypeDtoList(List.of(sportTypeDto));
+        return sportTypeService.handleEdit(request);
+
+    }
+
+
 
     @PostMapping("/delete")
     @ResponseBody

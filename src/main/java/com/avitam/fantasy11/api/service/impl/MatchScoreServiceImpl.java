@@ -62,11 +62,12 @@ public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
             }
 
             matchScoreData = modelMapper.map(matchScoreDto1, MatchScore.class);
+            request.setMessage("MatchScore added successfully");
         }
         baseService.populateCommonData(matchScoreData);
         matchScoreData.setStatus(true);
         matchScoreRepository.save(matchScoreData);
-        request.setMessage("MatchScore added successfully");
+
         if (matchScoreData.getRecordId() == null) {
             matchScoreData.setRecordId(String.valueOf(matchScoreData.getId().getTimestamp()));
 
