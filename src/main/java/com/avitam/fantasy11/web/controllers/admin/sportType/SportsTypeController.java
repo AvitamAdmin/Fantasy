@@ -4,6 +4,7 @@ import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.SportType;
+import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.SportTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -56,16 +58,16 @@ public class SportsTypeController extends BaseController {
     }
     @PostMapping("/getedit")
     @ResponseBody
-    public SportTypeWsDto editSportType (@RequestBody SportTypeWsDto request){
-        SportTypeWsDto sportTypeWsDto = new SportTypeWsDto();
-        sportTypeWsDto.setBaseUrl(ADMIN_SPORTSTYPE);
-        SportType sportType = sportTypeRepository.findByRecordId(request.getSportTypeDtoList().get(0).getRecordId());
-        if( sportType != null){
-            sportTypeWsDto.setSportTypeDtoList(List.of(modelMapper.map(sportType, SportTypeDto.class)));
+    public SportTypeWsDto editSportType (@RequestBody SportTypeWsDto request) {
+        List<SportType> sportTypeList = new ArrayList<>();
+        for (SportTypeDto sportTypeDto : request.getSportTypeDtoList()) {
+            SportType sportType = sportTypeRepository.findByRecordId(sportTypeDto.getRecordId());
+            sportTypeList.add(sportType);
         }
-        return sportTypeWsDto;
-    }
+        request.setSportTypeDtoList(modelMapper.map(sportTypeList,List.class));
+        return request;
 
+    }
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public SportTypeWsDto handleEdit(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo ,
