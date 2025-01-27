@@ -64,8 +64,7 @@ public class PlayerController extends BaseController {
     @ResponseBody
     public PlayerWsDto getEditPlayers(@RequestBody PlayerWsDto request) {
         List<Player> playerList = new ArrayList<>();
-        List<PlayerDto> playerDtos = request.getPlayerDtoList();
-        for (PlayerDto playerDto : playerDtos) {
+        for (PlayerDto playerDto : request.getPlayerDtoList()) {
             Player player1 = playerRepository.findByRecordId(playerDto.getRecordId());
             playerList.add(player1);
         }

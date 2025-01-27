@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.tournament;
 
+import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.dto.TournamentDto;
 import com.avitam.fantasy11.api.dto.TournamentWsDto;
 import com.avitam.fantasy11.api.service.TournamentService;
+import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.Tournament;
 import com.avitam.fantasy11.repository.TournamentRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -55,10 +58,13 @@ public class TournamentController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public TournamentWsDto editTournament (@RequestBody TournamentWsDto request){
-        TournamentWsDto tournamentWsDto=new TournamentWsDto();
-           tournamentWsDto.setTournamentDtoList(modelMapper.map(tournamentRepository.findByRecordId(request.getTournamentDtoList().get(0).getRecordId()),List.class));
-           tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
-           return tournamentWsDto;
+        List<Tournament> tournaments = new ArrayList<>();
+        for (TournamentDto tournamentDto : request.getTournamentDtoList()) {
+            Tournament tournament = tournamentRepository.findByRecordId(tournamentDto.getRecordId());
+            tournaments.add(tournament);
+        }
+        request.setTournamentDtoList(modelMapper.map(tournaments, List.class));
+        return request;
     }
 
     @PostMapping("/edit")
