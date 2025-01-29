@@ -11,11 +11,10 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserTeamsDto extends CommonDto{
+public class UserTeamDto extends CommonDto{
 
-    private String userId;
-    private String matchId;
-    private Set<UserTeamDto> players;
-    private String teamName;
-    private String contestId;
+    private String playerId;
+    private boolean captain;
+    private boolean viceCaptain;
+    private boolean impactPlayer;
 }

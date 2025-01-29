@@ -10,11 +10,10 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("UserTeams")
-public class UserTeams extends CommonFields {
-    private String userId;
-    private String matchId;
-    private Set<String> players;
-    private String teamName;
-    private String contestId;
+@Document("UserTeam")
+public class UserTeam extends CommonFields {
+    private String playerId;
+    private boolean captain;
+    private boolean viceCaptain;
+    private boolean impactPlayer;
 }
