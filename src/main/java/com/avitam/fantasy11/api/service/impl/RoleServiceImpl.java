@@ -4,15 +4,19 @@ import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.dto.RoleWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.RoleService;
+import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -22,6 +26,8 @@ public class RoleServiceImpl implements RoleService {
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
+    @Autowired
+    private NodeRepository nodeRepository;
 
     public static final String ADMIN_ROLE = "/admin/role";
 
@@ -43,7 +49,6 @@ public class RoleServiceImpl implements RoleService {
         }
 
     }
-
     @Override
     public RoleWsDto handleEdit(RoleWsDto request) {
         List<RoleDto> roleDtos = request.getRoleDtoList();
@@ -66,6 +71,12 @@ public class RoleServiceImpl implements RoleService {
             }
             role.setStatus(true);
             baseService.populateCommonData(role);
+            Set<Node> nodes= new HashSet<>();
+            for(Node node: roleDto.getPermissions()){
+               Node node1= nodeRepository.findByRecordId(node.getRecordId());
+               nodes.add(node1);
+            }
+            role.setPermissions(nodes);
             roleRepository.save(role);
             if (role.getRecordId() == null) {
                 role.setRecordId(String.valueOf(role.getId().getTimestamp()));
