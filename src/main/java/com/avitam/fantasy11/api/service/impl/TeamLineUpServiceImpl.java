@@ -4,8 +4,12 @@ import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
+import com.avitam.fantasy11.model.Matches;
+import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.EntityConstants;
+import com.avitam.fantasy11.repository.MatchesRepository;
+import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.repository.TeamLineupRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,12 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
+
+    @Autowired
+    private MatchesRepository matchesRepository;
+
+    @Autowired
+    private PlayerRepository playersRepository;
     public static final String ADMIN_TEAMLINEUP = "/admin/teamLineup";
 
     @Override
@@ -55,11 +65,12 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
                 teamLineupRepository.save(teamLineup);
                 request.setMessage("Data updated Successfully");
             } else {
-//                if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineUpDto1.getIdentifier()) != null) {
-//                    request.setSuccess(false);
-//                    request.setMessage("Identifier already present");
-//                    return request;
-//                }
+                if (baseService.validateIdentifier(EntityConstants.TEAM_LINE_UP, teamLineUpDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    request.setMessage("Identifier already present");
+                    return request;
+                }
+
                 teamLineup = modelMapper.map(teamLineUpDto1, TeamLineup.class);
                 request.setMessage("Data added Successfully");
             }

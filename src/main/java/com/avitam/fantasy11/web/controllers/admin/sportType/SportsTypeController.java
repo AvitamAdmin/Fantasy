@@ -41,7 +41,7 @@ public class SportsTypeController extends BaseController {
         SportTypeDto sportTypeDto = CollectionUtils.isNotEmpty(sportTypeWsDto.getSportTypeDtoList()) ? sportTypeWsDto.getSportTypeDtoList()  .get(0):new SportTypeDto();
         SportType sportType =modelMapper.map(sportTypeDto,SportType.class);
         Page<SportType> page=isSearchActive(sportType)!=null ? sportTypeRepository.findAll(Example.of(sportType),pageable):sportTypeRepository.findAll(pageable);
-        sportTypeWsDto.setSportTypeDtoList(modelMapper.map(page.getContent(), List.class));
+        sportTypeWsDto.setSportTypeDtoList(     modelMapper.map(page.getContent(), List.class));
         sportTypeWsDto.setBaseUrl(ADMIN_SPORTSTYPE);
         sportTypeWsDto.setTotalPages(page.getTotalPages());
         sportTypeWsDto.setTotalRecords(page.getTotalElements());
