@@ -55,10 +55,10 @@ public class PlayerRoleController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public PlayerRoleWsDto editPlayerRole(@RequestBody PlayerWsDto request) {
+    public PlayerRoleWsDto editPlayerRole(@RequestBody PlayerRoleWsDto request) {
         PlayerRoleWsDto playerRoleWsDto = new PlayerRoleWsDto();
         playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
-        PlayerRole playerRole = playerRoleRepository.findByRecordId(request.getPlayerDtoList().get(0).getRecordId());
+        PlayerRole playerRole = playerRoleRepository.findByRecordId(request.getPlayerRoleDtoList().get(0).getRecordId());
         if (playerRole != null) {
             playerRoleWsDto.setPlayerRoleDtoList(List.of(modelMapper.map(playerRole, PlayerRoleDto.class)));
         }

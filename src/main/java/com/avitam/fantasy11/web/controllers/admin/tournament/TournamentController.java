@@ -27,43 +27,46 @@ public class TournamentController extends BaseController {
     private TournamentRepository tournamentRepository;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_TOURNAMENT="/admin/tournament";
+    private static final String ADMIN_TOURNAMENT = "/admin/tournament";
 
     @PostMapping
     @ResponseBody
-    public TournamentWsDto getAllTournament(@RequestBody TournamentWsDto tournamentWsDto){
+    public TournamentWsDto getAllTournament(@RequestBody TournamentWsDto tournamentWsDto) {
 
-        Pageable pageable=getPageable(tournamentWsDto.getPage(),tournamentWsDto.getSizePerPage(),tournamentWsDto.getSortDirection(),tournamentWsDto.getSortField());
-        TournamentDto tournamentDto= CollectionUtils.isNotEmpty(tournamentWsDto.getTournamentDtoList())?tournamentWsDto.getTournamentDtoList() .get(0) : new TournamentDto() ;
+        Pageable pageable = getPageable(tournamentWsDto.getPage(), tournamentWsDto.getSizePerPage(), tournamentWsDto.getSortDirection(), tournamentWsDto.getSortField());
+        TournamentDto tournamentDto = CollectionUtils.isNotEmpty(tournamentWsDto.getTournamentDtoList()) ? tournamentWsDto.getTournamentDtoList().get(0) : new TournamentDto();
         Tournament tournament = modelMapper.map(tournamentDto, Tournament.class);
-        Page<Tournament> page=isSearchActive(tournament)!=null ? tournamentRepository.findAll(Example.of(tournament),pageable) : tournamentRepository.findAll(pageable);
+        Page<Tournament> page = isSearchActive(tournament) != null ? tournamentRepository.findAll(Example.of(tournament), pageable) : tournamentRepository.findAll(pageable);
         tournamentWsDto.setTournamentDtoList(modelMapper.map(page.getContent(), List.class));
         tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
         tournamentWsDto.setTotalPages(page.getTotalPages());
         tournamentWsDto.setTotalRecords(page.getTotalElements());
         return tournamentWsDto;
     }
+
     @GetMapping("/get")
     @ResponseBody
-    public TournamentWsDto getActiveTournament(){
+    public TournamentWsDto getActiveTournament() {
         TournamentWsDto tournamentWsDto = new TournamentWsDto();
-        tournamentWsDto.setTournamentDtoList(modelMapper.map(tournamentRepository.findByStatusOrderByIdentifier(true),List.class));
+        tournamentWsDto.setTournamentDtoList(modelMapper.map(tournamentRepository.findByStatusOrderByIdentifier(true), List.class));
         tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
         return tournamentWsDto;
 
     }
+
     @PostMapping("/getedit")
     @ResponseBody
-    public TournamentWsDto editTournament (@RequestBody TournamentWsDto request){
-        TournamentWsDto tournamentWsDto=new TournamentWsDto();
-           tournamentWsDto.setTournamentDtoList(modelMapper.map(tournamentRepository.findByRecordId(request.getTournamentDtoList().get(0).getRecordId()),List.class));
-           tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
-           return tournamentWsDto;
+    public TournamentWsDto editTournament(@RequestBody TournamentWsDto request) {
+        TournamentWsDto tournamentWsDto = new TournamentWsDto();
+        Tournament tournament = tournamentRepository.findByRecordId(request.getTournamentDtoList().get(0).getRecordId());
+        tournamentWsDto.setTournamentDtoList(List.of(modelMapper.map(tournament, TournamentDto.class)));
+        tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
+        return tournamentWsDto;
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public  TournamentWsDto handleEdit(@RequestBody TournamentWsDto request) {
+    public TournamentWsDto handleEdit(@RequestBody TournamentWsDto request) {
 
         return tournamentService.handleEdit(request);
     }
@@ -71,7 +74,7 @@ public class TournamentController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseBody
-    public TournamentWsDto deleteTournament (@RequestBody TournamentWsDto tournamentWsDto) {
+    public TournamentWsDto deleteTournament(@RequestBody TournamentWsDto tournamentWsDto) {
         for (TournamentDto id : tournamentWsDto.getTournamentDtoList()) {
             tournamentRepository.deleteByRecordId(id.getRecordId());
         }

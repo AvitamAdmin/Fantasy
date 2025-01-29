@@ -66,11 +66,12 @@ public class SportTypeServiceImpl implements SportTypeService {
             baseService.populateCommonData(sportType);
             sportType.setStatus(true);
             sportTypeRepository.save(sportType);
+            request.setMessage("Data added Successfully");
             if (sportType.getRecordId() == null) {
                 sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
             }
             sportTypeRepository.save(sportType);
-            request.setMessage("Data added Successfully");
+
             sportTypeList.add(sportType);
             request.setBaseUrl(ADMIN_SPORTTYPE);
         }
