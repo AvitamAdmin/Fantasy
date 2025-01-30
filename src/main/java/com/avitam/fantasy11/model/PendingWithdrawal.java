@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("PendingWithdrawal")
-public class PendingWithdrawal extends BaseEntity {
+public class PendingWithdrawal extends CommonFields {
 
     private String methodName;
     private String trx;

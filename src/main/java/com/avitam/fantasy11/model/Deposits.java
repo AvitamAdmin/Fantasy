@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Deposits")
-public class Deposits extends BaseEntity{
+public class Deposits extends CommonFields{
 
     private String userId;
     private int payingAmount;

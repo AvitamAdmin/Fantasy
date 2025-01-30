@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Team")
-public class Team extends BaseEntity {
+public class Team extends CommonFields {
 
     private String shortName;
     private Binary logo;

@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Player")
-public class Player extends BaseEntity{
+public class Player extends CommonFields{
 
     private String dob;
     private String nationality;

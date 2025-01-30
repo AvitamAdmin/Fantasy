@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Document("TeamLineup")
-public class    TeamLineup extends  BaseEntity{
+public class    TeamLineup extends  CommonFields{
 
     private String matchId;
 

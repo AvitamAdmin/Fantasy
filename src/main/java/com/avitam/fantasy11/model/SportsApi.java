@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("SportAPI")
-public class SportsApi extends BaseEntity{
+public class SportsApi extends CommonFields{
 
     private String host;
     private String key;

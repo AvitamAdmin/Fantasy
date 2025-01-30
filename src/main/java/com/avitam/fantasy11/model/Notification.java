@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Notification")
-public class Notification extends BaseEntity{
+public class Notification extends CommonFields{
 
     private String message;
     private String mobileNumber;

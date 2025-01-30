@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @Document("Winnings")
-public class Winnings extends BaseEntity {
+public class Winnings extends CommonFields {
 
    private Map<String,String> rankWinnings;
    private String contestDetailsId;

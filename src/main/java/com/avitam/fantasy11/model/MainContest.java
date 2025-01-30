@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("MainContest")
-public class MainContest extends BaseEntity {
+public class MainContest extends CommonFields {
 
     private String mainContestName;
     private String mainContestId;

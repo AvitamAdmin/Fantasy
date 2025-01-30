@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("ContestDetails")
-public class ContestDetails extends BaseEntity{
+public class ContestDetails extends CommonFields{
     private Double firstPrice;
     private  Float winningPercentage;
     private int maxEntries;

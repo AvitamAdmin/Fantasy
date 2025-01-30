@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("WithdrawalMethods")
-public class WithdrawalMethods extends BaseEntity {
+public class WithdrawalMethods extends CommonFields {
 
     private String methodName;
     private String currency;

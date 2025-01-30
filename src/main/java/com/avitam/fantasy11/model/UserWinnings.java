@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("UserWinnings")
-public class UserWinnings extends BaseEntity{
+public class UserWinnings extends CommonFields{
 
     private String userId;
 

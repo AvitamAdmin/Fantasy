@@ -64,7 +64,7 @@ public class WinningsServiceImpl implements WinningsService {
                 winningsRepository.save(winningsData);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.USER_WINNINGS, winningsDto1.getIdentifier()) != null) {
+                if (baseService.validateIdentifier(EntityConstants.WINNINGS, winningsDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("already present");
                     return request;

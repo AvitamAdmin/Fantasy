@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("KYC")
-public class KYC extends BaseEntity {
+public class KYC extends CommonFields {
 
     private String panNumber;
 

@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("GatewaysManual")
-public class GatewaysManual extends BaseEntity {
+public class GatewaysManual extends CommonFields {
 
     private String gateway;
     private String gatewayStatus;

@@ -1,15 +1,16 @@
 package com.avitam.fantasy11.api.dto;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserTeamWsDto extends CommonWsDto{
-    private List<UserTeamDto> userTeamDtoList;
+public class UserTeamsWsDto extends CommonWsDto{
+    private List<UserTeamsDto> userTeamsDtoList;
 }

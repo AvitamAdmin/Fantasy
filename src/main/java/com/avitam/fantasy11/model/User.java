@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User extends BaseEntity{
+public class User extends CommonFields{
 
     private String password;
     private String referredBy;

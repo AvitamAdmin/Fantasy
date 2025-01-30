@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WebsiteSetting extends BaseEntity implements Serializable {
+public class WebsiteSetting extends CommonFields implements Serializable {
 
     private String logoUrl;
     private String faviconUrl;

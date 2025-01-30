@@ -10,7 +10,7 @@ import java.util.Set;
 @Document("node")
 @Getter
 @Setter
-public class Node extends BaseEntity {
+public class Node extends CommonFields {
 
     private String path;
     private Set<Role> roles;

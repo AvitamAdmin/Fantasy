@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("MobileToken")
-public class MobileToken extends BaseEntity{
+public class MobileToken extends CommonFields{
 
     private String mobileNumber;
 

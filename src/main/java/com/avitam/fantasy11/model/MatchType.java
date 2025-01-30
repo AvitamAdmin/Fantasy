@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("MatchType")
 
-public class MatchType extends BaseEntity{
+public class MatchType extends CommonFields{
 
 
 

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("PlayerRole")
 
-public class PlayerRole extends BaseEntity {
+public class PlayerRole extends CommonFields {
 
     private String playerRole;
 

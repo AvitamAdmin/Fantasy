@@ -1,6 +1,7 @@
 package com.avitam.fantasy11.api.service;
 
 import com.avitam.fantasy11.api.dto.UserTeamWsDto;
+import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
 import com.avitam.fantasy11.model.UserTeams;
 
 public interface UserTeamsService {
@@ -10,5 +11,7 @@ public interface UserTeamsService {
 
         void updateByRecordId(String recordId);
 
-        UserTeamWsDto handleEdit(UserTeamWsDto request);
+      //  UserTeamWsDto handleEdit(UserTeamWsDto request);
+
+        UserTeamsWsDto handleEdit(UserTeamsWsDto request);
 }

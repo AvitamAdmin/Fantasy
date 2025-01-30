@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("General")
-public class General extends BaseEntity{
+public class General extends CommonFields{
 
     private String siteTitle;
     private String currency;

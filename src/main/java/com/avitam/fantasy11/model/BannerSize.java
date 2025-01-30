@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("BannerSize")
-public class BannerSize extends BaseEntity{
+public class BannerSize extends CommonFields{
 
     private String size;
 }

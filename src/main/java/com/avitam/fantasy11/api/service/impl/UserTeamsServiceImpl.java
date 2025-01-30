@@ -2,6 +2,7 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.UserTeamWsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
+import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.model.UserTeams;
@@ -43,8 +44,13 @@ public class UserTeamsServiceImpl implements UserTeamsService {
         }
     }
 
+//    @Override
+//    public UserTeamWsDto handleEdit(UserTeamWsDto request) {
+//        return null;
+//    }
+
     @Override
-    public UserTeamWsDto handleEdit(UserTeamWsDto request) {
+    public UserTeamsWsDto handleEdit(UserTeamsWsDto request) {
         List<UserTeamsDto> userTeamDtos = request.getUserTeamsDtoList();
         List<UserTeams> userTeamsList = new ArrayList<>();
         UserTeams userTeams = null;

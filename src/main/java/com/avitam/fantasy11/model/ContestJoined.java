@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("ContestJoined")
 
-public class ContestJoined extends BaseEntity{
+public class ContestJoined extends CommonFields{
 
     private String userId;
 

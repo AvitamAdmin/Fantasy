@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("LineUpStatus")
 
-public class LineUpStatus extends BaseEntity{
+public class LineUpStatus extends CommonFields{
 
     private boolean lineupStatus;
 

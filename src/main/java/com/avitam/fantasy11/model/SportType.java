@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("SportType")
-public class SportType extends BaseEntity {
+public class SportType extends CommonFields {
 
        private Binary logo;
 

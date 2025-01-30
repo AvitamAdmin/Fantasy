@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("ScriptAdvertise")
-public class Script extends BaseEntity{
+public class Script extends CommonFields{
 
     private String script;
 }

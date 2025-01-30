@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("PointsMaster")
-public class PointsMaster extends BaseEntity{
+public class PointsMaster extends CommonFields{
 
     private String matchTypeId;
 

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("LeaderBoard")
-public class LeaderBoard extends BaseEntity{
+public class LeaderBoard extends CommonFields{
 
     private String userId;
 

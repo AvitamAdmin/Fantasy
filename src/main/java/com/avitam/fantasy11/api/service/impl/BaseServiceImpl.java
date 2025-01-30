@@ -3,7 +3,7 @@ package com.avitam.fantasy11.api.service.impl;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.RepositoryService;
 import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.BaseEntity;
+import com.avitam.fantasy11.model.CommonFields;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class BaseServiceImpl implements BaseService {
     private RepositoryService repositoryService;
 
     @Override
-    public void populateCommonData(BaseEntity requestData) {
+    public void populateCommonData(CommonFields requestData) {
         String creator=coreService.getCurrentUser().getUsername();
         if (requestData.getCreator() == null) {
             requestData.setCreator(creator);
@@ -32,8 +32,10 @@ public class BaseServiceImpl implements BaseService {
         requestData.setLastModified(new Date());
     }
 
+
+
     @Override
-    public BaseEntity validateIdentifier(String entityName, String identifier) {
+    public CommonFields validateIdentifier(String entityName, String identifier) {
         GenericImportRepository genericImportRepository = repositoryService.getRepositoryForName(entityName);
         return genericImportRepository.findByIdentifier(identifier);
     }

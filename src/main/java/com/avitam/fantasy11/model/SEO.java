@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("SEO")
-public class SEO extends BaseEntity{
+public class SEO extends CommonFields{
 
     private Binary image;
     private String title;

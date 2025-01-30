@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Role extends BaseEntity {
+public class Role extends CommonFields {
     private String roleId;
     private Set<Node> permissions;
 }
