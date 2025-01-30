@@ -3,7 +3,10 @@ package com.avitam.fantasy11.api.service.impl;
 import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
+import com.avitam.fantasy11.api.service.OtpService;
+import com.avitam.fantasy11.model.OTP;
 import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.repository.OtpRepository;
 import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.tokenGeneration.JWTUtility;
 import jakarta.mail.*;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +44,13 @@ public class EmailOtpServiceImpl implements EmailOTPService {
     private JWTUtility jwtUtility;
 
     @Autowired
+    private OtpService otpService;
+
+    @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private OtpRepository otpRepository;
 
     private final ConcurrentHashMap<String, String> otpMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
@@ -59,13 +69,17 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                 userWsDto.setSuccess(false);
                 userWsDto.setMessage("Email is required.");
             }
-
             String otp = generateOtp();
             otpMap.put(email, otp);
             otpExpirationMap.put(email, LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES));
 
             sendEmail(email, otp);
             userWsDto.setOtp(otp);
+            OTP otp1 =new OTP();
+            otp1.setUserId(email);
+            otp1.setEmailOtp(otp);
+            otp1.setCreationTime(new Date());
+            otpRepository.save(otp1);
             userWsDto.setMessage("Otp sent successfully");
         }
         return userWsDto;

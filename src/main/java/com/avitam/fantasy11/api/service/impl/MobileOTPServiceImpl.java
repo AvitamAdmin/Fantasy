@@ -3,7 +3,9 @@ package com.avitam.fantasy11.api.service.impl;
 import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.MobileOTPService;
+import com.avitam.fantasy11.model.OTP;
 import com.avitam.fantasy11.model.User;
+import com.avitam.fantasy11.repository.OtpRepository;
 import com.avitam.fantasy11.repository.UserRepository;
 import com.avitam.fantasy11.tokenGeneration.JWTUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,6 +41,9 @@ public class MobileOTPServiceImpl implements MobileOTPService {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private OtpRepository otpRepository;
+
     private final RestTemplate restTemplate = new RestTemplate();
     private final ConcurrentHashMap<String, String> otpMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
@@ -51,12 +57,15 @@ public class MobileOTPServiceImpl implements MobileOTPService {
                 userWsDto.setMessage("Mobile number is required.");
                 return userWsDto;
             }
-
-
             String otp = generateOtp();
             otpMap.put(mobileNumber, otp);
             otpExpirationMap.put(mobileNumber, LocalDateTime.now().plusMinutes(otpExpirationMinutes));
 
+            OTP otp1 = new OTP();
+            otp1.setUserId(mobileNumber);
+            otp1.setMobileOtp(otp);
+            otp1.setCreationTime(new Date());
+            otpRepository.save(otp1);
             // Call MSG91 API to send OTP
             String url = "https://api.msg91.com/api/v5/otp?authkey=" + apiKey
                     + "&mobile=" + mobileNumber
@@ -72,6 +81,7 @@ public class MobileOTPServiceImpl implements MobileOTPService {
                 userWsDto.setMessage("Failed to send OTP: " + e.getMessage());
             }
         }
+
         return userWsDto;
     }
 
