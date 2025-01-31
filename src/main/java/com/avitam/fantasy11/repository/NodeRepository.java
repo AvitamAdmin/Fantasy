@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository("NodeRepository")
 public interface NodeRepository extends GenericImportRepository<Node> {
 
-    List<Node> findByParentNodeId(String id);
+    List<Node> findByParentNode(String id);
 
     Optional<Node> findById(String id);
 
@@ -23,4 +23,8 @@ public interface NodeRepository extends GenericImportRepository<Node> {
     List<Node> findByStatusOrderByDisplayPriority(boolean b);
 
     List<Node> findByParentNode_RecordId(String recordId);
+
+    Object findByParentNode(Object o);
+
+    List<Node> findByParentNode_ParentNodeId(String parentNodeId);
 }
