@@ -14,7 +14,7 @@ import java.util.Set;
 public class UserTeams extends CommonFields {
     private String userId;
     private String matchId;
-    private Set<String> players;
+    private Set<UserTeam> players;
     private String teamName;
     private String contestId;
 }

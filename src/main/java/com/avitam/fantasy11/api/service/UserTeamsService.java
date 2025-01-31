@@ -11,7 +11,5 @@ public interface UserTeamsService {
 
         void updateByRecordId(String recordId);
 
-      //  UserTeamWsDto handleEdit(UserTeamWsDto request);
-
         UserTeamsWsDto handleEdit(UserTeamsWsDto request);
 }
