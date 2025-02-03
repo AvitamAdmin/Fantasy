@@ -11,5 +11,5 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserTeamWsDto extends CommonWsDto{
-    private List<UserTeamDto> userTeamDtoList;
+    private List<UserTeamDto> userTeamsDtoList;
 }

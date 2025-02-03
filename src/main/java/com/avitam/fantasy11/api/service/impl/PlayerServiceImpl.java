@@ -37,9 +37,10 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PlayerWsDto handleEdit(PlayerWsDto request) {
-        Player player = null;
+
         List<PlayerDto> playerDto = request.getPlayerDtoList();
         List<Player> players = new ArrayList<>();
+        Player player = null;
         for (PlayerDto playerDto1 : playerDto) {
             if (playerDto1.getRecordId() != null) {
                 player = playerRepository.findByRecordId(playerDto1.getRecordId());
@@ -47,33 +48,47 @@ public class PlayerServiceImpl implements PlayerService {
                 playerRepository.save(player);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.PLAYER, playerDto1.getIdentifier()) != null) {
-                    request.setSuccess(false);
-                    request.setMessage("Identifier already present");
-                    return request;
-                }
+//                if (baseService.validateIdentifier(EntityConstants.PLAYER, playerDto1.getIdentifier()) != null) {
+//                    request.setSuccess(false);
+//                    request.setMessage("Identifier already present");
+//                    return request;
+
                 player = modelMapper.map(playerDto1, Player.class);
-                if (playerDto1.getPlayerImage() != null) {
+                if (playerDto1.getLogo() != null) {
                     try {
-                        player.setPlayerImage(new Binary(playerDto1.getPlayerImage().getBytes()));
+                        player.setLogo(new Binary(playerDto1.getLogo().getBytes()));
                     } catch (IOException e) {
                         e.printStackTrace();
                         request.setMessage("Error processing image file");
                         return request;
                     }
                 }
+
+                baseService.populateCommonData(player);
+                player.setStatus(true);
+                playerRepository.save(player);
             }
-            baseService.populateCommonData(player);
-            player.setStatus(true);
-            playerRepository.save(player);
             if (playerDto1.getRecordId() == null) {
                 player.setRecordId(String.valueOf(player.getId().getTimestamp()));
             }
+
+            if (playerDto1.getLogo() != null) {
+                try {
+                    player.setLogo(new Binary(playerDto1.getLogo().getBytes()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    request.setMessage("Error processing image file");
+                    return request;
+                }
+            }
             playerRepository.save(player);
-            players.add(player);
-            request.setMessage("Data added successfully");
-            request.setBaseUrl(ADMIN_PLAYER);
         }
+
+
+        players.add(player);
+        request.setMessage("Data added successfully");
+        request.setBaseUrl(ADMIN_PLAYER);
+
         request.setPlayerDtoList(modelMapper.map(players, List.class));
         return request;
     }

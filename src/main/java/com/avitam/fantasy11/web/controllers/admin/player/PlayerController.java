@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +76,41 @@ public class PlayerController extends BaseController {
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public PlayerWsDto handleEdit(@ModelAttribute PlayerWsDto request) {
-
+    public PlayerWsDto handleEdit( @RequestParam("name") String name, @RequestParam("dob") String dob,
+                                   @RequestParam("nationality")String nationality,@RequestParam("teamId")String teamId,
+                                   @RequestParam("playerRoleId")String playerRoleId,@RequestParam("logo")MultipartFile logo) {
+        PlayerWsDto request = new PlayerWsDto();
+        PlayerDto playerDto = new PlayerDto();
+        playerDto.setLogo(logo);
+        playerDto.setName(name);
+        playerDto.setPlayerRoleId(playerRoleId);
+        playerDto.setDob(dob);
+        playerDto.setNationality(nationality);
+        playerDto.setTeamId(teamId);
+        request.setPlayerDtoList(List.of(playerDto));
         return playerService.handleEdit(request);
     }
+
+
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public PlayerWsDto handleEditUpdate(@RequestParam("name") String name, @RequestParam("dob") String dob,
+                                           @RequestParam("nationality")String nationality,@RequestParam("teamId")String teamId,
+                                           @RequestParam("playerRoleId")String playerRoleId,@RequestParam("logo")MultipartFile logo, @RequestParam("recordId") String recordId){
+        PlayerWsDto request = new PlayerWsDto();
+        PlayerDto playerDto = new PlayerDto();
+        playerDto.setLogo(logo);
+        playerDto.setName(name);
+        playerDto.setPlayerRoleId(playerRoleId);
+        playerDto.setDob(dob);
+        playerDto.setNationality(nationality);
+        playerDto.setTeamId(teamId);
+        playerDto.setRecordId(recordId);
+        request.setPlayerDtoList(List.of(playerDto));
+        return playerService.handleEdit(request);
+
+    }
+
 
     @PostMapping("/delete")
     @ResponseBody

@@ -7,7 +7,9 @@ import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+
 import java.util.List;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +31,22 @@ public class InterfaceController extends BaseController {
     private UserService userService;
     @Autowired
     private NodeService nodeService;
-    private static final String ADMIN_INTERFACE="/admin/interface";
+    private static final String ADMIN_INTERFACE = "/admin/interface";
 
     @PostMapping
     @ResponseBody
-    public NodeWsDto getAllNodes(@RequestBody NodeWsDto nodeWsDto){
-        Pageable pageable=getPageable(nodeWsDto.getPage(),nodeWsDto.getSizePerPage(),nodeWsDto.getSortDirection(),nodeWsDto.getSortField());
+    public NodeWsDto getAllNodes(@RequestBody NodeWsDto nodeWsDto) {
+        Pageable pageable = getPageable(nodeWsDto.getPage(), nodeWsDto.getSizePerPage(), nodeWsDto.getSortDirection(), nodeWsDto.getSortField());
         NodeDto nodeDto = CollectionUtils.isNotEmpty(nodeWsDto.getNodeDtoList()) ? nodeWsDto.getNodeDtoList().get(0) : new NodeDto();
         Node node = modelMapper.map(nodeDto, Node.class);
-        Page<Node> page= isSearchActive(node) != null ? nodeRepository.findAll(Example.of(node),pageable): nodeRepository.findAll(pageable);
+        Page<Node> page = isSearchActive(node) != null ? nodeRepository.findAll(Example.of(node), pageable) : nodeRepository.findAll(pageable);
         nodeWsDto.setNodeDtoList(modelMapper.map(page.getContent(), List.class));
         nodeWsDto.setTotalPages(page.getTotalPages());
         nodeWsDto.setTotalRecords(page.getTotalElements());
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
     }
+
     @GetMapping("/getMenu")
     @ResponseBody
     public List<NodeDto> getMenu() {
@@ -53,7 +56,7 @@ public class InterfaceController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public NodeWsDto edit(@RequestBody NodeWsDto nodeWsDto) {
-        Node node =nodeRepository.findByRecordId(nodeWsDto.getNodeDtoList().get(0).getRecordId());
+        Node node = nodeRepository.findByRecordId(nodeWsDto.getNodeDtoList().get(0).getRecordId());
 
         nodeWsDto.setNodeDtoList(List.of(modelMapper.map(node, NodeDto.class)));
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
@@ -71,8 +74,8 @@ public class InterfaceController extends BaseController {
     @GetMapping("/get")
     @ResponseBody
     public NodeWsDto getInterface() {
-        NodeWsDto nodeWsDto=new NodeWsDto();
-        nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByParentNodeId(null),List.class));
+        NodeWsDto nodeWsDto = new NodeWsDto();
+        nodeWsDto.setNodeDtoList(modelMapper.map(nodeRepository.findByParentNode(null), List.class));
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
     }

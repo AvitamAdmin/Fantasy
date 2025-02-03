@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/mainContest")
-public class MainContestController extends com.avitam.fantasy11.web.controllers.BaseController {
+public class   MainContestController extends com.avitam.fantasy11.web.controllers.BaseController {
 
     @Autowired
     private MainContestRepository mainContestRepository;

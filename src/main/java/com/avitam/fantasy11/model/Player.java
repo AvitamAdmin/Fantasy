@@ -15,7 +15,7 @@ public class Player extends CommonFields{
     private String dob;
     private String nationality;
     private String teamId;
-    private Binary playerImage;
+    private Binary logo;
     private String playerRoleId;
 
 

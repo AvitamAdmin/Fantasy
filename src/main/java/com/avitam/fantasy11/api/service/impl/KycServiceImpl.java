@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -50,30 +51,33 @@ public class KycServiceImpl implements KycService {
                 request.setMessage("KYC updated successfully");
 
             } else {
-                if (baseService.validateIdentifier(EntityConstants.KYC, kycDto1.getIdentifier()) != null) {
-                    request.setSuccess(false);
-                    request.setMessage("Identifier already present");
-                    return request;
-                }
+//                if (baseService.validateIdentifier(EntityConstants.KYC, kycDto1.getIdentifier()) != null) {
+//                    request.setSuccess(false);
+//                    request.setMessage("Identifier already present");
+//                    return request;
+//                }
                 kycData = modelMapper.map(kycDto1, KYC.class);
-            }
-            if (kycDto1.getPanImage() != null) {
-                try {
-                    kycData.setPanImage(new Binary(kycDto1.getPanImage().getBytes()));
-                } catch (IOException e) {
-                    request.setMessage("Error processing image file");
-                    return request;
+                if (kycDto1.getPanImage() != null) {
+                    try {
+                        kycData.setPanImage(new Binary(kycDto1.getPanImage().getBytes()));
+                    } catch (IOException e) {
+                        request.setMessage("Error processing image file");
+                        return request;
+                    }
                 }
+                // baseService.populateCommonData(kycData);
+                kycData.setCreationTime(new Date());
+                kycData.setStatus(true);
+                kycRepository.save(kycData);
+                request.setMessage("KYC was added successfully");
+
+                if (kycData.getRecordId() == null) {
+                    kycData.setRecordId(String.valueOf(kycData.getId().getTimestamp()));
+                }
+                kycRepository.save(kycData);
             }
-            baseService.populateCommonData(kycData);
-            kycData.setStatus(true);
-            kycRepository.save(kycData);
-            if (kycData.getRecordId() == null) {
-                kycData.setRecordId(String.valueOf(kycData.getId().getTimestamp()));
-            }
-            kycRepository.save(kycData);
+
             kycList.add(kycData);
-            request.setMessage("KYC was added successfully");
             request.setBaseUrl(ADMIN_KYC);
         }
         request.setKycDtoList(modelMapper.map(kycList, List.class));
