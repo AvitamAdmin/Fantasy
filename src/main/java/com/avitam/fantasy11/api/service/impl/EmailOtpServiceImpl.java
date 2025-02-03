@@ -4,6 +4,7 @@ import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
 import com.avitam.fantasy11.api.service.OtpService;
+import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.model.OTP;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.OtpRepository;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +38,9 @@ public class EmailOtpServiceImpl implements EmailOTPService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
+
 
     @Autowired
     private JavaMailSender mailSender;
@@ -149,10 +154,11 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                 User existingUser = userRepository.findByEmail(email);
                 if (existingUser == null) {
                     // Save the email in the database if not present
-                    User newUser = new User();
+                    UserDto newUser = new UserDto();
                     newUser.setEmail(email);
                     newUser.setStatus(true);
-                    userRepository.save(newUser);
+                    userWsDto.setUserDtoList(List.of(newUser));
+                    userService.save(userWsDto);
                 }
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);

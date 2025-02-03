@@ -2,6 +2,8 @@ package com.avitam.fantasy11.web.controllers.admin.kyc;
 
 import com.avitam.fantasy11.api.dto.KYCDto;
 import com.avitam.fantasy11.api.dto.KYCWsDto;
+import com.avitam.fantasy11.api.dto.TeamDto;
+import com.avitam.fantasy11.api.dto.TeamWsDto;
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.repository.KYCRepository;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -62,13 +65,38 @@ public class KYCController extends BaseController {
         return request;
     }
 
+//    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @ResponseBody
+//    public KYCWsDto handleEdit(@ModelAttribute KYCWsDto request) {
+//
+//        return kycService.handleEdit(request);
+//    }
+
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public KYCWsDto handleEdit(@ModelAttribute KYCWsDto request) {
-
+    public KYCWsDto handleEdit( @RequestParam("logo") MultipartFile logo,
+                                @RequestParam("userId") String userId,@RequestParam("panNumber") String panNumber) {
+        KYCWsDto request = new KYCWsDto();
+        KYCDto kycDto = new KYCDto();
+        kycDto.setPanImage(logo);
+        kycDto.setPanNumber(panNumber);
+        kycDto.setUserId(userId);
+        request.setKycDtoList(List.of(kycDto));
         return kycService.handleEdit(request);
     }
-
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public KYCWsDto handleEdit( @RequestParam("logo") MultipartFile logo,
+                                @RequestParam("userId") String userId,@RequestParam("panNumber") String panNumber,@RequestParam("recordId") String recordId) {
+        KYCWsDto request = new KYCWsDto();
+        KYCDto kycDto = new KYCDto();
+        kycDto.setPanImage(logo);
+        kycDto.setPanNumber(panNumber);
+        kycDto.setUserId(userId);
+        kycDto.setRecordId(recordId);
+        request.setKycDtoList(List.of(kycDto));
+        return kycService.handleEdit(request);
+    }
 
     @PostMapping("/delete")
     @ResponseBody
