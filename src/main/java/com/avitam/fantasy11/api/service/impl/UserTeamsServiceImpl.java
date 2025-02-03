@@ -62,14 +62,14 @@ public class UserTeamsServiceImpl implements UserTeamsService {
                 userTeamsRepository.save(userTeams);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.USER_TEAMS, userTeamsDto.getIdentifier()) != null) {
-                    request.setSuccess(false);
-                    request.setMessage("Identifier already present");
-                    return request;
-                }
+//                if (baseService.validateIdentifier(EntityConstants.USER_TEAMS, userTeamsDto.getIdentifier()) != null) {
+//                    request.setSuccess(false);
+//                    request.setMessage("Identifier already present");
+//                    return request;
+//                }
                 userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
             }
-            baseService.populateCommonData(userTeams);
+           // baseService.populateCommonData(userTeams);
             userTeams.setStatus(true);
             userTeamsRepository.save(userTeams);
             if (userTeams.getRecordId() == null) {
