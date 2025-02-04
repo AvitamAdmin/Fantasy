@@ -17,5 +17,6 @@ public class PlayerDto extends CommonDto{
     private String nationality;
     private String teamId;
     private String playerRoleId;
+    private MultipartFile playerImage;
 
 }

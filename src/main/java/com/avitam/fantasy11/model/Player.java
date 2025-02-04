@@ -17,6 +17,7 @@ public class Player extends CommonFields{
     private String teamId;
     private Binary logo;
     private String playerRoleId;
+    private Binary playerImage;
 
 
 
