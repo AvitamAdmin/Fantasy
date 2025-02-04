@@ -1,12 +1,10 @@
 package com.avitam.fantasy11.api.service.impl;
 
-import com.avitam.fantasy11.api.dto.UserTeamWsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.model.UserTeams;
-import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +41,6 @@ public class UserTeamsServiceImpl implements UserTeamsService {
             userTeamsRepository.save(userTeams);
         }
     }
-
-//    @Override
-//    public UserTeamWsDto handleEdit(UserTeamWsDto request) {
-//        return null;
-//    }
 
     @Override
     public UserTeamsWsDto handleEdit(UserTeamsWsDto request) {

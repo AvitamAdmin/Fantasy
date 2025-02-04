@@ -5,7 +5,6 @@ import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import com.twilio.twiml.voice.Play;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,14 +76,12 @@ public class PlayerController extends BaseController {
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public PlayerWsDto handleEdit( @RequestParam("name") String name, @RequestParam("dob") String dob,
-                                   @RequestParam("nationality")String nationality,@RequestParam("teamId")String teamId,
-                                   @RequestParam("playerRoleId")String playerRoleId,@RequestParam("logo")MultipartFile logo,
-                                   @RequestParam("playerImage")MultipartFile playerImage) {
+    public PlayerWsDto handleEdit(@RequestParam("name") String name, @RequestParam("dob") String dob,
+                                  @RequestParam("nationality") String nationality, @RequestParam("teamId") String teamId,
+                                  @RequestParam("playerRoleId") String playerRoleId, @RequestParam("logo") MultipartFile logo) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
         playerDto.setLogo(logo);
-        playerDto.setPlayerImage(playerImage);
         playerDto.setName(name);
         playerDto.setPlayerRoleId(playerRoleId);
         playerDto.setDob(dob);
@@ -98,8 +95,9 @@ public class PlayerController extends BaseController {
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public PlayerWsDto handleEditUpdate(@RequestParam("name") String name, @RequestParam("dob") String dob,
-                                           @RequestParam("nationality")String nationality,@RequestParam("teamId")String teamId,
-                                           @RequestParam("playerRoleId")String playerRoleId,@RequestParam("logo")MultipartFile logo, @RequestParam("recordId") String recordId){
+                                        @RequestParam("nationality") String nationality, @RequestParam("teamId") String teamId,
+                                        @RequestParam("playerRoleId") String playerRoleId, @RequestParam("logo") MultipartFile logo,
+                                        @RequestParam("recordId") String recordId) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
         playerDto.setLogo(logo);
@@ -152,12 +150,4 @@ public class PlayerController extends BaseController {
 
     }
 
-
 }
-//        List<Player> team1Players = playerRepository.findByTeamId(team1Id);
-//        List<Player> team2Players = playerRepository.findByTeamId(team2Id);
-//        team1Players.addAll(team2Players);
-//        playerWsDto.setPlayerDtoList(modelMapper.map(team1Players, List.class));
-//        return playerWsDto;
-
-
