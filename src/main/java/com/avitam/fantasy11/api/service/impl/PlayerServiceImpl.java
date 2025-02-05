@@ -43,6 +43,15 @@ public class PlayerServiceImpl implements PlayerService {
             if (playerDto1.getRecordId() != null) {
                 player = playerRepository.findByRecordId(playerDto1.getRecordId());
                 modelMapper.map(playerDto1, player);
+                if (playerDto1.getLogo() != null) {
+                    try {
+                        player.setLogo(new Binary(playerDto1.getLogo().getBytes()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        request.setMessage("Error processing image file");
+                        return request;
+                    }
+                }
                 playerRepository.save(player);
                 request.setMessage("Data updated Successfully");
             } else {
