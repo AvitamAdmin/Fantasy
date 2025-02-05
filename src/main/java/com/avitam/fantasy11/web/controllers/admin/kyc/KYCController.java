@@ -1,9 +1,6 @@
 package com.avitam.fantasy11.web.controllers.admin.kyc;
 
-import com.avitam.fantasy11.api.dto.KYCDto;
-import com.avitam.fantasy11.api.dto.KYCWsDto;
-import com.avitam.fantasy11.api.dto.TeamDto;
-import com.avitam.fantasy11.api.dto.TeamWsDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.repository.KYCRepository;
@@ -37,7 +34,7 @@ public class KYCController extends BaseController {
     public KYCWsDto getAllKYC(@RequestBody KYCWsDto kycWsDto) {
         Pageable pageable = getPageable(kycWsDto.getPage(), kycWsDto.getSizePerPage(), kycWsDto.getSortDirection(), kycWsDto.getSortField());
         KYCDto kycDto = CollectionUtils.isNotEmpty(kycWsDto.getKycDtoList()) ? kycWsDto.getKycDtoList().get(0) : new KYCDto();
-        KYC kyc = kycDto != null ? modelMapper.map(kycDto, KYC.class) : null;
+        KYC kyc = modelMapper.map(kycDto, KYC.class);
         Page<KYC> page = isSearchActive(kyc) != null ? kycRepository.findAll(Example.of(kyc), pageable) : kycRepository.findAll(pageable);
         kycWsDto.setKycDtoList(modelMapper.map(page.getContent(), List.class));
         kycWsDto.setBaseUrl(ADMIN_KYC);
@@ -65,13 +62,6 @@ public class KYCController extends BaseController {
         return request;
     }
 
-//    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @ResponseBody
-//    public KYCWsDto handleEdit(@ModelAttribute KYCWsDto request) {
-//
-//        return kycService.handleEdit(request);
-//    }
-
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public KYCWsDto handleEdit( @RequestParam("logo") MultipartFile logo,
@@ -87,7 +77,9 @@ public class KYCController extends BaseController {
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public KYCWsDto handleEdit( @RequestParam("logo") MultipartFile logo,
-                                @RequestParam("userId") String userId,@RequestParam("panNumber") String panNumber,@RequestParam("recordId") String recordId) {
+                                @RequestParam("userId") String userId,
+                                @RequestParam("panNumber") String panNumber,
+                                @RequestParam("recordId") String recordId) {
         KYCWsDto request = new KYCWsDto();
         KYCDto kycDto = new KYCDto();
         kycDto.setPanImage(logo);
@@ -108,6 +100,12 @@ public class KYCController extends BaseController {
         kycWsDto.setMessage("Data deleted Successfully !!");
         kycWsDto.setBaseUrl(ADMIN_KYC);
         return kycWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new KYC());
     }
 
 }

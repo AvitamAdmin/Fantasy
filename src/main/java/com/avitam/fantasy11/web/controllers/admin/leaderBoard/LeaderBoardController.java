@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.leaderBoard;
 
 import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.api.dto.LeaderBoardWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.LeaderBoardService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Language;
 import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.repository.LeaderBoardRepository;
@@ -81,6 +83,12 @@ public class LeaderBoardController extends BaseController {
         leaderBoardWsDto.setMessage("Data deleted Successfully");
         leaderBoardWsDto.setBaseUrl(ADMIN_LEADERBOARD);
         return leaderBoardWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new LeaderBoard());
     }
     
 }

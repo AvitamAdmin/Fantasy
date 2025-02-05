@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.advertise;
 
 import com.avitam.fantasy11.api.dto.ScriptDto;
 import com.avitam.fantasy11.api.dto.ScriptWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.ScriptService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Script;
 import com.avitam.fantasy11.repository.ScriptRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -79,5 +81,11 @@ public class ScriptController extends BaseController {
         scriptWsDto.setMessage("Data deleted Successfully");
         scriptWsDto.setBaseUrl(ADMIN_SCRIPT);
         return scriptWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Script());
     }
 }

@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.ContestDetails;
 
 import com.avitam.fantasy11.api.dto.ContestDetailsDto;
 import com.avitam.fantasy11.api.dto.ContestDetailsWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.ContestDetailsService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.ContestDetails;
 import com.avitam.fantasy11.repository.ContestDetailsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -66,5 +68,10 @@ public class ContestDetailsController extends BaseController {
         return contestDetailsWsDto;
     }
 
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new ContestDetails());
+    }
 
 }

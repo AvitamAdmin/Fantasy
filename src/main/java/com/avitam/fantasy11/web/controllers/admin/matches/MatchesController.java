@@ -3,7 +3,9 @@ package com.avitam.fantasy11.web.controllers.admin.matches;
 
 import com.avitam.fantasy11.api.dto.MatchesDto;
 import com.avitam.fantasy11.api.dto.MatchesWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.MatchesService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Matches;
 import com.avitam.fantasy11.repository.*;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -80,4 +82,9 @@ public class MatchesController extends BaseController {
         return matcheswsDto;
     }
 
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Matches());
+    }
 }

@@ -2,8 +2,10 @@ package com.avitam.fantasy11.web.controllers.admin.intface;
 
 import com.avitam.fantasy11.api.dto.NodeDto;
 import com.avitam.fantasy11.api.dto.NodeWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.core.service.NodeService;
 import com.avitam.fantasy11.core.service.UserService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -89,6 +91,12 @@ public class InterfaceController extends BaseController {
         nodeWsDto.setMessage("Data deleted successfully");
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Node());
     }
 
 }
