@@ -5,17 +5,16 @@ import com.avitam.fantasy11.api.dto.WebsiteSettingDto;
 import com.avitam.fantasy11.api.dto.WebsiteSettingsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WebsiteSettingService;
-import com.avitam.fantasy11.core.service.CoreService;
-
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WebsiteSettingRepository;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,53 +23,58 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
     @Autowired
     private WebsiteSettingRepository websiteSettingRepository;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-    public static final String ADMIN_WEBSITESETTINGS = "/admin/websiteSettings";
+    public static final String ADMIN_WEBSITESETTINGS = "/admin/website";
+
 
     @Override
-    public WebsiteSetting findByRecordId(String recordId) {
-        return websiteSettingRepository.findByRecordId(recordId);
-    }
+    public WebsiteSettingsWsDto handleEdit(WebsiteSettingsWsDto request) throws IOException {
 
-    @Override
-    public void deleteByRecordId(String recordId) {
-
-        websiteSettingRepository.deleteByRecordId(recordId);
-    }
-
-    @Override
-    public WebsiteSettingsWsDto handleEdit(WebsiteSettingsWsDto request) {
-
-        WebsiteSetting websiteSettingData = null;
+        WebsiteSetting websiteData = null;
         List<WebsiteSettingDto> websiteSettingDtos = request.getWebsiteSettingDtoList();
         List<WebsiteSetting> websiteSettingList = new ArrayList<>();
 
-        for (WebsiteSettingDto websiteSettingDto1 : websiteSettingDtos) {
-            if (websiteSettingDto1.getRecordId() != null) {
-                websiteSettingData = websiteSettingRepository.findByRecordId(websiteSettingDto1.getRecordId());
-                modelMapper.map(websiteSettingDto1, websiteSettingData);
-                websiteSettingRepository.save(websiteSettingData);
+        for (WebsiteSettingDto websiteDto1 : websiteSettingDtos) {
+            if (websiteDto1.getRecordId() != null) {
+                websiteData = websiteSettingRepository.findByRecordId(websiteDto1.getRecordId());
+                modelMapper.map(websiteDto1, websiteData);
+                if (websiteDto1.getLogo() != null) {
+                    websiteData.setLogo(new Binary(websiteDto1.getLogo().getBytes()));
+                }
+                if (websiteDto1.getFavicon() != null) {
+                    websiteData.setFavicon(new Binary(websiteDto1.getFavicon().getBytes()));
+                }
+                websiteSettingRepository.save(websiteData);
                 request.setMessage("Data updated Successfully");
             } else {
-                if (baseService.validateIdentifier(EntityConstants.WEBSITESETTING, websiteSettingDto1.getIdentifier()) != null) {
+
+                if (baseService.validateIdentifier(EntityConstants.WEBSITESETTING, websiteDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("already present");
                     return request;
                 }
+                websiteData = modelMapper.map(websiteDto1, WebsiteSetting.class);
+                baseService.populateCommonData(websiteData);
+                websiteData.setStatus(true);
+                if (websiteDto1.getLogo() != null) {
+                    websiteData.setLogo(new Binary(websiteDto1.getLogo().getBytes()));
 
-                websiteSettingData = modelMapper.map(websiteSettingDto1, WebsiteSetting.class);
+                }
+                if (websiteDto1.getFavicon() != null) {
+                    websiteData.setFavicon(new Binary(websiteDto1.getFavicon().getBytes()));
+
+                }
+
+                websiteSettingRepository.save(websiteData);
+                if (websiteData.getRecordId() == null) {
+                    websiteData.setRecordId(String.valueOf(websiteData.getId().getTimestamp()));
+                }
+                websiteSettingRepository.save(websiteData);
+                request.setMessage("Data added successfully");
             }
-            baseService.populateCommonData(websiteSettingData);
-            websiteSettingData.setStatus(true);
-            websiteSettingRepository.save(websiteSettingData);
-            if (websiteSettingData.getRecordId() == null) {
-                websiteSettingData.setRecordId(String.valueOf(websiteSettingData.getId().getTimestamp()));
-            }
-            websiteSettingRepository.save(websiteSettingData);
-            websiteSettingList.add(websiteSettingData);
-            request.setMessage("Data added successfully");
+            websiteSettingList.add(websiteData);
             request.setBaseUrl(ADMIN_WEBSITESETTINGS);
 
         }
@@ -78,11 +82,5 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
         return request;
     }
 
-    @Override
-    public void updateByRecordId(String recordId) {
-        WebsiteSetting website = websiteSettingRepository.findByRecordId(recordId);
-        if (website != null) {
-            websiteSettingRepository.save(website);
-        }
-    }
+
 }

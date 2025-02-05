@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.contest;
 
 import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.dto.ContestWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.ContestRepository;
@@ -35,7 +36,7 @@ public class ContestController extends BaseController {
     public ContestWsDto getAllContest(@RequestBody ContestWsDto contestwsDto) {
         Pageable pageable = getPageable(contestwsDto.getPage(), contestwsDto.getSizePerPage(), contestwsDto.getSortDirection(), contestwsDto.getSortField());
         ContestDto contestDto = CollectionUtils.isNotEmpty(contestwsDto.getContestDtos()) ? contestwsDto.getContestDtos().get(0) : new ContestDto();
-        Contest contest = modelMapper.map(contestDto,Contest.class);
+        Contest contest = modelMapper.map(contestDto, Contest.class);
         Page<Contest> page = isSearchActive(contest) == null ? contestRepository.findAll(Example.of(contest), pageable) : contestRepository.findAll(pageable);
         contestwsDto.setContestDtos(modelMapper.map(page.getContent(), List.class));
         contestwsDto.setTotalPages(page.getTotalPages());
@@ -79,5 +80,11 @@ public class ContestController extends BaseController {
         contestwsDto.setMessage("Data deleted Successfully");
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
         return contestwsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Contest());
     }
 }

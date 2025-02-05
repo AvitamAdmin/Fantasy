@@ -29,7 +29,6 @@ public class CommonDto {
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date lastModified;
     private String modifiedBy;
-    private String pic;
     private String identifier;
 }
 
