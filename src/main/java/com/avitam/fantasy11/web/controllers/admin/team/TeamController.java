@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.team;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.dto.TeamWsDto;
 import com.avitam.fantasy11.api.service.TeamService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -83,7 +85,8 @@ public class TeamController extends BaseController {
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public TeamWsDto handleEdit(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo,
-                                @RequestParam("name") String name, @RequestParam("shortName") String shortName,@RequestParam("recordId") String recordId) {
+                                @RequestParam("name") String name, @RequestParam("shortName") String shortName,
+                                @RequestParam("recordId") String recordId) {
         TeamWsDto request = new TeamWsDto();
         TeamDto teamDto = new TeamDto();
         teamDto.setLogo(logo);
@@ -104,5 +107,11 @@ public class TeamController extends BaseController {
         teamWsDto.setMessage("Data deleted successfully");
         teamWsDto.setBaseUrl(ADMIN_TEAM);
         return teamWsDto;
+    } @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Team());
     }
+
 }

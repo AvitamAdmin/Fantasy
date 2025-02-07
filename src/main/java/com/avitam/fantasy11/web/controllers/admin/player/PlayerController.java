@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.player;
 
 import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.PlayerService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -148,6 +149,12 @@ public class PlayerController extends BaseController {
         return playerWsDto;
 
 
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Player());
     }
 
 }

@@ -1,8 +1,11 @@
 package com.avitam.fantasy11.web.controllers.admin.winnings;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.WinningsDto;
 import com.avitam.fantasy11.api.dto.WinningsWsDto;
 import com.avitam.fantasy11.api.service.WinningsService;
+import com.avitam.fantasy11.model.LeaderBoard;
+import com.avitam.fantasy11.model.Winnings;
 import com.avitam.fantasy11.repository.WinningsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
@@ -15,7 +18,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/winnings")
 public class WinningsController extends BaseController {
-
     @Autowired
     private WinningsRepository winningsRepository;
     @Autowired
@@ -35,7 +37,6 @@ public class WinningsController extends BaseController {
         return winningsWsDto;
     }
 
-
     @PostMapping("/edit")
     @ResponseBody
     public WinningsWsDto handleEdit(@RequestBody WinningsWsDto request) {
@@ -52,6 +53,12 @@ public class WinningsController extends BaseController {
         winningsWsDto.setMessage("Data deleted successfully");
         winningsWsDto.setBaseUrl(ADMIN_WINNINGS);
         return winningsWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Winnings());
     }
 
 }

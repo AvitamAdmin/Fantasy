@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.teamlineup;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpWsDto;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.TeamLineupRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -80,6 +82,12 @@ public class TeamLineupController extends BaseController {
         teamLineUpWsDto.setMessage("Data deleted successfully");
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
         return teamLineUpWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new TeamLineup());
     }
 
 

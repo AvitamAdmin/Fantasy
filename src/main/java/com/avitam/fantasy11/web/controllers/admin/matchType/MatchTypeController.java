@@ -1,10 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.matchType;
 
-import com.avitam.fantasy11.api.dto.MatchTypeDto;
-import com.avitam.fantasy11.api.dto.MatchTypeWsDto;
-import com.avitam.fantasy11.api.dto.NotificationDto;
-import com.avitam.fantasy11.api.dto.NotificationWsDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.MatchTypeService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.MatchType;
 import com.avitam.fantasy11.repository.MatchTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -82,5 +80,11 @@ public class MatchTypeController extends BaseController {
         matchTypeWsDto.setMessage("Data delete successfully");
         matchTypeWsDto.setBaseUrl(ADMIN_MATCHTYPE);
         return matchTypeWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new MatchType());
     }
 }

@@ -2,8 +2,10 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.api.dto.ExtensionDto;
 import com.avitam.fantasy11.api.dto.ExtensionWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.ExtensionService;
 import com.avitam.fantasy11.model.Extension;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.repository.ExtensionRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -80,5 +82,11 @@ public class ExtensionController extends BaseController {
         extensionWsDto.setMessage("Data deleted Successfully");
         extensionWsDto.setBaseUrl(ADMIN_EXTENSION);
         return extensionWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Extension());
     }
 }

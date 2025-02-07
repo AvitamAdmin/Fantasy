@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.role;
 
 import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.dto.RoleWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.RoleService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.repository.RoleRepository;
@@ -85,5 +87,12 @@ public class RoleController extends BaseController {
         roleWsDto.setBaseUrl(ADMIN_ROLE);
         return roleWsDto;
     }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Role());
+    }
+
 
 }

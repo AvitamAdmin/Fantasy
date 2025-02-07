@@ -2,8 +2,10 @@ package com.avitam.fantasy11.web.controllers.admin.pendingWithdrawal;
 
 import com.avitam.fantasy11.api.dto.PendingWithdrawalDto;
 import com.avitam.fantasy11.api.dto.PendingWithdrawalWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.PendingWithdrawalService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.PendingWithdrawal;
 import com.avitam.fantasy11.repository.PendingWithdrawalRepository;
 import com.avitam.fantasy11.repository.UserWinningsRepository;
@@ -88,6 +90,12 @@ public class PendingWithdrawalController extends BaseController {
         pendingWithdrawalWsDto.setMessage("Data deleted successfully");
         pendingWithdrawalWsDto.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
         return pendingWithdrawalWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new PendingWithdrawal());
     }
 
 

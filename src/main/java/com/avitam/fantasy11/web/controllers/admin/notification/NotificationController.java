@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.notification;
 
 import com.avitam.fantasy11.api.dto.NotificationDto;
 import com.avitam.fantasy11.api.dto.NotificationWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.NotificationService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Notification;
 import com.avitam.fantasy11.repository.NotificationRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -81,6 +83,12 @@ public class NotificationController extends BaseController {
         notificationWsDto.setMessage("Data deleted successfully");
         return notificationWsDto;
 
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Notification());
     }
 
 }

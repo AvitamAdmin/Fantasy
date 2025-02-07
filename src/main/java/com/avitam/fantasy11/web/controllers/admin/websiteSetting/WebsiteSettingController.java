@@ -3,6 +3,7 @@ package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
 import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.WebsiteSettingService;
 import com.avitam.fantasy11.core.service.CoreService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.repository.WebsiteSettingRepository;
@@ -110,6 +111,12 @@ public class WebsiteSettingController extends BaseController {
         request.setBaseUrl(ADMIN_WEBSITESETTING);
         request.setMessage("Data Deleted Successfully");
         return request;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new WebsiteSetting());
     }
 
 }
