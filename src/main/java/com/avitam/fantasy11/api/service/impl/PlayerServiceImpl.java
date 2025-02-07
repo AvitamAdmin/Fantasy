@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -52,6 +53,7 @@ public class PlayerServiceImpl implements PlayerService {
                         return request;
                     }
                 }
+                player.setLastModified(new Date());
                 playerRepository.save(player);
                 request.setMessage("Data updated Successfully");
             } else {

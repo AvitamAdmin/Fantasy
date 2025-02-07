@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -52,6 +53,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
             if (userTeamsDto.getRecordId() != null) {
                 userTeams = userTeamsRepository.findByRecordId(userTeamsDto.getRecordId());
                 modelMapper.map(userTeamsDto, userTeams);
+                userTeams.setLastModified(new Date());
                 userTeamsRepository.save(userTeams);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -61,18 +63,20 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 //                    return request;
 //                }
                 userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
+
+                // baseService.populateCommonData(userTeams);
+                userTeams.setStatus(true);
+                userTeamsRepository.save(userTeams);
+                if (userTeams.getRecordId() == null) {
+                    userTeams.setRecordId(String.valueOf(userTeams.getId().getTimestamp()));
+                }
+                userTeamsRepository.save(userTeams);
+                request.setMessage("Data added Successfully");
             }
-           // baseService.populateCommonData(userTeams);
-            userTeams.setStatus(true);
-            userTeamsRepository.save(userTeams);
-            if (userTeams.getRecordId() == null) {
-                userTeams.setRecordId(String.valueOf(userTeams.getId().getTimestamp()));
-            }
-            userTeamsRepository.save(userTeams);
-            request.setMessage("Data added Successfully");
             userTeamsList.add(userTeams);
-        }
-        request.setBaseUrl(ADMIN_USERTEAM);
+            request.setBaseUrl(ADMIN_USERTEAM);
+
+            }
         request.setUserTeamsDtoList(modelMapper.map(userTeamsList, List.class));
         return request;
     }

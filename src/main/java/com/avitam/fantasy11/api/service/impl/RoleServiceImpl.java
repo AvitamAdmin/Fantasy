@@ -13,10 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -50,7 +47,7 @@ public class RoleServiceImpl implements RoleService {
 
     }
     @Override
-    public RoleWsDto handleEdit(RoleWsDto request) {
+    public RoleWsDto  handleEdit(RoleWsDto request) {
         List<RoleDto> roleDtos = request.getRoleDtoList();
         List<Role> roles = new ArrayList<>();
         Role role = null;
@@ -59,6 +56,7 @@ public class RoleServiceImpl implements RoleService {
                 Role requestData = modelMapper.map(roleDto, Role.class);
                 role = roleRepository.findByRecordId(roleDto.getRecordId());
                 modelMapper.map(requestData, role);
+                role.setLastModified(new Date());
                 roleRepository.save(role);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -68,24 +66,25 @@ public class RoleServiceImpl implements RoleService {
                     return request;
                 }
                 role = modelMapper.map(roleDto, Role.class);
+
+                role.setStatus(true);
+                baseService.populateCommonData(role);
+                Set<Node> nodes = new HashSet<>();
+                for (Node node : roleDto.getPermissions()) {
+                    Node node1 = nodeRepository.findByRecordId(node.getRecordId());
+                    nodes.add(node1);
+                }
+                role.setPermissions(nodes);
+                roleRepository.save(role);
+                if (role.getRecordId() == null) {
+                    role.setRecordId(String.valueOf(role.getId().getTimestamp()));
+                }
+                roleRepository.save(role);
+                request.setMessage("Data added Successfully");
             }
-            role.setStatus(true);
-            baseService.populateCommonData(role);
-            Set<Node> nodes= new HashSet<>();
-            for(Node node: roleDto.getPermissions()){
-               Node node1= nodeRepository.findByRecordId(node.getRecordId());
-               nodes.add(node1);
-            }
-            role.setPermissions(nodes);
-            roleRepository.save(role);
-            if (role.getRecordId() == null) {
-                role.setRecordId(String.valueOf(role.getId().getTimestamp()));
-            }
-            roleRepository.save(role);
-            request.setMessage("Data added Successfully");
+            request.setBaseUrl(ADMIN_ROLE);
             roles.add(role);
         }
-        request.setBaseUrl(ADMIN_ROLE);
         request.setRoleDtoList(modelMapper.map(roles, List.class));
         return request;
 

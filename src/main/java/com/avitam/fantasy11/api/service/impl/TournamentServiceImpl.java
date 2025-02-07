@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,6 +40,7 @@ public class TournamentServiceImpl implements TournamentService {
             if (tournamentDto.getRecordId() != null) {
                 tournament = tournamentRepository.findByRecordId(tournamentDto.getRecordId());
                 modelMapper.map(tournamentDto, tournament);
+                tournament.setLastModified(new Date());
                 tournamentRepository.save(tournament);
                 request.setMessage("Data updated Successfully");
 
@@ -49,16 +51,17 @@ public class TournamentServiceImpl implements TournamentService {
                     return request;
                 }
                 tournament = modelMapper.map(tournamentDto, Tournament.class);
+
+                baseService.populateCommonData(tournament);
+                tournament.setStatus(true);
+                tournamentRepository.save(tournament);
+                if (tournament.getRecordId() == null) {
+                    tournament.setRecordId(String.valueOf(tournament.getId().getTimestamp()));
+                }
+                tournamentRepository.save(tournament);
+                request.setMessage("Data added Successfully");
             }
-           baseService.populateCommonData(tournament);
-            tournament.setStatus(true);
-            tournamentRepository.save(tournament);
-            if (tournament.getRecordId() == null) {
-                tournament.setRecordId(String.valueOf(tournament.getId().getTimestamp()));
-            }
-            tournamentRepository.save(tournament);
             tournaments.add(tournament);
-            request.setMessage("Data added Successfully");
             request.setBaseUrl(ADMIN_TOURNAMENT);
         }
         request.setTournamentDtoList(modelMapper.map(tournaments, List.class));

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,6 +48,7 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
             if (withdrawalMethodsDto1.getRecordId() != null) {
                 withdrawalMethodsData = withdrawalMethodsRepository.findByRecordId(withdrawalMethodsDto1.getRecordId());
                 modelMapper.map(withdrawalMethodsDto1, withdrawalMethodsData);
+                withdrawalMethodsData.setLastModified(new Date());
                 withdrawalMethodsRepository.save(withdrawalMethodsData);
                 request.setMessage("Data Updated Successfully");
             } else {
@@ -55,21 +57,20 @@ public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
                     request.setMessage("already present");
                     return request;
                 }
-
                 withdrawalMethodsData = modelMapper.map(withdrawalMethodsDto1, WithdrawalMethods.class);
-            }
 
-            baseService.populateCommonData(withdrawalMethodsData);
-            withdrawalMethodsData.setStatus(true);
-            withdrawalMethodsRepository.save(withdrawalMethodsData);
-            if (withdrawalMethodsData.getRecordId() == null) {
-                withdrawalMethodsData.setRecordId(String.valueOf(withdrawalMethodsData.getId().getTimestamp()));
+
+                baseService.populateCommonData(withdrawalMethodsData);
+                withdrawalMethodsData.setStatus(true);
+                withdrawalMethodsRepository.save(withdrawalMethodsData);
+                if (withdrawalMethodsData.getRecordId() == null) {
+                    withdrawalMethodsData.setRecordId(String.valueOf(withdrawalMethodsData.getId().getTimestamp()));
+                }
+                withdrawalMethodsRepository.save(withdrawalMethodsData);
+                withdrawalMethodsList.add(withdrawalMethodsData);
             }
-            withdrawalMethodsRepository.save(withdrawalMethodsData);
-            withdrawalMethodsList.add(withdrawalMethodsData);
             request.setMessage("Withdrawal Details added successfully");
             request.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
-
         }
         request.setWithdrawalMethodsDtoList(modelMapper.map(withdrawalMethodsList, List.class));
         return request;

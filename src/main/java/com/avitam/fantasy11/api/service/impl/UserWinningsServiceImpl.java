@@ -66,21 +66,21 @@ public class UserWinningsServiceImpl implements UserWinningsService {
             } else {
                 if (baseService.validateIdentifier(EntityConstants.USER_WINNINGS, userWinningsDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
-                    request.setMessage("already present");
+                    request.setMessage(" Identifier already present");
                     return request;
                 }
 
                 userWinningsData = modelMapper.map(userWinningsDto1, UserWinnings.class);
+                baseService.populateCommonData(userWinningsData);
+                userWinningsData.setStatus(true);
+                userWinningsRepository.save(userWinningsData);
+                if (userWinningsData.getRecordId() == null) {
+                    userWinningsData.setRecordId(String.valueOf(userWinningsData.getId().getTimestamp()));
+                }
+                userWinningsRepository.save(userWinningsData);
+                request.setMessage("Data added successfully");
             }
-            baseService.populateCommonData(userWinningsData);
-            userWinningsData.setStatus(true);
-            userWinningsRepository.save(userWinningsData);
-            if (userWinningsData.getRecordId() == null) {
-                userWinningsData.setRecordId(String.valueOf(userWinningsData.getId().getTimestamp()));
-            }
-            userWinningsRepository.save(userWinningsData);
-            request.setMessage("Data added successfully");
-            userWinningsList.add(userWinningsData);
+             userWinningsList.add(userWinningsData);
             request.setBaseUrl(ADMIN_USERWINNINGS);
 
         }

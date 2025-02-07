@@ -49,25 +49,28 @@ public class PendingWithdrawalServiceImpl implements PendingWithdrawalService {
             if(pendingWithdrawalDto1.getRecordId()!=null){
                 pendingWithdrawal = pendingWithdrawalRepository.findByRecordId(pendingWithdrawalDto1.getRecordId());
                 modelMapper.map(pendingWithdrawalDto1, pendingWithdrawal);
+                pendingWithdrawal.setLastModified(new Date());
                 pendingWithdrawalRepository.save(pendingWithdrawal);
                 request.setMessage("Data updated Successfully");
             }else {
-                if(baseService.validateIdentifier(EntityConstants.PENDING_WITHDRAWL,pendingWithdrawalDto1.getIdentifier()) !=null){
+                if (baseService.validateIdentifier(EntityConstants.PENDING_WITHDRAWL, pendingWithdrawalDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");
                     return request;
                 }
-                pendingWithdrawal=modelMapper.map(pendingWithdrawalDto1,PendingWithdrawal.class);
+                pendingWithdrawal = modelMapper.map(pendingWithdrawalDto1, PendingWithdrawal.class);
+                baseService.populateCommonData(pendingWithdrawal);
+                pendingWithdrawal.setStatus(true);
+                pendingWithdrawalRepository.save(pendingWithdrawal);
+
+
+                if (pendingWithdrawalDto1.getRecordId() == null) {
+                    pendingWithdrawal.setRecordId(String.valueOf(pendingWithdrawal.getId().getTimestamp()));
+                }
+                pendingWithdrawalRepository.save(pendingWithdrawal);
+                request.setMessage("Data added successfully");
             }
-            baseService.populateCommonData(pendingWithdrawal);
-            pendingWithdrawal.setStatus(true);
-            pendingWithdrawalRepository.save(pendingWithdrawal);
-            if (pendingWithdrawalDto1.getRecordId() == null) {
-                pendingWithdrawal.setRecordId(String.valueOf(pendingWithdrawal.getId().getTimestamp()));
-            }
-            pendingWithdrawalRepository.save(pendingWithdrawal);
             pendingWithdrawals.add(pendingWithdrawal);
-            request.setMessage("Data added successfully");
             request.setBaseUrl(ADMIN_PENDINGWITHDRAWAL);
         }
         request.setPendingWithdrawalDtoList(modelMapper.map(pendingWithdrawals, List.class));

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,6 +41,7 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
             if (websiteDto1.getRecordId() != null) {
                 websiteData = websiteSettingRepository.findByRecordId(websiteDto1.getRecordId());
                 modelMapper.map(websiteDto1, websiteData);
+                websiteData.setLastModified(new Date());
                 if (websiteDto1.getLogo() != null) {
                     websiteData.setLogo(new Binary(websiteDto1.getLogo().getBytes()));
                 }
@@ -52,7 +54,7 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
 
                 if (baseService.validateIdentifier(EntityConstants.WEBSITESETTING, websiteDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
-                    request.setMessage("already present");
+                    request.setMessage("Identifier already present");
                     return request;
                 }
                 websiteData = modelMapper.map(websiteDto1, WebsiteSetting.class);
@@ -66,7 +68,6 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
                     websiteData.setFavicon(new Binary(websiteDto1.getFavicon().getBytes()));
 
                 }
-
                 websiteSettingRepository.save(websiteData);
                 if (websiteData.getRecordId() == null) {
                     websiteData.setRecordId(String.valueOf(websiteData.getId().getTimestamp()));

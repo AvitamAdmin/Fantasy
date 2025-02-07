@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,6 +41,7 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
             if (playerRoleDto1.getRecordId() != null) {
                 playerRole = playerRoleRepository.findByRecordId(playerRoleDto1.getRecordId());
                 modelMapper.map(playerRoleDto1, playerRole);
+                playerRole.setLastModified(new Date());
                 playerRoleRepository.save(playerRole);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -49,18 +51,17 @@ public class PlayerRoleServiceImpl implements PlayerRoleService {
                     return request;
                 }
                 playerRole = modelMapper.map(playerRoleDto1, PlayerRole.class);
+                baseService.populateCommonData(playerRole);
+                playerRole.setStatus(true);
+                playerRoleRepository.save(playerRole);
+                if (playerRole.getRecordId() == null) {
+                    playerRole.setRecordId(String.valueOf(playerRole.getId().getTimestamp()));
+                }
+                playerRoleRepository.save(playerRole);
+                request.setMessage("Data added successfully");
             }
-            baseService.populateCommonData(playerRole);
-            playerRole.setStatus(true);
-            playerRoleRepository.save(playerRole);
-            if (playerRole.getRecordId() == null) {
-                playerRole.setRecordId(String.valueOf(playerRole.getId().getTimestamp()));
-            }
-            playerRoleRepository.save(playerRole);
             playerRoles.add(playerRole);
             request.setBaseUrl(ADMIN_PLAYERROLE);
-            request.setMessage("Data added successfully");
-
         }
         request.setPlayerRoleDtoList(modelMapper.map(playerRoles, List.class));
         return request;

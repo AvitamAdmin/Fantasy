@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -50,8 +51,6 @@ public class WinningsServiceImpl implements WinningsService {
 
     @Override
     public WinningsWsDto handleEdit(WinningsWsDto request) {
-
-
         Winnings winningsData = null;
         List<WinningsDto> winningsDtos = request.getWinningsDtoList();
         List<Winnings> winningsList = new ArrayList<>();
@@ -61,6 +60,7 @@ public class WinningsServiceImpl implements WinningsService {
             if (winningsDto1.getRecordId() != null) {
                 winningsData = winningsRepository.findByRecordId(winningsDto1.getRecordId());
                 modelMapper.map(winningsDto1, winningsData);
+                winningsData.setLastModified(new Date());
                 winningsRepository.save(winningsData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -71,18 +71,17 @@ public class WinningsServiceImpl implements WinningsService {
                 }
 
                 winningsData = modelMapper.map(winningsDto1, Winnings.class);
+                baseService.populateCommonData(winningsData);
+                winningsData.setStatus(true);
+                winningsRepository.save(winningsData);
+                if (winningsData.getRecordId() == null) {
+                    winningsData.setRecordId(String.valueOf(winningsData.getId().getTimestamp()));
+                }
+                winningsRepository.save(winningsData);
+                request.setMessage("Data added successfully");
             }
-            baseService.populateCommonData(winningsData);
-            winningsData.setStatus(true);
-            winningsRepository.save(winningsData);
-            if (winningsData.getRecordId() == null) {
-                winningsData.setRecordId(String.valueOf(winningsData.getId().getTimestamp()));
-            }
-            winningsRepository.save(winningsData);
-
             winningsList.add(winningsData);
             request.setBaseUrl(ADMIN_WINNINGS);
-
         }
         request.setWinningsDtoList(modelMapper.map(winningsList, List.class));
         return request;

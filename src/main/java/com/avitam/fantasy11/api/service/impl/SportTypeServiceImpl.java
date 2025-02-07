@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,6 +44,7 @@ public class SportTypeServiceImpl implements SportTypeService {
             if (sportTypeDto.getRecordId() != null) {
                 sportType = sportTypeRepository.findByRecordId(sportTypeDto.getRecordId());
                 modelMapper.map(sportTypeDto, sportType);
+                sportType.setLastModified(new Date());
                 sportTypeRepository.save(sportType);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -53,7 +55,6 @@ public class SportTypeServiceImpl implements SportTypeService {
                 }
                 sportType = modelMapper.map(sportTypeDto, SportType.class);
 
-            }
             if (sportTypeDto.getLogo() != null) {
                 try {
                     sportType.setLogo(new Binary(sportTypeDto.getLogo().getBytes()));
@@ -66,11 +67,12 @@ public class SportTypeServiceImpl implements SportTypeService {
             baseService.populateCommonData(sportType);
             sportType.setStatus(true);
             sportTypeRepository.save(sportType);
-            request.setMessage("Data added Successfully");
             if (sportType.getRecordId() == null) {
                 sportType.setRecordId(String.valueOf(sportType.getId().getTimestamp()));
             }
             sportTypeRepository.save(sportType);
+            request.setMessage("Data added Successfully");
+        }
 
             sportTypeList.add(sportType);
             request.setBaseUrl(ADMIN_SPORTTYPE);

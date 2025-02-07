@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -56,6 +57,7 @@ public class SEOServiceImpl implements SEOService {
             if (seoDto1.getRecordId() != null) {
                 seo = seoRepository.findByRecordId(seoDto1.getRecordId());
                 modelMapper.map(seoDto1, seo);
+                seo.setLastModified(new Date());
                 seoRepository.save(seo);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -65,27 +67,29 @@ public class SEOServiceImpl implements SEOService {
                     return request;
                 }
                 seo = modelMapper.map(seoDto1, SEO.class);
-            }
-            if (seoDto1.getImage() != null) {
-                try {
-                    seo.setImage(new Binary(seoDto1.getImage().getBytes()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    request.setMessage("Error processing image file");
-                    return request;
+
+                if (seoDto1.getImage() != null) {
+                    try {
+                        seo.setImage(new Binary(seoDto1.getImage().getBytes()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        request.setMessage("Error processing image file");
+                        return request;
+                    }
                 }
+                baseService.populateCommonData(seo);
+                seo.setStatus(true);
+                seoRepository.save(seo);
+                if (seo.getRecordId() == null) {
+                    seo.setRecordId(String.valueOf(seo.getId().getTimestamp()));
+                }
+                seoRepository.save(seo);
+                request.setMessage("Data added successfully");
             }
-            baseService.populateCommonData(seo);
-            seo.setStatus(true);
-            seoRepository.save(seo);
-            if (seo.getRecordId() == null) {
-                seo.setRecordId(String.valueOf(seo.getId().getTimestamp()));
-            }
-            seoRepository.save(seo);
-            request.setMessage("Data added successfully");
             seos.add(seo);
+            request.setBaseUrl(ADMIN_SEO);
         }
-        request.setBaseUrl(ADMIN_SEO);
+
         request.setSeoDtoList(modelMapper.map(seos, List.class));
         return request;
     }

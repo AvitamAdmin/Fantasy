@@ -10,6 +10,7 @@ import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.ScriptRepository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -53,6 +54,7 @@ public class ScriptServiceImpl implements ScriptService {
             if (scriptDto1.getRecordId() != null) {
                 script = scriptRepository.findByRecordId(scriptDto1.getRecordId());
                 modelMapper.map(scriptDto1, script);
+                script.setLastModified(new Date());
                 scriptWsDto.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.SCRIPT, scriptDto1.getIdentifier()) != null) {
@@ -61,16 +63,17 @@ public class ScriptServiceImpl implements ScriptService {
                     return scriptWsDto;
                 }
                 script = modelMapper.map(scriptDto1, Script.class);
+
+                script.setStatus(true);
+                baseService.populateCommonData(script);
+                scriptRepository.save(script);
+                if (script.getRecordId() == null) {
+                    script.setRecordId(String.valueOf(script.getId().getTimestamp()));
+                }
+                scriptRepository.save(script);
+                scriptWsDto.setMessage("Data added successfully!");
             }
-            script.setStatus(true);
-            baseService.populateCommonData(script);
-            scriptRepository.save(script);
-            if (script.getRecordId() == null) {
-                script.setRecordId(String.valueOf(script.getId().getTimestamp()));
-            }
-            scriptRepository.save(script);
             scripts.add(script);
-            scriptWsDto.setMessage("Data added successfully!");
             scriptWsDto.setBaseUrl(ADMIN_SCRIPT);
         }
         scriptWsDto.setScriptDtoList(modelMapper.map(scripts, List.class));

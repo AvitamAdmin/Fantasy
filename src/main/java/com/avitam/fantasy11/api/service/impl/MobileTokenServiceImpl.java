@@ -51,6 +51,7 @@ public class MobileTokenServiceImpl implements MobileTokenService {
             if(mobileTokenDto1.getRecordId() != null){
                 mobileToken = mobileTokenRepository.findByRecordId(mobileTokenDto1.getRecordId());
                 modelMapper.map(mobileTokenDto1,mobileToken);
+                mobileToken.setLastModified(new Date());
                 mobileTokenRepository.save(mobileToken);
                 request.setMessage("Data updated Successfully");
             }else{
@@ -60,16 +61,19 @@ public class MobileTokenServiceImpl implements MobileTokenService {
                     return request;
                 }
                 mobileToken = modelMapper.map(mobileTokenDto1,MobileToken.class);
+                baseService.populateCommonData(mobileToken);
+                mobileToken.setStatus(true);
+                mobileTokenRepository.save(mobileToken);
+                request.setMessage("MobileToken added successfully");
+
             }
-            baseService.populateCommonData(mobileToken);
-            mobileTokenRepository.save(mobileToken);
+
             if (mobileToken.getRecordId()== null){
                 mobileToken.setRecordId(String.valueOf(mobileToken.getId().getTimestamp()));
             }
             mobileTokenRepository.save(mobileToken);
             mobileTokens.add(mobileToken);
             request.setBaseUrl(ADMIN_MOBILETOKEN);
-            request.setMessage("MobileToken added successfully");
 
         }
         request.setMobileTokenDtoList(modelMapper.map(mobileTokens,List.class));

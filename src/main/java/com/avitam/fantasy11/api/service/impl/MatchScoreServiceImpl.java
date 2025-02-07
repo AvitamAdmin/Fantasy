@@ -52,6 +52,7 @@ public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
         if (matchScoreDto1.getRecordId() != null) {
             matchScoreData = matchScoreRepository.findByRecordId(matchScoreDto1.getRecordId());
             modelMapper.map(matchScoreDto1, matchScoreData);
+            matchScoreData.setLastModified(new Date());
             matchScoreRepository.save(matchScoreData);
             request.setMessage("MatchScore updated successfully");
         } else {
@@ -60,19 +61,18 @@ public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
                 request.setMessage("Identifier already present");
                 return request;
             }
-
             matchScoreData = modelMapper.map(matchScoreDto1, MatchScore.class);
+            baseService.populateCommonData(matchScoreData);
+            matchScoreData.setStatus(true);
+            matchScoreRepository.save(matchScoreData);
+
+            if (matchScoreData.getRecordId() == null) {
+                matchScoreData.setRecordId(String.valueOf(matchScoreData.getId().getTimestamp()));
+
+            }
+            matchScoreRepository.save(matchScoreData);
             request.setMessage("MatchScore added successfully");
         }
-        baseService.populateCommonData(matchScoreData);
-        matchScoreData.setStatus(true);
-        matchScoreRepository.save(matchScoreData);
-
-        if (matchScoreData.getRecordId() == null) {
-            matchScoreData.setRecordId(String.valueOf(matchScoreData.getId().getTimestamp()));
-
-        }
-        matchScoreRepository.save(matchScoreData);
         matchScoreList.add(matchScoreData);
         request.setBaseUrl(ADMIN_MATCHSCORE);
 

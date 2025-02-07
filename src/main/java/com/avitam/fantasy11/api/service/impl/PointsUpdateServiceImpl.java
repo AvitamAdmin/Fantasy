@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -49,6 +50,7 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
                 PointsUpdate requestData = modelMapper.map(pointsUpdateDto1, PointsUpdate.class);
                 pointsUpdate = pointsUpdateRepository.findByRecordId(pointsUpdateDto1.getRecordId());
                 modelMapper.map(requestData, pointsUpdate);
+                pointsUpdate.setLastModified(new Date());
                 pointsUpdateRepository.save(pointsUpdate);
                 request.setMessage("Data updated Successfully ");
             } else {
@@ -58,15 +60,16 @@ public class PointsUpdateServiceImpl implements PointsUpdateService {
                     return request;
                 }
                 pointsUpdate = modelMapper.map(pointsUpdateDto1, PointsUpdate.class);
+
+                baseService.populateCommonData(pointsUpdate);
+                pointsUpdate.setStatus(true);
+                pointsUpdateRepository.save(pointsUpdate);
+                if (pointsUpdate.getRecordId() == null) {
+                    pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));
+                }
+                pointsUpdateRepository.save(pointsUpdate);
+                request.setMessage("Data added Successfully");
             }
-            baseService.populateCommonData(pointsUpdate);
-            pointsUpdate.setStatus(true);
-            pointsUpdateRepository.save(pointsUpdate);
-            if (pointsUpdate.getRecordId() == null) {
-                pointsUpdate.setRecordId(String.valueOf(pointsUpdate.getId().getTimestamp()));
-            }
-            pointsUpdateRepository.save(pointsUpdate);
-            request.setMessage("Data added Successfully");
             pointsUpdates.add(pointsUpdate);
             request.setBaseUrl(ADMIN_POINTSUPDATE);
         }

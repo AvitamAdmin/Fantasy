@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,6 +45,7 @@ public class MatchTypeServiceImpl implements MatchTypeService {
             if (matchTypeDto1.getRecordId() != null) {
                 matchTypeData = matchTypeRepository.findByRecordId(matchTypeDto1.getRecordId());
                 modelMapper.map(matchTypeDto1, matchTypeData);
+                matchTypeData.setLastModified(new Date());
                 matchTypeRepository.save(matchTypeData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -52,18 +54,18 @@ public class MatchTypeServiceImpl implements MatchTypeService {
                     request.setMessage("Identifier already present");
                     return request;
                 }
-
                 matchTypeData = modelMapper.map(matchTypeDto1, MatchType.class);
+                baseService.populateCommonData(matchTypeData);
+                matchTypeData.setStatus(true);
+                matchTypeRepository.save(matchTypeData);
+
+                if (matchTypeData.getRecordId() == null) {
+                    matchTypeData.setRecordId(String.valueOf(matchTypeData.getId().getTimestamp()));
+                }
+                matchTypeRepository.save(matchTypeData);
+                request.setMessage("MatchType added successfully");
             }
-            baseService.populateCommonData(matchTypeData);
-            matchTypeData.setStatus(true);
-            matchTypeRepository.save(matchTypeData);
-            if (matchTypeData.getRecordId() == null) {
-                matchTypeData.setRecordId(String.valueOf(matchTypeData.getId().getTimestamp()));
-            }
-            matchTypeRepository.save(matchTypeData);
             matchTypeList.add(matchTypeData);
-            request.setMessage("MatchType added successfully");
             request.setBaseUrl(ADMIN_MATCHTYPE);
 
         }
