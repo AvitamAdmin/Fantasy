@@ -33,7 +33,6 @@ public class BaseServiceImpl implements BaseService {
     }
 
 
-
     @Override
     public CommonFields validateIdentifier(String entityName, String identifier) {
         GenericImportRepository genericImportRepository = repositoryService.getRepositoryForName(entityName);

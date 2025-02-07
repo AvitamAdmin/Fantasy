@@ -9,6 +9,7 @@ import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.types.Binary;
@@ -51,6 +52,7 @@ public class BannerServiceImpl implements BannerService {
             if (bannerDto1.getRecordId() != null) {
                 banner = bannerRepository.findByRecordId(bannerDto1.getRecordId());
                 modelMapper.map(bannerDto1, banner);
+                banner.setLastModified(new Date());
                 bannerRepository.save(banner);
                 bannerWsDto.setMessage("Data updated Successfully");
             } else {
@@ -59,29 +61,27 @@ public class BannerServiceImpl implements BannerService {
                     bannerWsDto.setMessage("Identifier already present");
                     return bannerWsDto;
                 }
-
                 banner = modelMapper.map(bannerDto1, Banner.class);
-            }
-            if (bannerDto1.getImage() != null) {
-                try {
-                    banner.setImage(new Binary(bannerDto1.getImage().getBytes()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    bannerWsDto.setMessage("Error processing image file");
-                    return bannerWsDto;
+                if (bannerDto1.getImage() != null) {
+                    try {
+                        banner.setImage(new Binary(bannerDto1.getImage().getBytes()));
+                    } catch (IOException e) {
+                        bannerWsDto.setMessage("Error processing image file");
+                        return bannerWsDto;
+                    }
                 }
+                baseService.populateCommonData(banner);
+                banner.setStatus(true);
+                bannerRepository.save(banner);
+                if (banner.getRecordId() == null) {
+                    banner.setRecordId(String.valueOf(banner.getId().getTimestamp()));
+                }
+                bannerRepository.save(banner);
+                bannerWsDto.setMessage("Data added Successfully");
             }
-            baseService.populateCommonData(banner);
-            banner.setStatus(true);
-            bannerRepository.save(banner);
-            bannerWsDto.setMessage("Data added Successfully");
-            if (banner.getRecordId() == null) {
-                banner.setRecordId(String.valueOf(banner.getId().getTimestamp()));
-            }
-            bannerRepository.save(banner);
             banners.add(banner);
-            bannerWsDto.setBaseUrl(ADMIN_BANNER);
         }
+        bannerWsDto.setBaseUrl(ADMIN_BANNER);
         bannerWsDto.setBannerDtoList(modelMapper.map(banner, List.class));
         return bannerWsDto;
     }

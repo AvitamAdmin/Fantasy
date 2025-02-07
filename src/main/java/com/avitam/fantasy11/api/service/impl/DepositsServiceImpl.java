@@ -5,8 +5,11 @@ import com.avitam.fantasy11.api.dto.DepositsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.DepositsService;
 import com.avitam.fantasy11.model.Deposits;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 import com.avitam.fantasy11.repository.DepositsRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
 import org.modelmapper.ModelMapper;
@@ -47,6 +50,7 @@ public class DepositsServiceImpl implements DepositsService {
             if (depositsDto.getRecordId() != null) {
                 depositsData = depositsRepository.findByRecordId(depositsDto.getRecordId());
                 modelMapper.map(depositsDto, depositsData);
+                depositsData.setLastModified(new Date());
                 depositsRepository.save(depositsData);
                 depositsWsDto.setMessage("Data updated Successfully");
             } else {
@@ -56,15 +60,15 @@ public class DepositsServiceImpl implements DepositsService {
                     return depositsWsDto;
                 }
                 depositsData = modelMapper.map(depositsDto, Deposits.class);
+                depositsData.setStatus(true);
+                depositsData.setCreationTime(new Date());
+                depositsRepository.save(depositsData);
+                if (depositsData.getRecordId() == null) {
+                    depositsData.setRecordId(String.valueOf(depositsData.getId().getTimestamp()));
+                }
+                depositsRepository.save(depositsData);
+                depositsWsDto.setMessage("Deposits added Successfully!");
             }
-            depositsData.setStatus(true);
-            baseService.populateCommonData(depositsData);
-            depositsRepository.save(depositsData);
-            if (depositsData.getRecordId() == null) {
-                depositsData.setRecordId(String.valueOf(depositsData.getId().getTimestamp()));
-            }
-            depositsRepository.save(depositsData);
-            depositsWsDto.setMessage("Deposits added Successfully!");
             depositsList.add(depositsData);
         }
         depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);

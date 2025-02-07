@@ -203,6 +203,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                 referralCode.append(CHARACTERS.charAt(index)).toString();
             }
             existingUser.setReferralCode(String.valueOf(referralCode));
+            existingUser.setCreationTime(new Date());
             userRepository.save(existingUser);
 
             userWsDto.setSuccess(true);

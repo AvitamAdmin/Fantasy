@@ -8,6 +8,7 @@ import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.repository.AddressRepository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.avitam.fantasy11.repository.EntityConstants;
@@ -46,6 +47,7 @@ public class AddressServiceImpl implements AddressService {
             if (addressDto1.getRecordId() != null) {
                 address = addressRepository.findByRecordId(addressDto1.getRecordId());
                 modelMapper.map(addressDto1, address);
+                address.setLastModified(new Date());
                 addressRepository.save(address);
                 addressWsDto.setMessage("Address updated successfully!");
             } else {
@@ -55,8 +57,8 @@ public class AddressServiceImpl implements AddressService {
                     return addressWsDto;
                 }
                 address = modelMapper.map(addressDto1, Address.class);
-                baseService.populateCommonData(address);
                 address.setStatus(true);
+                address.setCreationTime(new Date());
                 addressRepository.save(address);
                 if (address.getRecordId() == null) {
                     address.setRecordId(String.valueOf(address.getId().getTimestamp()));

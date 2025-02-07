@@ -46,6 +46,7 @@ public class ExtensionServiceImpl implements ExtensionService {
             if (extensionDto1.getRecordId() != null) {
                 extension = extensionRepository.findByRecordId(extensionDto1.getRecordId());
                 modelMapper.map(extensionDto1, extension);
+                extension.setLastModified(new Date());
                 extensionRepository.save(extension);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -63,18 +64,18 @@ public class ExtensionServiceImpl implements ExtensionService {
                         throw new RuntimeException(e);
                     }
                 }
+                baseService.populateCommonData(extension);
+                extension.setStatus(true);
+                extensionRepository.save(extension);
+                if (extension.getRecordId() == null) {
+                    extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
+                }
+                extensionRepository.save(extension);
+                request.setMessage("Data added Successfully");
             }
-            baseService.populateCommonData(extension);
-            extension.setStatus(true);
-            extensionRepository.save(extension);
-            if (extension.getRecordId() == null) {
-                extension.setRecordId(String.valueOf(extension.getId().getTimestamp()));
-            }
-            extensionRepository.save(extension);
             extensionList.add(extension);
-            request.setMessage("Data added Successfully");
-            request.setBaseUrl(ADMIN_EXTENSION);
         }
+        request.setBaseUrl(ADMIN_EXTENSION);
         request.setExtensionDtoList(modelMapper.map(extensionList, List.class));
         return request;
     }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -57,6 +58,7 @@ public class LanguageServiceImpl implements LanguageService {
             if (languageDto1.getRecordId() != null) {
                 languageData = languageRepository.findByRecordId(languageDto1.getRecordId());
                 modelMapper.map(languageDto1, languageData);
+                languageData.setLastModified(new Date());
                 languageRepository.save(languageData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -66,16 +68,15 @@ public class LanguageServiceImpl implements LanguageService {
                     return request;
                 }
                 languageData = modelMapper.map(languageDto1, Language.class);
-            }
-            baseService.populateCommonData(languageData);
-            languageList.add(languageData);
-            languageData.setStatus(true);
-            languageRepository.save(languageData);
-            if (languageData.getRecordId() == null) {
-                languageData.setRecordId(String.valueOf(languageData.getId().getTimestamp()));
+                baseService.populateCommonData(languageData);
+                languageData.setStatus(true);
+                languageRepository.save(languageData);
+                if (languageData.getRecordId() == null) {
+                    languageData.setRecordId(String.valueOf(languageData.getId().getTimestamp()));
+                }
+                languageRepository.save(languageData);
                 request.setMessage("Data added successfully");
             }
-            languageRepository.save(languageData);
             languageList.add(languageData);
         }
         request.setBaseUrl(ADMIN_LANGUAGE);

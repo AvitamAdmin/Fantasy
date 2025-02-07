@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -43,6 +44,7 @@ public class ContestServiceImpl implements ContestService {
             if (contestDto1.getRecordId() != null) {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
+                contestData.setLastModified(new Date());
                 contestRepository.save(contestData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -52,18 +54,19 @@ public class ContestServiceImpl implements ContestService {
                     return request;
                 }
                 contestData = modelMapper.map(contestDto1, Contest.class);
+
+                baseService.populateCommonData(contestData);
+                contestData.setStatus(true);
+                contestRepository.save(contestData);
+                if (contestData.getRecordId() == null) {
+                    contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
+                }
+                contestRepository.save(contestData);
+                request.setMessage("Contest added Successfully");
             }
-            baseService.populateCommonData(contestData);
-            contestData.setStatus(true);
-            contestRepository.save(contestData);
-            if (contestData.getRecordId() == null) {
-                contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
-            }
-            contestRepository.save(contestData);
             contestList.add(contestData);
-            request.setMessage("Contest added Successfully");
-            request.setBaseUrl(ADMIN_CONTEST);
         }
+        request.setBaseUrl(ADMIN_CONTEST);
         request.setContestDtos(modelMapper.map(contestList, List.class));
         return request;
     }

@@ -7,8 +7,11 @@ import com.avitam.fantasy11.api.service.GatewaysManualService;
 import com.avitam.fantasy11.model.GatewaysManual;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.GatewaysManualRepository;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +43,7 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
 
     @Override
     public GatewaysManualWsDto handleEdit(GatewaysManualWsDto gatewaysManualWsDto) {
-        GatewaysManualDto gatewaysManualDto = new GatewaysManualDto();
+
         GatewaysManual gatewaysManual = null;
         List<GatewaysManual> gatewaysManuals = new ArrayList<>();
         List<GatewaysManualDto> gatewaysManualDtoList = gatewaysManualWsDto.getGatewaysManualDtoList();
@@ -48,7 +51,9 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
             if (gatewaysManualDto1.getRecordId() != null) {
                 gatewaysManual = gatewaysManualRepository.findByRecordId(gatewaysManualDto1.getRecordId());
                 modelMapper.map(gatewaysManualDto1, gatewaysManual);
+                gatewaysManual.setLastModified(new Date());
                 gatewaysManualRepository.save(gatewaysManual);
+                gatewaysManualWsDto.setMessage("Data updated Successfully");
             } else {
                 if (baseService.validateIdentifier(EntityConstants.GATEWAYS_MANUAL, gatewaysManualDto1.getIdentifier()) != null) {
                     gatewaysManualWsDto.setSuccess(false);
@@ -56,27 +61,28 @@ public class GatewaysManualServiceImpl implements GatewaysManualService {
                     return gatewaysManualWsDto;
                 }
                 gatewaysManual = modelMapper.map(gatewaysManualDto1, GatewaysManual.class);
-            }
-            if (gatewaysManualDto1.getImage() != null) {
-                try {
-                    gatewaysManual.setLogo(new Binary(gatewaysManualDto1.getImage().getBytes()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    gatewaysManualWsDto.setMessage("Error processing image file");
-                    return gatewaysManualWsDto;
+
+                if (gatewaysManualDto1.getImage() != null) {
+                    try {
+                        gatewaysManual.setLogo(new Binary(gatewaysManualDto1.getImage().getBytes()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        gatewaysManualWsDto.setMessage("Error processing image file");
+                        return gatewaysManualWsDto;
+                    }
                 }
+                baseService.populateCommonData(gatewaysManual);
+                gatewaysManual.setStatus(true);
+                gatewaysManualRepository.save(gatewaysManual);
+                if (gatewaysManual.getRecordId() == null) {
+                    gatewaysManual.setRecordId(String.valueOf(gatewaysManual.getId().getTimestamp()));
+                }
+                gatewaysManualRepository.save(gatewaysManual);
+                gatewaysManualWsDto.setMessage("Manuals updated successfully!");
             }
-            baseService.populateCommonData(gatewaysManual);
-            gatewaysManual.setStatus(true);
-            gatewaysManualRepository.save(gatewaysManual);
-            if (gatewaysManual.getRecordId() == null) {
-                gatewaysManual.setRecordId(String.valueOf(gatewaysManual.getId().getTimestamp()));
-            }
-            gatewaysManualRepository.save(gatewaysManual);
             gatewaysManuals.add(gatewaysManual);
-            gatewaysManualWsDto.setMessage("Manuals updated successfully!");
-            gatewaysManualWsDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
         }
+        gatewaysManualWsDto.setBaseUrl(ADMIN_GATEWAYSMANUAL);
         gatewaysManualWsDto.setGatewaysManualDtoList(modelMapper.map(gatewaysManuals, List.class));
         return gatewaysManualWsDto;
     }
