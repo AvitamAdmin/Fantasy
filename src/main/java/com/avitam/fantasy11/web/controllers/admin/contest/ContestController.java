@@ -2,11 +2,12 @@ package com.avitam.fantasy11.web.controllers.admin.contest;
 
 import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.dto.ContestWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.ContestRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-
+import com.google.common.reflect.TypeToken;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -35,7 +38,7 @@ public class ContestController extends BaseController {
     public ContestWsDto getAllContest(@RequestBody ContestWsDto contestwsDto) {
         Pageable pageable = getPageable(contestwsDto.getPage(), contestwsDto.getSizePerPage(), contestwsDto.getSortDirection(), contestwsDto.getSortField());
         ContestDto contestDto = CollectionUtils.isNotEmpty(contestwsDto.getContestDtos()) ? contestwsDto.getContestDtos().get(0) : new ContestDto();
-        Contest contest = modelMapper.map(contestDto,Contest.class);
+        Contest contest = modelMapper.map(contestDto, Contest.class);
         Page<Contest> page = isSearchActive(contest) == null ? contestRepository.findAll(Example.of(contest), pageable) : contestRepository.findAll(pageable);
         contestwsDto.setContestDtos(modelMapper.map(page.getContent(), List.class));
         contestwsDto.setTotalPages(page.getTotalPages());
@@ -49,7 +52,10 @@ public class ContestController extends BaseController {
     public ContestWsDto getActiveContest() {
         ContestWsDto contestwsDto = new ContestWsDto();
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
-        contestwsDto.setContestDtos(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true), List.class));
+        Type listType=new TypeToken<ArrayList<ContestDto>>(){
+
+        }.getType();
+        contestwsDto.setContestDtos(modelMapper.map(contestRepository.findByStatusOrderByIdentifier(true), listType));
         return contestwsDto;
     }
 
@@ -81,13 +87,10 @@ public class ContestController extends BaseController {
         return contestwsDto;
     }
 
-//    @GetMapping("/winningAmount")
-//    @ResponseBody
-//    public double getWinningAmount(
-//            @RequestParam double entryFee,
-//            @RequestParam int slotFilled,
-//            @RequestParam double profitPercentage) {
-//        return contestService.getContestWinningAmount(entryFee, slotFilled, profitPercentage);
-//    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Contest());
+    }
 }
 

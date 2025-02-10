@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.pointsUpdate;
 
 import com.avitam.fantasy11.api.dto.PointsUpdateDto;
 import com.avitam.fantasy11.api.dto.PointsUpdateWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.PointsUpdateService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.repository.PointsUpdateRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -81,5 +83,11 @@ public class PointsUpdateController extends BaseController {
         pointsUpdateWsDto.setMessage("Data deleted Successfully");
         pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new PointsUpdate());
     }
 }

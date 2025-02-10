@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.userWinnings;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.dto.UserWinningsWsDto;
 import com.avitam.fantasy11.api.service.UserWinningsService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.repository.UserWinningsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -80,6 +82,12 @@ public class UserWinningsController extends BaseController {
         userWinningsWsDto.setMessage("Data deleted successfully");
         userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
         return userWinningsWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new UserWinnings());
     }
 
 }

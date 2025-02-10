@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.core.service.impl;
 
+import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.core.service.CoreService;
@@ -54,6 +55,12 @@ public class UserServiceImpl implements UserService {
                 user = modelMapper.map(userDto, User.class);
                 user.setStatus(true);
                 user.setCreationTime(new Date());
+                Set<Role> roles= new HashSet<>();
+                for(RoleDto role: userDto.getRoles()){
+                    Role role1 = roleRepository.findByRecordId(role.getRecordId());
+                    roles.add(role1);
+                }
+                user.setRoles(roles);
 
             }
             user.setLastModified(new Date());
@@ -66,6 +73,7 @@ public class UserServiceImpl implements UserService {
                 user.setRecordId(String.valueOf(user.getId().getTimestamp()));
             }
             userRepository.save(user);
+
             userList.add(user);
         }
         request.setBaseUrl(ADMIN_USER);

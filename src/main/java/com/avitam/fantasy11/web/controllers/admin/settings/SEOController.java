@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.settings;
 
 import com.avitam.fantasy11.api.dto.SEODto;
 import com.avitam.fantasy11.api.dto.SEOWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.SEOService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.repository.SEORepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -80,6 +82,12 @@ public class SEOController extends BaseController {
         seoWsDto.setMessage("Data deleted successfully!!");
         seoWsDto.setBaseUrl(ADMIN_SEO);
         return seoWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new SEO());
     }
 
 }

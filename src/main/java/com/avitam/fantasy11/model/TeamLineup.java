@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Document("TeamLineup")
-public class    TeamLineup extends  CommonFields{
+public class TeamLineup extends CommonFields {
 
     private String matchId;
 
@@ -19,6 +19,6 @@ public class    TeamLineup extends  CommonFields{
 
     private int lineupStatus;
 
- //   private int impactPlayer;
+    //   private int impactPlayer;
 
 }

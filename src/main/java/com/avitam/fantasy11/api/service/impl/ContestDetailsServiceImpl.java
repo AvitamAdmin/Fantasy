@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,6 +36,7 @@ public class ContestDetailsServiceImpl implements ContestDetailsService {
             if (contestDetailsDto.getRecordId() != null) {
                 contestDetails = contestDetailsRepository.findByRecordId(contestDetailsDto.getRecordId());
                 modelMapper.map(contestDetailsDto, contestDetails);
+                contestDetails.setLastModified(new Date());
                 contestDetailsRepository.save(contestDetails);
                 request.setMessage("Data Updated successfully");
             } else {
@@ -44,26 +46,22 @@ public class ContestDetailsServiceImpl implements ContestDetailsService {
                     return request;
                 }
                 contestDetails = modelMapper.map(contestDetailsDto, ContestDetails.class);
-            }
-            baseService.populateCommonData(contestDetails);
-            contestDetails.setStatus(true);
-            contestDetailsRepository.save(contestDetails);
-            if (contestDetails.getRecordId() == null) {
-                contestDetails.setRecordId(String.valueOf(contestDetails.getId().getTimestamp()));
+                baseService.populateCommonData(contestDetails);
+                contestDetails.setStatus(true);
+                contestDetailsRepository.save(contestDetails);
+                if (contestDetails.getRecordId() == null) {
+                    contestDetails.setRecordId(String.valueOf(contestDetails.getId().getTimestamp()));
+
+                }
                 contestDetailsRepository.save(contestDetails);
                 request.setMessage("Data Added Successfully");
             }
-
             contestDetailsList.add(contestDetails);
-
-            request.setBaseUrl(ADMIN_CONTESTDETAILS);
         }
+        request.setBaseUrl(ADMIN_CONTESTDETAILS);
         request.setContestDetailsDtoList(modelMapper.map(contestDetailsList, List.class));
         return request;
     }
-
-
-
 
 
 }

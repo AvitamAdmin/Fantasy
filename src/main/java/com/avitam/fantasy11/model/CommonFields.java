@@ -14,19 +14,18 @@ import java.util.Date;
 @MappedSuperclass
 public class CommonFields implements Serializable {
 
-
-        private String recordId;
-        private ObjectId id;
-        private String name;
-        private String creator;
-        private Boolean status;
-        @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
-        private Date creationTime;
-        @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
-        private Date lastModified;
-        private String modifiedBy;
-        private String pic;
-        private String identifier;
-        private String username;
-        private String email;}
+    private String recordId;
+    private ObjectId id;
+    private String name;
+    private String creator;
+    private Boolean status;
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
+    private Date creationTime;
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
+    private Date lastModified;
+    private String modifiedBy;
+    private String identifier;
+    private String username;
+    private String email;
+}
 

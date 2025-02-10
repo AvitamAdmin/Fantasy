@@ -2,8 +2,10 @@ package com.avitam.fantasy11.web.controllers.admin.advertise;
 
 import com.avitam.fantasy11.api.dto.BannerDto;
 import com.avitam.fantasy11.api.dto.BannerWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.BannerService;
 import com.avitam.fantasy11.model.Banner;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 
@@ -77,5 +79,11 @@ public class AdvertiseController extends BaseController {
         bannerWsDto.setMessage("Data deleted successfully");
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Banner());
     }
 }

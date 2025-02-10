@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -44,6 +45,7 @@ public class ContestServiceImpl implements ContestService {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
                 profitCalculation(contestData);
+                contestData.setLastModified(new Date());
                 contestRepository.save(contestData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -53,6 +55,19 @@ public class ContestServiceImpl implements ContestService {
                     return request;
                 }
                 contestData = modelMapper.map(contestDto1, Contest.class);
+
+                baseService.populateCommonData(contestData);
+                contestData.setStatus(true);
+                contestRepository.save(contestData);
+                if (contestData.getRecordId() == null) {
+                    contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
+                }
+                contestRepository.save(contestData);
+                request.setMessage("Contest added Successfully");
+            }
+            contestList.add(contestData);
+        }
+        request.setBaseUrl(ADMIN_CONTEST);
 
                 baseService.populateCommonData(contestData);
                 contestData.setStatus(true);

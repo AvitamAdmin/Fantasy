@@ -1,5 +1,8 @@
 package com.avitam.fantasy11.web.controllers;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
+import com.avitam.fantasy11.model.CommonFields;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -49,5 +52,47 @@ public class BaseController {
             orders.add(order);
         });
         return sort != null ? PageRequest.of(pageNumber, pageSize, Sort.by(orders)) : PageRequest.of(pageNumber, pageSize);
+    }
+
+    protected List<SearchDto> getGroupedParentAndChildAttributes(CommonFields type) {
+        List<SearchDto> searchDtoList = new ArrayList<>();
+        String regex = "(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])";
+        Field[] fields = type.getClass().getDeclaredFields();
+        Field[] staticFields = type.getClass().getSuperclass().getDeclaredFields();
+        Field[] basicStaticFields = type.getClass().getSuperclass().getSuperclass().getDeclaredFields();
+        Arrays.stream(fields).forEach(field -> {
+            SearchDto searchDto = new SearchDto();
+            String attrName = field.getName();
+            String[] labels = attrName.split(regex);
+            searchDto.setAttribute(attrName);
+            String label = labels.length > 1 ? labels[0] + " " + labels[1] : labels[0];
+            searchDto.setLabel(StringUtils.capitalize(label));
+            searchDto.setDynamicAttr(true);
+            searchDto.setDataType(field.getType().getName());
+            searchDtoList.add(searchDto);
+        });
+        Arrays.stream(staticFields).forEach(field -> {
+            SearchDto searchDto = new SearchDto();
+            String attrName = field.getName();
+            String[] labels = attrName.split(regex);
+            searchDto.setAttribute(attrName);
+            String label = labels.length > 1 ? labels[0] + " " + labels[1] : labels[0];
+            searchDto.setLabel(StringUtils.capitalize(label));
+            searchDto.setDynamicAttr(false);
+            searchDto.setDataType(field.getType().getName());
+            searchDtoList.add(searchDto);
+        });
+        Arrays.stream(basicStaticFields).forEach(field -> {
+            SearchDto searchDto = new SearchDto();
+            String attrName = field.getName();
+            String[] labels = attrName.split(regex);
+            searchDto.setAttribute(attrName);
+            String label = labels.length > 1 ? labels[0] + " " + labels[1] : labels[0];
+            searchDto.setLabel(StringUtils.capitalize(label));
+            searchDto.setDynamicAttr(false);
+            searchDto.setDataType(field.getType().getName());
+            searchDtoList.add(searchDto);
+        });
+        return searchDtoList;
     }
 }

@@ -10,12 +10,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("ContestJoined")
 
-public class ContestJoined extends CommonFields{
+public class ContestJoined extends CommonFields {
 
     private String userId;
-
     private String matchId;
-
     private String userTeamId;
-
+    private String contestId;
 }

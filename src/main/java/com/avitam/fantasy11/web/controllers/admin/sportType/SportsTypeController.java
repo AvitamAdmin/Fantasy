@@ -2,10 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.sportType;
 
 import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.SportTypeService;
-import com.avitam.fantasy11.model.Contest;
-import com.avitam.fantasy11.model.SportType;
-import com.avitam.fantasy11.model.Team;
-import com.avitam.fantasy11.model.TeamLineup;
+import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.repository.SportTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -95,9 +92,6 @@ public class SportsTypeController extends BaseController {
         return sportTypeService.handleEdit(request);
 
     }
-
-
-
     @PostMapping("/delete")
     @ResponseBody
     public SportTypeWsDto deleteSportType(@RequestBody SportTypeWsDto sportTypeWsDto ) {
@@ -108,6 +102,12 @@ public class SportsTypeController extends BaseController {
         sportTypeWsDto.setBaseUrl(ADMIN_SPORTSTYPE);
         return sportTypeWsDto;
 
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new SportType());
     }
 
 

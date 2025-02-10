@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.model;
 
+import com.avitam.fantasy11.api.dto.UserTeamDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,4 +18,13 @@ public class UserTeams extends CommonFields {
     private Set<UserTeam> players;
     private String teamName;
     private String contestId;
+    private String team1Name;
+    private String team2Name;
+    private int team1Count;
+    private int team2Count;
+    private int wicketKeeper;
+    private int bowler;
+    private int batsMan;
+    private int allRounder;
+
 }

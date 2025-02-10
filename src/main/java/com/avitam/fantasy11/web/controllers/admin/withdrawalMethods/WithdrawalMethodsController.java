@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.withdrawalMethods;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalMethodsWsDto;
 import com.avitam.fantasy11.api.service.WithdrawalMethodsService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.WithdrawalMethods;
 import com.avitam.fantasy11.repository.WithdrawalMethodsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -81,6 +83,12 @@ public class WithdrawalMethodsController extends BaseController {
         withdrawalMethodsWsDto.setMessage("Data deleted successfully");
         withdrawalMethodsWsDto.setBaseUrl(ADMIN_WITHDRAWALMETHODS);
         return withdrawalMethodsWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new WithdrawalMethods());
     }
 
 

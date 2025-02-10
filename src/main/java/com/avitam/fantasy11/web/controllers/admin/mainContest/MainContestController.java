@@ -3,7 +3,9 @@ package com.avitam.fantasy11.web.controllers.admin.mainContest;
 
 import com.avitam.fantasy11.api.dto.MainContestDto;
 import com.avitam.fantasy11.api.dto.MainContestWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.MainContestService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.MainContest;
 import com.avitam.fantasy11.repository.MainContestRepository;
 import org.apache.commons.collections4.CollectionUtils;
@@ -34,7 +36,7 @@ public class   MainContestController extends com.avitam.fantasy11.web.controller
     public MainContestWsDto getAllContest(@RequestBody MainContestWsDto mainContestWsDto) {
         Pageable pageable = getPageable(mainContestWsDto.getPage(), mainContestWsDto.getSizePerPage(), mainContestWsDto.getSortDirection(), mainContestWsDto.getSortField());
         MainContestDto mainContestDto = CollectionUtils.isNotEmpty(mainContestWsDto.getMainContestDtoList()) ? mainContestWsDto.getMainContestDtoList().get(0) : new MainContestDto();
-        MainContest mainContest = modelMapper.map(mainContestWsDto, MainContest.class);
+        MainContest mainContest = modelMapper.map(mainContestDto, MainContest.class);
         Page<MainContest> page = isSearchActive(mainContest) != null ? mainContestRepository.findAll(org.springframework.data.domain.Example.of(mainContest), pageable) : mainContestRepository.findAll(pageable);
         mainContestWsDto.setMainContestDtoList(modelMapper.map(page.getContent(), List.class));
         mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
@@ -79,5 +81,11 @@ public class   MainContestController extends com.avitam.fantasy11.web.controller
         mainContestWsDto.setMessage("Data deleted Successfully");
         mainContestWsDto.setBaseUrl(ADMIN_MAINCONTEST);
         return mainContestWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new MainContest());
     }
 }

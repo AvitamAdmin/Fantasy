@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.OTP;
 
 import com.avitam.fantasy11.api.dto.OtpDto;
 import com.avitam.fantasy11.api.dto.OtpWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.OtpService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.OTP;
 import com.avitam.fantasy11.repository.OtpRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -83,6 +85,12 @@ public class OtpController extends BaseController {
         request.setBaseUrl(ADMIN_OTP);
         request.setMessage("Data deleted successfully");
         return request;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new OTP());
     }
 
 }

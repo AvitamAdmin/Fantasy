@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,28 +38,30 @@ public class NotificationServiceImpl implements NotificationService {
         List<NotificationDto> notificationDtos = request.getNotificationDtoList();
         List<Notification> notifications = new ArrayList<>();
 
-        for(NotificationDto notificationDto1 :notificationDtos){
-            if(notificationDto1.getRecordId() != null){
+        for(NotificationDto notificationDto1 :notificationDtos) {
+            if (notificationDto1.getRecordId() != null) {
                 notification = notificationRepository.findByRecordId(notificationDto1.getRecordId());
-                modelMapper.map(notificationDto1,notification);
+                modelMapper.map(notificationDto1, notification);
+                notification.setLastModified(new Date());
                 notificationRepository.save(notification);
                 request.setMessage("Data updated Successfully");
-            }else{
-                if(baseService.validateIdentifier(EntityConstants.NOTIFICATION,notificationDto1.getIdentifier()) !=null){
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.NOTIFICATION, notificationDto1.getIdentifier()) != null) {
                     request.setMessage("Identifier already present");
                     request.setSuccess(false);
                     return request;
                 }
                 notification = modelMapper.map(notificationDto1, Notification.class);
+                baseService.populateCommonData(notification);
+                notificationRepository.save(notification);
+
+                if (notification.getRecordId() == null) {
+                    notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
+                }
+                notificationRepository.save(notification);
+                request.setMessage("Notification added successfully");
             }
-            baseService.populateCommonData(notification);
-            notificationRepository.save(notification);
-            if(notification.getRecordId()== null){
-                notification.setRecordId(String.valueOf(notification.getId().getTimestamp()));
-            }
-            notificationRepository.save(notification);
             notifications.add(notification);
-            request.setMessage("Notification added successfully");
             request.setBaseUrl(ADMIN_NOTIFICATION);
         }
         request.setNotificationDtoList(modelMapper.map(notifications, List.class));

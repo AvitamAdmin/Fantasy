@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.userteams;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -83,6 +85,12 @@ public class UserTeamsController extends BaseController {
         userTeamsWsDto.setMessage("Data deleted successfully");
         userTeamsWsDto.setBaseUrl(ADMIN_USERTEAMS);
         return userTeamsWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new UserTeams());
     }
 
 

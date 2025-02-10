@@ -47,6 +47,7 @@ public class KycServiceImpl implements KycService {
             if (kycDto1.getRecordId() != null) {
                 kycData = kycRepository.findByRecordId(kycDto1.getRecordId());
                 modelMapper.map(kycDto1, kycData);
+                kycData.setLastModified(new Date());
                 kycRepository.save(kycData);
                 request.setMessage("KYC updated successfully");
 
@@ -65,16 +66,14 @@ public class KycServiceImpl implements KycService {
                         return request;
                     }
                 }
-                // baseService.populateCommonData(kycData);
                 kycData.setCreationTime(new Date());
                 kycData.setStatus(true);
                 kycRepository.save(kycData);
-                request.setMessage("KYC was added successfully");
-
                 if (kycData.getRecordId() == null) {
                     kycData.setRecordId(String.valueOf(kycData.getId().getTimestamp()));
                 }
                 kycRepository.save(kycData);
+                request.setMessage("KYC added Successfully");
             }
 
             kycList.add(kycData);

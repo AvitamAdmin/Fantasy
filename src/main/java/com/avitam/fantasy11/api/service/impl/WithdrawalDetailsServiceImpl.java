@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -48,6 +49,7 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
             if (withdrawalDetailsDto1.getRecordId() != null) {
                 withdrawalDetailsData = withdrawalDetailsRepository.findByRecordId(withdrawalDetailsDto1.getRecordId());
                 modelMapper.map(withdrawalDetailsDto1, withdrawalDetailsData);
+                withdrawalDetailsData.setLastModified(new Date());
                 withdrawalDetailsRepository.save(withdrawalDetailsData);
                 request.setMessage("Data Updated Successfully");
             } else {
@@ -57,16 +59,18 @@ public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
                     return request;
                 }
                 withdrawalDetailsData = modelMapper.map(withdrawalDetailsDto1, WithdrawalDetails.class);
+
+                baseService.populateCommonData(withdrawalDetailsData);
+                withdrawalDetailsData.setStatus(true);
+                withdrawalDetailsRepository.save(withdrawalDetailsData);
+                if (withdrawalDetailsData.getRecordId() == null) {
+                    withdrawalDetailsData.setRecordId(String.valueOf(withdrawalDetailsData.getId().getTimestamp()));
+                }
+                withdrawalDetailsRepository.save(withdrawalDetailsData);
+                request.setMessage("Data Added Successfully");
             }
-            baseService.populateCommonData(withdrawalDetailsData);
-            withdrawalDetailsData.setStatus(true);
-            withdrawalDetailsRepository.save(withdrawalDetailsData);
-            if (withdrawalDetailsData.getRecordId() == null) {
-                withdrawalDetailsData.setRecordId(String.valueOf(withdrawalDetailsData.getId().getTimestamp()));
-            }
-            withdrawalDetailsRepository.save(withdrawalDetailsData);
+
             withdrawalDetailsList.add(withdrawalDetailsData);
-            request.setMessage("Data Added Successfully");
             request.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         }
         request.setWithdrawalDetailsDtoList(modelMapper.map(withdrawalDetailsList, List.class));

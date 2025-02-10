@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.deposits;
 
 import com.avitam.fantasy11.api.dto.DepositsDto;
 import com.avitam.fantasy11.api.dto.DepositsWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.DepositsService;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Deposits;
 import com.avitam.fantasy11.repository.DepositsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -93,6 +95,12 @@ public class DepositsLogController extends BaseController {
         depositsWsDto.setMessage("Data deleted Successfully");
         depositsWsDto.setBaseUrl(ADMIN_DEPOSIT);
         return depositsWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Deposits());
     }
 
 }

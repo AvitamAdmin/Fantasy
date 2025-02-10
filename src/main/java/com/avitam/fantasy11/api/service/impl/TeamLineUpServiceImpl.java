@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -62,6 +63,7 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
             if (teamLineUpDto1.getRecordId() != null) {
                 teamLineup = teamLineupRepository.findByRecordId(teamLineUpDto1.getRecordId());
                 modelMapper.map(teamLineUpDto1, teamLineup);
+                teamLineup.setLastModified(new Date());
                 teamLineupRepository.save(teamLineup);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -72,16 +74,17 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
                 }
 
                 teamLineup = modelMapper.map(teamLineUpDto1, TeamLineup.class);
+
+                baseService.populateCommonData(teamLineup);
+                teamLineup.setStatus(true);
+                teamLineupRepository.save(teamLineup);
+
+                if (teamLineup.getRecordId() == null) {
+                    teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
+                }
+                teamLineupRepository.save(teamLineup);
                 request.setMessage("Data added Successfully");
             }
-            baseService.populateCommonData(teamLineup);
-            teamLineup.setStatus(true);
-            teamLineupRepository.save(teamLineup);
-
-            if (teamLineup.getRecordId() == null) {
-                teamLineup.setRecordId(String.valueOf(teamLineup.getId().getTimestamp()));
-            }
-            teamLineupRepository.save(teamLineup);
             teamLineupList.add(teamLineup);
             request.setBaseUrl(ADMIN_TEAMLINEUP);
         }

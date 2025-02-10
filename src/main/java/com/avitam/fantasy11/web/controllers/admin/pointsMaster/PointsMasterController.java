@@ -2,7 +2,9 @@ package com.avitam.fantasy11.web.controllers.admin.pointsMaster;
 
 import com.avitam.fantasy11.api.dto.PointsMasterDto;
 import com.avitam.fantasy11.api.dto.PointsMasterWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.PointsMasterService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.PointsMaster;
 import com.avitam.fantasy11.repository.PointsMasterRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -83,5 +85,11 @@ public class PointsMasterController extends BaseController {
         pointsMasterWsDto.setBaseUrl(ADMIN_POINTSMASTER);
         pointsMasterWsDto.setRedirectUrl("/admin/pointsMaster");
         return pointsMasterWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new PointsMaster());
     }
 }

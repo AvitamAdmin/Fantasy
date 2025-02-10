@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.player;
 
 import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.PlayerService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -76,9 +77,9 @@ public class PlayerController extends BaseController {
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public PlayerWsDto handleEdit( @RequestParam("name") String name, @RequestParam("dob") String dob,
-                                   @RequestParam("nationality")String nationality,@RequestParam("teamId")String teamId,
-                                   @RequestParam("playerRoleId")String playerRoleId,@RequestParam("logo")MultipartFile logo) {
+    public PlayerWsDto handleEdit(@RequestParam("name") String name, @RequestParam("dob") String dob,
+                                  @RequestParam("nationality") String nationality, @RequestParam("teamId") String teamId,
+                                  @RequestParam("playerRoleId") String playerRoleId, @RequestParam("logo") MultipartFile logo) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
         playerDto.setLogo(logo);
@@ -95,8 +96,9 @@ public class PlayerController extends BaseController {
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public PlayerWsDto handleEditUpdate(@RequestParam("name") String name, @RequestParam("dob") String dob,
-                                           @RequestParam("nationality")String nationality,@RequestParam("teamId")String teamId,
-                                           @RequestParam("playerRoleId")String playerRoleId,@RequestParam("logo")MultipartFile logo, @RequestParam("recordId") String recordId){
+                                        @RequestParam("nationality") String nationality, @RequestParam("teamId") String teamId,
+                                        @RequestParam("playerRoleId") String playerRoleId, @RequestParam("logo") MultipartFile logo,
+                                        @RequestParam("recordId") String recordId) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
         playerDto.setLogo(logo);
@@ -147,6 +149,12 @@ public class PlayerController extends BaseController {
         return playerWsDto;
 
 
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Player());
     }
 
 }

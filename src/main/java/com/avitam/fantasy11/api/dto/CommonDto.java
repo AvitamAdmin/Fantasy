@@ -1,7 +1,5 @@
 package com.avitam.fantasy11.api.dto;
 
-import com.avitam.fantasy11.model.BaseEntity;
-import com.avitam.fantasy11.model.CommonFields;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +29,6 @@ public class CommonDto {
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date lastModified;
     private String modifiedBy;
-    private String pic;
     private String identifier;
 }
 

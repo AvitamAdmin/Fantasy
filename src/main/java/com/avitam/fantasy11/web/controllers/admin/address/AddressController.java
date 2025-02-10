@@ -2,8 +2,10 @@ package com.avitam.fantasy11.web.controllers.admin.address;
 
 import com.avitam.fantasy11.api.dto.AddressDto;
 import com.avitam.fantasy11.api.dto.AddressWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.AddressService;
 import com.avitam.fantasy11.model.Address;
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.AddressRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -80,5 +82,11 @@ public class AddressController extends BaseController {
         addressWsDto.setMessage("Data deleted successfully");
         addressWsDto.setBaseUrl(ADMIN_ADDRESS);
         return addressWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Address());
     }
 }

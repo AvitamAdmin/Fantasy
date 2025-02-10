@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.withdrawalDetails;
 
 import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.repository.WithdrawalDetailsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -79,6 +80,12 @@ public class WithdrawalDetailsController extends BaseController {
         withdrawalDetailsWsDto.setMessage("Data deleted successfully");
         withdrawalDetailsWsDto.setBaseUrl(ADMIN_WITHDRAWALDETAILS);
         return withdrawalDetailsWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new WithdrawalDetails());
     }
 
 }

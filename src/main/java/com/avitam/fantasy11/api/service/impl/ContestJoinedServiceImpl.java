@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,6 +44,7 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
             if (contestJoinedDto1.getRecordId() != null) {
                 contestJoined = contestJoinedRepository.findByRecordId(contestJoinedDto1.getRecordId());
                 modelMapper.map(contestJoinedDto1, contestJoined);
+                contestJoined.setLastModified(new Date());
                 contestJoinedRepository.save(contestJoined);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -52,19 +54,18 @@ public class ContestJoinedServiceImpl implements ContestJoinedService {
                     return request;
                 }
                 contestJoined = modelMapper.map(contestJoinedDto1, ContestJoined.class);
-
+                contestJoined.setCreationTime(new Date());
+                contestJoined.setStatus(true);
+                contestJoinedRepository.save(contestJoined);
+                if (contestJoined.getRecordId() == null) {
+                    contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
+                }
+                contestJoinedRepository.save(contestJoined);
+                request.setMessage("Contest added successfully");
             }
-            baseService.populateCommonData(contestJoined);
-            contestJoined.setStatus(true);
-            contestJoinedRepository.save(contestJoined);
-            if (contestJoined.getRecordId() == null) {
-                contestJoined.setRecordId(String.valueOf(contestJoined.getId().getTimestamp()));
-            }
-            contestJoinedRepository.save(contestJoined);
-            request.setMessage("Contest added successfully");
             contestJoineds.add(contestJoined);
-            request.setBaseUrl(ADMIN_CONTESTJOINED);
         }
+        request.setBaseUrl(ADMIN_CONTESTJOINED);
         request.setContestJoinedDtoList(modelMapper.map(contestJoineds, List.class));
         return request;
     }

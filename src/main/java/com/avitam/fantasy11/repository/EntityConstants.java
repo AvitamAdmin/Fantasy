@@ -38,7 +38,7 @@ public interface EntityConstants {
     String NODE = "Node";
     String LEADER_BOARD = "LeaderBoard";
     String NOTIFICATION = "Notification";
-    String WEBSITESETTING= "WebSiteSetting";
+    String WEBSITESETTING= "WebsiteSetting";
     String CONTESTDETAILS = "ContestDetails";
     String WINNINGS = "Winnings";
 }

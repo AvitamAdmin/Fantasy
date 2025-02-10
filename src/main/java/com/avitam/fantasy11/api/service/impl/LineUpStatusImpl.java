@@ -24,7 +24,7 @@ public class LineUpStatusImpl implements LineUpStatusService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private static final String ADMIN_LINEUP_STATUS ="/admin/lineupStatus";
+    private static final String ADMIN_LINEUP_STATUS = "/admin/lineupStatus";
 
     @Autowired
     private BaseService baseService;
@@ -45,6 +45,7 @@ public class LineUpStatusImpl implements LineUpStatusService {
             if (lineUpStatusDto1.getRecordId() != null) {
                 lineUpStatusData = lineUpStatusRepository.findByRecordId(lineUpStatusDto1.getRecordId());
                 modelMapper.map(lineUpStatusDto1, lineUpStatusData);
+                lineUpStatusData.setLastModified(new Date());
                 lineUpStatusRepository.save(lineUpStatusData);
                 request.setMessage("Lineup Status was updated successfully");
             } else {
@@ -53,25 +54,22 @@ public class LineUpStatusImpl implements LineUpStatusService {
                     request.setMessage("Identifier already present");
                     return request;
                 }
-
                 lineUpStatusData = modelMapper.map(lineUpStatusDto1, LineUpStatus.class);
+                baseService.populateCommonData(lineUpStatusData);
+                lineUpStatusData.setStatus(true);
+                lineUpStatusRepository.save(lineUpStatusData);
+                if (lineUpStatusData.getRecordId() == null) {
+                    lineUpStatusData.setRecordId(String.valueOf(lineUpStatusData.getId().getTimestamp()));
+                }
+                lineUpStatusRepository.save(lineUpStatusData);
+                request.setMessage("Lineup Status added successfully");
             }
-            baseService.populateCommonData(lineUpStatusData);
-            lineUpStatusData.setStatus(true);
-            lineUpStatusRepository.save(lineUpStatusData);
-            if (lineUpStatusData.getRecordId() == null) {
-                lineUpStatusData.setRecordId(String.valueOf(lineUpStatusData.getId().getTimestamp()));
-            }
-            lineUpStatusRepository.save(lineUpStatusData);
             lineUpStatusList.add(lineUpStatusData);
-            request.setMessage("Lineup Status added successfully");
-            request.setBaseUrl(ADMIN_LINEUP_STATUS);
-
         }
+        request.setBaseUrl(ADMIN_LINEUP_STATUS);
         request.setLineUpStatusDtoList(modelMapper.map(lineUpStatusList, List.class));
         return request;
     }
-
 
 
     @Override

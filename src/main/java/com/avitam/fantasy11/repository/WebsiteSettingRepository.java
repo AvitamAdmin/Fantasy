@@ -15,8 +15,7 @@ public interface WebsiteSettingRepository extends GenericImportRepository<Websit
 
     void deleteByRecordId(String recordId);
 
-
-
+    Object findByStatusOrderByIdentifier(boolean b);
 }
 
 

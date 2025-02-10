@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -49,6 +50,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
             if (leaderBoardDto1.getRecordId() != null) {
                 leaderBoardData = leaderBoardRepository.findByRecordId(leaderBoardDto1.getRecordId());
                 modelMapper.map(leaderBoardDto1, leaderBoardData);
+                leaderBoardData.setLastModified(new Date());
                 leaderBoardRepository.save(leaderBoardData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -59,19 +61,19 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
                 }
 
                 leaderBoardData = modelMapper.map(leaderBoardDto1, LeaderBoard.class);
-            }
-            baseService.populateCommonData(leaderBoardData);
-            leaderBoardData.setStatus(true);
-            leaderBoardRepository.save(leaderBoardData);
-            if (leaderBoardData.getRecordId() == null) {
-                leaderBoardData.setRecordId(String.valueOf(leaderBoardData.getId().getTimestamp()));
-            }
-            leaderBoardRepository.save(leaderBoardData);
-            leaderBoardList.add(leaderBoardData);
-            request.setMessage("LeaderBoard added successfully");
-            request.setBaseUrl(ADMIN_LEADER_BOARD);
 
+                baseService.populateCommonData(leaderBoardData);
+                leaderBoardData.setStatus(true);
+                leaderBoardRepository.save(leaderBoardData);
+                if (leaderBoardData.getRecordId() == null) {
+                    leaderBoardData.setRecordId(String.valueOf(leaderBoardData.getId().getTimestamp()));
+                }
+                leaderBoardRepository.save(leaderBoardData);
+                request.setMessage("LeaderBoard added successfully");
+            }
+            leaderBoardList.add(leaderBoardData);
         }
+        request.setBaseUrl(ADMIN_LEADER_BOARD);
         request.setLeaderBoardDtoList(modelMapper.map(leaderBoardList, List.class));
         return request;
     }

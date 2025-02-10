@@ -11,5 +11,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class WebsiteSettingsWsDto extends CommonWsDto{
+
     private List<WebsiteSettingDto> websiteSettingDtoList;
 }

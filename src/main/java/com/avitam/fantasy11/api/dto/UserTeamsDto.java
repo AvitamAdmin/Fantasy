@@ -18,4 +18,14 @@ public class UserTeamsDto extends CommonDto{
     private Set<UserTeamDto> players;
     private String teamName;
     private String contestId;
+    private String team1Name;
+    private String team2Name;
+    private int team1Count;
+    private int team2Count;
+    private int wicketKeeper;
+    private int bowler;
+    private int batsMan;
+    private int allRounder;
+
+
 }

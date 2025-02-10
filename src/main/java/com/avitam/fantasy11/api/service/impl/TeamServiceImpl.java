@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -55,6 +56,16 @@ public class TeamServiceImpl implements TeamService {
             if (teamDto1.getRecordId() != null) {
                 team = teamRepository.findByRecordId(teamDto1.getRecordId());
                 modelMapper.map(teamDto1, team);
+                team.setLastModified(new Date());
+                if (teamDto1.getLogo() != null) {
+                    try {
+                        team.setLogo(new Binary(teamDto1.getLogo().getBytes()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        request.setMessage("Error processing image file");
+                        return request;
+                    }
+                }
                 teamRepository.save(team);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -69,7 +80,10 @@ public class TeamServiceImpl implements TeamService {
                     try {
                         team.setLogo(new Binary(teamDto1.getLogo().getBytes()));
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
+                        request.setMessage("Error processing image file");
+                        return request;
+
                     }
                 }
                 baseService.populateCommonData(team);

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Random;
@@ -47,6 +48,8 @@ public class MobileOTPServiceImpl implements MobileOTPService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ConcurrentHashMap<String, String> otpMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int LENGTH = 6;
 
     @Override
     public UserWsDto sendOtp(UserWsDto userWsDto) {
@@ -59,6 +62,7 @@ public class MobileOTPServiceImpl implements MobileOTPService {
             }
             String otp = generateOtp();
             otpMap.put(mobileNumber, otp);
+            userWsDto.setOtp(otp);
             otpExpirationMap.put(mobileNumber, LocalDateTime.now().plusMinutes(otpExpirationMinutes));
 
             OTP otp1 = new OTP();
@@ -154,8 +158,18 @@ public class MobileOTPServiceImpl implements MobileOTPService {
                 userWsDto.setMessage("User not found. Please validate OTP first.");
                 return userWsDto;
             }
+            SecureRandom RANDOM = new SecureRandom();
+
+            StringBuilder referralCode = new StringBuilder(LENGTH);
+
+            for (int i = 0; i < LENGTH; i++) {
+                int index = RANDOM.nextInt(CHARACTERS.length());
+                referralCode.append(CHARACTERS.charAt(index)).toString();
+            }
 
             existingUser.setUsername(username);
+            existingUser.setReferralCode(String.valueOf(referralCode));
+            existingUser.setCreationTime(new Date());
             userRepository.save(existingUser);
         }
         userWsDto.setSuccess(true);

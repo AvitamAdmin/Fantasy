@@ -1,9 +1,11 @@
 package com.avitam.fantasy11.web.controllers.admin.tournament;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.dto.TournamentDto;
 import com.avitam.fantasy11.api.dto.TournamentWsDto;
 import com.avitam.fantasy11.api.service.TournamentService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.model.Tournament;
 import com.avitam.fantasy11.repository.TournamentRepository;
@@ -84,6 +86,12 @@ public class TournamentController extends BaseController {
         tournamentWsDto.setMessage("Data deleted Successfully");
         tournamentWsDto.setBaseUrl(ADMIN_TOURNAMENT);
         return tournamentWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new Tournament());
     }
 
 

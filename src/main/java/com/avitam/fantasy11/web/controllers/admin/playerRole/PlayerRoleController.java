@@ -2,6 +2,7 @@ package com.avitam.fantasy11.web.controllers.admin.playerRole;
 
 import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.PlayerRoleService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.PlayerRole;
 import com.avitam.fantasy11.repository.PlayerRoleRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -81,5 +82,11 @@ public class PlayerRoleController extends BaseController {
         playerRoleWsDto.setMessage("Data deleted successfully");
         playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
         return playerRoleWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new PlayerRole());
     }
 }

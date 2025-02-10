@@ -5,7 +5,6 @@ import com.avitam.fantasy11.api.dto.PlayerWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.PlayerService;
 import com.avitam.fantasy11.model.Player;
-import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
@@ -45,6 +44,16 @@ public class PlayerServiceImpl implements PlayerService {
             if (playerDto1.getRecordId() != null) {
                 player = playerRepository.findByRecordId(playerDto1.getRecordId());
                 modelMapper.map(playerDto1, player);
+                if (playerDto1.getLogo() != null) {
+                    try {
+                        player.setLogo(new Binary(playerDto1.getLogo().getBytes()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        request.setMessage("Error processing image file");
+                        return request;
+                    }
+                }
+                player.setLastModified(new Date());
                 playerRepository.save(player);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -63,32 +72,18 @@ public class PlayerServiceImpl implements PlayerService {
                         return request;
                     }
                 }
-
                 baseService.populateCommonData(player);
                 player.setStatus(true);
                 playerRepository.save(player);
-            }
-            if (playerDto1.getRecordId() == null) {
-                player.setRecordId(String.valueOf(player.getId().getTimestamp()));
-            }
-
-            if (playerDto1.getLogo() != null) {
-                try {
-                    player.setLogo(new Binary(playerDto1.getLogo().getBytes()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    request.setMessage("Error processing image file");
-                    return request;
+                if (playerDto1.getRecordId() == null) {
+                    player.setRecordId(String.valueOf(player.getId().getTimestamp()));
                 }
+                playerRepository.save(player);
+                request.setMessage("Data added successfully");
             }
-            playerRepository.save(player);
         }
-
-
         players.add(player);
-        request.setMessage("Data added successfully");
         request.setBaseUrl(ADMIN_PLAYER);
-
         request.setPlayerDtoList(modelMapper.map(players, List.class));
         return request;
     }

@@ -2,11 +2,10 @@ package com.avitam.fantasy11.web.controllers.admin.matchScore;
 
 import com.avitam.fantasy11.api.dto.MatchScoreDto;
 import com.avitam.fantasy11.api.dto.MatchScoreWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.MatchScoreService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.repository.MatchScoreRepository;
-import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -22,12 +21,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/matchScore")
 public class MatchScoreController extends BaseController {
-    @Autowired
-    private MatchesRepository matchesRepository;
+
     @Autowired
     private MatchScoreRepository matchScoreRepository;
-    @Autowired
-    private CoreService coreService;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -85,6 +81,12 @@ public class MatchScoreController extends BaseController {
         matchScoreWsDto.setMessage("Data deleted Successfully");
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         return matchScoreWsDto;
+    }
+
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new MatchScore());
     }
 }
 

@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.settings;
 
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.SportAPIDto;
 import com.avitam.fantasy11.api.dto.SportsAPIWsDto;
 import com.avitam.fantasy11.api.service.SportAPIService;
+import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.SportsApi;
 import com.avitam.fantasy11.repository.SportsApiRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -81,5 +83,11 @@ public class SportAPIController extends BaseController {
         sportsAPIWsDto.setMessage("Data deleted successfully!!");
         sportsAPIWsDto.setBaseUrl(ADMIN_SPORTAPI);
         return sportsAPIWsDto;
+    }
+    @GetMapping("/getAdvancedSearch")
+    @ResponseBody
+
+    public List<SearchDto> getSearchAttributes() {
+        return getGroupedParentAndChildAttributes(new SportsApi());
     }
 }
