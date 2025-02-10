@@ -21,4 +21,8 @@ public class ContestDto extends CommonDto{
     private Map<String,Double> rankPrice;
     private int winPercentage;
     private int maxTeams;
+    private double profit;
+    private double totalAmount;
+    private int profitPercentage;
+    private double winningsAmount;
 }

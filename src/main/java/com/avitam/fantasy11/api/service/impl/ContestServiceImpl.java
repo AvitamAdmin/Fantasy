@@ -43,6 +43,7 @@ public class ContestServiceImpl implements ContestService {
             if (contestDto1.getRecordId() != null) {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
+                profitCalculation(contestData);
                 contestRepository.save(contestData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -52,18 +53,20 @@ public class ContestServiceImpl implements ContestService {
                     return request;
                 }
                 contestData = modelMapper.map(contestDto1, Contest.class);
+
+                baseService.populateCommonData(contestData);
+                contestData.setStatus(true);
+                profitCalculation(contestData);
+                contestRepository.save(contestData);
+                if (contestData.getRecordId() == null) {
+                    contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
+                }
+                contestRepository.save(contestData);
+                request.setMessage("Contest added Successfully");
             }
-            baseService.populateCommonData(contestData);
-            contestData.setStatus(true);
-            contestRepository.save(contestData);
-            if (contestData.getRecordId() == null) {
-                contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
-            }
-            contestRepository.save(contestData);
             contestList.add(contestData);
-            request.setMessage("Contest added Successfully");
-            request.setBaseUrl(ADMIN_CONTEST);
         }
+        request.setBaseUrl(ADMIN_CONTEST);
         request.setContestDtos(modelMapper.map(contestList, List.class));
         return request;
     }
@@ -83,4 +86,35 @@ public class ContestServiceImpl implements ContestService {
         }
     }
 
+//    @Override
+//    public double getContestWinningAmount(double entryFee, int slotFilled, double profitPercentage) {
+//        return 0;
+//    }
+
+
+//        @Override
+//        public double getContestWinningAmount(double entryFee, int slotFilled, double profitPercentage) {
+//            double totalAmount = entryFee * slotFilled;
+//            double profit = totalAmount * profitPercentage;
+//            double winningsAmount = totalAmount - profit;
+//            contestRepository.save(contest);
+//            return winningsAmount;
+//        }
+
+    private void profitCalculation(Contest contestDto1) {
+
+
+        contestDto1.setTotalAmount(contestDto1.getTotalAmount());
+            contestDto1.setTotalAmount(contestDto1.getEntryFee() * contestDto1.getNoOfMembers());
+
+        contestDto1.setProfit(contestDto1.getProfit());
+        //contestDto1.setProfitPercentage(contestDto1.get);
+        contestDto1.setProfit(contestDto1.getTotalAmount() * contestDto1.getProfitPercentage() / 100);
+
+        contestDto1.setWinningsAmount(contestDto1.getWinningsAmount());
+        contestDto1.setWinningsAmount(contestDto1.getTotalAmount() - contestDto1.getProfit());
+    }
 }
+
+
+

@@ -20,4 +20,8 @@ public class Contest extends CommonFields{
     private Map<String,Double> rankPrice;
     private int winPercentage;
     private int maxTeams;
+    private double winningsAmount;
+    private double totalAmount;
+    private int profitPercentage;
+    private double profit;
 }

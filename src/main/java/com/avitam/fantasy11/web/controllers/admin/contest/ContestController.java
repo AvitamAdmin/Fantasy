@@ -80,4 +80,14 @@ public class ContestController extends BaseController {
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
         return contestwsDto;
     }
+
+//    @GetMapping("/winningAmount")
+//    @ResponseBody
+//    public double getWinningAmount(
+//            @RequestParam double entryFee,
+//            @RequestParam int slotFilled,
+//            @RequestParam double profitPercentage) {
+//        return contestService.getContestWinningAmount(entryFee, slotFilled, profitPercentage);
+//    }
 }
+

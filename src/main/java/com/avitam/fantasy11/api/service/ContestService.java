@@ -14,4 +14,6 @@ public interface ContestService {
 
     void updateByRecordId(String recordId);
 
+//    double getContestWinningAmount (double entryFee, int slotFilled, double profitPercentage);
+
 }
