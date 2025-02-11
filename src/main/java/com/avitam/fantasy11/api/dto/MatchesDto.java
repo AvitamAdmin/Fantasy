@@ -25,7 +25,7 @@ public class MatchesDto extends CommonDto{
     private boolean matchStatus;
     private String tournamentId;
     private String sportTypeId;
-    private String parentMainContestId;
+    private String mainContestId;
     private String matchTypeId;
     private String event;
     private List<String> teams;

@@ -23,6 +23,6 @@ public class Matches extends CommonFields{
     private String tournamentId;
     private String sportTypeId;
     private String event;
-    private String parentMainContestId;
+    private String mainContestId;
     private String matchTypeId;
 }

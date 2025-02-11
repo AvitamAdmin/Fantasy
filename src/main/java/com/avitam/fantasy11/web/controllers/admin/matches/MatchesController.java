@@ -38,7 +38,7 @@ public class MatchesController extends BaseController {
         Pageable pageable = getPageable(matchesWsDto.getPage(), matchesWsDto.getSizePerPage(), matchesWsDto.getSortDirection(), matchesWsDto.getSortField());
         MatchesDto matchesDto = CollectionUtils.isNotEmpty(matchesWsDto.getMatchesDtoList()) ? matchesWsDto.getMatchesDtoList().get(0) : new MatchesDto();
         Matches matches = modelMapper.map(matchesDto, Matches.class);
-        Page<Matches> page = isSearchActive(matches) != null ? matchesRepository.findAll(Example.of(matches), pageable) : matchesRepository.findAll(pageable);
+        Page<Matches> page = isSearchActive(matches) == null ? matchesRepository.findAll(Example.of(matches), pageable) : matchesRepository.findAll(pageable);
         matchesWsDto.setMatchesDtoList(modelMapper.map(page.getContent(), List.class));
         matchesWsDto.setBaseUrl(ADMIN_MATCHES);
         matchesWsDto.setTotalRecords(page.getTotalElements());
