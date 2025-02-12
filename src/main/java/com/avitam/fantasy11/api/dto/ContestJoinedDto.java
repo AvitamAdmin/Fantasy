@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class ContestJoinedDto extends CommonDto{
+public class ContestJoinedDto extends CommonDto {
 
     private String userId;
 

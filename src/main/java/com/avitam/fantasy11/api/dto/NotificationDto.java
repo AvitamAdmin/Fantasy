@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class NotificationDto extends CommonDto{
+public class NotificationDto extends CommonDto {
 
     private String message;
     private String mobileNumber;

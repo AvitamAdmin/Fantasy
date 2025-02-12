@@ -12,10 +12,10 @@ public class MailUtil {
         String[] lines = readHtmlContent.split("\r?\n|\r");
         String deepLink = null;
 
-        for (String line : Arrays.asList(lines)) {
+        for (String line : lines) {
             if (line.contains(searchTerm) && SUBJECT.equals(subject)) {
                 String[] tokens = line.split("\"");
-                for (String link : Arrays.asList(tokens)) {
+                for (String link : tokens) {
                     if (link.contains(searchTerm)) {
                         deepLink = link;
                     }

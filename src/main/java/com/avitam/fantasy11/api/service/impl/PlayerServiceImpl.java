@@ -19,14 +19,13 @@ import java.util.List;
 @Service
 public class PlayerServiceImpl implements PlayerService {
 
+    private static final String ADMIN_PLAYER = "/admin/player";
     @Autowired
     private PlayerRepository playerRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    private static final String ADMIN_PLAYER = "/admin/player";
 
     @Override
     public Player findByRecordId(String recordId) {
@@ -44,9 +43,9 @@ public class PlayerServiceImpl implements PlayerService {
             if (playerDto1.getRecordId() != null) {
                 player = playerRepository.findByRecordId(playerDto1.getRecordId());
                 modelMapper.map(playerDto1, player);
-                if (playerDto1.getLogo() != null) {
+                if (playerDto1.getPlayerImage() != null) {
                     try {
-                        player.setLogo(new Binary(playerDto1.getLogo().getBytes()));
+                        player.setPlayerImage(new Binary(playerDto1.getPlayerImage().getBytes()));
                     } catch (IOException e) {
                         e.printStackTrace();
                         request.setMessage("Error processing image file");
@@ -63,11 +62,10 @@ public class PlayerServiceImpl implements PlayerService {
 //                    return request;
 
                 player = modelMapper.map(playerDto1, Player.class);
-                if (playerDto1.getLogo() != null) {
+                if (playerDto1.getPlayerImage() != null) {
                     try {
-                        player.setLogo(new Binary(playerDto1.getLogo().getBytes()));
+                        player.setPlayerImage(new Binary(playerDto1.getPlayerImage().getBytes()));
                     } catch (IOException e) {
-                        e.printStackTrace();
                         request.setMessage("Error processing image file");
                         return request;
                     }

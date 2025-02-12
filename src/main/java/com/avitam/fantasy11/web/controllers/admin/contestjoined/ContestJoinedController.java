@@ -21,14 +21,13 @@ import java.util.List;
 @RequestMapping("/admin/contestJoined")
 public class ContestJoinedController extends BaseController {
 
+    private static final String ADMIN_CONTESTJOINED = "/admin/contestJoined";
     @Autowired
     private ContestJoinedRepository contestJoinedRepository;
     @Autowired
     private ContestJoinedService contestJoinedService;
     @Autowired
     private ModelMapper modelMapper;
-
-    private static final String ADMIN_CONTESTJOINED = "/admin/contestJoined";
 
     @PostMapping
     @ResponseBody

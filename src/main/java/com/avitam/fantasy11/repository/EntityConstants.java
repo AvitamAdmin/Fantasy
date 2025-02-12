@@ -2,18 +2,18 @@ package com.avitam.fantasy11.repository;
 
 public interface EntityConstants {
 
-    String ADDRESS="Address";
+    String ADDRESS = "Address";
     String BANNER = "Banner";
     String CONTEST_JOINED = "ContestJoined";
     String CONTEST = "Contest";
     String DEPOSITS = "Deposits";
     String EXTENSION = "Extension";
-    String GATEWAYS_AUTOMATIC="GatewaysAutomatic";
+    String GATEWAYS_AUTOMATIC = "GatewaysAutomatic";
     String GATEWAYS_MANUAL = "GatewaysManual";
-    String KYC="KYC";
+    String KYC = "KYC";
     String LANGUAGE = "Language";
     String LINEUPSTATUS = "LineUpStatus";
-    String MAINCONTEST = "MainContest";
+    String MAINCONTEST = "ContestType";
     String MATCHES = "Matches";
     String MATCH_SCORE = "MatchScore";
     String MATCH_TYPE = "MatchType";
@@ -28,7 +28,7 @@ public interface EntityConstants {
     String SEO = "SEO";
     String SPORTAPI = "SportsApi";
     String SPORT_TYPE = "SportType";
-    String TEAM_LINE_UP="TeamLineup";
+    String TEAM_LINE_UP = "TeamLineup";
     String TEAM = "Team";
     String TOURNAMENT = "Tournament";
     String USER_TEAMS = "UserTeams";
@@ -38,7 +38,7 @@ public interface EntityConstants {
     String NODE = "Node";
     String LEADER_BOARD = "LeaderBoard";
     String NOTIFICATION = "Notification";
-    String WEBSITESETTING= "WebsiteSetting";
+    String WEBSITESETTING = "WebsiteSetting";
     String CONTESTDETAILS = "ContestDetails";
     String WINNINGS = "Winnings";
 }

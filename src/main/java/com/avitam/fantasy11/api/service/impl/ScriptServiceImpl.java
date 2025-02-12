@@ -8,26 +8,24 @@ import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.model.Script;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.ScriptRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 @Service
 public class ScriptServiceImpl implements ScriptService {
 
+    public static final String ADMIN_SCRIPT = "/admin/script";
     @Autowired
     private ScriptRepository scriptRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_SCRIPT = "/admin/script";
 
     @Override
     public Role findByRecordId(String recordId) {

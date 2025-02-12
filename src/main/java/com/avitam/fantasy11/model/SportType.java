@@ -11,7 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("SportType")
 public class SportType extends CommonFields {
-
-       private Binary logo;
-
+    private Binary logo;
+    private Integer maxPlayers;
+    private Integer section1MaxPlayers;
+    private Integer section2MaxPlayers;
+    private Integer section3MaxPlayers;
 }

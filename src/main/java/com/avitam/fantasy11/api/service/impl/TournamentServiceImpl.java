@@ -18,13 +18,13 @@ import java.util.List;
 @Service
 public class TournamentServiceImpl implements TournamentService {
 
+    private static final String ADMIN_TOURNAMENT = "/admin/tournament";
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private TournamentRepository tournamentRepository;
     @Autowired
     private BaseService baseService;
-    private static final String ADMIN_TOURNAMENT = "/admin/tournament";
 
     @Override
     public Tournament findByRecordId(String recordId) {

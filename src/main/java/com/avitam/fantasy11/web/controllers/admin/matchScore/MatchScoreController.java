@@ -22,14 +22,13 @@ import java.util.List;
 @RequestMapping("/admin/matchScore")
 public class MatchScoreController extends BaseController {
 
+    public static final String ADMIN_MATCHSCORE = "/admin/matchScore";
     @Autowired
     private MatchScoreRepository matchScoreRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private MatchScoreService matchScoreService;
-
-    public static final String ADMIN_MATCHSCORE = "/admin/matchScore";
 
     @PostMapping
     @ResponseBody
@@ -60,7 +59,7 @@ public class MatchScoreController extends BaseController {
         MatchScoreWsDto matchScoreWsDto = new MatchScoreWsDto();
         matchScoreWsDto.setBaseUrl(ADMIN_MATCHSCORE);
         MatchScore matchScore = matchScoreRepository.findByRecordId(request.getMatchScoreDtoList().get(0).getRecordId());
-        matchScoreWsDto.setMatchScoreDtoList(List.of(modelMapper.map(matchScore,MatchScoreDto.class)));
+        matchScoreWsDto.setMatchScoreDtoList(List.of(modelMapper.map(matchScore, MatchScoreDto.class)));
         return matchScoreWsDto;
     }
 

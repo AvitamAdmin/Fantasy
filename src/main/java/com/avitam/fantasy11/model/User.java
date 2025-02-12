@@ -14,8 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User extends CommonFields{
-
+public class User extends CommonFields {
     private String password;
     private String referredBy;
     private double balance;
@@ -31,5 +30,7 @@ public class User extends CommonFields{
     private String emailOTP;
     private String mobileOTP;
     private String referralCode;
-
+    private String token;
+    private String username;
+    private String email;
 }

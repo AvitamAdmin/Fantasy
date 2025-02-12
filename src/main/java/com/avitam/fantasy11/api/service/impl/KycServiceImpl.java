@@ -6,7 +6,6 @@ import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.KYC;
-import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.KYCRepository;
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
@@ -21,6 +20,7 @@ import java.util.List;
 @Service
 public class KycServiceImpl implements KycService {
 
+    private static final String ADMIN_KYC = "/admin/kyc";
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -29,8 +29,6 @@ public class KycServiceImpl implements KycService {
     private KYCRepository kycRepository;
     @Autowired
     private BaseService baseService;
-
-    private static final String ADMIN_KYC = "/admin/kyc";
 
     @Override
     public KYC findByRecordId(String recordId) {

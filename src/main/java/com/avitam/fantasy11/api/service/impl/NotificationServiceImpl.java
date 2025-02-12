@@ -17,14 +17,13 @@ import java.util.List;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
+    public static final String ADMIN_NOTIFICATION = "/admin/notification";
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_NOTIFICATION = "/admin/notification";
 
     @Override
     public Notification findByRecordId(String recordId) {
@@ -38,7 +37,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<NotificationDto> notificationDtos = request.getNotificationDtoList();
         List<Notification> notifications = new ArrayList<>();
 
-        for(NotificationDto notificationDto1 :notificationDtos) {
+        for (NotificationDto notificationDto1 : notificationDtos) {
             if (notificationDto1.getRecordId() != null) {
                 notification = notificationRepository.findByRecordId(notificationDto1.getRecordId());
                 modelMapper.map(notificationDto1, notification);
@@ -76,8 +75,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        Notification notification=notificationRepository.findByRecordId(recordId);
-        if(notification!=null) {
+        Notification notification = notificationRepository.findByRecordId(recordId);
+        if (notification != null) {
             notificationRepository.save(notification);
         }
     }

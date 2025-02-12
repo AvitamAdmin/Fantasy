@@ -37,7 +37,7 @@ public class NodeServiceImpl implements NodeService {
     @Override
     public List<NodeDto> getAllNodes() {
         List<NodeDto> allNodes = new ArrayList<>();
-        List<Node> nodeList = nodeRepository.findByStatusOrderByDisplayPriority(true).stream().filter(node -> node.getParentNode()==null).collect(Collectors.toUnmodifiableList());
+        List<Node> nodeList = nodeRepository.findByStatusOrderByDisplayPriority(true).stream().filter(node -> node.getParentNode() == null).collect(Collectors.toUnmodifiableList());
         if (CollectionUtils.isNotEmpty(nodeList)) {
             for (Node node : nodeList) {
                 NodeDto nodeDto = new NodeDto();
@@ -122,7 +122,7 @@ public class NodeServiceImpl implements NodeService {
                 node = modelMapper.map(nodeDto1, Node.class);
             }
             baseService.populateCommonData(node);
-            Node parentData=nodeRepository.findByRecordId(node.getParentNode().getRecordId());
+            Node parentData = nodeRepository.findByRecordId(node.getParentNode().getRecordId());
             node.setParentNode(parentData);
             node.setStatus(true);
             nodeRepository.save(node);

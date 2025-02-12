@@ -44,7 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     grantedAuthorities
             );
         }
-        return new CustomUserDetails(user2.getEmail(),user2.getStatus(),grantedAuthorities);
+        return new CustomUserDetails(user2.getEmail(), user2.getStatus(), grantedAuthorities);
 
 
     }

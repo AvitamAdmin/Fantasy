@@ -6,27 +6,25 @@ import com.avitam.fantasy11.api.service.AddressService;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.model.Address;
 import com.avitam.fantasy11.repository.AddressRepository;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.avitam.fantasy11.repository.EntityConstants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @Service
 public class AddressServiceImpl implements AddressService {
 
+    public static final String ADMIN_ADDRESS = "/admin/address";
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
     @Autowired
     private AddressRepository addressRepository;
-
-    public static final String ADMIN_ADDRESS = "/admin/address";
 
     @Override
     public Address findByRecordId(String recordId) {

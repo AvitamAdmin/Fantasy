@@ -11,8 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("Team")
 public class Team extends CommonFields {
-
     private String shortName;
     private Binary logo;
-
 }

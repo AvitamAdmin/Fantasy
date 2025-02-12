@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("LeaderBoard")
-public class LeaderBoard extends CommonFields{
+public class LeaderBoard extends CommonFields {
 
     private String userId;
 
@@ -19,5 +19,5 @@ public class LeaderBoard extends CommonFields{
 
     private int rank;
 
-    private  double bonusAmount;
+    private double bonusAmount;
 }

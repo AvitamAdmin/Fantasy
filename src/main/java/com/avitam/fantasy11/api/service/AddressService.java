@@ -7,7 +7,7 @@ public interface AddressService {
 
     Address findByRecordId(String recordId);
 
-    void deleteByRecordId(String recordId) ;
+    void deleteByRecordId(String recordId);
 
     AddressWsDto handleEdit(AddressWsDto request);
 

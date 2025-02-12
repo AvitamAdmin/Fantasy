@@ -7,11 +7,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class DepositsDto extends CommonDto{
+public class DepositsDto extends CommonDto {
     private String userId;
     private int payingAmount;
     private String gatewayName;

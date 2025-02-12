@@ -18,14 +18,13 @@ import java.util.List;
 
 @Service
 public class PointsUpdateServiceImpl implements PointsUpdateService {
+    private static final String ADMIN_POINTSUPDATE = "/admin/pointsUpdate";
     @Autowired
     private PointsUpdateRepository pointsUpdateRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    private static final String ADMIN_POINTSUPDATE = "/admin/pointsUpdate";
 
     @Override
     public PointsUpdate findByRecordId(String recordId) {

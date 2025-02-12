@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PlayerRoleDto extends CommonDto{
+public class PlayerRoleDto extends CommonDto {
 
     private String playerRole;
 }

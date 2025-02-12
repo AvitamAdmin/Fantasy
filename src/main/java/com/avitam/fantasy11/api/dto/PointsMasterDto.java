@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PointsMasterDto extends CommonDto{
+public class PointsMasterDto extends CommonDto {
 
     private String matchTypeId;
 

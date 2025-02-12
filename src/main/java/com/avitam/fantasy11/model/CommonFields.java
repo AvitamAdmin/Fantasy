@@ -25,7 +25,5 @@ public class CommonFields implements Serializable {
     private Date lastModified;
     private String modifiedBy;
     private String identifier;
-    private String username;
-    private String email;
 }
 

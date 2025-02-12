@@ -21,7 +21,7 @@ public class BaseServiceImpl implements BaseService {
 
     @Override
     public void populateCommonData(CommonFields requestData) {
-        String creator=coreService.getCurrentUser().getUsername();
+        String creator = coreService.getCurrentUser().getUsername();
         if (requestData.getCreator() == null) {
             requestData.setCreator(creator);
         }

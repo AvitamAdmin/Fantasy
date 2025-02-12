@@ -11,6 +11,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserTeamsWsDto extends CommonWsDto{
+public class UserTeamsWsDto extends CommonWsDto {
     private List<UserTeamsDto> userTeamsDtoList;//-------
 }

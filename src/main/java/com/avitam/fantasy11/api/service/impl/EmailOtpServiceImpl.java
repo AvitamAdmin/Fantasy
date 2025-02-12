@@ -31,40 +31,30 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class EmailOtpServiceImpl implements EmailOTPService {
 
+    private static final int OTP_LENGTH = 6;
+    private static final int OTP_EXPIRATION_MINUTES = 5;
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int LENGTH = 6;
+    private final ConcurrentHashMap<String, String> otpMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
     @Value("${spring.mail.username}")
     private String username;
     @Value("${spring.mail.password}")
     private String password;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
-
-
     @Autowired
     private JavaMailSender mailSender;
-
     @Autowired
     private JWTUtility jwtUtility;
-
     @Autowired
     private OtpService otpService;
-
     @Autowired
     private UserDetailsService userDetailsService;
-
     @Autowired
     private OtpRepository otpRepository;
-
-    private final ConcurrentHashMap<String, String> otpMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, LocalDateTime> otpExpirationMap = new ConcurrentHashMap<>();
-
-    private static final int OTP_LENGTH = 6;
-    private static final int OTP_EXPIRATION_MINUTES = 5;
-
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final int LENGTH = 6;
 
     @Override
     public UserWsDto sendOtp(UserWsDto userWsDto) throws MessagingException {
@@ -80,7 +70,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
 
             sendEmail(email, otp);
             userWsDto.setOtp(otp);
-            OTP otp1 =new OTP();
+            OTP otp1 = new OTP();
             otp1.setUserId(email);
             otp1.setEmailOtp(otp);
             otp1.setCreationTime(new Date());
@@ -130,10 +120,10 @@ public class EmailOtpServiceImpl implements EmailOTPService {
     }
 
     @Override
-    public UserWsDto  validateOtp(UserWsDto userWsDto) {
+    public UserWsDto validateOtp(UserWsDto userWsDto) {
         for (UserDto userDto : userWsDto.getUserDtoList()) {
             String email = userDto.getEmail();
-            String otp = userDto.getOtp();
+            String otp = userDto.getEmailOTP();
 
             if (email == null || otp == null || email.isEmpty() || otp.isEmpty()) {
                 userWsDto.setSuccess(false);

@@ -15,24 +15,21 @@ import java.util.List;
 
 @Service
 public class OtpServiceImpl implements OtpService {
+    public static final String ADMIN_OTP = "/admin/otp";
     @Autowired
     private OtpRepository otpRepository;
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_OTP="/admin/otp";
 
     @Override
     public OtpWsDto handelEdit(OtpWsDto otpWsDto) {
         OTP otp = null;
-        List<OtpDto> otpDtoList= otpWsDto.getOtpDtoList();
+        List<OtpDto> otpDtoList = otpWsDto.getOtpDtoList();
         List<OTP> otpList = new ArrayList<>();
-        for(OtpDto otpDto: otpDtoList){
-            if(otpDto.getRecordId() !=null){
+        for (OtpDto otpDto : otpDtoList) {
+            if (otpDto.getRecordId() != null) {
                 otp = otpRepository.findByRecordId(otpDto.getRecordId());
             }
 

@@ -5,19 +5,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class TeamLineUpDto extends CommonDto{
-
+public class TeamLineUpDto extends CommonDto {
+    private String teamId;
+    private String tournamentId;
     private String matchId;
-
-    private List<String> playerId;
-
-    private int lineupStatus;
-
-  //  private int impactPlayer;
+    private String playerId;
+    private boolean isPlaying;
+    private boolean isImpact;
 }

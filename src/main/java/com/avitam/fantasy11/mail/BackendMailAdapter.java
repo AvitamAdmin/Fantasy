@@ -9,9 +9,9 @@ import java.util.Date;
 public interface BackendMailAdapter {
 
     @Retryable(value = {EmailNotRecievedException.class}, maxAttempts = 12, backoff = @Backoff(delay = 5000))
-    public String getBackendResponse(Date currentDate, boolean onlyNewMessages) throws EmailNotRecievedException;
+    String getBackendResponse(Date currentDate, boolean onlyNewMessages) throws EmailNotRecievedException;
 
     @Recover
-    public String getBackendResponseFallback(RuntimeException e);
+    String getBackendResponseFallback(RuntimeException e);
 
 }

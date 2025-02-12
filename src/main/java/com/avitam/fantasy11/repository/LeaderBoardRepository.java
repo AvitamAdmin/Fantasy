@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.repository;
 
-import com.avitam.fantasy11.api.dto.LeaderBoardDto;
 import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
 import org.springframework.stereotype.Repository;

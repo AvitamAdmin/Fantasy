@@ -17,14 +17,13 @@ import java.util.List;
 
 @Service
 public class PointsMasterServiceImpl implements PointsMasterService {
+    public static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
     @Autowired
     private PointsMasterRepository pointsMasterRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
 
     @Override
     public PointsMaster findByRecordId(String recordId) {

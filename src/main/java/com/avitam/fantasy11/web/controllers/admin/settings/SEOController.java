@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.SEODto;
 import com.avitam.fantasy11.api.dto.SEOWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.SEOService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.SEO;
 import com.avitam.fantasy11.repository.SEORepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -25,13 +24,13 @@ import java.util.List;
 @RequestMapping("/admin/seo")
 public class SEOController extends BaseController {
 
+    public static final String ADMIN_SEO = "/admin/seo";
     @Autowired
     private SEORepository seoRepository;
     @Autowired
     private SEOService seoService;
     @Autowired
     private ModelMapper modelMapper;
-    public static final String ADMIN_SEO = "/admin/seo";
 
     @PostMapping
     @ResponseBody
@@ -83,6 +82,7 @@ public class SEOController extends BaseController {
         seoWsDto.setBaseUrl(ADMIN_SEO);
         return seoWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

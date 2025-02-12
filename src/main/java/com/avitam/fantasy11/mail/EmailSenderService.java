@@ -10,15 +10,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailSenderService {
+    String fromEmailId = "muthurethinam324@gmail.com";
     @Autowired
     private JavaMailSender javaMailSender;
 
-    String fromEmailId="muthurethinam324@gmail.com";
-
-
     public EmailDto sendEmail(EmailDto request) {
 
-        SimpleMailMessage message=new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmailId);
         message.setTo(request.getTo());
         message.setText(request.getContent());

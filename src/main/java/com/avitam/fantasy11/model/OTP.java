@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("OTP")
-public class OTP extends CommonFields{
+public class OTP extends CommonFields {
     private String userId;
 
     private String mobileOtp;

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @ToString
-public class WithdrawalMethodsDto extends CommonDto{
+public class WithdrawalMethodsDto extends CommonDto {
 
     private MultipartFile logo;
     private String methodName;

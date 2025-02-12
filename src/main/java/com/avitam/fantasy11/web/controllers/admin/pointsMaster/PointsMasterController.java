@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.PointsMasterDto;
 import com.avitam.fantasy11.api.dto.PointsMasterWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.PointsMasterService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.PointsMaster;
 import com.avitam.fantasy11.repository.PointsMasterRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -23,14 +22,13 @@ import java.util.List;
 @RequestMapping("/admin/pointsMaster")
 public class PointsMasterController extends BaseController {
 
+    private static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
     @Autowired
     private PointsMasterRepository pointsMasterRepository;
     @Autowired
     private PointsMasterService pointsMasterService;
     @Autowired
     private ModelMapper modelMapper;
-
-    private static final String ADMIN_POINTSMASTER = "/admin/pointsMaster";
 
     @PostMapping
     @ResponseBody
@@ -39,7 +37,7 @@ public class PointsMasterController extends BaseController {
         Pageable pageable = getPageable(pointsMasterWsDto.getPage(), pointsMasterWsDto.getSizePerPage(), pointsMasterWsDto.getSortDirection(), pointsMasterWsDto.getSortField());
         PointsMasterDto pointsMasterDto = CollectionUtils.isNotEmpty(pointsMasterWsDto.getPointsMasterDtos()) ? pointsMasterWsDto.getPointsMasterDtos().get(0) : new PointsMasterDto();
         PointsMaster pointsMaster = modelMapper.map(pointsMasterDto, PointsMaster.class);
-        Page<PointsMaster> page = isSearchActive(pointsMaster) != null ? pointsMasterRepository.findAll(Example.of(pointsMaster), pageable) : pointsMasterRepository.findAll(pageable);
+        Page<PointsMaster> page = isSearchActive(pointsMaster) == null ? pointsMasterRepository.findAll(Example.of(pointsMaster), pageable) : pointsMasterRepository.findAll(pageable);
         pointsMasterWsDto.setPointsMasterDtos(modelMapper.map(page.getContent(), List.class));
         pointsMasterWsDto.setTotalPages(page.getTotalPages());
         pointsMasterWsDto.setTotalRecords(page.getTotalElements());
@@ -86,6 +84,7 @@ public class PointsMasterController extends BaseController {
         pointsMasterWsDto.setRedirectUrl("/admin/pointsMaster");
         return pointsMasterWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

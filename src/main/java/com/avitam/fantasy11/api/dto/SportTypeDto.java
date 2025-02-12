@@ -10,6 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @ToString
-public class SportTypeDto extends CommonDto{
+public class SportTypeDto extends CommonDto {
     private MultipartFile logo;
+    private Integer maxPlayers;
+    private Integer section1MaxPlayers;
+    private Integer section2MaxPlayers;
+    private Integer section3MaxPlayers;
 }

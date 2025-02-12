@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @ToString
-public class TeamDto extends CommonDto{
+public class TeamDto extends CommonDto {
     private String shortName;
     private MultipartFile logo;
 }

@@ -1,8 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.player;
 
-import com.avitam.fantasy11.api.dto.*;
+import com.avitam.fantasy11.api.dto.PlayerDto;
+import com.avitam.fantasy11.api.dto.PlayerWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.PlayerService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.PlayerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -25,13 +26,13 @@ import java.util.List;
 @RequestMapping("/admin/player")
 public class PlayerController extends BaseController {
 
+    private static final String ADMIN_PlAYER = "/admin/player";
     @Autowired
     private PlayerRepository playerRepository;
     @Autowired
     private PlayerService playerService;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_PlAYER = "/admin/player";
 
     @PostMapping
     @ResponseBody
@@ -82,12 +83,12 @@ public class PlayerController extends BaseController {
                                   @RequestParam("playerRoleId") String playerRoleId, @RequestParam("logo") MultipartFile logo) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
-        playerDto.setLogo(logo);
         playerDto.setName(name);
         playerDto.setPlayerRoleId(playerRoleId);
         playerDto.setDob(dob);
         playerDto.setNationality(nationality);
         playerDto.setTeamId(teamId);
+        playerDto.setPlayerImage(logo);
         request.setPlayerDtoList(List.of(playerDto));
         return playerService.handleEdit(request);
     }
@@ -101,12 +102,12 @@ public class PlayerController extends BaseController {
                                         @RequestParam("recordId") String recordId) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
-        playerDto.setLogo(logo);
         playerDto.setName(name);
         playerDto.setPlayerRoleId(playerRoleId);
         playerDto.setDob(dob);
         playerDto.setNationality(nationality);
         playerDto.setTeamId(teamId);
+        playerDto.setPlayerImage(logo);
         playerDto.setRecordId(recordId);
         request.setPlayerDtoList(List.of(playerDto));
         return playerService.handleEdit(request);
@@ -150,6 +151,7 @@ public class PlayerController extends BaseController {
 
 
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

@@ -18,6 +18,7 @@ import java.util.List;
 
 @Service
 public class UserWinningsServiceImpl implements UserWinningsService {
+    public static final String ADMIN_USERWINNINGS = "/admin/userWinnings";
     @Autowired
     private UserWinningsRepository userWinningsRepository;
     @Autowired
@@ -28,8 +29,6 @@ public class UserWinningsServiceImpl implements UserWinningsService {
     private ContestRepository contestRepository;
     @Autowired
     private UserRepository userRepository;
-
-    public static final String ADMIN_USERWINNINGS = "/admin/userWinnings";
 
     @Override
     public UserWinnings findByRecordId(String recordId) {
@@ -80,7 +79,7 @@ public class UserWinningsServiceImpl implements UserWinningsService {
                 userWinningsRepository.save(userWinningsData);
                 request.setMessage("Data added successfully");
             }
-             userWinningsList.add(userWinningsData);
+            userWinningsList.add(userWinningsData);
             request.setBaseUrl(ADMIN_USERWINNINGS);
 
         }

@@ -5,6 +5,7 @@ import com.avitam.fantasy11.repository.generic.GenericImportRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @Repository("LineUpStatusRepository")
 public interface LineUpStatusRepository extends GenericImportRepository<LineUpStatus> {
 

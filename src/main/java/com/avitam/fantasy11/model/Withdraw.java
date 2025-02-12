@@ -10,5 +10,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Withdraw")
-public class Withdraw extends CommonFields{
+public class Withdraw extends CommonFields {
 }

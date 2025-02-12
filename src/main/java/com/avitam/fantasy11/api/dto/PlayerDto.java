@@ -10,13 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PlayerDto extends CommonDto{
-
-    private MultipartFile logo;
+public class PlayerDto extends CommonDto {
     private String dob;
     private String nationality;
     private String teamId;
     private String playerRoleId;
     private MultipartFile playerImage;
-
 }

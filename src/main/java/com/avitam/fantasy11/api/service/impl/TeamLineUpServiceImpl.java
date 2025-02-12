@@ -4,8 +4,6 @@ import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
-import com.avitam.fantasy11.model.Matches;
-import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.MatchesRepository;
@@ -22,19 +20,17 @@ import java.util.List;
 @Service
 public class TeamLineUpServiceImpl implements TeamLineUpService {
 
+    public static final String ADMIN_TEAMLINEUP = "/admin/teamLineup";
     @Autowired
     private TeamLineupRepository teamLineupRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
     @Autowired
     private MatchesRepository matchesRepository;
-
     @Autowired
     private PlayerRepository playersRepository;
-    public static final String ADMIN_TEAMLINEUP = "/admin/teamLineup";
 
     @Override
     public TeamLineup findByRecordId(String recordId) {
@@ -58,8 +54,8 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
     public TeamLineUpWsDto handleEdit(TeamLineUpWsDto request) {
         List<TeamLineUpDto> teamLineUpDtos = request.getTeamLineUpDtoList();
         List<TeamLineup> teamLineupList = new ArrayList<>();
-        TeamLineup teamLineup  ;
-         for (TeamLineUpDto teamLineUpDto1 : teamLineUpDtos) {
+        TeamLineup teamLineup;
+        for (TeamLineUpDto teamLineUpDto1 : teamLineUpDtos) {
             if (teamLineUpDto1.getRecordId() != null) {
                 teamLineup = teamLineupRepository.findByRecordId(teamLineUpDto1.getRecordId());
                 modelMapper.map(teamLineUpDto1, teamLineup);

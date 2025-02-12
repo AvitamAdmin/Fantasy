@@ -17,7 +17,7 @@ public class CoreServiceImpl implements CoreService {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        if(userRepository.findByUsername(principal.getUsername())!=null){
+        if (userRepository.findByUsername(principal.getUsername()) != null) {
             return userRepository.findByUsername(principal.getUsername());
         }
         return userRepository.findByMobileNumber(principal.getUsername());

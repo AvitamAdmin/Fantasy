@@ -1,32 +1,23 @@
 package com.avitam.fantasy11.web.controllers.admin.websiteSetting;
 
-import com.avitam.fantasy11.api.dto.*;
+import com.avitam.fantasy11.api.dto.SearchDto;
+import com.avitam.fantasy11.api.dto.WebsiteSettingDto;
+import com.avitam.fantasy11.api.dto.WebsiteSettingsWsDto;
 import com.avitam.fantasy11.api.service.WebsiteSettingService;
-import com.avitam.fantasy11.core.service.CoreService;
-import com.avitam.fantasy11.model.LeaderBoard;
-import com.avitam.fantasy11.model.MatchScore;
 import com.avitam.fantasy11.model.WebsiteSetting;
 import com.avitam.fantasy11.repository.WebsiteSettingRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -86,11 +77,11 @@ public class WebsiteSettingController extends BaseController {
         return websiteSettingService.handleEdit(request);
     }
 
-    @PostMapping(value="/update",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public WebsiteSettingsWsDto updateData(@RequestParam("logo") MultipartFile logo,
-                                       @RequestParam("favicon") MultipartFile favicon,
-                                       @RequestParam("identifier") String identifier,
-                                       @RequestParam("recordId") String recordId) throws IOException {
+                                           @RequestParam("favicon") MultipartFile favicon,
+                                           @RequestParam("identifier") String identifier,
+                                           @RequestParam("recordId") String recordId) throws IOException {
 
         WebsiteSettingsWsDto request = new WebsiteSettingsWsDto();
         WebsiteSettingDto websiteDto = new WebsiteSettingDto();
@@ -112,6 +103,7 @@ public class WebsiteSettingController extends BaseController {
         request.setMessage("Data Deleted Successfully");
         return request;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

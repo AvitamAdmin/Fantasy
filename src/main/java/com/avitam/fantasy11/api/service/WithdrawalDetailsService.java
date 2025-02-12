@@ -7,7 +7,7 @@ public interface WithdrawalDetailsService {
 
     WithdrawalDetails findByRecordId(String recordId);
 
-    void deleteByRecordId(String recordId) ;
+    void deleteByRecordId(String recordId);
 
     WithdrawalDetailsWsDto handleEdit(WithdrawalDetailsWsDto request);
 

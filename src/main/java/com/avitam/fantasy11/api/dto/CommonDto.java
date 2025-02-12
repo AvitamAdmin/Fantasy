@@ -15,11 +15,6 @@ import java.util.Date;
 @ToString
 public class CommonDto {
     private String recordId;
-    private String token;
-    private String email;
-    private String otp;
-    private String mobileNumber;
-    private String username;
     private ObjectId id;
     private String name;
     private String creator;

@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpDto;
 import com.avitam.fantasy11.api.dto.TeamLineUpWsDto;
 import com.avitam.fantasy11.api.service.TeamLineUpService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.TeamLineup;
 import com.avitam.fantasy11.repository.TeamLineupRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -23,14 +22,13 @@ import java.util.List;
 @RequestMapping("/admin/teamLineup")
 public class TeamLineupController extends BaseController {
 
+    public static final String ADMIN_TEAMLINEUP = "/admin/teamLineup";
     @Autowired
     private TeamLineupRepository teamLineupRepository;
     @Autowired
     private TeamLineUpService teamLineUpService;
     @Autowired
     private ModelMapper modelMapper;
-
-    public static final String ADMIN_TEAMLINEUP = "/admin/teamLineup";
 
     @PostMapping
     @ResponseBody
@@ -83,6 +81,7 @@ public class TeamLineupController extends BaseController {
         teamLineUpWsDto.setBaseUrl(ADMIN_TEAMLINEUP);
         return teamLineUpWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

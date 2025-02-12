@@ -9,8 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("PointsMaster")
-public class PointsMaster extends CommonFields{
-
+public class PointsMaster extends CommonFields {
     private String matchTypeId;
 
     private float runs;
@@ -32,6 +31,4 @@ public class PointsMaster extends CommonFields{
     private float hattrickSixes;
 
     private float economy;
-
-
 }

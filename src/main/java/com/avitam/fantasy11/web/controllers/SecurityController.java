@@ -2,18 +2,14 @@ package com.avitam.fantasy11.web.controllers;
 
 import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.core.Utility;
-import com.avitam.fantasy11.core.service.SecurityService;
 import com.avitam.fantasy11.core.service.UserService;
 import com.avitam.fantasy11.mail.service.EMail;
 import com.avitam.fantasy11.mail.service.MailService;
 import com.avitam.fantasy11.model.User;
 import com.avitam.fantasy11.repository.RoleRepository;
-import com.avitam.fantasy11.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -133,9 +129,9 @@ public class SecurityController {
     @PostMapping("/register")
     @ResponseBody
     public UserWsDto processRegister(@RequestBody UserWsDto request) {
-       userService.save(request);
-       request.setMessage("Registration Successful!!");
-       return request;
+        userService.save(request);
+        request.setMessage("Registration Successful!!");
+        return request;
     }
 
     @GetMapping("/login")

@@ -18,14 +18,13 @@ import java.util.List;
 @Service
 public class WithdrawalMethodsServiceImpl implements WithdrawalMethodsService {
 
+    public static final String ADMIN_WITHDRAWALMETHODS = "/admin/withdrawalMethods";
     @Autowired
     private WithdrawalMethodsRepository withdrawalMethodsRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_WITHDRAWALMETHODS = "/admin/withdrawalMethods";
 
     @Override
     public WithdrawalMethods findByRecordId(String recordId) {

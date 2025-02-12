@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Language")
-public class Language extends CommonFields{
+public class Language extends CommonFields {
 
     private String code;
 }

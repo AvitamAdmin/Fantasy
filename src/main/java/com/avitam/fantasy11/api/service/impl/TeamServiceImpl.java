@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.dto.TeamWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.TeamService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.TeamRepository;
@@ -20,14 +19,13 @@ import java.util.List;
 
 @Service
 public class TeamServiceImpl implements TeamService {
+    public static final String ADMIN_TEAM = "/admin/team";
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_TEAM = "/admin/team";
 
     @Override
     public Team findByRecordId(String recordId) {

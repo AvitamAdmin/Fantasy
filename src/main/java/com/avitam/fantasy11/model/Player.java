@@ -10,15 +10,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Player")
-public class Player extends CommonFields{
-
+public class Player extends CommonFields {
     private String dob;
     private String nationality;
     private String teamId;
-    private Binary logo;
     private String playerRoleId;
     private Binary playerImage;
-
-
-
 }

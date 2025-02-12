@@ -5,13 +5,9 @@ import com.avitam.fantasy11.api.dto.NodeWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.core.service.NodeService;
 import com.avitam.fantasy11.core.service.UserService;
-import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Node;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-
-import java.util.List;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +17,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/interface")
 public class InterfaceController extends BaseController {
 
+    private static final String ADMIN_INTERFACE = "/admin/interface";
     @Autowired
     private NodeRepository nodeRepository;
     @Autowired
@@ -33,7 +32,6 @@ public class InterfaceController extends BaseController {
     private UserService userService;
     @Autowired
     private NodeService nodeService;
-    private static final String ADMIN_INTERFACE = "/admin/interface";
 
     @PostMapping
     @ResponseBody

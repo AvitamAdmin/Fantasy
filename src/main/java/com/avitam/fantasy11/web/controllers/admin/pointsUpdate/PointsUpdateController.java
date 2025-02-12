@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.PointsUpdateDto;
 import com.avitam.fantasy11.api.dto.PointsUpdateWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.PointsUpdateService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.PointsUpdate;
 import com.avitam.fantasy11.repository.PointsUpdateRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -23,13 +22,13 @@ import java.util.List;
 @RequestMapping("/admin/pointsUpdate")
 public class PointsUpdateController extends BaseController {
 
+    private static final String ADMIN_POINTSUPDATE = "/admin/pointsUpdate";
     @Autowired
     private PointsUpdateRepository pointsUpdateRepository;
     @Autowired
     private PointsUpdateService pointsUpdateService;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_POINTSUPDATE = "/admin/pointsUpdate";
 
     @PostMapping
     @ResponseBody
@@ -84,6 +83,7 @@ public class PointsUpdateController extends BaseController {
         pointsUpdateWsDto.setBaseUrl(ADMIN_POINTSUPDATE);
         return pointsUpdateWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

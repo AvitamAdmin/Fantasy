@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class LeaderBoardDto extends CommonDto{
+public class LeaderBoardDto extends CommonDto {
 
     private String userId;
 
@@ -20,5 +20,5 @@ public class LeaderBoardDto extends CommonDto{
 
     private int rank;
 
-    private  double bonusAmount;
+    private double bonusAmount;
 }

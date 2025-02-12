@@ -9,7 +9,8 @@ import java.util.List;
 
 @Setter
 @Getter
-@ToString@NoArgsConstructor
-public class MatchesWsDto extends CommonWsDto{
-    List<MatchesDto>matchesDtoList;
+@ToString
+@NoArgsConstructor
+public class MatchesWsDto extends CommonWsDto {
+    List<MatchesDto> matchesDtoList;
 }

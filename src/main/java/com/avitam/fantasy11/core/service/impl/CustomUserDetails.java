@@ -2,12 +2,13 @@ package com.avitam.fantasy11.core.service.impl;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
-    private String username; // Can hold email or mobile number
-    private boolean isActive;
-    private Collection<? extends GrantedAuthority> authorities;
+    private final String username; // Can hold email or mobile number
+    private final boolean isActive;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(String username, boolean isActive, Collection<? extends GrantedAuthority> authorities) {
         this.username = username;

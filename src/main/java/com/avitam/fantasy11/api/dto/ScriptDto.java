@@ -10,7 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 
-public class ScriptDto extends CommonDto{
+public class ScriptDto extends CommonDto {
 
     private String script;
 }

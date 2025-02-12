@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PendingWithdrawalDto extends CommonDto{
+public class PendingWithdrawalDto extends CommonDto {
 
     private String methodName;
     private String trx;

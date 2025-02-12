@@ -14,10 +14,11 @@ public interface UserTeamsRepository extends GenericImportRepository<UserTeams> 
     Optional<UserTeams> findById(String id);
 
     @Query("{matchId:?0)}")
-    List<Team>getTeamsByMatchId(String matchId);
+    List<Team> getTeamsByMatchId(String matchId);
 
     UserTeams findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
+
     List<UserTeams> findByStatusOrderByIdentifier(Boolean b);
 }

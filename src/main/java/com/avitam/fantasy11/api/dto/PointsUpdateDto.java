@@ -9,9 +9,11 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PointsUpdateDto extends CommonDto{
+public class PointsUpdateDto extends CommonDto {
 
     private String matchId;
+
+    private String tournamentId;
 
     private String playerId;
 

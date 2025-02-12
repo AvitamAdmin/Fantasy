@@ -17,13 +17,13 @@ import java.util.List;
 @Service
 public class UserTeamsServiceImpl implements UserTeamsService {
 
+    public static final String ADMIN_USERTEAM = "/admin/userTeam";
     @Autowired
     private UserTeamsRepository userTeamsRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-    public static final String ADMIN_USERTEAM = "/admin/userTeam";
 
     @Override
     public UserTeams findByRecordId(String recordId) {
@@ -76,7 +76,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
             userTeamsList.add(userTeams);
             request.setBaseUrl(ADMIN_USERTEAM);
 
-            }
+        }
         request.setUserTeamsDtoList(modelMapper.map(userTeamsList, List.class));
         return request;
     }

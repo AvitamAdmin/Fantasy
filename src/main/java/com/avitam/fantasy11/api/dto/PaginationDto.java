@@ -13,8 +13,8 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @ToString
-public class PaginationDto implements Serializable{
-    private int page ;
+public class PaginationDto implements Serializable {
+    private int page;
     private int sizePerPage = 50;
     private Sort.Direction sortDirection = Sort.Direction.DESC;
     private String sortField = "identifier";

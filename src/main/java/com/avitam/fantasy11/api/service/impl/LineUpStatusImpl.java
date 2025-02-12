@@ -19,13 +19,11 @@ import java.util.List;
 @Service
 public class LineUpStatusImpl implements LineUpStatusService {
 
+    private static final String ADMIN_LINEUP_STATUS = "/admin/lineupStatus";
     @Autowired
     private LineUpStatusRepository lineUpStatusRepository;
     @Autowired
     private ModelMapper modelMapper;
-
-    private static final String ADMIN_LINEUP_STATUS = "/admin/lineupStatus";
-
     @Autowired
     private BaseService baseService;
 

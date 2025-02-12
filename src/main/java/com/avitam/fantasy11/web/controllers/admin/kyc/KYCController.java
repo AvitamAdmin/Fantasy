@@ -1,6 +1,8 @@
 package com.avitam.fantasy11.web.controllers.admin.kyc;
 
-import com.avitam.fantasy11.api.dto.*;
+import com.avitam.fantasy11.api.dto.KYCDto;
+import com.avitam.fantasy11.api.dto.KYCWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.KycService;
 import com.avitam.fantasy11.model.KYC;
 import com.avitam.fantasy11.repository.KYCRepository;
@@ -22,13 +24,13 @@ import java.util.List;
 @RequestMapping("/admin/kyc")
 public class KYCController extends BaseController {
 
+    private static final String ADMIN_KYC = "/admin/kyc";
+    @Autowired
+    ModelMapper modelMapper;
     @Autowired
     private KYCRepository kycRepository;
     @Autowired
     private KycService kycService;
-    @Autowired
-    ModelMapper modelMapper;
-    private static final String ADMIN_KYC = "/admin/kyc";
 
     @PostMapping
     public KYCWsDto getAllKYC(@RequestBody KYCWsDto kycWsDto) {
@@ -64,8 +66,8 @@ public class KYCController extends BaseController {
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public KYCWsDto handleEdit( @RequestParam("logo") MultipartFile logo,
-                                @RequestParam("userId") String userId,@RequestParam("panNumber") String panNumber) {
+    public KYCWsDto handleEdit(@RequestParam("logo") MultipartFile logo,
+                               @RequestParam("userId") String userId, @RequestParam("panNumber") String panNumber) {
         KYCWsDto request = new KYCWsDto();
         KYCDto kycDto = new KYCDto();
         kycDto.setPanImage(logo);
@@ -74,12 +76,13 @@ public class KYCController extends BaseController {
         request.setKycDtoList(List.of(kycDto));
         return kycService.handleEdit(request);
     }
+
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public KYCWsDto handleEdit( @RequestParam("logo") MultipartFile logo,
-                                @RequestParam("userId") String userId,
-                                @RequestParam("panNumber") String panNumber,
-                                @RequestParam("recordId") String recordId) {
+    public KYCWsDto handleEdit(@RequestParam("logo") MultipartFile logo,
+                               @RequestParam("userId") String userId,
+                               @RequestParam("panNumber") String panNumber,
+                               @RequestParam("recordId") String recordId) {
         KYCWsDto request = new KYCWsDto();
         KYCDto kycDto = new KYCDto();
         kycDto.setPanImage(logo);

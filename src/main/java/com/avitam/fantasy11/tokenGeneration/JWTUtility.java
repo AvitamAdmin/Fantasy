@@ -20,6 +20,17 @@ public class JWTUtility implements Serializable {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    public static String generateOtp(int length) {
+        String numbers = "0123456789";
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            otp.append(numbers.charAt(random.nextInt(numbers.length())));
+        }
+        return otp.toString();
+    }
+
     // retrieve username from jwt token
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -65,16 +76,5 @@ public class JWTUtility implements Serializable {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    public static String generateOtp(int length) {
-        String numbers = "0123456789";
-        Random random = new Random();
-        StringBuilder otp = new StringBuilder();
-
-        for (int i = 0; i < length; i++) {
-            otp.append(numbers.charAt(random.nextInt(numbers.length())));
-        }
-        return otp.toString();
     }
 }

@@ -10,9 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("Tournament")
 
-public class Tournament extends CommonFields{
-
+public class Tournament extends CommonFields {
     private String dateAndTime;
-
     private String sportId;
 }

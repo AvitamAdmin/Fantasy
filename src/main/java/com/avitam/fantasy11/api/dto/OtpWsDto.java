@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @ToString
-public class OtpWsDto extends CommonWsDto{
-    private List<OtpDto>otpDtoList;
+public class OtpWsDto extends CommonWsDto {
+    private List<OtpDto> otpDtoList;
 }

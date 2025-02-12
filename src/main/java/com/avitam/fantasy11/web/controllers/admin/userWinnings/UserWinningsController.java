@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.UserWinningsDto;
 import com.avitam.fantasy11.api.dto.UserWinningsWsDto;
 import com.avitam.fantasy11.api.service.UserWinningsService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.UserWinnings;
 import com.avitam.fantasy11.repository.UserWinningsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -23,14 +22,13 @@ import java.util.List;
 @RequestMapping("/admin/userWinnings")
 public class UserWinningsController extends BaseController {
 
+    public static final String ADMIN_USERWINNINGS = "/admin/userWinnings";
     @Autowired
     private UserWinningsRepository userWinningsRepository;
     @Autowired
     private UserWinningsService userWinningsService;
     @Autowired
     private ModelMapper modelMapper;
-
-    public static final String ADMIN_USERWINNINGS = "/admin/userWinnings";
 
     @PostMapping
     @ResponseBody
@@ -61,7 +59,7 @@ public class UserWinningsController extends BaseController {
     public UserWinningsWsDto editUserWinnings(@RequestBody UserWinningsWsDto request) {
         UserWinningsWsDto userWinningsWsDto = new UserWinningsWsDto();
         UserWinnings userWinnings = userWinningsRepository.findByRecordId(request.getUserWinningsDtoList().get(0).getRecordId());
-        userWinningsWsDto.setUserWinningsDtoList(List.of(modelMapper.map(userWinnings,UserWinningsDto.class)));
+        userWinningsWsDto.setUserWinningsDtoList(List.of(modelMapper.map(userWinnings, UserWinningsDto.class)));
         userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
         return userWinningsWsDto;
     }
@@ -83,6 +81,7 @@ public class UserWinningsController extends BaseController {
         userWinningsWsDto.setBaseUrl(ADMIN_USERWINNINGS);
         return userWinningsWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

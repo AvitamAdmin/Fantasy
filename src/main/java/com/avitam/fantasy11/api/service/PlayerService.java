@@ -6,7 +6,7 @@ import com.avitam.fantasy11.model.Player;
 
 public interface PlayerService {
 
-    Player  findByRecordId(String recordId);
+    Player findByRecordId(String recordId);
 
     PlayerWsDto handleEdit(PlayerWsDto request);
 

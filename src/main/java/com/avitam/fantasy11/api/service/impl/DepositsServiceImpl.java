@@ -5,28 +5,26 @@ import com.avitam.fantasy11.api.dto.DepositsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.DepositsService;
 import com.avitam.fantasy11.model.Deposits;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.avitam.fantasy11.repository.DepositsRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @Service
 public class DepositsServiceImpl implements DepositsService {
 
+    private static final String ADMIN_DEPOSIT = "/admin/depositLog";
     @Autowired
     private DepositsRepository depositsRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    private static final String ADMIN_DEPOSIT = "/admin/depositLog";
 
     @Override
     public Deposits findByRecordId(String recordId) {

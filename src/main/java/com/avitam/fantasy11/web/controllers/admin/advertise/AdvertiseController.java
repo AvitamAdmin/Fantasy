@@ -5,12 +5,8 @@ import com.avitam.fantasy11.api.dto.BannerWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.BannerService;
 import com.avitam.fantasy11.model.Banner;
-import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-
-import java.util.List;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +17,18 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/banner")
 public class AdvertiseController extends BaseController {
+    private static final String ADMIN_BANNER = "/admin/banner";
     @Autowired
     private BannerRepository bannerRepository;
     @Autowired
     private BannerService bannerService;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_BANNER="/admin/banner";
 
     @PostMapping
     @ResponseBody
@@ -58,8 +56,8 @@ public class AdvertiseController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public BannerWsDto edit(@RequestBody BannerWsDto bannerWsDto) {
-        Banner banner=bannerRepository.findByRecordId(bannerWsDto.getBannerDtoList().get(0).getRecordId());
-        bannerWsDto.setBannerDtoList(List.of(modelMapper.map(banner,BannerDto.class)));
+        Banner banner = bannerRepository.findByRecordId(bannerWsDto.getBannerDtoList().get(0).getRecordId());
+        bannerWsDto.setBannerDtoList(List.of(modelMapper.map(banner, BannerDto.class)));
         bannerWsDto.setBaseUrl(ADMIN_BANNER);
         return bannerWsDto;
     }

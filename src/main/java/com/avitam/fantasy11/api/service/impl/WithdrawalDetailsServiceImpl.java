@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.WithdrawalDetailsDto;
 import com.avitam.fantasy11.api.dto.WithdrawalDetailsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.WithdrawalDetailsService;
-import com.avitam.fantasy11.core.service.CoreService;
 import com.avitam.fantasy11.model.WithdrawalDetails;
 import com.avitam.fantasy11.repository.EntityConstants;
 import com.avitam.fantasy11.repository.WithdrawalDetailsRepository;
@@ -19,14 +18,13 @@ import java.util.List;
 @Service
 public class WithdrawalDetailsServiceImpl implements WithdrawalDetailsService {
 
+    public static final String ADMIN_WITHDRAWALDETAILS = "/admin/withdrawalDetails";
     @Autowired
     private WithdrawalDetailsRepository withdrawalDetailsRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_WITHDRAWALDETAILS = "/admin/withdrawalDetails";
 
     @Override
     public WithdrawalDetails findByRecordId(String recordId) {

@@ -11,9 +11,9 @@ public interface NodeService {
 
     List<NodeDto> getNodesForRoles();
 
-    Node findByRecordId(String recordId) ;
+    Node findByRecordId(String recordId);
 
-    void deleteByRecordId(String recordId) ;
+    void deleteByRecordId(String recordId);
 
     NodeWsDto handleEdit(NodeWsDto nodeWsDto);
 

@@ -18,14 +18,13 @@ import java.util.List;
 @Service
 public class PlayerRoleServiceImpl implements PlayerRoleService {
 
+    private static final String ADMIN_PLAYERROLE = "/admin/playerRole";
     @Autowired
     private PlayerRoleRepository playerRoleRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    private static final String ADMIN_PLAYERROLE = "/admin/playerRole";
 
     @Override
     public PlayerRole findByRecordId(String recordId) {

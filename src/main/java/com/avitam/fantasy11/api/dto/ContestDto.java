@@ -11,16 +11,16 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @ToString
-public class ContestDto extends CommonDto{
-    private String mainContestId;
+public class ContestDto extends CommonDto {
+    private String contestType;
     private Double totalPrice;
     private Double entryFee;
-    private int noOfMembers;
-    private Map<String,Double> rankPrice;
-    private int winPercentage;
-    private int maxTeams;
-    private double profit;
-    private double totalAmount;
-    private int profitPercentage;
-    private double winningsAmount;
+    private Integer noOfMembers;
+    private Map<String, Double> maxRankPrice;
+    private Map<String, Double> GuaranteedRankPrice;
+    private Integer winPercentage;
+    private Integer maxTeams;
+    private Double winningsAmount;
+    private Integer profitPercentage;
+    private String matchId;
 }

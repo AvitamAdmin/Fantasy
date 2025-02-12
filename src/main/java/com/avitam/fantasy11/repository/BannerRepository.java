@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository("BannerRepository")
 public interface BannerRepository extends GenericImportRepository<Banner> {
 

@@ -5,7 +5,6 @@ import com.avitam.fantasy11.api.dto.AddressWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.AddressService;
 import com.avitam.fantasy11.model.Address;
-import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.AddressRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,16 +22,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/address")
 public class AddressController extends BaseController {
+    public static final String ADMIN_ADDRESS = "/admin/address";
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
     private ModelMapper modelMapper;
-
-
     @Autowired
     private AddressService addressService;
-
-    public static final String ADMIN_ADDRESS = "/admin/address";
 
     @PostMapping
     @ResponseBody

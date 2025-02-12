@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
                 user = modelMapper.map(userDto, User.class);
                 user.setStatus(true);
                 user.setCreationTime(new Date());
-                Set<Role> roles= new HashSet<>();
-                for(RoleDto role: userDto.getRoles()){
+                Set<Role> roles = new HashSet<>();
+                for (RoleDto role : userDto.getRoles()) {
                     Role role1 = roleRepository.findByRecordId(role.getRecordId());
                     roles.add(role1);
                 }

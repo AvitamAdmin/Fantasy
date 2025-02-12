@@ -10,10 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 
-public class TournamentDto extends CommonDto{
-
+public class TournamentDto extends CommonDto {
     private String dateAndTime;
-
     private String sportId;
-
 }

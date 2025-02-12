@@ -21,14 +21,13 @@ import java.util.List;
 @Service
 public class WebsiteSettingServiceImpl implements WebsiteSettingService {
 
+    public static final String ADMIN_WEBSITESETTINGS = "/admin/website";
     @Autowired
     private WebsiteSettingRepository websiteSettingRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-    public static final String ADMIN_WEBSITESETTINGS = "/admin/website";
-
 
     @Override
     public WebsiteSettingsWsDto handleEdit(WebsiteSettingsWsDto request) throws IOException {

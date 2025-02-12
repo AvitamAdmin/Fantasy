@@ -17,17 +17,19 @@ import java.util.List;
 
 @Service
 public class MatchScoreServiceImpl implements MatchScoreService {
-   @Autowired
-   private MatchScoreRepository matchScoreRepository;
+    public static final String ADMIN_MATCHSCORE = "/admin/matchScore";
+    @Autowired
+    private MatchScoreRepository matchScoreRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
+
     @Override
     public MatchScore findByRecordId(String recordId) {
         return matchScoreRepository.findByRecordId(recordId);
     }
-    public static final String ADMIN_MATCHSCORE = "/admin/matchScore";
+
     @Override
     public void deleteByRecordId(String recordId) {
         matchScoreRepository.deleteByRecordId(recordId);
@@ -35,50 +37,50 @@ public class MatchScoreServiceImpl implements MatchScoreService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        MatchScore matchScoreOptional=matchScoreRepository.findByRecordId(recordId);
+        MatchScore matchScoreOptional = matchScoreRepository.findByRecordId(recordId);
         if (matchScoreOptional != null) {
             matchScoreRepository.save(matchScoreOptional);
         }
     }
 
 
-@Override
-public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
-    MatchScore matchScoreData = null;
-    List<MatchScoreDto> matchScoreDtos = request.getMatchScoreDtoList();
-    List<MatchScore> matchScoreList = new ArrayList<>();
+    @Override
+    public MatchScoreWsDto handleEdit(MatchScoreWsDto request) {
+        MatchScore matchScoreData = null;
+        List<MatchScoreDto> matchScoreDtos = request.getMatchScoreDtoList();
+        List<MatchScore> matchScoreList = new ArrayList<>();
 
-    for (MatchScoreDto matchScoreDto1 : matchScoreDtos) {
-        if (matchScoreDto1.getRecordId() != null) {
-            matchScoreData = matchScoreRepository.findByRecordId(matchScoreDto1.getRecordId());
-            modelMapper.map(matchScoreDto1, matchScoreData);
-            matchScoreData.setLastModified(new Date());
-            matchScoreRepository.save(matchScoreData);
-            request.setMessage("MatchScore updated successfully");
-        } else {
-            if (baseService.validateIdentifier(EntityConstants.MATCH_SCORE, matchScoreDto1.getIdentifier()) != null) {
-                request.setSuccess(false);
-                request.setMessage("Identifier already present");
-                return request;
+        for (MatchScoreDto matchScoreDto1 : matchScoreDtos) {
+            if (matchScoreDto1.getRecordId() != null) {
+                matchScoreData = matchScoreRepository.findByRecordId(matchScoreDto1.getRecordId());
+                modelMapper.map(matchScoreDto1, matchScoreData);
+                matchScoreData.setLastModified(new Date());
+                matchScoreRepository.save(matchScoreData);
+                request.setMessage("MatchScore updated successfully");
+            } else {
+                if (baseService.validateIdentifier(EntityConstants.MATCH_SCORE, matchScoreDto1.getIdentifier()) != null) {
+                    request.setSuccess(false);
+                    request.setMessage("Identifier already present");
+                    return request;
+                }
+                matchScoreData = modelMapper.map(matchScoreDto1, MatchScore.class);
+                baseService.populateCommonData(matchScoreData);
+                matchScoreData.setStatus(true);
+                matchScoreRepository.save(matchScoreData);
+
+                if (matchScoreData.getRecordId() == null) {
+                    matchScoreData.setRecordId(String.valueOf(matchScoreData.getId().getTimestamp()));
+
+                }
+                matchScoreRepository.save(matchScoreData);
+                request.setMessage("MatchScore added successfully");
             }
-            matchScoreData = modelMapper.map(matchScoreDto1, MatchScore.class);
-            baseService.populateCommonData(matchScoreData);
-            matchScoreData.setStatus(true);
-            matchScoreRepository.save(matchScoreData);
+            matchScoreList.add(matchScoreData);
+            request.setBaseUrl(ADMIN_MATCHSCORE);
 
-            if (matchScoreData.getRecordId() == null) {
-                matchScoreData.setRecordId(String.valueOf(matchScoreData.getId().getTimestamp()));
-
-            }
-            matchScoreRepository.save(matchScoreData);
-            request.setMessage("MatchScore added successfully");
         }
-        matchScoreList.add(matchScoreData);
-        request.setBaseUrl(ADMIN_MATCHSCORE);
-
+        request.setMatchScoreDtoList(modelMapper.map(matchScoreList, List.class));
+        return request;
     }
-    request.setMatchScoreDtoList(modelMapper.map(matchScoreList, List.class));
-    return request;
-}
 
 }

@@ -43,15 +43,15 @@ public class WebSecurityConfig {
 
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests((requests) -> {
-                    try{
-                    requests
-                                    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                    .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm","/admin/email/send-otp","/admin/email/validate-otp", "/admin/email/save-userName","/admin/mobile/send-otp","/admin/mobile/validate-otp","/admin/mobile/save-username").permitAll()
-                                    .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                        }catch (Exception e){
-                        throw  new RuntimeException();
-                    }
-                }
+                            try {
+                                requests
+                                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                                        .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm", "/admin/email/send-otp", "/admin/email/validate-otp", "/admin/email/save-userName", "/admin/mobile/send-otp", "/admin/mobile/validate-otp", "/admin/mobile/save-username").permitAll()
+                                        .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                            } catch (Exception e) {
+                                throw new RuntimeException();
+                            }
+                        }
 
                 )
                 .rememberMe((rememberMe) -> rememberMe

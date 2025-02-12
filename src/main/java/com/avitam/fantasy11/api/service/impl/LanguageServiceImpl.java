@@ -18,16 +18,13 @@ import java.util.List;
 @Service
 public class LanguageServiceImpl implements LanguageService {
 
+    public static final String ADMIN_LANGUAGE = "/admin/language";
     @Autowired
     private LanguageRepository languageRepository;
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_LANGUAGE = "/admin/language";
 
     @Override
     public Language findByRecordId(String recordId) {

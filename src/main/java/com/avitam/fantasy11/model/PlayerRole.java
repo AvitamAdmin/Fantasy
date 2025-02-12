@@ -1,4 +1,5 @@
 package com.avitam.fantasy11.model;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +11,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("PlayerRole")
 
 public class PlayerRole extends CommonFields {
-
     private String playerRole;
-
 }

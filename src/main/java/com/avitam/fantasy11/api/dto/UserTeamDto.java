@@ -5,14 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Set;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserTeamDto extends CommonDto{
-
+public class UserTeamDto extends CommonDto {
+    private String matchId;
     private String playerId;
     private boolean captain;
     private boolean viceCaptain;

@@ -4,13 +4,9 @@ import com.avitam.fantasy11.api.dto.DepositsDto;
 import com.avitam.fantasy11.api.dto.DepositsWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.DepositsService;
-import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Deposits;
 import com.avitam.fantasy11.repository.DepositsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-
-import java.util.List;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +16,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/depositLog")
 public class DepositsLogController extends BaseController {
 
+    private static final String ADMIN_DEPOSIT = "/admin/depositLog";
     @Autowired
     private DepositsRepository depositsRepository;
     @Autowired
     private DepositsService depositService;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_DEPOSIT = "/admin/depositLog";
 
     @PostMapping
     @ResponseBody

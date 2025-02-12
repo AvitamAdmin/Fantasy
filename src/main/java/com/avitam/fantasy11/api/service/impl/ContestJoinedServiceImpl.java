@@ -18,14 +18,13 @@ import java.util.List;
 @Service
 public class ContestJoinedServiceImpl implements ContestJoinedService {
 
+    private static final String ADMIN_CONTESTJOINED = "/admin/contestJoined";
     @Autowired
     private ContestJoinedRepository contestJoinedRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    private static final String ADMIN_CONTESTJOINED = "/admin/contestJoined";
 
     @Override
     public ContestJoined findByRecordId(String recordId) {

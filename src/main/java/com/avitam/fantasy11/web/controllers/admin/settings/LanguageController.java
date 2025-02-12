@@ -23,14 +23,13 @@ import java.util.List;
 @RequestMapping("/admin/language")
 public class LanguageController extends BaseController {
 
+    public static final String ADMIN_LANGUAGE = "/admin/language";
+    @Autowired
+    ModelMapper modelMapper;
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
     private LanguageService languageService;
-    @Autowired
-    ModelMapper modelMapper;
-
-    public static final String ADMIN_LANGUAGE = "/admin/language";
 
     @PostMapping
     @ResponseBody
@@ -84,6 +83,7 @@ public class LanguageController extends BaseController {
         languageWsDto.setBaseUrl(ADMIN_LANGUAGE);
         return languageWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

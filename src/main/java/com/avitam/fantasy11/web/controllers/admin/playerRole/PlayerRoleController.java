@@ -1,8 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.playerRole;
 
-import com.avitam.fantasy11.api.dto.*;
+import com.avitam.fantasy11.api.dto.CommonDto;
+import com.avitam.fantasy11.api.dto.PlayerRoleDto;
+import com.avitam.fantasy11.api.dto.PlayerRoleWsDto;
+import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.PlayerRoleService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.PlayerRole;
 import com.avitam.fantasy11.repository.PlayerRoleRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -22,14 +24,13 @@ import java.util.List;
 @RequestMapping("/admin/playerRole")
 public class PlayerRoleController extends BaseController {
 
+    private static final String ADMIN_PLAYERROLE = "/admin/playerRole";
     @Autowired
     private PlayerRoleRepository playerRoleRepository;
     @Autowired
     private PlayerRoleService playerRoleService;
     @Autowired
     private ModelMapper modelMapper;
-
-    private static final String ADMIN_PLAYERROLE = "/admin/playerRole";
 
     @PostMapping
     @ResponseBody
@@ -83,6 +84,7 @@ public class PlayerRoleController extends BaseController {
         playerRoleWsDto.setBaseUrl(ADMIN_PLAYERROLE);
         return playerRoleWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

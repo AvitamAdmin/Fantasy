@@ -10,19 +10,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("Matches")
 
-public class Matches extends CommonFields{
-
+public class Matches extends CommonFields {
     private String team1Id;
-    private String contestId;
     private String team2Id;
-    private String dateAndTime;
-    private String startDateAndTime;
-    private String endDateAndTime;
+    private String matchTime;
     private String eventStatus;
-    private boolean matchStatus;
     private String tournamentId;
     private String sportTypeId;
-    private String event;
-    private String parentMainContestId;
     private String matchTypeId;
+    private String lineupStatus;
 }

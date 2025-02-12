@@ -173,10 +173,10 @@ public class EmailReceiver {
         SimpleDateFormat formatter1 = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
 
         System.out.println();
-        for (String line : Arrays.asList(lines)) {
+        for (String line : lines) {
             if (line.contains(DEEP_LINK) && SUBJECT.equals(subject)) {
                 String[] tokens = line.split("\"");
-                for (String deepLink : Arrays.asList(tokens)) {
+                for (String deepLink : tokens) {
                     if (deepLink.contains(DEEP_LINK)) {
                         System.out.println(deepLink);
                     }

@@ -6,13 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class MatchScoreDto extends CommonDto{
+public class MatchScoreDto extends CommonDto {
 
     private String matchId;
 

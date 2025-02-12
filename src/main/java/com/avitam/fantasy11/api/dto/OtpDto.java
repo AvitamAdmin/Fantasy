@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class OtpDto extends CommonDto{
+public class OtpDto extends CommonDto {
     private String userId;
 
     private String mobileOtp;

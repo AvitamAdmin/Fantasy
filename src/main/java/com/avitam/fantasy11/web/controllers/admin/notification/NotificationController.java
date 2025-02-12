@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.NotificationDto;
 import com.avitam.fantasy11.api.dto.NotificationWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.NotificationService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Notification;
 import com.avitam.fantasy11.repository.NotificationRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -23,21 +22,21 @@ import java.util.List;
 @RequestMapping("/admin/notification")
 public class NotificationController extends BaseController {
 
+    public static final String ADMIN_NOTIFICATION = "/admin/notification";
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
     private NotificationService notificationService;
     @Autowired
     private ModelMapper modelMapper;
-    public static final String ADMIN_NOTIFICATION = "/admin/notification";
 
     @PostMapping
     @ResponseBody
     public NotificationWsDto getAllNotifications(NotificationWsDto notificationWsDto) {
-        Pageable pageable=getPageable(notificationWsDto.getPage(),notificationWsDto.getSizePerPage(),notificationWsDto.getSortDirection(),notificationWsDto.getSortField());
-        NotificationDto notificationDto = CollectionUtils.isNotEmpty(notificationWsDto.getNotificationDtoList()) ? notificationWsDto.getNotificationDtoList().get(0): new NotificationDto();
+        Pageable pageable = getPageable(notificationWsDto.getPage(), notificationWsDto.getSizePerPage(), notificationWsDto.getSortDirection(), notificationWsDto.getSortField());
+        NotificationDto notificationDto = CollectionUtils.isNotEmpty(notificationWsDto.getNotificationDtoList()) ? notificationWsDto.getNotificationDtoList().get(0) : new NotificationDto();
         Notification notification = modelMapper.map(notificationDto, Notification.class);
-        Page<Notification> page= isSearchActive(notification) !=null ? notificationRepository.findAll(Example.of(notification),pageable) : notificationRepository.findAll(pageable);
+        Page<Notification> page = isSearchActive(notification) != null ? notificationRepository.findAll(Example.of(notification), pageable) : notificationRepository.findAll(pageable);
         notificationWsDto.setNotificationDtoList(modelMapper.map(page.getContent(), List.class));
         notificationWsDto.setTotalPages(page.getTotalPages());
         notificationWsDto.setTotalRecords(page.getTotalElements());
@@ -47,9 +46,9 @@ public class NotificationController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public NotificationWsDto getActiveNotificationList(){
+    public NotificationWsDto getActiveNotificationList() {
         NotificationWsDto notificationWsDto = new NotificationWsDto();
-        notificationWsDto.setNotificationDtoList(modelMapper.map(notificationRepository.findByStatusOrderByIdentifier(true),List.class));
+        notificationWsDto.setNotificationDtoList(modelMapper.map(notificationRepository.findByStatusOrderByIdentifier(true), List.class));
         notificationWsDto.setBaseUrl(ADMIN_NOTIFICATION);
         return notificationWsDto;
     }
@@ -60,7 +59,7 @@ public class NotificationController extends BaseController {
         NotificationWsDto notificationWsDto = new NotificationWsDto();
         notificationWsDto.setBaseUrl(ADMIN_NOTIFICATION);
         Notification notification = notificationRepository.findByRecordId(request.getNotificationDtoList().get(0).getRecordId());
-        if(notification !=null){
+        if (notification != null) {
             notificationWsDto.setNotificationDtoList(List.of(modelMapper.map(notification, NotificationDto.class)));
         }
         return notificationWsDto;
@@ -75,7 +74,7 @@ public class NotificationController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public NotificationWsDto deleteNotification(@RequestBody NotificationWsDto notificationWsDto) {
-        for (NotificationDto notificationDto: notificationWsDto.getNotificationDtoList()){
+        for (NotificationDto notificationDto : notificationWsDto.getNotificationDtoList()) {
             notificationRepository.deleteByRecordId((notificationDto.getRecordId()));
 
         }
@@ -84,6 +83,7 @@ public class NotificationController extends BaseController {
         return notificationWsDto;
 
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

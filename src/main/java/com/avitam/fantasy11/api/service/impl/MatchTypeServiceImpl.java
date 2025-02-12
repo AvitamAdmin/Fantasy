@@ -18,14 +18,13 @@ import java.util.List;
 @Service
 public class MatchTypeServiceImpl implements MatchTypeService {
 
+    private static final String ADMIN_MATCHTYPE = "/admin/matchType";
     @Autowired
     private MatchTypeRepository matchTypeRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    private static final String ADMIN_MATCHTYPE="/admin/matchType";
 
     @Override
     public MatchType findByRecordId(String recordId) {
@@ -82,8 +81,8 @@ public class MatchTypeServiceImpl implements MatchTypeService {
 
     @Override
     public void updateByRecordId(String recordId) {
-        MatchType matchType=matchTypeRepository.findByRecordId(recordId);
-        if(matchType!=null){
+        MatchType matchType = matchTypeRepository.findByRecordId(recordId);
+        if (matchType != null) {
 
             matchTypeRepository.save(matchType);
         }

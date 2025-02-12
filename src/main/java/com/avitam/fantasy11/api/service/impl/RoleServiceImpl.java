@@ -17,6 +17,7 @@ import java.util.*;
 
 @Service
 public class RoleServiceImpl implements RoleService {
+    public static final String ADMIN_ROLE = "/admin/role";
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -25,8 +26,6 @@ public class RoleServiceImpl implements RoleService {
     private BaseService baseService;
     @Autowired
     private NodeRepository nodeRepository;
-
-    public static final String ADMIN_ROLE = "/admin/role";
 
     @Override
     public Role findByRecordId(String recordId) {
@@ -46,8 +45,9 @@ public class RoleServiceImpl implements RoleService {
         }
 
     }
+
     @Override
-    public RoleWsDto  handleEdit(RoleWsDto request) {
+    public RoleWsDto handleEdit(RoleWsDto request) {
         List<RoleDto> roleDtos = request.getRoleDtoList();
         List<Role> roles = new ArrayList<>();
         Role role = null;

@@ -11,8 +11,6 @@ import java.util.Optional;
 public interface MatchesRepository extends GenericImportRepository<Matches> {
     Optional<Matches> findById(String id);
 
-    List<Matches> findByEvent(String live);
-
     Matches findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
@@ -20,6 +18,4 @@ public interface MatchesRepository extends GenericImportRepository<Matches> {
     List<Matches> findByStatusOrderByIdentifier(boolean b);
 
     List<Matches> findByEventStatus(String eventStatus);
-
-    List<Matches> findByStatusAndEventOrderByIdentifier(boolean b, String event);
 }

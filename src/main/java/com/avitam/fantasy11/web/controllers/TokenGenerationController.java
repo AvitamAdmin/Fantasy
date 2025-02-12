@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenGenerationController extends BaseController {
 
     @Autowired
-     private UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private JWTUtility jwtUtility;
@@ -25,7 +25,7 @@ public class TokenGenerationController extends BaseController {
     private AuthenticationProvider authenticationProvider;
 
     @PostMapping("/api/authenticate")
-    public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest){
+    public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) {
 
         authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getUsername());

@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Extension")
-public class Extension extends CommonFields{
+public class Extension extends CommonFields {
 
     private Binary image;
     private String extendStatus;

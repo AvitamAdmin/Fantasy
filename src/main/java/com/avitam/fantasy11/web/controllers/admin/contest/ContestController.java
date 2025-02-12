@@ -6,7 +6,6 @@ import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.repository.ContestRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +21,20 @@ import java.util.List;
 @RequestMapping("/admin/contest")
 public class ContestController extends BaseController {
 
+    private static final String ADMIN_CONTEST = "/admin/contest";
     @Autowired
     private ContestRepository contestRepository;
     @Autowired
     private ContestService contestService;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_CONTEST = "/admin/contest";
 
     @PostMapping
     @ResponseBody
     public ContestWsDto getAllContest(@RequestBody ContestWsDto contestwsDto) {
         Pageable pageable = getPageable(contestwsDto.getPage(), contestwsDto.getSizePerPage(), contestwsDto.getSortDirection(), contestwsDto.getSortField());
         ContestDto contestDto = CollectionUtils.isNotEmpty(contestwsDto.getContestDtos()) ? contestwsDto.getContestDtos().get(0) : new ContestDto();
-        Contest contest = modelMapper.map(contestDto,Contest.class);
+        Contest contest = modelMapper.map(contestDto, Contest.class);
         Page<Contest> page = isSearchActive(contest) == null ? contestRepository.findAll(Example.of(contest), pageable) : contestRepository.findAll(pageable);
         contestwsDto.setContestDtos(modelMapper.map(page.getContent(), List.class));
         contestwsDto.setTotalPages(page.getTotalPages());

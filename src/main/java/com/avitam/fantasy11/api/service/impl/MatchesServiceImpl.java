@@ -11,20 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class MatchesServiceImpl implements MatchesService {
 
+    public static final String ADMIN_MATCHES = "/admin/matches";
     @Autowired
     private MatchesRepository matchesRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-    public static final String ADMIN_MATCHES = "/admin/matches";
-
 
     @Override
     public Matches findByRecordId(String recordId) {
@@ -59,17 +60,14 @@ public class MatchesServiceImpl implements MatchesService {
 
                 matches = modelMapper.map(matchesDtos, Matches.class);
                 baseService.populateCommonData(matches);
-                eventStatus(matches, request);
+                matches.setStatus(true);
                 matchesRepository.save(matches);
-
                 if (matches.getRecordId() == null) {
                     matches.setRecordId(String.valueOf(matches.getId().getTimestamp()));
                 }
-                matches.setMatchStatus(true);
                 matchesRepository.save(matches);
+                request.setMessage("Data added Successfully");
             }
-
-            request.setMessage("Data added Successfully");
             matchesList.add(matches);
             request.setBaseUrl(ADMIN_MATCHES);
 
@@ -79,22 +77,4 @@ public class MatchesServiceImpl implements MatchesService {
 
 
     }
-
-    public void eventStatus(Matches matches, MatchesWsDto request) {
-
-        for (MatchesDto matchesDto : request.getMatchesDtoList()) {
-            LocalDateTime startDateAndTime = LocalDateTime.parse(matchesDto.getStartDateAndTime());
-            LocalDateTime endDateAndTime = LocalDateTime.parse(matchesDto.getEndDateAndTime());
-            LocalDateTime currentDateAndTime = LocalDateTime.now();
-
-            if (startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isAfter(currentDateAndTime)) {
-                matches.setEventStatus("Live");
-            } else if (startDateAndTime.isBefore(currentDateAndTime) && endDateAndTime.isBefore(currentDateAndTime)) {
-                matches.setEventStatus("Closed");
-            } else if (startDateAndTime.isAfter(currentDateAndTime)) {
-                matches.setEventStatus("Upcoming");
-            }
-        }
-    }
 }
-

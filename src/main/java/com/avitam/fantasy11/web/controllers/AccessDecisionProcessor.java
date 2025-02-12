@@ -27,8 +27,7 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
         //Get the current request URI
         String requestUrl = object.getRequestUrl();
 
-        if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-            org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User principalObject) {
             User currentUser = userRepository.findByEmail(principalObject.getUsername());
             Set<Role> roles = currentUser.getRoles();
             Set<Node> nodes = getNodesForRoles(roles);

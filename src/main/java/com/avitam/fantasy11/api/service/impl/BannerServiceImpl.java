@@ -7,27 +7,25 @@ import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.model.Banner;
 import com.avitam.fantasy11.repository.BannerRepository;
 import com.avitam.fantasy11.repository.EntityConstants;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class BannerServiceImpl implements BannerService {
+    public static final String ADMIN_BANNER = "/admin/banner";
     @Autowired
     private BannerRepository bannerRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-    public static final String ADMIN_BANNER = "/admin/banner";
 
     @Override
     public Banner findByRecordId(String recordId) {

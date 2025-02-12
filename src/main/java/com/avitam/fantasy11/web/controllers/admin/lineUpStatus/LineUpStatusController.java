@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/lineupStatus")
@@ -24,12 +23,11 @@ public class LineUpStatusController extends BaseController {
 
     private static final String ADMIN_LINEUP_STATUS = "/admin/lineupStatus";
     @Autowired
-    private LineUpStatusRepository lineUpStatusRepository;
-
-    @Autowired
     LineUpStatusService lineUpStatusService;
     @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    private LineUpStatusRepository lineUpStatusRepository;
 
     @PostMapping
     @ResponseBody
@@ -37,8 +35,8 @@ public class LineUpStatusController extends BaseController {
         Pageable pageable = getPageable(lineUpStatusWsDto.getPage(), lineUpStatusWsDto.getSizePerPage(), lineUpStatusWsDto.getSortDirection(), lineUpStatusWsDto.getSortField());
         LineUpStatusDto lineUpStatusDto = CollectionUtils.isNotEmpty(lineUpStatusWsDto.getLineUpStatusDtoList()) ? lineUpStatusWsDto.getLineUpStatusDtoList().get(0) : new LineUpStatusDto();
         LineUpStatus lineUpStatus = modelMapper.map(lineUpStatusDto, LineUpStatus.class);
-        Page<LineUpStatus> page = isSearchActive(lineUpStatus) == null ? lineUpStatusRepository.findAll(Example.of(lineUpStatus),pageable) : lineUpStatusRepository.findAll(pageable);
-        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(page.getContent(),List.class));
+        Page<LineUpStatus> page = isSearchActive(lineUpStatus) == null ? lineUpStatusRepository.findAll(Example.of(lineUpStatus), pageable) : lineUpStatusRepository.findAll(pageable);
+        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(page.getContent(), List.class));
         lineUpStatusWsDto.setTotalPages(page.getTotalPages());
         lineUpStatusWsDto.setTotalRecords(page.getTotalElements());
         lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
@@ -49,7 +47,7 @@ public class LineUpStatusController extends BaseController {
     @ResponseBody
     public LineUpStatusWsDto getLineUpStatus() {
         LineUpStatusWsDto lineUpStatusWsDto = new LineUpStatusWsDto();
-        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(lineUpStatusRepository.findByStatusOrderByIdentifier(true),List.class));
+        lineUpStatusWsDto.setLineUpStatusDtoList(modelMapper.map(lineUpStatusRepository.findByStatusOrderByIdentifier(true), List.class));
         lineUpStatusWsDto.setBaseUrl(ADMIN_LINEUP_STATUS);
         return lineUpStatusWsDto;
     }
@@ -72,7 +70,7 @@ public class LineUpStatusController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public LineUpStatusWsDto deleteLineupStatus(@RequestBody LineUpStatusWsDto lineUpStatusWSDto) {
-        for (LineUpStatusDto lineUpStatusDto:lineUpStatusWSDto.getLineUpStatusDtoList()) {
+        for (LineUpStatusDto lineUpStatusDto : lineUpStatusWSDto.getLineUpStatusDtoList()) {
             lineUpStatusRepository.deleteByRecordId(lineUpStatusDto.getRecordId());
         }
         lineUpStatusWSDto.setMessage("Data deleted Successfully");

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("WithdrawalDetails")
 @Getter
 @Setter
-public class WithdrawalDetails extends CommonFields{
+public class WithdrawalDetails extends CommonFields {
 
     private int transaction;
     private String memberName;

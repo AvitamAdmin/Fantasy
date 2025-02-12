@@ -56,7 +56,7 @@ public class DefaultEmailService {
     public Message[] getNewMessages(Folder folder) {
         Flags seen = new Flags(Flags.Flag.SEEN);
         FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
-        Message messages[] = new Message[0];
+        Message[] messages = new Message[0];
         try {
             messages = folder.search(unseenFlagTerm);
             folder.setFlags(messages, new Flags(Flags.Flag.SEEN), true);

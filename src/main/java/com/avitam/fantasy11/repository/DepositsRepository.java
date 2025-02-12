@@ -17,7 +17,7 @@ public interface DepositsRepository extends GenericImportRepository<Deposits> {
 
     void deleteByRecordId(String recordId);
 
-    List<Deposits> findByStatusAndDepositStatusOrderByIdentifier(boolean b,String depositStatus);
+    List<Deposits> findByStatusAndDepositStatusOrderByIdentifier(boolean b, String depositStatus);
 
     List<Deposits> findByStatusOrderByIdentifier(boolean b);
 }

@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class MatchTypeDto extends CommonDto{
+public class MatchTypeDto extends CommonDto {
 
 
 }

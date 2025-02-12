@@ -18,14 +18,13 @@ import java.util.List;
 @Service
 public class LeaderBoardServiceImpl implements LeaderBoardService {
 
+    public static final String ADMIN_LEADER_BOARD = "/admin/leaderBoard";
     @Autowired
     private LeaderBoardRepository leaderBoardRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
-
-    public static final String ADMIN_LEADER_BOARD = "/admin/leaderBoard";
 
     @Override
     public LeaderBoard findByRecordId(String recordId) {

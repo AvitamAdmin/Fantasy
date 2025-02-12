@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.TeamDto;
 import com.avitam.fantasy11.api.dto.TeamWsDto;
 import com.avitam.fantasy11.api.service.TeamService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Team;
 import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -25,13 +24,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/team")
 public class TeamController extends BaseController {
+    public static final String ADMIN_TEAM = "/admin/team";
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
     private TeamService teamService;
     @Autowired
     private ModelMapper modelMapper;
-    public static final String ADMIN_TEAM = "/admin/team";
 
     @PostMapping
     @ResponseBody
@@ -82,6 +81,7 @@ public class TeamController extends BaseController {
         request.setTeamDtoList(List.of(teamDto));
         return teamService.handleEdit(request);
     }
+
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public TeamWsDto handleEdit(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo,
@@ -107,7 +107,9 @@ public class TeamController extends BaseController {
         teamWsDto.setMessage("Data deleted successfully");
         teamWsDto.setBaseUrl(ADMIN_TEAM);
         return teamWsDto;
-    } @GetMapping("/getAdvancedSearch")
+    }
+
+    @GetMapping("/getAdvancedSearch")
     @ResponseBody
 
     public List<SearchDto> getSearchAttributes() {

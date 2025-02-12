@@ -17,9 +17,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/user")
-public class AdminController extends BaseController{
+public class AdminController extends BaseController {
 
-    public static final String ADMIN_USER="/admin/user";
+    public static final String ADMIN_USER = "/admin/user";
     @Autowired
     private UserService userService;
     @Autowired
@@ -30,10 +30,10 @@ public class AdminController extends BaseController{
     @PostMapping()
     public UserWsDto getAllUsers(@RequestBody UserWsDto userWsDto) {
         Pageable pageable = getPageable(userWsDto.getPage(), userWsDto.getSizePerPage(), userWsDto.getSortDirection(), userWsDto.getSortField());
-        UserDto userDto= CollectionUtils.isNotEmpty(userWsDto.getUserDtoList())? userWsDto.getUserDtoList().get(0) : new UserDto();
+        UserDto userDto = CollectionUtils.isNotEmpty(userWsDto.getUserDtoList()) ? userWsDto.getUserDtoList().get(0) : new UserDto();
         User user = modelMapper.map(userDto, User.class);
         Page<User> page = isSearchActive(user) != null ? userRepository.findAll(Example.of(user), pageable) : userRepository.findAll(pageable);
-        userWsDto.setUserDtoList(modelMapper.map(page.getContent(),List.class));
+        userWsDto.setUserDtoList(modelMapper.map(page.getContent(), List.class));
         userWsDto.setTotalPages(page.getTotalPages());
         userWsDto.setTotalRecords(page.getTotalElements());
         userWsDto.setBaseUrl(ADMIN_USER);
@@ -43,7 +43,7 @@ public class AdminController extends BaseController{
     @GetMapping("/get")
     public UserWsDto getActiveUserList() {
         UserWsDto userWsDto = new UserWsDto();
-        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByStatusOrderByIdentifier(true),List.class));
+        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByStatusOrderByIdentifier(true), List.class));
         userWsDto.setBaseUrl(ADMIN_USER);
         return userWsDto;
     }
@@ -51,7 +51,7 @@ public class AdminController extends BaseController{
     @PostMapping("/getedit")
     public UserWsDto editUser(@RequestBody UserWsDto request) {
         UserWsDto userWsDto = new UserWsDto();
-        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByRecordId(request.getUserDtoList().get(0).getRecordId()),List.class));
+        userWsDto.setUserDtoList(modelMapper.map(userRepository.findByRecordId(request.getUserDtoList().get(0).getRecordId()), List.class));
         userWsDto.setBaseUrl(ADMIN_USER);
         return userWsDto;
     }

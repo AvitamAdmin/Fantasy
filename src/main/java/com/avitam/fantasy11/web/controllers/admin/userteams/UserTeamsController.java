@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
@@ -22,14 +21,13 @@ import java.util.List;
 @RequestMapping("/admin/userTeams")
 public class UserTeamsController extends BaseController {
 
+    public static final String ADMIN_USERTEAMS = "/admin/userTeams";
     @Autowired
     private UserTeamsRepository userTeamsRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private UserTeamsService userTeamsService;
-
-    public static final String ADMIN_USERTEAMS = "/admin/userTeams";
 
     @PostMapping
     @ResponseBody
@@ -38,7 +36,7 @@ public class UserTeamsController extends BaseController {
         Pageable pageable = getPageable(userTeamsWsDto.getPage(), userTeamsWsDto.getSizePerPage(), userTeamsWsDto.getSortDirection(), userTeamsWsDto.getSortField());
         UserTeamsDto userTeamsDto = CollectionUtils.isNotEmpty(userTeamsWsDto.getUserTeamsDtoList()) ? userTeamsWsDto.getUserTeamsDtoList().get(0) : new UserTeamsDto();
         UserTeams userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
-        Page<UserTeams> page = isSearchActive(userTeams) != null ? userTeamsRepository.findAll(Example.of(userTeams), pageable) : userTeamsRepository.findAll(pageable);
+        Page<UserTeams> page = isSearchActive(userTeams) == null ? userTeamsRepository.findAll(Example.of(userTeams), pageable) : userTeamsRepository.findAll(pageable);
         userTeamsWsDto.setUserTeamsDtoList(modelMapper.map(page.getContent(), List.class));
         userTeamsWsDto.setTotalPages(page.getTotalPages());
         userTeamsWsDto.setTotalRecords(page.getTotalElements());
@@ -86,6 +84,7 @@ public class UserTeamsController extends BaseController {
         userTeamsWsDto.setBaseUrl(ADMIN_USERTEAMS);
         return userTeamsWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 

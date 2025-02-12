@@ -4,7 +4,6 @@ import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.dto.RoleWsDto;
 import com.avitam.fantasy11.api.dto.SearchDto;
 import com.avitam.fantasy11.api.service.RoleService;
-import com.avitam.fantasy11.model.LeaderBoard;
 import com.avitam.fantasy11.model.Role;
 import com.avitam.fantasy11.repository.NodeRepository;
 import com.avitam.fantasy11.repository.RoleRepository;
@@ -23,6 +22,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/role")
 public class RoleController extends BaseController {
+    public static final String ADMIN_ROLE = "/admin/role";
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -32,15 +32,13 @@ public class RoleController extends BaseController {
     @Autowired
     private ModelMapper modelMapper;
 
-
-    public static final String ADMIN_ROLE = "/admin/role";
     @PostMapping
     @ResponseBody
     public RoleWsDto getAllRoles(@RequestBody RoleWsDto roleWsDto) {
-        Pageable pageable=getPageable(roleWsDto.getPage(),roleWsDto.getSizePerPage(),roleWsDto.getSortDirection(),roleWsDto.getSortField());
+        Pageable pageable = getPageable(roleWsDto.getPage(), roleWsDto.getSizePerPage(), roleWsDto.getSortDirection(), roleWsDto.getSortField());
         RoleDto roleDto = CollectionUtils.isNotEmpty(roleWsDto.getRoleDtoList()) ? roleWsDto.getRoleDtoList().get(0) : new RoleDto();
-        Role role=modelMapper.map(roleDto,Role.class);
-        Page<Role> page=isSearchActive(role) !=null ? roleRepository.findAll(Example.of(role),pageable) : roleRepository.findAll(pageable);
+        Role role = modelMapper.map(roleDto, Role.class);
+        Page<Role> page = isSearchActive(role) != null ? roleRepository.findAll(Example.of(role), pageable) : roleRepository.findAll(pageable);
         roleWsDto.setRoleDtoList(modelMapper.map(page.getContent(), List.class));
         roleWsDto.setBaseUrl(ADMIN_ROLE);
         roleWsDto.setTotalPages(page.getTotalPages());
@@ -50,8 +48,8 @@ public class RoleController extends BaseController {
 
     @GetMapping("/get")
     @ResponseBody
-    public RoleWsDto getActiveRole(){
-        RoleWsDto roleWsDto=new RoleWsDto();
+    public RoleWsDto getActiveRole() {
+        RoleWsDto roleWsDto = new RoleWsDto();
         roleWsDto.setRoleDtoList(modelMapper.map(roleRepository.findByStatusOrderByIdentifier(true), List.class));
         roleWsDto.setBaseUrl(ADMIN_ROLE);
         return roleWsDto;
@@ -59,11 +57,11 @@ public class RoleController extends BaseController {
 
     @PostMapping("/getedit")
     @ResponseBody
-    public RoleWsDto editRole (@RequestBody RoleWsDto request) {
+    public RoleWsDto editRole(@RequestBody RoleWsDto request) {
         RoleWsDto roleWsDto = new RoleWsDto();
         roleWsDto.setBaseUrl(ADMIN_ROLE);
-        Role role= roleRepository.findByRecordId(request.getRoleDtoList().get(0).getRecordId());
-        if(role != null){
+        Role role = roleRepository.findByRecordId(request.getRoleDtoList().get(0).getRecordId());
+        if (role != null) {
             roleWsDto.setRoleDtoList(List.of(modelMapper.map(role, RoleDto.class)));
         }
         return roleWsDto;
@@ -71,7 +69,7 @@ public class RoleController extends BaseController {
 
     @PostMapping("/edit")
     @ResponseBody
-    public  RoleWsDto handleEdit(@RequestBody RoleWsDto request) {
+    public RoleWsDto handleEdit(@RequestBody RoleWsDto request) {
 
         return roleService.handleEdit(request);
     }
@@ -80,13 +78,14 @@ public class RoleController extends BaseController {
     @PostMapping("/delete")
     @ResponseBody
     public RoleWsDto deleteRole(@RequestBody RoleWsDto roleWsDto) {
-        for (RoleDto roleDto : roleWsDto.getRoleDtoList()){
+        for (RoleDto roleDto : roleWsDto.getRoleDtoList()) {
             roleRepository.deleteByRecordId(roleDto.getRecordId());
         }
         roleWsDto.setMessage("Data deleted Successfully");
         roleWsDto.setBaseUrl(ADMIN_ROLE);
         return roleWsDto;
     }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
 
