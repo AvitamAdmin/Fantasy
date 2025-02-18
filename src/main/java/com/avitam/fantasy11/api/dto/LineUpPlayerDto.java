@@ -11,6 +11,6 @@ import lombok.ToString;
 @ToString
 public class LineUpPlayerDto extends CommonDto {
     private String playerId;
-    private boolean isPlaying;
-    private boolean isImpact;
+    private Boolean isPlaying;
+    private Boolean isImpact;
 }

@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.api.dto;
 
+import com.avitam.fantasy11.model.Deposits;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserTeamsWsDto extends CommonWsDto {
-    private List<UserTeamsDto> userTeamsDtoList;
+public class RankPriceDto {
+    private String rank;
+    private Integer winPercent;
+    private Double amount;
 }
