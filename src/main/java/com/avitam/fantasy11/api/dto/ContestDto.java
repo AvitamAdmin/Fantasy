@@ -13,7 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 @ToString
 public class ContestDto extends CommonDto {
-    private String contestType;
+    private String contestTypeId;
     private Double totalPrice;
     private Double entryFee;
     private Integer noOfMembers;

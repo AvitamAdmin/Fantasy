@@ -4,6 +4,7 @@ import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.dto.ContestWsDto;
 import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
+
 import com.avitam.fantasy11.repository.ContestRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -56,9 +57,9 @@ public class ContestController extends BaseController {
     @ResponseBody
     public ContestWsDto editContest(@RequestBody ContestWsDto request) {
         ContestWsDto contestwsDto = new ContestWsDto();
-        contestwsDto.setBaseUrl(ADMIN_CONTEST);
         Contest contest = contestRepository.findByRecordId(request.getContestDtos().get(0).getRecordId());
         contestwsDto.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
+        contestwsDto.setBaseUrl(ADMIN_CONTEST);
         return contestwsDto;
     }
 

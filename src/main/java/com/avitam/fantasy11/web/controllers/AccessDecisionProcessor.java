@@ -39,7 +39,6 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
                 }
             }
         }
-
         return ACCESS_GRANTED;
     }
 
@@ -53,13 +52,11 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
 
     @Override
     public boolean supports(ConfigAttribute attribute) {
-
         return true;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-
         return true;
     }
 }

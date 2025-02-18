@@ -50,7 +50,6 @@ public class WebsiteSettingServiceImpl implements WebsiteSettingService {
                 websiteSettingRepository.save(websiteData);
                 request.setMessage("Data updated Successfully");
             } else {
-
                 if (baseService.validateIdentifier(EntityConstants.WEBSITESETTING, websiteDto1.getIdentifier()) != null) {
                     request.setSuccess(false);
                     request.setMessage("Identifier already present");

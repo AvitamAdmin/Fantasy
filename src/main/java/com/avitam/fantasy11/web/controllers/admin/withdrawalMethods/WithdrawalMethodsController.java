@@ -36,7 +36,7 @@ public class WithdrawalMethodsController extends BaseController {
         Pageable pageable = getPageable(withdrawalMethodsWsDto.getPage(), withdrawalMethodsWsDto.getSizePerPage(), withdrawalMethodsWsDto.getSortDirection(), withdrawalMethodsWsDto.getSortField());
         WithdrawalMethodsDto withdrawalMethodsDto = CollectionUtils.isNotEmpty(withdrawalMethodsWsDto.getWithdrawalMethodsDtoList()) ? withdrawalMethodsWsDto.getWithdrawalMethodsDtoList().get(0) : new WithdrawalMethodsDto();
         WithdrawalMethods withdrawalMethods = modelMapper.map(withdrawalMethodsDto, WithdrawalMethods.class);
-        Page<WithdrawalMethods> page = isSearchActive(withdrawalMethods) != null ? withdrawalMethodsRepository.findAll(Example.of(withdrawalMethods), pageable) : withdrawalMethodsRepository.findAll(pageable);
+        Page<WithdrawalMethods> page = isSearchActive(withdrawalMethods) == null ? withdrawalMethodsRepository.findAll(Example.of(withdrawalMethods), pageable) : withdrawalMethodsRepository.findAll(pageable);
         withdrawalMethodsWsDto.setWithdrawalMethodsDtoList(modelMapper.map(page.getContent(), List.class));
         withdrawalMethodsWsDto.setTotalPages(page.getTotalPages());
         withdrawalMethodsWsDto.setTotalRecords(page.getTotalElements());

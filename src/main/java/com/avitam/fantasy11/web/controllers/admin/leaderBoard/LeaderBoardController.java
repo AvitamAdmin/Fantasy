@@ -85,6 +85,7 @@ public class LeaderBoardController extends BaseController {
 
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
+
     public List<SearchDto> getSearchAttributes() {
         return getGroupedParentAndChildAttributes(new LeaderBoard());
     }
