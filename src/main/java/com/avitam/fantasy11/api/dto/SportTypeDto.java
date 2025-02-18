@@ -16,4 +16,6 @@ public class SportTypeDto extends CommonDto {
     private Integer section1MaxPlayers;
     private Integer section2MaxPlayers;
     private Integer section3MaxPlayers;
+    private Integer section4MaxPlayers;
+
 }

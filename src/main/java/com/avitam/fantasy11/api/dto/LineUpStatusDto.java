@@ -12,7 +12,6 @@ import lombok.ToString;
 
 public class LineUpStatusDto extends CommonDto {
     private boolean lineupStatus;
-
     private boolean impactPlayerStatus;
 
 

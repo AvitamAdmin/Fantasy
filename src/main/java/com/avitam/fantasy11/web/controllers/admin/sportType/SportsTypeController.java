@@ -7,6 +7,8 @@ import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.repository.SportTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import com.oracle.wls.shaded.org.apache.xpath.objects.XString;
+import io.swagger.models.auth.In;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,12 +74,18 @@ public class SportsTypeController extends BaseController {
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public SportTypeWsDto handleEdit(@RequestParam("identifier") String identifier, @RequestParam("logo") MultipartFile logo,
-                                     @RequestParam("name") String name) {
+                                     @RequestParam("name") String name, @RequestParam("maxPlayers") Integer maxPlayers, @RequestParam("section1MaxPlayers") Integer section1MaxPlayers, @RequestParam("section2MaxPlayers")Integer section2MaxPlayers,
+                                     @RequestParam("section3MaxPlayers")Integer section3MaxPlayers, @RequestParam("section4MaxPlayers")Integer section4MaxPlayers) {
         SportTypeWsDto request = new SportTypeWsDto();
         SportTypeDto sportTypeDto = new SportTypeDto();
         sportTypeDto.setLogo(logo);
         sportTypeDto.setIdentifier(identifier);
         sportTypeDto.setName(name);
+        sportTypeDto.setMaxPlayers(maxPlayers);
+        sportTypeDto.setSection1MaxPlayers(section1MaxPlayers);
+        sportTypeDto.setSection2MaxPlayers(section2MaxPlayers);
+        sportTypeDto.setSection3MaxPlayers(section3MaxPlayers);
+        sportTypeDto.setSection4MaxPlayers(section4MaxPlayers);
         request.setSportTypeDtoList(List.of(sportTypeDto));
         return sportTypeService.handleEdit(request);
 

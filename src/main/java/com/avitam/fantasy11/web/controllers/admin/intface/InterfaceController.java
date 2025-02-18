@@ -57,7 +57,6 @@ public class InterfaceController extends BaseController {
     @ResponseBody
     public NodeWsDto edit(@RequestBody NodeWsDto nodeWsDto) {
         Node node = nodeRepository.findByRecordId(nodeWsDto.getNodeDtoList().get(0).getRecordId());
-
         nodeWsDto.setNodeDtoList(List.of(modelMapper.map(node, NodeDto.class)));
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
