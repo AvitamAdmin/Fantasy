@@ -42,6 +42,7 @@ public class ContestServiceImpl implements ContestService {
             if (contestDto1.getRecordId() != null) {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
+              //  profitCalculation(contestData);
                 contestRepository.save(contestData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -54,6 +55,7 @@ public class ContestServiceImpl implements ContestService {
             }
             baseService.populateCommonData(contestData);
             contestData.setStatus(true);
+           // profitCalculation(contestData);
             contestRepository.save(contestData);
             if (contestData.getRecordId() == null) {
                 contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
@@ -80,4 +82,14 @@ public class ContestServiceImpl implements ContestService {
             contestRepository.save(contest);
         }
     }
+//    private void profitCalculation(Contest contestDto1) {
+//        contestDto1.setTotalAmount(contestDto1.getTotalAmount());
+//        contestDto1.setTotalAmount(contestDto1.getEntryFee() * contestDto1.getNoOfMembers());
+//        contestDto1.setProfit(contestDto1.getProfit());
+//        //contestDto1.setProfitPercentage(contestDto1.get);
+//        contestDto1.setProfit(contestDto1.getTotalAmount() * contestDto1.getProfitPercentage() / 100);
+//        contestDto1.setWinningsAmount(contestDto1.getWinningsAmount());
+//        contestDto1.setWinningsAmount(contestDto1.getTotalAmount() - contestDto1.getProfit());
+//    }
+
 }

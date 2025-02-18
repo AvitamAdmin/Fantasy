@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.repository;
 
+import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Matches;
 import com.avitam.fantasy11.repository.generic.GenericImportRepository;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,6 @@ public interface MatchesRepository extends GenericImportRepository<Matches> {
     List<Matches> findByStatusOrderByIdentifier(boolean b);
 
     List<Matches> findByEventStatus(String eventStatus);
+
+
 }

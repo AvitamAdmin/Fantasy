@@ -55,11 +55,19 @@ public class ContestController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public ContestWsDto editContest(@RequestBody ContestWsDto request) {
-        ContestWsDto contestwsDto = new ContestWsDto();
-        contestwsDto.setBaseUrl(ADMIN_CONTEST);
+
+        request.setBaseUrl(ADMIN_CONTEST);
         Contest contest = contestRepository.findByRecordId(request.getContestDtos().get(0).getRecordId());
-        contestwsDto.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
-        return contestwsDto;
+        request.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
+        return request;
+    }
+    @PostMapping("/getMatchId")
+    @ResponseBody
+    public ContestWsDto getMatchId(@RequestBody ContestWsDto request){
+        request.setBaseUrl(ADMIN_CONTEST);
+        Contest contest = contestRepository.findContestByMatchId(request.getContestDtos().get(0).getMatchId());
+        request.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
+        return request;
     }
 
     @PostMapping("/edit")

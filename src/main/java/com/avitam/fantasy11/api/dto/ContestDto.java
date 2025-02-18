@@ -24,4 +24,6 @@ public class ContestDto extends CommonDto {
     private Double winningsAmount;
     private Integer profitPercentage;
     private String matchId;
+    private Double totalAmount;
+
 }
