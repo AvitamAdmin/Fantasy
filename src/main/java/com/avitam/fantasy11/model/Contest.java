@@ -12,7 +12,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Document("Contest")
 public class Contest extends CommonFields {
-    private String contestType;
+    private String contestTypeId;
     private Double totalPrice;
     private Double entryFee;
     private Long noOfMembers;
