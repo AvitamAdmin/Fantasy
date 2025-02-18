@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -17,8 +16,8 @@ public class ContestDto extends CommonDto {
     private Double totalPrice;
     private Double entryFee;
     private Integer noOfMembers;
-    private List<RankPriceDto> maxRankPrice;
-    private List<RankPriceDto> GuaranteedRankPrice;
+    private Map<String, Double> maxRankPrice;
+    private Map<String, Double> GuaranteedRankPrice;
     private Integer winPercentage;
     private Integer maxTeams;
     private Double winningsAmount;
