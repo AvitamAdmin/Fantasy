@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.Set;
 
-@Document("Node")
+@Document("node")
 @Getter
 @Setter
 public class Node extends CommonFields {

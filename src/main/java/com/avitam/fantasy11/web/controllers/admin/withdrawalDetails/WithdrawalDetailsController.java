@@ -35,7 +35,7 @@ public class WithdrawalDetailsController extends BaseController {
         Pageable pageable = getPageable(withdrawalDetailsWsDto.getPage(), withdrawalDetailsWsDto.getSizePerPage(), withdrawalDetailsWsDto.getSortDirection(), withdrawalDetailsWsDto.getSortField());
         WithdrawalDetailsDto withdrawalDetailsDto = CollectionUtils.isNotEmpty(withdrawalDetailsWsDto.getWithdrawalDetailsDtoList()) ? withdrawalDetailsWsDto.getWithdrawalDetailsDtoList().get(0) : new WithdrawalDetailsDto();
         WithdrawalDetails withdrawalDetails = modelMapper.map(withdrawalDetailsDto, WithdrawalDetails.class);
-        Page<WithdrawalDetails> page = isSearchActive(withdrawalDetails) != null ? withdrawalDetailsRepository.findAll(Example.of(withdrawalDetails), pageable) : withdrawalDetailsRepository.findAll(pageable);
+        Page<WithdrawalDetails> page = isSearchActive(withdrawalDetails) == null ? withdrawalDetailsRepository.findAll(Example.of(withdrawalDetails), pageable) : withdrawalDetailsRepository.findAll(pageable);
         withdrawalDetailsWsDto.setWithdrawalDetailsDtoList(modelMapper.map(page.getContent(), List.class));
         withdrawalDetailsWsDto.setTotalPages(page.getTotalPages());
         withdrawalDetailsWsDto.setTotalRecords(page.getTotalElements());

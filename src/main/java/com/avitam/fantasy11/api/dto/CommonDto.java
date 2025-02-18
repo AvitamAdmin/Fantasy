@@ -7,13 +7,14 @@ import lombok.ToString;
 import org.bson.types.ObjectId;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class CommonDto {
+public class CommonDto implements Serializable {
     private String recordId;
     private ObjectId id;
     private String name;

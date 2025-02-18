@@ -11,5 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("LineUpStatus")
 
 public class LineUpStatus extends CommonFields {
-    private int lineupStatus;
+    private String playerId;
+    private Boolean isPlaying;
+    private Boolean isImpact;
 }

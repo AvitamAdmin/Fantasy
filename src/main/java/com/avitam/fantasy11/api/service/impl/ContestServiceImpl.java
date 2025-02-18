@@ -35,10 +35,8 @@ public class ContestServiceImpl implements ContestService {
     @Override
     public ContestWsDto handleEdit(ContestWsDto request) {
         Contest contestData = null;
-        List<ContestDto> contestDtos = request.getContestDtos();
         List<Contest> contestList = new ArrayList<>();
-
-        for (ContestDto contestDto1 : contestDtos) {
+        for (ContestDto contestDto1 : request.getContestDtos()) {
             if (contestDto1.getRecordId() != null) {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
@@ -78,7 +76,6 @@ public class ContestServiceImpl implements ContestService {
     public void updateByRecordId(String recordId) {
         Contest contest = contestRepository.findByRecordId(recordId);
         if (contest != null) {
-
             contestRepository.save(contest);
         }
     }

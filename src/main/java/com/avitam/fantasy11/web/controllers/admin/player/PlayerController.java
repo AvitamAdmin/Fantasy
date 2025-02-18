@@ -40,11 +40,11 @@ public class PlayerController extends BaseController {
         Pageable pageable = getPageable(playerWsDto.getPage(), playerWsDto.getSizePerPage(), playerWsDto.getSortDirection(), playerWsDto.getSortField());
         PlayerDto playerDto = CollectionUtils.isNotEmpty(playerWsDto.getPlayerDtoList()) ? playerWsDto.getPlayerDtoList().get(0) : new PlayerDto();
         Player player = modelMapper.map(playerDto, Player.class);
-        Page<Player> page = isSearchActive(player) == null ? playerRepository.findAll(Example.of(player), pageable) : playerRepository.findAll(pageable);
+        Page<Player> page = isSearchActive(player) != null ? playerRepository.findAll(Example.of(player), pageable) : playerRepository.findAll(pageable);
         playerWsDto.setPlayerDtoList(modelMapper.map(page.getContent(), List.class));
+        playerWsDto.setBaseUrl(ADMIN_PlAYER);
         playerWsDto.setTotalPages(page.getTotalPages());
         playerWsDto.setTotalRecords(page.getTotalElements());
-        playerWsDto.setBaseUrl(ADMIN_PlAYER);
         return playerWsDto;
     }
 

@@ -11,7 +11,6 @@ import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -37,7 +36,7 @@ public class ContestTypeController extends BaseController {
         Pageable pageable = getPageable(contestTypeWsDto.getPage(), contestTypeWsDto.getSizePerPage(), contestTypeWsDto.getSortDirection(), contestTypeWsDto.getSortField());
         ContestTypeDto contestTypeDto = CollectionUtils.isNotEmpty(contestTypeWsDto.getContestTypeDtoList()) ? contestTypeWsDto.getContestTypeDtoList().get(0) : new ContestTypeDto();
         ContestType contestType = modelMapper.map(contestTypeDto, ContestType.class);
-        Page<ContestType> page = isSearchActive(contestType) == null ? contestTypeRepository.findAll(Example.of(contestType),pageable): contestTypeRepository.findAll(pageable);
+        Page<ContestType> page = isSearchActive(contestType) != null ? contestTypeRepository.findAll(org.springframework.data.domain.Example.of(contestType), pageable) : contestTypeRepository.findAll(pageable);
         contestTypeWsDto.setContestTypeDtoList(modelMapper.map(page.getContent(), List.class));
         contestTypeWsDto.setBaseUrl(ADMIN_MAINCONTEST);
         contestTypeWsDto.setTotalPages(page.getTotalPages());

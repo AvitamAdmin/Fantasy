@@ -23,4 +23,6 @@ public class WebsiteSettingDto extends CommonDto {
     private String smtpPort;
     private String otpKey;
     private String otpProvider;
+    private String paymentKey;
+    private String paymentProvider;
 }

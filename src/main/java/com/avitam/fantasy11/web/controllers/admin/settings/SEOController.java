@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,8 +68,32 @@ public class SEOController extends BaseController {
 
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public SEOWsDto handleEdit(@ModelAttribute SEOWsDto request) throws IOException {
+    public SEOWsDto handleEdit(@RequestParam("title")String title, @RequestParam("tag")String tag,
+                               @RequestParam("description")String description, @RequestParam("identifier") String identifier,@RequestParam("image")MultipartFile image) throws IOException {
 
+        SEOWsDto request = new SEOWsDto();
+        SEODto seoDto =new SEODto();
+        seoDto.setTitle(title);
+        seoDto.setTag(tag);
+        seoDto.setDescription(description);
+        seoDto.setIdentifier(identifier);
+        seoDto.setImage(image);
+        request.setSeoDtoList(List.of(seoDto));
+        return seoService.handleEdit(request);
+    }
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public SEOWsDto handleEdit(@RequestParam("title")String title, @RequestParam("tag")String tag,
+                               @RequestParam("description")String description,@RequestParam("image")MultipartFile image,@RequestParam("recordId")String recordId) throws IOException {
+
+        SEOWsDto request = new SEOWsDto();
+        SEODto seoDto =new SEODto();
+        seoDto.setTitle(title);
+        seoDto.setTag(tag);
+        seoDto.setDescription(description);
+        seoDto.setImage(image);
+        seoDto.setRecordId(recordId);
+        request.setSeoDtoList(List.of(seoDto));
         return seoService.handleEdit(request);
     }
 

@@ -174,6 +174,27 @@ public class EmailOtpServiceImpl implements EmailOTPService {
             if (email == null || email.isEmpty() || username == null || username.isEmpty()) {
                 userWsDto.setSuccess(false);
                 userWsDto.setMessage("Email and Username are required.");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 return userWsDto;
             }
 

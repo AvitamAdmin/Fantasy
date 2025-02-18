@@ -66,13 +66,34 @@ public class WebsiteSettingController extends BaseController {
     @PostMapping("/edit")
     public WebsiteSettingsWsDto handleEdit(@RequestParam("logo") MultipartFile logo,
                                            @RequestParam("favicon") MultipartFile favicon,
-                                           @RequestParam("identifier") String identifier) throws IOException {
+                                           @RequestParam("identifier") String identifier,
+                                            @RequestParam("sportsApiUrl") String sportsApiUrl,
+                                           @RequestParam("sportsApiKey") String sportsApiKey,
+                                           @RequestParam("mailId") String mailId,
+                                           @RequestParam("mailPassword") String mailPassword,
+                                           @RequestParam("smtpHost") String smtpHost,
+                                           @RequestParam("smtpPort") String smtpPort,
+                                           @RequestParam("otpKey") String otpKey,
+                                           @RequestParam("otpProvider") String otpProvider,
+                                           @RequestParam("paymentKey") String paymentKey,
+                                           @RequestParam("paymentProvider") String paymentProvider) throws IOException {
 
         WebsiteSettingsWsDto request = new WebsiteSettingsWsDto();
         WebsiteSettingDto websiteDto = new WebsiteSettingDto();
         websiteDto.setLogo(logo);
         websiteDto.setFavicon(favicon);
         websiteDto.setIdentifier(identifier);
+        websiteDto.setMailId(mailId);
+        websiteDto.setMailPassword(mailPassword);
+        websiteDto.setSportsApiUrl(sportsApiUrl);
+        websiteDto.setSportsApiKey(sportsApiKey);
+        websiteDto.setOtpKey(otpKey);
+        websiteDto.setOtpProvider(otpProvider);
+        websiteDto.setSmtpPort(smtpPort);
+        websiteDto.setSmtpHost(smtpHost);
+        websiteDto.setPaymentKey(paymentKey);
+        websiteDto.setPaymentProvider(paymentProvider);
+
         request.setWebsiteSettingDtoList(List.of(websiteDto));
         return websiteSettingService.handleEdit(request);
     }
@@ -81,6 +102,16 @@ public class WebsiteSettingController extends BaseController {
     public WebsiteSettingsWsDto updateData(@RequestParam("logo") MultipartFile logo,
                                            @RequestParam("favicon") MultipartFile favicon,
                                            @RequestParam("identifier") String identifier,
+                                           @RequestParam("sportsApiUrl") String sportsApiUrl,
+                                           @RequestParam("sportsApiKey") String sportsApiKey,
+                                           @RequestParam("mailId") String mailId,
+                                           @RequestParam("mailPassword") String mailPassword,
+                                           @RequestParam("smtpHost") String smtpHost,
+                                           @RequestParam("smtpPort") String smtpPort,
+                                           @RequestParam("otpKey") String otpKey,
+                                           @RequestParam("otpProvider") String otpProvider,
+                                           @RequestParam("paymentKey") String paymentKey,
+                                           @RequestParam("paymentProvider") String paymentProvider,
                                            @RequestParam("recordId") String recordId) throws IOException {
 
         WebsiteSettingsWsDto request = new WebsiteSettingsWsDto();
@@ -88,6 +119,16 @@ public class WebsiteSettingController extends BaseController {
         websiteDto.setLogo(logo);
         websiteDto.setFavicon(favicon);
         websiteDto.setIdentifier(identifier);
+        websiteDto.setMailId(mailId);
+        websiteDto.setMailPassword(mailPassword);
+        websiteDto.setSportsApiUrl(sportsApiUrl);
+        websiteDto.setSportsApiKey(sportsApiKey);
+        websiteDto.setOtpKey(otpKey);
+        websiteDto.setOtpProvider(otpProvider);
+        websiteDto.setSmtpPort(smtpPort);
+        websiteDto.setSmtpHost(smtpHost);
+        websiteDto.setPaymentKey(paymentKey);
+        websiteDto.setPaymentProvider(paymentProvider);
         websiteDto.setRecordId(recordId);
         request.setWebsiteSettingDtoList(List.of(websiteDto));
         return websiteSettingService.handleEdit(request);
