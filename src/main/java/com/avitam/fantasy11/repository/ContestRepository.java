@@ -17,6 +17,9 @@ public interface ContestRepository extends GenericImportRepository<Contest> {
 
     Contest findByRecordId(String recordId);
 
-    Contest findContestByMatchId(String matchId);
+    List<Contest> findContestByMatchId(String matchId);
 
+    List<Contest> findByCommonContest(Boolean b);
+
+    List<Contest> findByMatchId(String matchId);
 }
