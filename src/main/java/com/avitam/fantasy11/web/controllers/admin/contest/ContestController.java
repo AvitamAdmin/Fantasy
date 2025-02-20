@@ -2,11 +2,15 @@ package com.avitam.fantasy11.web.controllers.admin.contest;
 
 import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.dto.ContestWsDto;
+import com.avitam.fantasy11.api.dto.PlayerDto;
+import com.avitam.fantasy11.api.dto.PlayerWsDto;
 import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
+import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.ContestRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -55,7 +60,6 @@ public class ContestController extends BaseController {
     @PostMapping("/getedit")
     @ResponseBody
     public ContestWsDto editContest(@RequestBody ContestWsDto request) {
-
         request.setBaseUrl(ADMIN_CONTEST);
         Contest contest = contestRepository.findByRecordId(request.getContestDtos().get(0).getRecordId());
         request.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
@@ -63,10 +67,23 @@ public class ContestController extends BaseController {
     }
     @PostMapping("/getMatchId")
     @ResponseBody
-    public ContestWsDto getMatchId(@RequestBody ContestWsDto request){
+    public ContestWsDto getContestByMatchId(@RequestBody ContestWsDto request) {
+        List<Contest> contestList = new ArrayList<>();
+        List<ContestDto> contestDtos = request.getContestDtos();
+        for (ContestDto contestDto : contestDtos) {
+            List<Contest> contests = contestRepository.findContestByMatchId(contestDto.getMatchId());
+            contestList.addAll(contests);
+        }
+        request.setContestDtos(modelMapper.map(contestList,List.class));
+        return request;
+
+    }
+
+    @PostMapping("/getCommonContest")
+    @ResponseBody
+    public ContestWsDto getCommonContest(@RequestBody ContestWsDto request){
         request.setBaseUrl(ADMIN_CONTEST);
-        Contest contest = contestRepository.findContestByMatchId(request.getContestDtos().get(0).getMatchId());
-        request.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
+        request.setContestDtos(modelMapper.map(contestRepository.findByCommonContest(true),List.class));
         return request;
     }
 
@@ -87,4 +104,6 @@ public class ContestController extends BaseController {
         contestwsDto.setBaseUrl(ADMIN_CONTEST);
         return contestwsDto;
     }
+
+    
 }
