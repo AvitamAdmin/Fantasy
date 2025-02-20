@@ -24,6 +24,7 @@ public class Contest extends CommonFields {
     private Double winningsAmount;
     private Integer profitPercentage;
     private String matchId;
+    private Boolean commonContest;
 
 
 }
