@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.api.service.impl;
 
+import com.avitam.fantasy11.api.dto.RoleDto;
 import com.avitam.fantasy11.api.dto.UserDto;
 import com.avitam.fantasy11.api.dto.UserWsDto;
 import com.avitam.fantasy11.api.service.EmailOTPService;
@@ -22,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -147,6 +145,11 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                     UserDto newUser = new UserDto();
                     newUser.setEmail(email);
                     newUser.setStatus(true);
+
+                    RoleDto roleDto = new RoleDto();
+                    roleDto.setRoleId("2"); // Set the actual role ID here
+
+                    newUser.setRoles(Set.of(roleDto)); // Assign role to user
                     userWsDto.setUserDtoList(List.of(newUser));
                     userService.save(userWsDto);
                 }

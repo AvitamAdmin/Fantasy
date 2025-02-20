@@ -14,6 +14,8 @@ public interface RoleRepository extends GenericImportRepository<Role> {
 
     Role findByRecordId(String recordId);
 
+    Role findByRoleId(String roleId);
+
     void deleteByRecordId(String recordId);
 
     List<Role> findByStatusOrderByIdentifier(boolean b);
