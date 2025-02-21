@@ -54,11 +54,12 @@ public class TeamLineUpServiceImpl implements TeamLineUpService {
     public TeamLineUpWsDto handleEdit(TeamLineUpWsDto request) {
         List<TeamLineUpDto> teamLineUpDtos = request.getTeamLineUpDtoList();
         List<TeamLineup> teamLineupList = new ArrayList<>();
-        TeamLineup teamLineup;
+        TeamLineup teamLineup = new TeamLineup();
         for (TeamLineUpDto teamLineUpDto1 : teamLineUpDtos) {
             if (teamLineUpDto1.getRecordId() != null) {
+                TeamLineup teamLineup1 = modelMapper.map(teamLineUpDto1,TeamLineup.class);
                 teamLineup = teamLineupRepository.findByRecordId(teamLineUpDto1.getRecordId());
-                modelMapper.map(teamLineUpDto1, teamLineup);
+                modelMapper.map(teamLineup1, teamLineup);
                 teamLineup.setLastModified(new Date());
                 teamLineupRepository.save(teamLineup);
                 request.setMessage("Data updated Successfully");
