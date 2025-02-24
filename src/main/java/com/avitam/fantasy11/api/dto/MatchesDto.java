@@ -18,6 +18,4 @@ public class MatchesDto extends CommonDto {
     private String tournamentId;
     private String sportTypeId;
     private String matchTypeId;
-
-    private ContestCategory contestCategory;
 }

@@ -19,7 +19,4 @@ public class Matches extends CommonFields {
     private String sportTypeId;
     private String matchTypeId;
     private String lineupStatus;
-
-
-    private ContestCategory contestCategory;
 }

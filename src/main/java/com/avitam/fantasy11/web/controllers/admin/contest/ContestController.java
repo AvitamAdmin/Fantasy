@@ -41,7 +41,6 @@ public class ContestController extends BaseController {
     private MatchesRepository matchesRepository;
 
 
-
     @PostMapping
     @ResponseBody
     public ContestWsDto getAllContest(@RequestBody ContestWsDto contestwsDto) {
@@ -73,7 +72,8 @@ public class ContestController extends BaseController {
         request.setContestDtos(List.of(modelMapper.map(contest, ContestDto.class)));
         return request;
     }
-    @PostMapping("/getMatchId")
+
+    @PostMapping("/getContests")
     @ResponseBody
     public ContestWsDto getContestByMatchId(@RequestBody ContestWsDto request) {
         List<Contest> contestList = new ArrayList<>();
@@ -81,32 +81,15 @@ public class ContestController extends BaseController {
         for (ContestDto contestDto : contestDtos) {
             List<Contest> contests = contestRepository.findContestByMatchId(contestDto.getMatchId());
             contestList.addAll(contests);
+            contestList.addAll(contestRepository.findByCommonContest(true));
         }
-        request.setContestDtos(modelMapper.map(contestList,List.class));
-        return request;
-
-    }
-
-    @PostMapping("/getCommonContest")
-    @ResponseBody
-    public ContestWsDto getCommonContest(@RequestBody ContestWsDto request){
-        request.setBaseUrl(ADMIN_CONTEST);
-        ContestWsDto contestWsDto=new ContestWsDto();
-        Matches matches= matchesRepository.findByRecordId(request.getContestDtos().get(0).getMatchId());
-        if(matches.getContestCategory().equals(ContestCategory.LOW)){
-            request.setContestDtos(modelMapper.map(contestRepository.findByCommonContest(true),List.class));
-        }else{
-            List<Contest> contestList = contestRepository.findByStatusOrderByIdentifier(true);
-            request.setContestDtos(modelMapper.map(contestList,List.class));
-        }
-
+        request.setContestDtos(modelMapper.map(contestList, List.class));
         return request;
     }
 
     @PostMapping("/edit")
     @ResponseBody
     public ContestWsDto handleEdit(@RequestBody ContestWsDto request) {
-
         return contestService.handleEdit(request);
     }
 
@@ -121,5 +104,5 @@ public class ContestController extends BaseController {
         return contestwsDto;
     }
 
-    
+
 }
