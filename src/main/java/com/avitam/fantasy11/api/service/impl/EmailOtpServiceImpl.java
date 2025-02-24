@@ -146,10 +146,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                     newUser.setEmail(email);
                     newUser.setStatus(true);
 
-                    RoleDto roleDto = new RoleDto();
-                    roleDto.setRoleId("2"); // Set the actual role ID here
-
-                    newUser.setRoles(Set.of(roleDto)); // Assign role to user
+                    newUser.setRoles(Set.of("2")); // Assign role to user
                     userWsDto.setUserDtoList(List.of(newUser));
                     userService.save(userWsDto);
                 }

@@ -36,7 +36,7 @@ public class ContestTypeController extends BaseController {
         Pageable pageable = getPageable(contestTypeWsDto.getPage(), contestTypeWsDto.getSizePerPage(), contestTypeWsDto.getSortDirection(), contestTypeWsDto.getSortField());
         ContestTypeDto contestTypeDto = CollectionUtils.isNotEmpty(contestTypeWsDto.getContestTypeDtoList()) ? contestTypeWsDto.getContestTypeDtoList().get(0) : new ContestTypeDto();
         ContestType contestType = modelMapper.map(contestTypeDto, ContestType.class);
-        Page<ContestType> page = isSearchActive(contestType) != null ? contestTypeRepository.findAll(org.springframework.data.domain.Example.of(contestType), pageable) : contestTypeRepository.findAll(pageable);
+        Page<ContestType> page = isSearchActive(contestType) == null ? contestTypeRepository.findAll(org.springframework.data.domain.Example.of(contestType), pageable) : contestTypeRepository.findAll(pageable);
         contestTypeWsDto.setContestTypeDtoList(modelMapper.map(page.getContent(), List.class));
         contestTypeWsDto.setBaseUrl(ADMIN_MAINCONTEST);
         contestTypeWsDto.setTotalPages(page.getTotalPages());

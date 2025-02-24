@@ -148,8 +148,6 @@ public class PlayerController extends BaseController {
         playerList1.addAll(playerList2);
         playerWsDto.setPlayerDtoList(modelMapper.map(playerList1, List.class));
         return playerWsDto;
-
-
     }
 
     @GetMapping("/getAdvancedSearch")

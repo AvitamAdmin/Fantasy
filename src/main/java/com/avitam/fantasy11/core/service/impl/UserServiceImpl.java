@@ -56,15 +56,15 @@ public class UserServiceImpl implements UserService {
                 user.setStatus(true);
                 user.setCreationTime(new Date());
                 Set<Role> roles = new HashSet<>();
-                for (RoleDto role : userDto.getRoles()) {
-                    Role role1 = roleRepository.findByRoleId(role.getRoleId());
+                for (String role : userDto.getRoles()) {
+                    Role role1 = roleRepository.findByRecordId(role);
                     roles.add(role1);
                 }
                 user.setRoles(roles);
 
             }
             user.setLastModified(new Date());
-              if (StringUtils.isNotEmpty(user.getPassword())) {
+            if (StringUtils.isNotEmpty(user.getPassword())) {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
             }

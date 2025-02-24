@@ -59,15 +59,16 @@ public class WebsiteSettingController extends BaseController {
         WebsiteSettingsWsDto websiteWsDto = new WebsiteSettingsWsDto();
         websiteWsDto.setBaseUrl(ADMIN_WEBSITESETTING);
         WebsiteSetting website = websiteSettingRepository.findByRecordId(request.getWebsiteSettingDtoList().get(0).getRecordId());
-        websiteWsDto.setWebsiteSettingDtoList(List.of(modelMapper.map(website, WebsiteSettingDto.class)));
+        websiteWsDto.setWebsiteSettingDtoList(modelMapper.map(List.of(website), List.class));
         return websiteWsDto;
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
     public WebsiteSettingsWsDto handleEdit(@RequestParam("logo") MultipartFile logo,
                                            @RequestParam("favicon") MultipartFile favicon,
                                            @RequestParam("identifier") String identifier,
-                                            @RequestParam("sportsApiUrl") String sportsApiUrl,
+                                           @RequestParam("sportsApiUrl") String sportsApiUrl,
                                            @RequestParam("sportsApiKey") String sportsApiKey,
                                            @RequestParam("mailId") String mailId,
                                            @RequestParam("mailPassword") String mailPassword,
@@ -99,6 +100,7 @@ public class WebsiteSettingController extends BaseController {
     }
 
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
     public WebsiteSettingsWsDto updateData(@RequestParam("logo") MultipartFile logo,
                                            @RequestParam("favicon") MultipartFile favicon,
                                            @RequestParam("identifier") String identifier,

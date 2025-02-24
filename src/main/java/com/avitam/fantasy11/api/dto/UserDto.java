@@ -23,7 +23,7 @@ public class UserDto extends CommonDto {
     private Binary profileImage;
     private String gender;
     private String language;
-    private Set<RoleDto> roles;
+    private Set<String> roles;
     private String passwordConfirm;
     private String resetPasswordToken;
     private String emailOTP;
