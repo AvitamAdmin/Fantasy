@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.api.dto;
 
+import com.avitam.fantasy11.api.ContestCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,4 +18,6 @@ public class MatchesDto extends CommonDto {
     private String tournamentId;
     private String sportTypeId;
     private String matchTypeId;
+
+    private ContestCategory contestCategory;
 }

@@ -18,12 +18,13 @@ public class ContestDto extends CommonDto {
     private Double entryFee;
     private Integer noOfMembers;
     private List<RankPriceDto> maxRankPrice;
-    private List<RankPriceDto> GuaranteedRankPrice;
+  //  private List<RankPriceDto> GuaranteedRankPrice;
     private Integer winPercentage;
     private Integer maxTeams;
     private Double winningsAmount;
     private Integer profitPercentage;
     private String matchId;
     private Double totalAmount;
+    private Boolean commonContest;
 
 }
