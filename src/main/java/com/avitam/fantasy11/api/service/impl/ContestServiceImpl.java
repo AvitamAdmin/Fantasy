@@ -40,6 +40,7 @@ public class ContestServiceImpl implements ContestService {
             if (contestDto1.getRecordId() != null) {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
+                contestData.setMaxRankPrice(contestDto1.getMaxRankPrice());
               //  profitCalculation(contestData);
                 contestRepository.save(contestData);
                 request.setMessage("Data updated Successfully");

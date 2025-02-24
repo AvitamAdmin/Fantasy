@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document("Matches")
-
 public class Matches extends CommonFields {
     private String team1Id;
     private String team2Id;

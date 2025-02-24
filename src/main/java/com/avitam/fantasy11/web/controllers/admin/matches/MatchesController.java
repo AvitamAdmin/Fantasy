@@ -7,6 +7,7 @@ import com.avitam.fantasy11.model.Contest;
 import com.avitam.fantasy11.model.Matches;
 import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
+import com.google.common.reflect.TypeToken;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 
@@ -47,7 +49,7 @@ public class MatchesController extends BaseController {
     @ResponseBody
     public MatchesWsDto getActiveMatches(@RequestBody MatchesWsDto request) {
         Matches matches = matchesRepository.findByRecordId(request.getMatchesDtoList().get(0).getRecordId());
-        request.setMatchesDtoList(modelMapper.map(matches, List.class));
+        request.setMatchesDtoList(List.of(modelMapper.map(matches, MatchesDto.class)));
         request.setBaseUrl(ADMIN_MATCHES);
         return request;
     }

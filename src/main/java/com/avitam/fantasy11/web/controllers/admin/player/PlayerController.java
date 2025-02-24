@@ -80,7 +80,7 @@ public class PlayerController extends BaseController {
     @ResponseBody
     public PlayerWsDto handleEdit(@RequestParam("name") String name, @RequestParam("dob") String dob,
                                   @RequestParam("nationality") String nationality, @RequestParam("teamId") String teamId,
-                                  @RequestParam("playerRoleId") String playerRoleId, @RequestParam("logo") MultipartFile logo) {
+                                  @RequestParam("playerRoleId") String playerRoleId, @RequestParam("playerImage") MultipartFile logo) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
         playerDto.setName(name);
@@ -98,7 +98,7 @@ public class PlayerController extends BaseController {
     @ResponseBody
     public PlayerWsDto handleEditUpdate(@RequestParam("name") String name, @RequestParam("dob") String dob,
                                         @RequestParam("nationality") String nationality, @RequestParam("teamId") String teamId,
-                                        @RequestParam("playerRoleId") String playerRoleId, @RequestParam("logo") MultipartFile logo,
+                                        @RequestParam("playerRoleId") String playerRoleId, @RequestParam("playerImage") MultipartFile logo,
                                         @RequestParam("recordId") String recordId) {
         PlayerWsDto request = new PlayerWsDto();
         PlayerDto playerDto = new PlayerDto();
