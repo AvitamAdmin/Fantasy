@@ -19,6 +19,9 @@ public class EmailOTPController {
     @Autowired
     private EmailOTPService emailOTPService;
 
+
+
+
     // Endpoint to send OTP
     @PostMapping("/send-otp")
     public UserWsDto sendOtp(@RequestBody UserWsDto userWsDto) throws MessagingException {

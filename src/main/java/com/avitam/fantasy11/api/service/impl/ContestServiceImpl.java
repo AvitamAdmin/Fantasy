@@ -41,7 +41,7 @@ public class ContestServiceImpl implements ContestService {
                 contestData = contestRepository.findByRecordId(contestDto1.getRecordId());
                 modelMapper.map(contestDto1, contestData);
                 contestData.setMaxRankPrice(contestDto1.getMaxRankPrice());
-              //  profitCalculation(contestData);
+                profitCalculation(contestData);
                 contestRepository.save(contestData);
                 request.setMessage("Data updated Successfully");
             } else {
@@ -51,17 +51,18 @@ public class ContestServiceImpl implements ContestService {
                     return request;
                 }
                 contestData = modelMapper.map(contestDto1, Contest.class);
+
+                baseService.populateCommonData(contestData);
+                contestData.setStatus(true);
+                profitCalculation(contestData);
+                contestRepository.save(contestData);
+                if (contestData.getRecordId() == null) {
+                    contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
+                }
+                contestRepository.save(contestData);
+                request.setMessage("Contest added Successfully");
             }
-            baseService.populateCommonData(contestData);
-            contestData.setStatus(true);
-           // profitCalculation(contestData);
-            contestRepository.save(contestData);
-            if (contestData.getRecordId() == null) {
-                contestData.setRecordId(String.valueOf(contestData.getId().getTimestamp()));
-            }
-            contestRepository.save(contestData);
             contestList.add(contestData);
-            request.setMessage("Contest added Successfully");
             request.setBaseUrl(ADMIN_CONTEST);
         }
         request.setContestDtos(modelMapper.map(contestList, List.class));
@@ -80,14 +81,20 @@ public class ContestServiceImpl implements ContestService {
             contestRepository.save(contest);
         }
     }
-//    private void profitCalculation(Contest contestDto1) {
-//        contestDto1.setTotalAmount(contestDto1.getTotalAmount());
-//        contestDto1.setTotalAmount(contestDto1.getEntryFee() * contestDto1.getNoOfMembers());
-//        contestDto1.setProfit(contestDto1.getProfit());
-//        //contestDto1.setProfitPercentage(contestDto1.get);
-//        contestDto1.setProfit(contestDto1.getTotalAmount() * contestDto1.getProfitPercentage() / 100);
-//        contestDto1.setWinningsAmount(contestDto1.getWinningsAmount());
-//        contestDto1.setWinningsAmount(contestDto1.getTotalAmount() - contestDto1.getProfit());
-//    }
 
+    private void profitCalculation(Contest contestDto1) {
+        contestDto1.setTotalAmount(contestDto1.getTotalAmount());
+        contestDto1.setTotalAmount(contestDto1.getEntryFee() * contestDto1.getNoOfMembers());
+        contestDto1.setProfit(contestDto1.getProfit());
+        //contestDto1.setProfitPercentage(contestDto1.get);
+        contestDto1.setProfit(contestDto1.getTotalAmount() * contestDto1.getProfitPercentage() / 100);
+        contestDto1.setWinningsAmount(contestDto1.getWinningsAmount());
+        contestDto1.setWinningsAmount(contestDto1.getTotalAmount() - contestDto1.getProfit());
+    }
+
+//
+//  private void prizeSplitDisplay(Contest contestDto){
+//        contestDto.setMaxBreakup(contestDto.getMaxBreakup());
+//        contestDto.setMaxBreakup(contestDto.get)
+//  }
 }
