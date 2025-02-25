@@ -16,4 +16,7 @@ public interface ContestJoinedRepository extends GenericImportRepository<Contest
     void deleteByRecordId(String recordId);
 
     List<ContestJoined> findByStatusOrderByIdentifier(boolean b);
+
+
+    List<ContestJoined> findByUserId(String userId);
 }
