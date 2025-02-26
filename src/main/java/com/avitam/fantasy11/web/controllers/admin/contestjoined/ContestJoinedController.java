@@ -1,9 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.contestjoined;
 
-import com.avitam.fantasy11.api.dto.ContestJoinedDto;
-import com.avitam.fantasy11.api.dto.ContestJoinedWsDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.ContestJoinedService;
 import com.avitam.fantasy11.model.ContestJoined;
+import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.ContestJoinedRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -65,9 +66,21 @@ public class ContestJoinedController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public ContestJoinedWsDto handleEdit(@RequestBody ContestJoinedWsDto request) {
-
         return contestJoinedService.handleEdit(request);
     }
+
+    @PostMapping("/getContest")
+    @ResponseBody
+    public ContestJoinedWsDto getContest(@RequestBody ContestJoinedWsDto request) {
+        List<ContestJoined> contestJoinedList = new ArrayList<>();
+        List<ContestJoinedDto> contestJoinedDtos = request.getContestJoinedDtoList();
+        for (ContestJoinedDto contestJoinedDto : contestJoinedDtos) {
+            contestJoinedList.addAll(contestJoinedRepository.findByUserId(contestJoinedDto.getUserId()));
+        }
+        request.setContestJoinedDtoList(modelMapper.map(contestJoinedList, List.class));
+        return request;
+    }
+
 
     @PostMapping("/delete")
     @ResponseBody
