@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,4 +17,5 @@ public class UserTeams extends CommonFields {
     private String teamName;
     private String contestId;
     private String teamId;
+    private Set<UserTeam> players;
 }
