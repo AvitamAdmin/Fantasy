@@ -205,6 +205,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                 return userWsDto;
             }
             existingUser.setUsername(username);
+            if(existingUser.getReferralCode()==null){
             SecureRandom RANDOM = new SecureRandom();
 
             StringBuilder referralCode = new StringBuilder(LENGTH);
@@ -214,6 +215,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
                 referralCode.append(CHARACTERS.charAt(index)).toString();
             }
             existingUser.setReferralCode(String.valueOf(referralCode));
+        }
             existingUser.setCreationTime(new Date());
             userRepository.save(existingUser);
 
