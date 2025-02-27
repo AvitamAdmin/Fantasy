@@ -27,8 +27,8 @@ public class Contest extends CommonFields {
     private Boolean commonContest;
     private Double totalAmount;
     private Double profit;
-    private Double currentBreakup;
-    private Double maxBreakup;
+    private Double currentBreakup; //only 200 spots filled
+    private Double maxBreakup;// full spots filled
 
 
 }

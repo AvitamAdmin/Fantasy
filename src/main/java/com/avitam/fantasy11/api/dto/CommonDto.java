@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.api.dto;
 
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class CommonDto implements Serializable {
+    @Id
     private String recordId;
     private ObjectId id;
     private String name;

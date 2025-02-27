@@ -13,7 +13,6 @@ import java.util.Set;
 @Document("UserTeams")
 public class UserTeams extends CommonFields {
     private String userId;
-    private String matchId;
     private String teamName;
     private String contestId;
     private String teamId;

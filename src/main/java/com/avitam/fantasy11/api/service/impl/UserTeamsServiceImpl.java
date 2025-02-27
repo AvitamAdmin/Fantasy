@@ -4,8 +4,8 @@ import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
 import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.UserTeamsService;
-import com.avitam.fantasy11.model.UserTeams;
-import com.avitam.fantasy11.repository.UserTeamsRepository;
+import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,14 @@ public class UserTeamsServiceImpl implements UserTeamsService {
     private ModelMapper modelMapper;
     @Autowired
     private BaseService baseService;
+    @Autowired
+    private PlayerRepository playerRepository;
+    @Autowired
+    private PlayerRoleRepository playerRoleRepository;
+    @Autowired
+    private MatchesRepository matchesRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
     @Override
     public UserTeams findByRecordId(String recordId) {
@@ -64,7 +72,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 //                }
                 userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
 
-                // baseService.populateCommonData(userTeams);
+                //baseService.populateCommonData(userTeams);
                 userTeams.setStatus(true);
                 userTeamsRepository.save(userTeams);
                 if (userTeams.getRecordId() == null) {
@@ -78,6 +86,54 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 
         }
         request.setUserTeamsDtoList(modelMapper.map(userTeamsList, List.class));
+        return request;
+    }
+
+    @Override
+    public UserTeamsWsDto getUserTeamsDetails(UserTeamsWsDto request) {
+        int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0;
+        UserTeamsDto userTeamsDto = new UserTeamsDto();
+        UserTeams userTeams = userTeamsRepository.findByRecordId(request.getUserTeamsDtoList().get(0).getRecordId());
+
+        for (UserTeam userTeam : userTeams.getPlayers()) {
+            Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
+            if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("Batsman")) {
+                batsMan++;
+            } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("WicketKeeper")) {
+                wicketKeeper++;
+            } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("Bowler")) {
+                bowler++;
+            } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("AllRounder")) {
+                allRounder++;
+            }
+            userTeamsDto.setBatsManCount(batsMan);
+            userTeamsDto.setWicketKeeperCount(wicketKeeper);
+            userTeamsDto.setBowlerCount(bowler);
+            userTeamsDto.setAllRounderCount(allRounder);
+        }
+
+        int team1 = 0, team2 = 0;
+        for (UserTeam userTeam : userTeams.getPlayers()) {
+
+            Matches match = matchesRepository.findByRecordId(userTeam.getMatchId());
+            Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
+            if (match.getTeam1Id().equals(player.getTeamId())) {
+                team1++;
+                userTeamsDto.setTeam1Count(team1);
+            } else {
+                match.getTeam2Id().equals(player.getTeamId());
+                team2++;
+                userTeamsDto.setTeam2Count(team2);
+            }
+            Team teamName1 = teamRepository.findByRecordId(match.getTeam1Id());
+            userTeamsDto.setTeam1Name(teamName1.getShortName());
+
+            Team teamName2 = teamRepository.findByRecordId(match.getTeam2Id());
+            userTeamsDto.setTeam2Name(teamName2.getShortName());
+        }
+
+
+        request.setUserTeamsDtoList(List.of(userTeamsDto));
         return request;
     }
 }

@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.bson.types.ObjectId;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 
 @Setter
@@ -16,6 +20,7 @@ public class CommonWsDto extends PaginationDto {
     private boolean success = true;
     private String redirectUrl;
     private String otp;
+
 
 }
 

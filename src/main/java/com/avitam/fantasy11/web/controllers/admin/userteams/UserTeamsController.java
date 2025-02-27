@@ -1,10 +1,11 @@
 package com.avitam.fantasy11.web.controllers.admin.userteams;
 
-import com.avitam.fantasy11.api.dto.SearchDto;
-import com.avitam.fantasy11.api.dto.UserTeamsDto;
-import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
+import com.avitam.fantasy11.api.dto.*;
 import com.avitam.fantasy11.api.service.UserTeamsService;
-import com.avitam.fantasy11.model.UserTeams;
+import com.avitam.fantasy11.model.*;
+import com.avitam.fantasy11.repository.MatchesRepository;
+import com.avitam.fantasy11.repository.PlayerRepository;
+import com.avitam.fantasy11.repository.TeamRepository;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,6 +30,7 @@ public class UserTeamsController extends BaseController {
     private ModelMapper modelMapper;
     @Autowired
     private UserTeamsService userTeamsService;
+
 
     @PostMapping
     @ResponseBody
@@ -84,6 +86,13 @@ public class UserTeamsController extends BaseController {
         userTeamsWsDto.setMessage("Data deleted successfully");
         userTeamsWsDto.setBaseUrl(ADMIN_USERTEAMS);
         return userTeamsWsDto;
+    }
+
+    @PostMapping("/getUserTeamsDetails")
+    @ResponseBody
+    public UserTeamsWsDto userTeamDetails(@RequestBody UserTeamsWsDto request) {
+
+        return userTeamsService.getUserTeamsDetails(request);
     }
 
     @GetMapping("/getAdvancedSearch")

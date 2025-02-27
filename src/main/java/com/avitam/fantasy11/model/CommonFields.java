@@ -1,5 +1,6 @@
 package com.avitam.fantasy11.model;
 
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Setter
 @MappedSuperclass
 public class CommonFields implements Serializable {
-
+    @Id
     private String recordId;
     private ObjectId id;
     private String name;
