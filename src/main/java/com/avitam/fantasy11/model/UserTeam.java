@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("UserTeam")
 public class UserTeam extends CommonFields {
     private String playerId;
-    private String matchId;
     private boolean captain;
     private boolean viceCaptain;
     private boolean impactPlayer;

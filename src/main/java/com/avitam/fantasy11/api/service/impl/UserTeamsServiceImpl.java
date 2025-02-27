@@ -114,8 +114,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 
         int team1 = 0, team2 = 0;
         for (UserTeam userTeam : userTeams.getPlayers()) {
-
-            Matches match = matchesRepository.findByRecordId(userTeam.getMatchId());
+            Matches match = matchesRepository.findByRecordId(userTeams.getMatchId());
             Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
             if (match.getTeam1Id().equals(player.getTeamId())) {
                 team1++;

@@ -10,7 +10,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserTeamDto extends CommonDto {
-    private String matchId;
     private String playerId;
     private boolean captain;
     private boolean viceCaptain;
