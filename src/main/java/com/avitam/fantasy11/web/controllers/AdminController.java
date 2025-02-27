@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +57,22 @@ public class AdminController extends BaseController {
         return userWsDto;
     }
 
+    @PostMapping("/getUserIdByInputString")
+    public UserWsDto getUser(@RequestBody UserWsDto request) {
+        UserDto userDto = new UserDto();
+
+        if (request.getUserDtoList().get(0).getMobileNumber() != null) {
+            User user1 = userRepository.findByMobileNumber(request.getUserDtoList().get(0).getMobileNumber());
+            userDto = modelMapper.map(user1, UserDto.class);
+        } else {
+            User user = userRepository.findByEmail(request.getUserDtoList().get(0).getEmail());
+            userDto = modelMapper.map(user, UserDto.class);
+        }
+        request.setUserDtoList(List.of(userDto));
+        request.setBaseUrl(ADMIN_USER);
+        return request;
+    }
+
     @PostMapping("/edit")
     public UserWsDto save(@RequestBody UserWsDto request) {
         userService.save(request);
@@ -72,7 +89,6 @@ public class AdminController extends BaseController {
         userWsDto.setMessage("Data Deleted Successfully");
         return userWsDto;
     }
-
 
 
 }
