@@ -92,8 +92,10 @@ public class UserTeamsServiceImpl implements UserTeamsService {
     @Override
     public UserTeamsWsDto getUserTeamsDetails(UserTeamsWsDto request) {
         int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0;
-        UserTeamsDto userTeamsDto = new UserTeamsDto();
+
         UserTeams userTeams = userTeamsRepository.findByRecordId(request.getUserTeamsDtoList().get(0).getRecordId());
+
+        UserTeamsDto userTeamsDto = modelMapper.map(userTeams, UserTeamsDto.class);
 
         for (UserTeam userTeam : userTeams.getPlayers()) {
             Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
@@ -113,8 +115,8 @@ public class UserTeamsServiceImpl implements UserTeamsService {
         }
 
         int team1 = 0, team2 = 0;
+        Matches match = matchesRepository.findByRecordId(userTeams.getMatchId());
         for (UserTeam userTeam : userTeams.getPlayers()) {
-            Matches match = matchesRepository.findByRecordId(userTeams.getMatchId());
             Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
             if (match.getTeam1Id().equals(player.getTeamId())) {
                 team1++;
@@ -124,13 +126,13 @@ public class UserTeamsServiceImpl implements UserTeamsService {
                 team2++;
                 userTeamsDto.setTeam2Count(team2);
             }
-            Team teamName1 = teamRepository.findByRecordId(match.getTeam1Id());
-            userTeamsDto.setTeam1Name(teamName1.getShortName());
 
-            Team teamName2 = teamRepository.findByRecordId(match.getTeam2Id());
-            userTeamsDto.setTeam2Name(teamName2.getShortName());
         }
+        Team teamName1 = teamRepository.findByRecordId(match.getTeam1Id());
+        userTeamsDto.setTeam1Name(teamName1.getShortName());
 
+        Team teamName2 = teamRepository.findByRecordId(match.getTeam2Id());
+        userTeamsDto.setTeam2Name(teamName2.getShortName());
 
         request.setUserTeamsDtoList(List.of(userTeamsDto));
         return request;
