@@ -91,50 +91,50 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 
     @Override
     public UserTeamsWsDto getUserTeamsDetails(UserTeamsWsDto request) {
-        int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0;
+        int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0; int team1 = 0, team2 = 0;
+        List<UserTeamsDto> userTeamsDtoList=new ArrayList<>();
+        List<UserTeams> userTeamsList = userTeamsRepository.findByUserId(request.getUserTeamsDtoList().get(0).getUserId());
 
-        UserTeams userTeams = userTeamsRepository.findByRecordId(request.getUserTeamsDtoList().get(0).getRecordId());
+        for(UserTeams userTeams1:userTeamsList) {
+            UserTeamsDto userTeamsDto = modelMapper.map(userTeams1, UserTeamsDto.class);
 
-        UserTeamsDto userTeamsDto = modelMapper.map(userTeams, UserTeamsDto.class);
-
-        for (UserTeam userTeam : userTeams.getPlayers()) {
-            Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
-            if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("Batsman")) {
-                batsMan++;
-            } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("WicketKeeper")) {
-                wicketKeeper++;
-            } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("Bowler")) {
-                bowler++;
-            } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("AllRounder")) {
-                allRounder++;
-            }
-            userTeamsDto.setBatsManCount(batsMan);
-            userTeamsDto.setWicketKeeperCount(wicketKeeper);
-            userTeamsDto.setBowlerCount(bowler);
-            userTeamsDto.setAllRounderCount(allRounder);
-        }
-
-        int team1 = 0, team2 = 0;
-        Matches match = matchesRepository.findByRecordId(userTeams.getMatchId());
-        for (UserTeam userTeam : userTeams.getPlayers()) {
-            Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
-            if (match.getTeam1Id().equals(player.getTeamId())) {
-                team1++;
-                userTeamsDto.setTeam1Count(team1);
-            } else {
-                match.getTeam2Id().equals(player.getTeamId());
-                team2++;
-                userTeamsDto.setTeam2Count(team2);
+            for (UserTeam userTeam : userTeams1.getPlayers()) {
+                Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
+                if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("Batsman")) {
+                    batsMan++;
+                } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("WicketKeeper")) {
+                    wicketKeeper++;
+                } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("Bowler")) {
+                    bowler++;
+                } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("all rounder")) {
+                    allRounder++;
+                }
+                userTeamsDto.setBatsManCount(batsMan);
+                userTeamsDto.setWicketKeeperCount(wicketKeeper);
+                userTeamsDto.setBowlerCount(bowler);
+                userTeamsDto.setAllRounderCount(allRounder);
             }
 
+            Matches match = matchesRepository.findByRecordId(userTeams1.getMatchId());
+            for (UserTeam userTeam : userTeams1.getPlayers()) {
+                Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
+                if (match.getTeam1Id().equals(player.getTeamId())) {
+                    team1++;
+                    userTeamsDto.setTeam1Count(team1);
+                } else {
+                    match.getTeam2Id().equals(player.getTeamId());
+                    team2++;
+                    userTeamsDto.setTeam2Count(team2);
+                }
+            }
+            Team teamName1 = teamRepository.findByRecordId(match.getTeam1Id());
+            userTeamsDto.setTeam1Name(teamName1.getShortName());
+
+            Team teamName2 = teamRepository.findByRecordId(match.getTeam2Id());
+            userTeamsDto.setTeam2Name(teamName2.getShortName());
+            userTeamsDtoList.add(userTeamsDto);
         }
-        Team teamName1 = teamRepository.findByRecordId(match.getTeam1Id());
-        userTeamsDto.setTeam1Name(teamName1.getShortName());
-
-        Team teamName2 = teamRepository.findByRecordId(match.getTeam2Id());
-        userTeamsDto.setTeam2Name(teamName2.getShortName());
-
-        request.setUserTeamsDtoList(List.of(userTeamsDto));
+        request.setUserTeamsDtoList(userTeamsDtoList);
         return request;
     }
 }

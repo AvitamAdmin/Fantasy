@@ -21,4 +21,6 @@ public interface UserTeamsRepository extends GenericImportRepository<UserTeams> 
     void deleteByRecordId(String recordId);
 
     List<UserTeams> findByStatusOrderByIdentifier(Boolean b);
+
+    List<UserTeams> findByUserId(String userId);
 }
