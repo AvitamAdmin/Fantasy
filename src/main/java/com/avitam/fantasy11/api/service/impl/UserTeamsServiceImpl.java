@@ -91,12 +91,14 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 
     @Override
     public UserTeamsWsDto getUserTeamsDetails(UserTeamsWsDto request) {
-        int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0; int team1 = 0, team2 = 0;
         List<UserTeamsDto> userTeamsDtoList=new ArrayList<>();
         List<UserTeams> userTeamsList = userTeamsRepository.findByUserId(request.getUserTeamsDtoList().get(0).getUserId());
 
+
         for(UserTeams userTeams1:userTeamsList) {
             UserTeamsDto userTeamsDto = modelMapper.map(userTeams1, UserTeamsDto.class);
+
+            int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0; int team1 = 0, team2 = 0;
 
             for (UserTeam userTeam : userTeams1.getPlayers()) {
                 Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
@@ -108,25 +110,28 @@ public class UserTeamsServiceImpl implements UserTeamsService {
                     bowler++;
                 } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("all rounder")) {
                     allRounder++;
-                }
+                }}
                 userTeamsDto.setBatsManCount(batsMan);
                 userTeamsDto.setWicketKeeperCount(wicketKeeper);
                 userTeamsDto.setBowlerCount(bowler);
                 userTeamsDto.setAllRounderCount(allRounder);
-            }
+                Matches match = matchesRepository.findByRecordId(userTeams1.getMatchId());
 
-            Matches match = matchesRepository.findByRecordId(userTeams1.getMatchId());
+
+
             for (UserTeam userTeam : userTeams1.getPlayers()) {
                 Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
                 if (match.getTeam1Id().equals(player.getTeamId())) {
                     team1++;
-                    userTeamsDto.setTeam1Count(team1);
                 } else {
                     match.getTeam2Id().equals(player.getTeamId());
                     team2++;
-                    userTeamsDto.setTeam2Count(team2);
                 }
             }
+            userTeamsDto.setTeam1Count(team1);
+            userTeamsDto.setTeam2Count(team2);
+
+
             Team teamName1 = teamRepository.findByRecordId(match.getTeam1Id());
             userTeamsDto.setTeam1Name(teamName1.getShortName());
 
