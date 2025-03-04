@@ -1,20 +1,12 @@
 package com.avitam.fantasy11.web.controllers.admin.contest;
 
-import com.avitam.fantasy11.api.ContestCategory;
 import com.avitam.fantasy11.api.dto.ContestDto;
 import com.avitam.fantasy11.api.dto.ContestWsDto;
-import com.avitam.fantasy11.api.dto.PlayerDto;
-import com.avitam.fantasy11.api.dto.PlayerWsDto;
 import com.avitam.fantasy11.api.service.ContestService;
 import com.avitam.fantasy11.model.Contest;
-import com.avitam.fantasy11.model.Matches;
-import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.ContestRepository;
-import com.avitam.fantasy11.repository.MatchesRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -37,9 +29,6 @@ public class ContestController extends BaseController {
     private ContestService contestService;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private MatchesRepository matchesRepository;
-
 
     @PostMapping
     @ResponseBody

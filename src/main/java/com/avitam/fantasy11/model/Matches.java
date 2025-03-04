@@ -1,6 +1,5 @@
 package com.avitam.fantasy11.model;
 
-import com.avitam.fantasy11.api.ContestCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -23,10 +23,8 @@ public class SecurityController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private MailService mailService;
-
     @Autowired
     private RoleRepository roleRepository;
 

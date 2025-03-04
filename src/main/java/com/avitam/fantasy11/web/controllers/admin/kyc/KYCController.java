@@ -19,14 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/admin/kyc")
 public class KYCController extends BaseController {
 
     private static final String ADMIN_KYC = "/admin/kyc";
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private KYCRepository kycRepository;
     @Autowired

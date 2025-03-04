@@ -88,7 +88,7 @@ public class EmailOtpServiceImpl implements EmailOTPService {
         properties.put("mail.smtp.starttls.enable", "true"); // Use TLS
         properties.put("mail.smtp.host", "smtp.gmail.com");  // SMTP Host
         properties.put("mail.smtp.port", "587");             // SMTP Port
-         properties.put("mail.smtp.ssl.trust","*");
+        properties.put("mail.smtp.ssl.trust","*");
         // Create a MimeMessage
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override

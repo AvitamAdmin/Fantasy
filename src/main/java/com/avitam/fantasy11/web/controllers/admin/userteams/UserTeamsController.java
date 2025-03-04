@@ -1,11 +1,10 @@
 package com.avitam.fantasy11.web.controllers.admin.userteams;
 
-import com.avitam.fantasy11.api.dto.*;
+import com.avitam.fantasy11.api.dto.SearchDto;
+import com.avitam.fantasy11.api.dto.UserTeamsDto;
+import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
 import com.avitam.fantasy11.api.service.UserTeamsService;
-import com.avitam.fantasy11.model.*;
-import com.avitam.fantasy11.repository.MatchesRepository;
-import com.avitam.fantasy11.repository.PlayerRepository;
-import com.avitam.fantasy11.repository.TeamRepository;
+import com.avitam.fantasy11.model.UserTeams;
 import com.avitam.fantasy11.repository.UserTeamsRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;

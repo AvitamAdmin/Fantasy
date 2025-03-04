@@ -1,11 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.dashboard;
 
-
 import com.avitam.fantasy11.model.Deposits;
 import com.avitam.fantasy11.model.Matches;
 import com.avitam.fantasy11.repository.DepositsRepository;
 import com.avitam.fantasy11.repository.MatchesRepository;
-import com.avitam.fantasy11.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +15,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/dashboard")
 public class DashBoardController {
-
     @Autowired
     private DepositsRepository depositsRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private MatchesRepository matchesRepository;
 

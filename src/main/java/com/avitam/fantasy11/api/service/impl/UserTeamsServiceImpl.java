@@ -2,7 +2,6 @@ package com.avitam.fantasy11.api.service.impl;
 
 import com.avitam.fantasy11.api.dto.UserTeamsDto;
 import com.avitam.fantasy11.api.dto.UserTeamsWsDto;
-import com.avitam.fantasy11.api.service.BaseService;
 import com.avitam.fantasy11.api.service.UserTeamsService;
 import com.avitam.fantasy11.model.*;
 import com.avitam.fantasy11.repository.*;
@@ -22,8 +21,6 @@ public class UserTeamsServiceImpl implements UserTeamsService {
     private UserTeamsRepository userTeamsRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private BaseService baseService;
     @Autowired
     private PlayerRepository playerRepository;
     @Autowired
@@ -65,14 +62,7 @@ public class UserTeamsServiceImpl implements UserTeamsService {
                 userTeamsRepository.save(userTeams);
                 request.setMessage("Data updated Successfully");
             } else {
-//                if (baseService.validateIdentifier(EntityConstants.USER_TEAMS, userTeamsDto.getIdentifier()) != null) {
-//                    request.setSuccess(false);
-//                    request.setMessage("Identifier already present");
-//                    return request;
-//                }
                 userTeams = modelMapper.map(userTeamsDto, UserTeams.class);
-
-                //baseService.populateCommonData(userTeams);
                 userTeams.setStatus(true);
                 userTeamsRepository.save(userTeams);
                 if (userTeams.getRecordId() == null) {
@@ -91,14 +81,14 @@ public class UserTeamsServiceImpl implements UserTeamsService {
 
     @Override
     public UserTeamsWsDto getUserTeamsDetails(UserTeamsWsDto request) {
-        List<UserTeamsDto> userTeamsDtoList=new ArrayList<>();
+        List<UserTeamsDto> userTeamsDtoList = new ArrayList<>();
         List<UserTeams> userTeamsList = userTeamsRepository.findByUserId(request.getUserTeamsDtoList().get(0).getUserId());
 
-
-        for(UserTeams userTeams1:userTeamsList) {
+        for (UserTeams userTeams1 : userTeamsList) {
             UserTeamsDto userTeamsDto = modelMapper.map(userTeams1, UserTeamsDto.class);
 
-            int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0; int team1 = 0, team2 = 0;
+            int batsMan = 0, bowler = 0, wicketKeeper = 0, allRounder = 0;
+            int team1 = 0, team2 = 0;
 
             for (UserTeam userTeam : userTeams1.getPlayers()) {
                 Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
@@ -110,14 +100,13 @@ public class UserTeamsServiceImpl implements UserTeamsService {
                     bowler++;
                 } else if (playerRoleRepository.findByRecordId(player.getPlayerRoleId()).getIdentifier().equalsIgnoreCase("all rounder")) {
                     allRounder++;
-                }}
-                userTeamsDto.setBatsManCount(batsMan);
-                userTeamsDto.setWicketKeeperCount(wicketKeeper);
-                userTeamsDto.setBowlerCount(bowler);
-                userTeamsDto.setAllRounderCount(allRounder);
-                Matches match = matchesRepository.findByRecordId(userTeams1.getMatchId());
-
-
+                }
+            }
+            userTeamsDto.setBatsManCount(batsMan);
+            userTeamsDto.setWicketKeeperCount(wicketKeeper);
+            userTeamsDto.setBowlerCount(bowler);
+            userTeamsDto.setAllRounderCount(allRounder);
+            Matches match = matchesRepository.findByRecordId(userTeams1.getMatchId());
 
             for (UserTeam userTeam : userTeams1.getPlayers()) {
                 Player player = playerRepository.findByRecordId(userTeam.getPlayerId());
@@ -130,7 +119,6 @@ public class UserTeamsServiceImpl implements UserTeamsService {
             }
             userTeamsDto.setTeam1Count(team1);
             userTeamsDto.setTeam2Count(team2);
-
 
             Team teamName1 = teamRepository.findByRecordId(match.getTeam1Id());
             userTeamsDto.setTeam1Name(teamName1.getShortName());

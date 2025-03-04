@@ -7,8 +7,6 @@ import com.avitam.fantasy11.api.service.SportTypeService;
 import com.avitam.fantasy11.model.SportType;
 import com.avitam.fantasy11.repository.SportTypeRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
-import com.oracle.wls.shaded.org.apache.xpath.objects.XString;
-import io.swagger.models.auth.In;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

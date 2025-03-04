@@ -1,9 +1,9 @@
 package com.avitam.fantasy11.web.controllers.admin.contestjoined;
 
-import com.avitam.fantasy11.api.dto.*;
+import com.avitam.fantasy11.api.dto.ContestJoinedDto;
+import com.avitam.fantasy11.api.dto.ContestJoinedWsDto;
 import com.avitam.fantasy11.api.service.ContestJoinedService;
 import com.avitam.fantasy11.model.ContestJoined;
-import com.avitam.fantasy11.model.Player;
 import com.avitam.fantasy11.repository.ContestJoinedRepository;
 import com.avitam.fantasy11.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;

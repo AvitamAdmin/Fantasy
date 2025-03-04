@@ -17,10 +17,8 @@ public class TokenGenerationController extends BaseController {
 
     @Autowired
     private UserDetailsService userDetailsService;
-
     @Autowired
     private JWTUtility jwtUtility;
-
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
